@@ -53,7 +53,7 @@ public class GameScreen extends Game implements Screen {
         beachImage = new Texture("game_screen/epicbeach.png");
         gameRegion = new TextureRegion(beachImage);
 
-        beachguyImage = new Texture("game_screen/beachguy.png");
+        beachguyImage = new Texture("game_screen/Cool_beach_guy.png");
 
         beachGuySprite = new Sprite(beachguyImage);
         beachGuySprite.setSize(80,80);
@@ -120,6 +120,7 @@ public class GameScreen extends Game implements Screen {
 
         keyBinds();
         movementKeys();
+        flipPlayer();
 
     }
 
@@ -179,6 +180,15 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             System.out.println("normal");
             beachGuySprite.setSize(80,80);
+        }
+    }
+
+    private void flipPlayer() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+            beachGuySprite.flip(true, false);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            beachGuySprite.flip(true, false);
         }
     }
 

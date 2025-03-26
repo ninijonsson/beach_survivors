@@ -1,4 +1,5 @@
 .gitkeep
+game_screen/Cool_beach_guy.png
 game_screen/beachguy.png
 game_screen/epicbeach.png
 main_menu/buttons/exit_button.png
