@@ -1,15 +1,16 @@
-package com.beachsurvivors;
+package com.beachsurvivors.view;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main implements ApplicationListener {
+public class MainMenuScreen implements Screen {
+
+    private Main main;
+
     Texture backgroundTexture;
     Texture logoTexture;
     Texture playButtonTexture;
@@ -19,8 +20,8 @@ public class Main implements ApplicationListener {
 
     FitViewport viewport;
 
-    @Override
-    public void create() {
+    public MainMenuScreen(Main main) {
+        this.main = main;
         backgroundTexture = new Texture("main_menu/menu_background.jpeg");
         logoTexture = new Texture("main_menu/logo.png");
         playButtonTexture = new Texture("main_menu/buttons/play_button.png");
@@ -35,10 +36,6 @@ public class Main implements ApplicationListener {
         viewport.update(width, height, true);
     }
 
-    @Override
-    public void render() {
-        draw();
-    }
 
     @Override
     public void pause() {
@@ -72,4 +69,21 @@ public class Main implements ApplicationListener {
 
         spriteBatch.end();
     }
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float v) {
+        draw();
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+
 }
