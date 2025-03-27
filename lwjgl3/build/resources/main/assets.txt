@@ -3,7 +3,12 @@ game_screen/Cool_beach_guy.png
 game_screen/beachguy.png
 game_screen/epicbeach.png
 main_menu/buttons/exit_button.png
+main_menu/buttons/exit_button_2_scaled.png
+main_menu/buttons/exit_button_scaled.png
 main_menu/buttons/play_button.png
+main_menu/buttons/play_button_2_scaled.png
+main_menu/buttons/play_button_scaled.png
 main_menu/logo.png
 main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
+main_menu/sound/play_sound.wav
