@@ -24,9 +24,15 @@ public class MainMenuScreen implements Screen {
     Texture playButtonTexture;
     Texture exitButtonTexture;
 
+    // PLAY-KNAPP
     private TextureRegion playRegion; // Används för TextureRegionDrawable
     private TextureRegionDrawable playDrawable; // Används för ImageButton
     private ImageButton playButton;
+
+    // EXIT-KNAPP
+    private TextureRegion exitRegion;
+    private TextureRegionDrawable exitDrawable;
+    private ImageButton exitButton;
 
     SpriteBatch spriteBatch;
     private Stage stage;
@@ -40,20 +46,27 @@ public class MainMenuScreen implements Screen {
         backgroundTexture = new Texture("main_menu/menu_background.jpeg");
         logoTexture = new Texture("main_menu/logo_skiss_1.png");
 
+        // PLAY
         playButtonTexture = new Texture("main_menu/buttons/play_button.png");
         playRegion = new TextureRegion(playButtonTexture);
         playDrawable = new TextureRegionDrawable(playRegion);
         playButton = new ImageButton(playDrawable);
 
+        // EXIT
         exitButtonTexture = new Texture("main_menu/buttons/exit_button.png");
+        exitRegion = new TextureRegion(exitButtonTexture);
+        exitDrawable = new TextureRegionDrawable(exitRegion);
+        exitButton = new ImageButton(exitDrawable);
 
         // viewport = new FitViewport(16, 9);
         viewport = new ScreenViewport();
 
         spriteBatch = new SpriteBatch();
         stage = new Stage(viewport);
-        stage.addActor(playButton);
+        stage.addActor(playButton); // Lägg in knapparna i en array istället?
+        stage.addActor(exitButton);
         onPlayButtonPressed();
+        onExitButtonPressed();
     }
 
     @Override
@@ -88,22 +101,26 @@ public class MainMenuScreen implements Screen {
         float worldHeight = viewport.getWorldHeight();
         float logoWidth = logoTexture.getWidth()*4;
         float logoHeight = logoTexture.getHeight()*4;
-        playButton.setSize(128, 64);
 
         spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
         spriteBatch.draw(logoTexture, ((worldWidth/2)-(logoWidth/2)), (worldHeight/2), logoWidth, logoHeight); // TODO: ändra så att värdena inte är hårdkodade
-        playButton.setPosition((worldWidth/2)-(playButton.getWidth()), worldHeight/3);
         // spriteBatch.draw(playButtonTexture, 7, 3, 2, 1);
         // spriteBatch.draw(exitButtonTexture, 7, 1, 2, 1);
-
         spriteBatch.end();
 
         stage.act(delta);
+
+        playButton.setSize(128, 64);
+        exitButton.setSize(128, 64);
+
+        playButton.setPosition((worldWidth/2)-(playButton.getWidth()), worldHeight/3);
+        exitButton.setPosition((worldWidth/2)-(exitButton.getWidth()), worldHeight/5);
+
         stage.draw();
     }
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage); // Lyssna på event listener (play-knappen)
+        Gdx.input.setInputProcessor(stage); // Lyssna på event listeners
     }
 
     @Override
@@ -123,6 +140,16 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("onPlayButtonPressed");
                 main.switchScreen();
+            }
+        });
+    }
+
+    public void onExitButtonPressed() {
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("onExitButtonPressed");
+                Gdx.app.exit();
             }
         });
     }
