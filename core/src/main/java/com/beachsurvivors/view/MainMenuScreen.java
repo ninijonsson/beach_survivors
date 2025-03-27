@@ -53,6 +53,7 @@ public class MainMenuScreen implements Screen {
 
         playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/play_sound.wav"));
 
+
         // PLAY
         playButtonTexture = new Texture("main_menu/buttons/play_button_2_scaled.png");
         playRegion = new TextureRegion(playButtonTexture);
@@ -143,7 +144,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("onPlayButtonPressed");
-                playSound.play();
+                playSound.play(0.1f);
                 main.switchScreen();
             }
         });
