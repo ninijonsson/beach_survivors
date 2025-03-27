@@ -5,4 +5,5 @@ game_screen/epicbeach.png
 main_menu/buttons/exit_button.png
 main_menu/buttons/play_button.png
 main_menu/logo.png
+main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
