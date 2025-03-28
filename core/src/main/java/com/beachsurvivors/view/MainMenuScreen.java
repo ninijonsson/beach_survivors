@@ -51,7 +51,7 @@ public class MainMenuScreen implements Screen {
         this.main = main;
 
         backgroundTexture = new Texture("main_menu/menu_background.jpeg");
-        logoTexture = new Texture("main_menu/logo.png");
+        logoTexture = new Texture("main_menu/logo_skiss_1.png");
         playButtonTexture = new Texture("main_menu/buttons/play_button.png");
         playDrawable = new TextureRegionDrawable(new TextureRegion(playButtonTexture));
         playButton = new ImageButton(playDrawable);
