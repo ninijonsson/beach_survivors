@@ -70,3 +70,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/gradle
 build/reports/problems/problems-report.html
 core/build/tmp/compileJava/previous-compilation-data.bin
+/core/build/tmp
+/lwjgl3/build/resources/main
