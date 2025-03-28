@@ -72,3 +72,7 @@ build/reports/problems/problems-report.html
 core/build/tmp/compileJava/previous-compilation-data.bin
 /core/build/tmp
 /lwjgl3/build/resources/main
+.idea/modules.xml
+assets/assets.txt
+core/build/tmp/compileJava/previous-compilation-data.bin
+lwjgl3/build/resources/main/assets.txt
