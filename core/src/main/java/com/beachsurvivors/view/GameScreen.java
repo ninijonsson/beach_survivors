@@ -50,7 +50,7 @@ public class GameScreen extends Game implements Screen {
         player = new Player();
         shapeRenderer = new ShapeRenderer();
 
-        tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx"); // byt ut till din riktiga path
+        tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx"); 
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         stage = new Stage(gameviewport);
