@@ -33,11 +33,6 @@ public class MainMenuScreen implements Screen {
     Texture playButtonTexture;
     Texture exitButtonTexture;
 
-    Drawable drawablePlay;
-
-    ImageButton playButton;
-    ImageButton exitButton;
-
     SpriteBatch spriteBatch;
     // PLAY-KNAPP
     private TextureRegion playRegion; // Används för TextureRegionDrawable
@@ -49,9 +44,6 @@ public class MainMenuScreen implements Screen {
     private TextureRegionDrawable exitDrawable;
     private ImageButton exitButton;
 
-    SpriteBatch spriteBatch;
-    private Stage stage;
-
     //FitViewport viewport;
     ScreenViewport viewport;
 
@@ -61,8 +53,8 @@ public class MainMenuScreen implements Screen {
         backgroundTexture = new Texture("main_menu/menu_background.jpeg");
         logoTexture = new Texture("main_menu/logo.png");
         playButtonTexture = new Texture("main_menu/buttons/play_button.png");
-        drawablePlay = new TextureRegionDrawable(new TextureRegion(playButtonTexture));
-        playButton = new ImageButton(drawablePlay);
+        playDrawable = new TextureRegionDrawable(new TextureRegion(playButtonTexture));
+        playButton = new ImageButton(playDrawable);
         //exitButtonTexture = new Texture("main_menu/buttons/exit_button.png");
 
         stage = new Stage(new ScreenViewport());

@@ -1,4 +1,5 @@
 .gitkeep
+Boomerangmc.png
 entities/Beer 2.png
 entities/Beer.png
 entities/Burger.png
