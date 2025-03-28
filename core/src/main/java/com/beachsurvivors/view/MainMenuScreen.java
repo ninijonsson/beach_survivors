@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -21,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MainMenuScreen implements Screen {
 
     private Main main;
-
+    private Stage stage;
     Sound playSound;
 
     Texture backgroundTexture;
@@ -29,6 +33,12 @@ public class MainMenuScreen implements Screen {
     Texture playButtonTexture;
     Texture exitButtonTexture;
 
+    Drawable drawablePlay;
+
+    ImageButton playButton;
+    ImageButton exitButton;
+
+    SpriteBatch spriteBatch;
     // PLAY-KNAPP
     private TextureRegion playRegion; // Används för TextureRegionDrawable
     private TextureRegionDrawable playDrawable; // Används för ImageButton
@@ -49,7 +59,15 @@ public class MainMenuScreen implements Screen {
         this.main = main;
 
         backgroundTexture = new Texture("main_menu/menu_background.jpeg");
-        logoTexture = new Texture("main_menu/logo_skiss_1.png");
+        logoTexture = new Texture("main_menu/logo.png");
+        playButtonTexture = new Texture("main_menu/buttons/play_button.png");
+        drawablePlay = new TextureRegionDrawable(new TextureRegion(playButtonTexture));
+        playButton = new ImageButton(drawablePlay);
+        //exitButtonTexture = new Texture("main_menu/buttons/exit_button.png");
+
+        stage = new Stage(new ScreenViewport());
+        stage.addActor(playButton);
+        Gdx.input.setInputProcessor(stage);
 
         playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/play_sound.wav"));
 
@@ -113,6 +131,12 @@ public class MainMenuScreen implements Screen {
         float logoHeight = logoTexture.getHeight()*4;
 
         spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+        //spriteBatch.draw(playButtonTexture, 7, 3, 2, 1);
+        //spriteBatch.draw(exitButtonTexture, 7, 1, 2, 1);
+
         spriteBatch.draw(logoTexture, ((worldWidth/2)-(logoWidth/2)), (worldHeight/2), logoWidth, logoHeight); // TODO: ändra så att värdena inte är hårdkodade
         spriteBatch.end();
 
@@ -131,7 +155,6 @@ public class MainMenuScreen implements Screen {
     @Override
     public void render(float v) {
         draw(v);
-
     }
 
     @Override
