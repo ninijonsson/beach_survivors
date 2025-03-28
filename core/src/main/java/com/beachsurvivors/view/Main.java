@@ -14,7 +14,7 @@ public class Main extends Game implements ApplicationListener {
         menuScreen = new MainMenuScreen(this);
         gameScreen = new GameScreen(this);
 
-        setScreen(gameScreen);
+        setScreen(menuScreen);
 
     }
 
