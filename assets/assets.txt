@@ -1,13 +1,27 @@
 .gitkeep
 Boomerangmc.png
+Maps/FirstBeachMap.tiled-project
+Maps/FirstBeachMap.tiled-session
+Maps/beachTest.tmx
+Maps/beachTest2.tmx
+Maps/strand.tsx
+Maps/tf_beach_tileA1.png
+Maps/tf_beach_tileB.png
+Maps/vatten.tsx
 entities/Beer 2.png
 entities/Beer.png
 entities/Burger.png
 entities/Coconut.png
 entities/Shark.png
 game_screen/Cool_beach_guy.png
+game_screen/beach_tiles.tsx
 game_screen/beachguy.png
 game_screen/epicbeach.png
+game_screen/epicbeach.tmx
+game_screen/test.tsx
+game_screen/testkarta.tmx
+game_screen/tf_beach_tileA1.png
+game_screen/tf_beach_tileB.png
 main_menu/buttons/exit_button.png
 main_menu/buttons/exit_button_2_scaled.png
 main_menu/buttons/exit_button_scaled.png
