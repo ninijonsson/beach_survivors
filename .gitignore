@@ -68,3 +68,5 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/gradle
+build/reports/problems/problems-report.html
+core/build/tmp/compileJava/previous-compilation-data.bin
