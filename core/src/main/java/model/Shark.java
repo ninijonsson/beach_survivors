@@ -13,6 +13,8 @@ public class Shark extends Enemy {
     private Sprite sharkSprite;
     private int x;
     private int y;
+    private double hitpoints;
+    private boolean alive;
 
     public Shark () {
         sharkImage = new Texture("entities/Shark.png");
@@ -26,10 +28,20 @@ public class Shark extends Enemy {
         sharkHitbox = new Rectangle(x,y, 100,100);
         sharkSprite.setPosition(sharkSprite.getX()+x,sharkSprite.getY()+y);
         sharkSprite.setPosition(x,y);
+        this.hitpoints=20;
+        this.alive=true;
 
     }
+    public void hit(double damageTaken){
+        hitpoints=hitpoints-damageTaken;
+        if(hitpoints<=0){
+            alive=false;
+        }
+    }
 
-
+    public boolean isDead(){
+        return !alive;
+    }
     @Override
     public void move() {
 

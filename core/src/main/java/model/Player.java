@@ -12,6 +12,7 @@ public class Player implements Disposable {
     private int healthPoints;
     private int experiencePoints;
     private float speed = 400f;
+    private float critChance=0.5f;
 
     private Texture beachguyImage;
     private Sprite beachGuySprite;
@@ -146,5 +147,9 @@ public class Player implements Disposable {
 
     public void setPlayerY(float playerY) {
         this.playerY = playerY;
+    }
+
+    public float getCritChance() {
+        return critChance;
     }
 }
