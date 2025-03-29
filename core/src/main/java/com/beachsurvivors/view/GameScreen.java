@@ -1,8 +1,6 @@
 package com.beachsurvivors.view;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,9 +14,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import model.Player;
-import model.Shark;
+import model.abilities.Boomerang;
+import model.enemies.Shark;
 
-public class GameScreen extends Game implements Screen {
+public class GameScreen implements Screen {
 
     private Main main;
 
@@ -40,17 +39,21 @@ public class GameScreen extends Game implements Screen {
         this.main = main;
         gameviewport = new FitViewport(worldWidth, worldHeight);
         create();
+
+        Boomerang boomerang = new Boomerang();
+        System.out.println(boomerang);
     }
 
-    @Override
     public void create() {
+
+
 
         spriteBatch = new SpriteBatch();
         shark = new Shark();
         player = new Player();
         shapeRenderer = new ShapeRenderer();
 
-        tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx"); 
+        tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         stage = new Stage(gameviewport);
@@ -118,7 +121,7 @@ public class GameScreen extends Game implements Screen {
         player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, worldWidth - player.getSprite().getWidth()));
         player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, worldHeight - player.getSprite().getHeight()));
 
-        if (player.getHitBox().overlaps(shark.getHitBox())) {
+        if (player.getHitBox().overlaps(shark.getHitbox())) {
             shark = null;
             shark = new Shark();
             player.increaseSpeed();
