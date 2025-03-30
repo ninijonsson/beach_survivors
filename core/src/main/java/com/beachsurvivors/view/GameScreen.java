@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import model.*;
+import model.enemies.Shark;
 
 import java.util.Random;
 
@@ -59,8 +60,9 @@ public class GameScreen extends Game implements Screen {
     @Override
     public void create() {
         spriteBatch = new SpriteBatch();
-        shark = new Shark();
+
         player = new Player();
+        shark = new Shark();
         shapeRenderer = new ShapeRenderer();
 
         tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx");
@@ -163,10 +165,10 @@ public class GameScreen extends Game implements Screen {
         player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, worldWidth - player.getSprite().getWidth()));
         player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, worldHeight - player.getSprite().getHeight()));
 
-        if (player.getHitBox().overlaps(shark.getHitBox())) {
+        if (player.getHitBox().overlaps(shark.getHitbox())) {
             shark = null;
             shark = new Shark();
-            player.increaseSpeed();
+            player.increaseSpeed(50);
         }
 
         // COCONUT SPIN SKIT
@@ -198,7 +200,7 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        if (coconut.getHitBox().overlaps(shark.getHitBox()) && !hasDamagedThisOrbit) {
+        if (coconut.getHitBox().overlaps(shark.getHitbox()) && !hasDamagedThisOrbit) {
             double damage = coconut.getDamage();
             boolean isCritical = checkForCriticalStrike();
 
@@ -220,7 +222,7 @@ public class GameScreen extends Game implements Screen {
                 damageTextY,
                 3.0f, // damageText visas i 3 sekunder
                 isCritical));
-            if (shark.isDead()) {
+            if (!shark.isAlive()) {
                 shark = new Shark();
             }
             hasDamagedThisOrbit = true;

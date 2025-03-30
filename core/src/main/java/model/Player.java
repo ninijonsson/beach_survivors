@@ -109,8 +109,8 @@ public class Player implements Disposable {
         return beachguyImage;
     }
 
-    public void increaseSpeed() {
-        speed += 50;
+    public void increaseSpeed(int speedIncrease) {
+        speed += speedIncrease;
     }
 
     public void setBeachguyImage(Texture beachguyImage) {

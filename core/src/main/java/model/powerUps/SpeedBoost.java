@@ -28,7 +28,6 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
                 player.increaseSpeed(-speedIncrease);
             }
         }, 10);
-
-
+        
     }
 }

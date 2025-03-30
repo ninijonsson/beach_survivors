@@ -11,6 +11,8 @@ public class Shark extends Enemy {
 
         super("entities/Shark.png", 100, 100);
 
+        setHealthPoints(10);
+
         Random random = new Random();
         x = random.nextInt(0, (int) (1920-getSprite().getWidth()));
         y = random.nextInt(0, (int) (1080-getSprite().getHeight()));
@@ -20,6 +22,13 @@ public class Shark extends Enemy {
         getHitbox().setX(x);
         getHitbox().setY(y);
 
+    }
+
+    public void hit(double damageTaken){
+        setHealthPoints(-damageTaken);
+        if(getHealthPoints()<=0){
+            setAlive(false);
+        }
     }
 
     @Override
