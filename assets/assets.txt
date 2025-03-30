@@ -14,6 +14,7 @@ Maps/tf_beach_tileB.tsx
 Maps/vatten.tsx
 entities/Beer 2.png
 entities/Beer.png
+entities/Boomerangmc.png
 entities/Burger.png
 entities/Coconut.png
 entities/Shark.png
@@ -31,3 +32,4 @@ main_menu/logo.png
 main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
 main_menu/sound/play_sound.wav
+placeholder.png
