@@ -1,24 +1,27 @@
 package com.beachsurvivors.view;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import model.Player;
-import model.abilities.Boomerang;
-import model.enemies.Shark;
-import model.powerUps.SpeedBoost;
+import model.*;
 
-public class GameScreen implements Screen {
+import java.util.Random;
+
+public class GameScreen extends Game implements Screen {
 
     private Main main;
 
@@ -34,28 +37,30 @@ public class GameScreen implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
 
     Shark shark;
-
     private Player player;
-    SpeedBoost speedBoost;
+
+    private Coconut coconut;
+    private float coconutSpeed = 280;
+    private float angle;
+    private float orbitRadius = 200;
+    private float previousAngle = 0;
+    private Array<SmokeParticle> smokeTrail = new Array<>();
+    private boolean hasDamagedThisOrbit = false;
+    private BitmapFont font;
+    private Array<DamageText> damageTexts = new Array<>();
+    private Random randomizeDirection = new Random();
 
     public GameScreen(Main main) {
         this.main = main;
         gameviewport = new FitViewport(worldWidth, worldHeight);
         create();
-
-        Boomerang boomerang = new Boomerang();
-        System.out.println(boomerang);
     }
 
+    @Override
     public void create() {
-
-
-
         spriteBatch = new SpriteBatch();
         shark = new Shark();
         player = new Player();
-        speedBoost = new SpeedBoost(10);
-
         shapeRenderer = new ShapeRenderer();
 
         tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx");
@@ -63,6 +68,13 @@ public class GameScreen implements Screen {
 
         stage = new Stage(gameviewport);
         stage.clear();
+
+        coconut = new Coconut();
+        angle = 0;
+
+        font = new BitmapFont();
+        font.setColor(Color.YELLOW);
+        font.getData().setScale(2);
     }
 
     @Override
@@ -102,23 +114,42 @@ public class GameScreen implements Screen {
         player.getSprite().draw(spriteBatch);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
         shark.getSprite().draw(spriteBatch);
-
-        speedBoost.getSprite().setPosition(200,500);
-        speedBoost.getHitbox().setPosition(200,500);
-        speedBoost.getSprite().draw(spriteBatch);
-
-
         spriteBatch.end();
 
         drawPlayer();
 
         stage.act();
         stage.draw();
+
+        spriteBatch.begin();
+        player.getSprite().draw(spriteBatch);
+        player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
+        shark.getSprite().draw(spriteBatch);
+        coconut.getSprite().draw(spriteBatch);
+
+        // Rita alla DamageText-objekt
+        for (DamageText dt : damageTexts) {
+            dt.draw(spriteBatch);
+        }
+
+        spriteBatch.end();
+
+        spriteBatch.begin();
+
+        for (SmokeParticle s : smokeTrail) {
+            s.getSprite().draw(spriteBatch);
+        }
+
+        player.getSprite().draw(spriteBatch);
+        shark.getSprite().draw(spriteBatch);
+        coconut.getSprite().draw(spriteBatch);
+
+        spriteBatch.end();
     }
 
     private void drawPlayer() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.setColor(Color.CLEAR);
         shapeRenderer.rect(player.getSprite().getX(), player.getSprite().getY(), player.getSprite().getWidth(), player.getSprite().getHeight());
         shapeRenderer.rect(shark.getSprite().getX(), shark.getSprite().getY(), shark.getSprite().getWidth(), shark.getSprite().getHeight());
         shapeRenderer.end();
@@ -132,14 +163,83 @@ public class GameScreen implements Screen {
         player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, worldWidth - player.getSprite().getWidth()));
         player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, worldHeight - player.getSprite().getHeight()));
 
-        if (player.getHitBox().overlaps(shark.getHitbox())) {
+        if (player.getHitBox().overlaps(shark.getHitBox())) {
             shark = null;
             shark = new Shark();
-            player.increaseSpeed(50);
+            player.increaseSpeed();
         }
-        if (player.getHitBox().overlaps(speedBoost.getHitbox())) {
-            speedBoost.applyAffect(player);
+
+        // COCONUT SPIN SKIT
+        angle += coconutSpeed * Gdx.graphics.getDeltaTime();
+        angle %= 360;
+
+
+        if (angle < previousAngle) {
+            hasDamagedThisOrbit = false;
         }
+
+        previousAngle = angle;
+
+        float radian = MathUtils.degreesToRadians * angle;
+
+        float coconutX = player.getPlayerX() + player.getSprite().getWidth() / 2 + MathUtils.cos(radian) * orbitRadius - coconut.getSprite().getWidth() / 2;
+        float coconutY = player.getPlayerY() + player.getSprite().getHeight() / 2 + MathUtils.sin(radian) * orbitRadius - coconut.getSprite().getHeight() / 2;
+
+        coconut.updatePosition(coconutX, coconutY);
+
+        // SMOKE TRAIL
+        smokeTrail.add(new SmokeParticle(coconut.getSprite().getX(), coconut.getSprite().getY()));
+
+        for (int i = smokeTrail.size - 1; i >= 0; i--) {
+            SmokeParticle s = smokeTrail.get(i);
+            s.update(Gdx.graphics.getDeltaTime());
+            if (s.isDead()) {
+                smokeTrail.removeIndex(i);
+            }
+        }
+
+        if (coconut.getHitBox().overlaps(shark.getHitBox()) && !hasDamagedThisOrbit) {
+            double damage = coconut.getDamage();
+            boolean isCritical = checkForCriticalStrike();
+
+            if (isCritical) {
+                damage *= 2; // Dubblera skadan vid kritiskt slag
+            }
+
+            shark.hit(damage);
+
+
+            int randomPathX = randomizeDirection.nextInt(50) ;
+            int randomPathY = randomizeDirection.nextInt(50);
+
+            float damageTextX = shark.getSprite().getX() + randomPathX;
+            float damageTextY = shark.getSprite().getY() + shark.getSprite().getHeight() + 10 + randomPathY;
+
+            damageTexts.add(new DamageText(String.valueOf((int) damage),
+                damageTextX,
+                damageTextY,
+                3.0f, // damageText visas i 3 sekunder
+                isCritical));
+            if (shark.isDead()) {
+                shark = new Shark();
+            }
+            hasDamagedThisOrbit = true;
+        }
+
+
+        for (int i = damageTexts.size - 1; i >= 0; i--) {
+            DamageText dt = damageTexts.get(i);
+            dt.update(Gdx.graphics.getDeltaTime());
+            if (!dt.isActive()) {
+                damageTexts.removeIndex(i);
+            }
+        }
+    }
+
+
+    private boolean checkForCriticalStrike() {
+        float critChance = player.getCritChance();
+        return randomizeDirection.nextFloat() < critChance;
     }
 
     @Override
@@ -154,5 +254,7 @@ public class GameScreen implements Screen {
         mapRenderer.dispose();
         tiledMap.dispose();
         player.dispose();
+        coconut.dispose();
+        font.dispose();
     }
 }

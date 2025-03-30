@@ -12,7 +12,7 @@ public class Player implements Disposable {
     private int healthPoints;
     private int experiencePoints;
     private float speed = 400f;
-    private int level;
+    private float critChance=0.5f;
 
     private Texture beachguyImage;
     private Sprite beachGuySprite;
@@ -35,10 +35,6 @@ public class Player implements Disposable {
         movementKeys();
         keyBinds();
         flipPlayer();
-    }
-
-    public void levelUp() {
-
     }
 
     private void movementKeys() {
@@ -113,8 +109,8 @@ public class Player implements Disposable {
         return beachguyImage;
     }
 
-    public void increaseSpeed(int speedIncrease) {
-        speed += speedIncrease;
+    public void increaseSpeed() {
+        speed += 50;
     }
 
     public void setBeachguyImage(Texture beachguyImage) {
@@ -151,5 +147,9 @@ public class Player implements Disposable {
 
     public void setPlayerY(float playerY) {
         this.playerY = playerY;
+    }
+
+    public float getCritChance() {
+        return critChance;
     }
 }

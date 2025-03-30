@@ -4,9 +4,13 @@ Maps/FirstBeachMap.tiled-project
 Maps/FirstBeachMap.tiled-session
 Maps/beachTest.tmx
 Maps/beachTest2.tmx
+Maps/beachTest3.tmx
+Maps/beachTest4.tmx
 Maps/strand.tsx
 Maps/tf_beach_tileA1.png
+Maps/tf_beach_tileA1.tsx
 Maps/tf_beach_tileB.png
+Maps/tf_beach_tileB.tsx
 Maps/vatten.tsx
 entities/Beer 2.png
 entities/Beer.png
@@ -14,6 +18,7 @@ entities/Boomerangmc.png
 entities/Burger.png
 entities/Coconut.png
 entities/Shark.png
+entities/Smoke.png
 game_screen/Cool_beach_guy.png
 game_screen/beachguy.png
 game_screen/epicbeach.png
