@@ -7,10 +7,15 @@ import model.Player;
 public class SpeedBoost extends PowerUp implements PickUpAble {
 
     private int speedIncrease = 300;
-    private Timer timer;
 
-    public SpeedBoost(int duration) {
-        super("" ,duration);
+    public SpeedBoost() {
+        super("assets/speed_boost.png" , 10);
+    }
+
+    public SpeedBoost(float x, float y) {
+        super("assets/speed_boost.png" , 10);
+        this.getSprite().setPosition(x, y);
+        this.getHitbox().setPosition(x,y);
     }
 
     @Override
@@ -20,14 +25,14 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
     }
 
     @Override
-    public void applyAffect(Player player) {
+    protected void applyAffect(Player player) {
         player.increaseSpeed(speedIncrease);
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 player.increaseSpeed(-speedIncrease);
             }
-        }, 10);
-        
+        }, getDuration());
+
     }
 }

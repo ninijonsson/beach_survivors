@@ -19,7 +19,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import model.*;
 import model.enemies.Shark;
+import model.powerUps.PowerUp;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
@@ -39,6 +42,7 @@ public class GameScreen extends Game implements Screen {
 
     Shark shark;
     private Player player;
+    private List<PowerUp> droppedItems;
 
     private Coconut coconut;
     private float coconutSpeed = 280;
@@ -54,6 +58,7 @@ public class GameScreen extends Game implements Screen {
     public GameScreen(Main main) {
         this.main = main;
         gameviewport = new FitViewport(worldWidth, worldHeight);
+        droppedItems = new ArrayList<>();
         create();
     }
 
@@ -133,6 +138,9 @@ public class GameScreen extends Game implements Screen {
         for (DamageText dt : damageTexts) {
             dt.draw(spriteBatch);
         }
+        for (PowerUp powerUp : droppedItems) {
+            powerUp.getSprite().draw(spriteBatch);
+        }
 
         spriteBatch.end();
 
@@ -166,10 +174,13 @@ public class GameScreen extends Game implements Screen {
         player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, worldHeight - player.getSprite().getHeight()));
 
         if (player.getHitBox().overlaps(shark.getHitbox())) {
+            shark.dropItems(droppedItems);
             shark = null;
             shark = new Shark();
             player.increaseSpeed(50);
         }
+
+        pickUpPowerUp();
 
         // COCONUT SPIN SKIT
         angle += coconutSpeed * Gdx.graphics.getDeltaTime();
@@ -223,6 +234,7 @@ public class GameScreen extends Game implements Screen {
                 3.0f, // damageText visas i 3 sekunder
                 isCritical));
             if (!shark.isAlive()) {
+                shark.dropItems(droppedItems);
                 shark = new Shark();
             }
             hasDamagedThisOrbit = true;
@@ -243,6 +255,19 @@ public class GameScreen extends Game implements Screen {
         float critChance = player.getCritChance();
         return randomizeDirection.nextFloat() < critChance;
     }
+
+    public void pickUpPowerUp() {
+        List<PowerUp> powerUpsToRemove = new ArrayList<>();
+        for (PowerUp powerUp : droppedItems) {
+            if (player.getHitBox().overlaps(powerUp.getHitbox())) {
+                powerUp.onPickup(player);
+                powerUp.dispose();
+                powerUpsToRemove.add(powerUp);
+            }
+        }
+        droppedItems.removeAll(powerUpsToRemove);
+    }
+
 
     @Override
     public void resume() {}

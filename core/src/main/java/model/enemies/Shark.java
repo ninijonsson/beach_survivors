@@ -1,5 +1,10 @@
 package model.enemies;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import model.powerUps.PowerUp;
+import model.powerUps.SpeedBoost;
+
+import java.util.List;
 import java.util.Random;
 
 public class Shark extends Enemy {
@@ -53,6 +58,13 @@ public class Shark extends Enemy {
 
     @Override
     public void dropItems() {
+
+    }
+
+    public void dropItems(List<PowerUp> droppedItems) {
+        SpeedBoost speedBoost = new SpeedBoost((getSprite().getWidth()/2)+x, (getSprite().getHeight()/2) + y);
+        droppedItems.add(speedBoost);
+        System.out.println("Item dropped");
 
     }
 

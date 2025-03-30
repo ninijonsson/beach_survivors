@@ -3,6 +3,7 @@ package model.powerUps;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Disposable;
 import model.PickUpAble;
 import model.Player;
 
@@ -28,7 +29,7 @@ public abstract class PowerUp implements PickUpAble {
 
     }
 
-    public abstract void applyAffect(Player player);
+    protected abstract void applyAffect(Player player);
 
     public void createTexture(String texturePath) {
         if (texturePath.isEmpty()) {
@@ -53,5 +54,8 @@ public abstract class PowerUp implements PickUpAble {
 
     public Rectangle getHitbox() {
         return hitbox;
+    }
+    public void dispose() {
+        texture.dispose();
     }
 }
