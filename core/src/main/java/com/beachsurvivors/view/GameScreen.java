@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import model.Player;
 import model.abilities.Boomerang;
 import model.enemies.Shark;
+import model.powerUps.SpeedBoost;
 
 public class GameScreen implements Screen {
 
@@ -33,7 +34,9 @@ public class GameScreen implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
 
     Shark shark;
+
     private Player player;
+    SpeedBoost speedBoost;
 
     public GameScreen(Main main) {
         this.main = main;
@@ -51,6 +54,8 @@ public class GameScreen implements Screen {
         spriteBatch = new SpriteBatch();
         shark = new Shark();
         player = new Player();
+        speedBoost = new SpeedBoost(10);
+
         shapeRenderer = new ShapeRenderer();
 
         tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx");
@@ -97,6 +102,12 @@ public class GameScreen implements Screen {
         player.getSprite().draw(spriteBatch);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
         shark.getSprite().draw(spriteBatch);
+
+        speedBoost.getSprite().setPosition(200,500);
+        speedBoost.getHitbox().setPosition(200,500);
+        speedBoost.getSprite().draw(spriteBatch);
+
+
         spriteBatch.end();
 
         drawPlayer();
@@ -124,7 +135,10 @@ public class GameScreen implements Screen {
         if (player.getHitBox().overlaps(shark.getHitbox())) {
             shark = null;
             shark = new Shark();
-            player.increaseSpeed();
+            player.increaseSpeed(50);
+        }
+        if (player.getHitBox().overlaps(speedBoost.getHitbox())) {
+            speedBoost.applyAffect(player);
         }
     }
 

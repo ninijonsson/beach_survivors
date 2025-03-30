@@ -10,11 +10,9 @@ public class Main extends Game {
 
     @Override
     public void create() {
-        System.out.println("test");
-        menuScreen = new MainMenuScreen(this);
 
+        menuScreen = new MainMenuScreen(this);
         setScreen(menuScreen);
-        System.out.println("test2");
 
     }
 
