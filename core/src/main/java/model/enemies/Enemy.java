@@ -10,10 +10,11 @@ import com.badlogic.gdx.math.Rectangle;
 
 public abstract class Enemy implements Disposable {
 
-    private int healthPoints;
+    private double healthPoints;
     private int movementSpeed;
     private int damage;
     private int expOnDeath;
+    private boolean isAlive;
 
     private Texture texture;
     private Sprite sprite;
@@ -25,6 +26,9 @@ public abstract class Enemy implements Disposable {
         this.sprite.setSize(width, height);
 
         this.hitbox = new Rectangle(0, 0, width, height);
+
+        healthPoints = 10;
+        isAlive = true;
     }
 
     public abstract void move();
@@ -37,11 +41,11 @@ public abstract class Enemy implements Disposable {
         return damage;
     }
 
-    public int getHealthPoints() {
+    public double getHealthPoints() {
         return healthPoints;
     }
 
-    public void setHealthPoints(int healthPoints) {
+    public void setHealthPoints(double healthPoints) {
         this.healthPoints = healthPoints;
     }
 
@@ -67,6 +71,14 @@ public abstract class Enemy implements Disposable {
 
     public Rectangle getHitbox() {
         return hitbox;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
     }
 
     @Override
