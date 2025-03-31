@@ -97,10 +97,6 @@ public class MainMenuScreen implements Screen {
 
         exitButton = new ImageButton(exitButtonStyle);
 
-        //stage = new Stage(new ScreenViewport());
-        //Gdx.input.setInputProcessor(stage);
-
-        // viewport = new FitViewport(16, 9);
         viewport = new ScreenViewport();
 
         spriteBatch = new SpriteBatch();
