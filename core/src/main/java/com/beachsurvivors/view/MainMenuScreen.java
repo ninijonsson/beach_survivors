@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -30,19 +31,33 @@ public class MainMenuScreen implements Screen {
 
     Texture backgroundTexture;
     Texture logoTexture;
+
     Texture playButtonTexture;
+    Texture playButtonHoverTexture;
+    Texture playButtonPressedTexture;
+
     Texture exitButtonTexture;
+    Texture exitButtonHoverTexture;
+    Texture exitButtonPressedTexture;
 
     SpriteBatch spriteBatch;
     // PLAY-KNAPP
-    private TextureRegion playRegion; // Används för TextureRegionDrawable
+    //private TextureRegion playRegion; // Används för TextureRegionDrawable
     private TextureRegionDrawable playDrawable; // Används för ImageButton
+    private TextureRegionDrawable playHoverDrawable;
+    private TextureRegionDrawable playPressedDrawable;
+
     private ImageButton playButton;
+    //private TextureRegion playHoverRegion;
+    private ImageButton.ImageButtonStyle playButtonStyle;
 
     // EXIT-KNAPP
-    private TextureRegion exitRegion;
+    //private TextureRegion exitRegion;
     private TextureRegionDrawable exitDrawable;
+    private TextureRegionDrawable exitHoverDrawable;
+    private TextureRegionDrawable exitPressedDrawable;
     private ImageButton exitButton;
+    private ImageButton.ImageButtonStyle exitButtonStyle;
 
     //FitViewport viewport;
     ScreenViewport viewport;
@@ -54,27 +69,45 @@ public class MainMenuScreen implements Screen {
         logoTexture = new Texture("main_menu/logo_skiss_1.png");
         playButtonTexture = new Texture("main_menu/buttons/play_button.png");
         playDrawable = new TextureRegionDrawable(new TextureRegion(playButtonTexture));
-        playButton = new ImageButton(playDrawable);
         //exitButtonTexture = new Texture("main_menu/buttons/exit_button.png");
-
-        stage = new Stage(new ScreenViewport());
-        stage.addActor(playButton);
-        Gdx.input.setInputProcessor(stage);
 
         playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/play_sound.wav"));
 
 
         // PLAY
         playButtonTexture = new Texture("main_menu/buttons/play_button_2_scaled.png");
-        playRegion = new TextureRegion(playButtonTexture);
-        playDrawable = new TextureRegionDrawable(playRegion);
-        playButton = new ImageButton(playDrawable);
+        playButtonHoverTexture = new Texture("main_menu/buttons/play_button_2_hover_scaled.png");
+        playButtonPressedTexture = new Texture("main_menu/buttons/play_button_2_pressed_scaled.png");
+
+        //playRegion = new TextureRegion(playButtonTexture);
+        playDrawable = new TextureRegionDrawable(playButtonTexture);
+        playHoverDrawable = new TextureRegionDrawable(playButtonHoverTexture);
+        playPressedDrawable = new TextureRegionDrawable(playButtonPressedTexture);
+        //playButton = new ImageButton(playDrawable);
+
+        playButtonStyle = new ImageButton.ImageButtonStyle();
+        playButtonStyle.up = playDrawable; // Standard
+        playButtonStyle.over = playHoverDrawable; // Hover
+
+        playButton = new ImageButton(playButtonStyle);
 
         // EXIT
         exitButtonTexture = new Texture("main_menu/buttons/exit_button_2_scaled.png");
-        exitRegion = new TextureRegion(exitButtonTexture);
-        exitDrawable = new TextureRegionDrawable(exitRegion);
-        exitButton = new ImageButton(exitDrawable);
+        exitButtonHoverTexture = new Texture("main_menu/buttons/exit_button_2_hover_scaled.png");
+        exitButtonPressedTexture = new Texture("main_menu/buttons/exit_button_2_pressed_scaled.png");
+        //exitRegion = new TextureRegion(exitButtonTexture);
+        exitDrawable = new TextureRegionDrawable(exitButtonTexture);
+        exitHoverDrawable = new TextureRegionDrawable(exitButtonHoverTexture);
+        exitPressedDrawable = new TextureRegionDrawable(exitButtonPressedTexture);
+
+        exitButtonStyle = new ImageButton.ImageButtonStyle();
+        exitButtonStyle.up = exitDrawable;
+        exitButtonStyle.over = exitHoverDrawable;
+
+        exitButton = new ImageButton(exitButtonStyle);
+
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
 
         // viewport = new FitViewport(16, 9);
         viewport = new ScreenViewport();
@@ -157,8 +190,14 @@ public class MainMenuScreen implements Screen {
     public void onPlayButtonPressed() {
         playButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println("onPlayButtonPressed");
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                playButtonStyle.over = playPressedDrawable;
+                return true; // Viktigt! returnera true så att touchUp() aktiveras
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                playButtonStyle.up = playDrawable;
                 playSound.play(0.1f);
                 main.switchScreen();
             }
@@ -168,8 +207,15 @@ public class MainMenuScreen implements Screen {
     public void onExitButtonPressed() {
         exitButton.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println("onExitButtonPressed");
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                exitButtonStyle.over = exitPressedDrawable;
+                return true; // Viktigt! returnera true så att touchUp() aktiveras
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                exitButtonStyle.up = exitDrawable;
+                playSound.play(0.1f);
                 Gdx.app.exit();
             }
         });
