@@ -42,24 +42,21 @@ public class MainMenuScreen implements Screen {
 
     SpriteBatch spriteBatch;
     // PLAY-KNAPP
-    //private TextureRegion playRegion; // Används för TextureRegionDrawable
-    private TextureRegionDrawable playDrawable; // Används för ImageButton
+    private TextureRegionDrawable playDrawable;
     private TextureRegionDrawable playHoverDrawable;
     private TextureRegionDrawable playPressedDrawable;
 
     private ImageButton playButton;
-    //private TextureRegion playHoverRegion;
     private ImageButton.ImageButtonStyle playButtonStyle;
 
     // EXIT-KNAPP
-    //private TextureRegion exitRegion;
     private TextureRegionDrawable exitDrawable;
     private TextureRegionDrawable exitHoverDrawable;
     private TextureRegionDrawable exitPressedDrawable;
+
     private ImageButton exitButton;
     private ImageButton.ImageButtonStyle exitButtonStyle;
 
-    //FitViewport viewport;
     ScreenViewport viewport;
 
     public MainMenuScreen(Main main) {
@@ -67,23 +64,17 @@ public class MainMenuScreen implements Screen {
 
         backgroundTexture = new Texture("main_menu/menu_background.jpeg");
         logoTexture = new Texture("main_menu/logo_skiss_1.png");
-        playButtonTexture = new Texture("main_menu/buttons/play_button.png");
-        playDrawable = new TextureRegionDrawable(new TextureRegion(playButtonTexture));
-        //exitButtonTexture = new Texture("main_menu/buttons/exit_button.png");
 
         playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/play_sound.wav"));
-
 
         // PLAY
         playButtonTexture = new Texture("main_menu/buttons/play_button_2_scaled.png");
         playButtonHoverTexture = new Texture("main_menu/buttons/play_button_2_hover_scaled.png");
         playButtonPressedTexture = new Texture("main_menu/buttons/play_button_2_pressed_scaled.png");
 
-        //playRegion = new TextureRegion(playButtonTexture);
         playDrawable = new TextureRegionDrawable(playButtonTexture);
         playHoverDrawable = new TextureRegionDrawable(playButtonHoverTexture);
         playPressedDrawable = new TextureRegionDrawable(playButtonPressedTexture);
-        //playButton = new ImageButton(playDrawable);
 
         playButtonStyle = new ImageButton.ImageButtonStyle();
         playButtonStyle.up = playDrawable; // Standard
@@ -95,7 +86,7 @@ public class MainMenuScreen implements Screen {
         exitButtonTexture = new Texture("main_menu/buttons/exit_button_2_scaled.png");
         exitButtonHoverTexture = new Texture("main_menu/buttons/exit_button_2_hover_scaled.png");
         exitButtonPressedTexture = new Texture("main_menu/buttons/exit_button_2_pressed_scaled.png");
-        //exitRegion = new TextureRegion(exitButtonTexture);
+
         exitDrawable = new TextureRegionDrawable(exitButtonTexture);
         exitHoverDrawable = new TextureRegionDrawable(exitButtonHoverTexture);
         exitPressedDrawable = new TextureRegionDrawable(exitButtonPressedTexture);
@@ -106,8 +97,8 @@ public class MainMenuScreen implements Screen {
 
         exitButton = new ImageButton(exitButtonStyle);
 
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+        //stage = new Stage(new ScreenViewport());
+        //Gdx.input.setInputProcessor(stage);
 
         // viewport = new FitViewport(16, 9);
         viewport = new ScreenViewport();
@@ -159,8 +150,6 @@ public class MainMenuScreen implements Screen {
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        //spriteBatch.draw(playButtonTexture, 7, 3, 2, 1);
-        //spriteBatch.draw(exitButtonTexture, 7, 1, 2, 1);
 
         spriteBatch.draw(logoTexture, ((worldWidth/2)-(logoWidth/2)), (worldHeight/2), logoWidth, logoHeight); // TODO: ändra så att värdena inte är hårdkodade
         spriteBatch.end();
