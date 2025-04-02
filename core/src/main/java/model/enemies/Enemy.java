@@ -84,7 +84,7 @@ public abstract class Enemy implements Disposable {
     }
     public boolean hit(double damage) {
         if (!isImmune) {
-            System.out.println("shark tog "+damage+ " skada");
+
             healthPoints -= damage;
             playSound();
             if (healthPoints <= 0) {
@@ -103,7 +103,7 @@ public abstract class Enemy implements Disposable {
                         Gdx.app.postRunnable(() -> {
                             sprite.setColor(Color.WHITE);
                             isImmune = false;
-                            System.out.println("Immunity ended");
+
 
                         });
                     }

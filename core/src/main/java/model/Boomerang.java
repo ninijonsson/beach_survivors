@@ -1,27 +1,32 @@
 package model;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import model.abilities.Ability;
+import model.abilities.AbilityType;
 
-public class Boomerang {
+public class Boomerang extends Ability {
 
     private Sprite sprite;
     private Rectangle hitBox;
     private double damage;
-    private float spinSpeed = 380;
+    private float spinSpeed = 360;
     private float angle;
     private float orbitRadius = 200;
 
     public Boomerang() {
+        super("Boomerang", "entities/Boomerangmc.png", AbilityType.AoE, 10, 0, 32,32);
         sprite = new Sprite(new Texture(Gdx.files.internal("entities/Boomerangmc.png")));
         sprite.setSize(32, 32);
         hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         this.damage = 10;
     }
 
+    @Override
     public void updatePosition(float delta, float playerX, float playerY) {
         // Uppdatera vinkeln
         angle += spinSpeed * delta;
@@ -38,10 +43,16 @@ public class Boomerang {
         hitBox.setPosition(coconutX, coconutY);
     }
 
+    @Override
+    public void use() {
+
+    }
+
     public Sprite getSprite() {
         return sprite;
     }
 
+    @Override
     public Rectangle getHitBox() {
         return hitBox;
     }

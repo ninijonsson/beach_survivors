@@ -1,5 +1,6 @@
 package model;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Gdx;
@@ -13,7 +14,8 @@ public class SmokeParticle {
         sprite = new Sprite(new Texture("entities/Smoke.png")); // fixa en liten rök-bild
         sprite.setSize(16, 16);
         sprite.setPosition(x, y);
-        lifeTime = 0.8f; // lever i 1 sekund
+        sprite.setColor(Color.RED);
+        lifeTime = 0.15f; // lever i 1 sekund
     }
 
     public void update(float delta) {
