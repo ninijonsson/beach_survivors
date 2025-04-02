@@ -49,7 +49,7 @@ public class GameScreen extends Game implements Screen {
     private List<PowerUp> droppedItems;
 
     private Boomerang boomerang;
-    private float coconutSpeed = 280;
+    private float coconutSpeed = 380;
     private float angle;
     private float orbitRadius = 200;
     private float previousAngle = 0;
@@ -147,23 +147,17 @@ public class GameScreen extends Game implements Screen {
             enemy.getSprite().draw(spriteBatch);
         }
 
-        spriteBatch.end();
-
-        spriteBatch.begin();
         player.getSprite().draw(spriteBatch);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
-        shark.getSprite().draw(spriteBatch);
-        spriteBatch.end();
+
 
         drawPlayer();
 
         stage.act();
         stage.draw();
 
-        spriteBatch.begin();
         player.getSprite().draw(spriteBatch);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
-        shark.getSprite().draw(spriteBatch);
         boomerang.getSprite().draw(spriteBatch);
 
         // Rita alla DamageText-objekt
@@ -173,18 +167,10 @@ public class GameScreen extends Game implements Screen {
         for (PowerUp powerUp : droppedItems) {
             powerUp.getSprite().draw(spriteBatch);
         }
-
-        spriteBatch.end();
-
-        spriteBatch.begin();
-
         for (SmokeParticle s : smokeTrail) {
             s.getSprite().draw(spriteBatch);
         }
-
         player.getSprite().draw(spriteBatch);
-        shark.getSprite().draw(spriteBatch);
-        boomerang.getSprite().draw(spriteBatch);
 
         spriteBatch.end();
     }
@@ -205,23 +191,11 @@ public class GameScreen extends Game implements Screen {
         player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, worldWidth - player.getSprite().getWidth()));
         player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, worldHeight - player.getSprite().getHeight()));
 
-        if (player.getHitBox().overlaps(shark.getHitbox())) {
-            shark.dropItems(droppedItems);
-            shark = null;
-            shark = new Shark();
-            player.increaseSpeed(50);
-        }
-
         pickUpPowerUp();
 
         // COCONUT SPIN SKIT
         angle += coconutSpeed * Gdx.graphics.getDeltaTime();
         angle %= 360;
-
-
-        if (angle < previousAngle) {
-            hasDamagedThisOrbit = false;
-        }
 
         previousAngle = angle;
 
@@ -243,7 +217,7 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        if (boomerang.getHitBox().overlaps(shark.getHitbox()) && !hasDamagedThisOrbit) {
+        /*if (boomerang.getHitBox().overlaps(shark.getHitbox()) && !hasDamagedThisOrbit) {
             double damage = boomerang.getDamage();
             boolean isCritical = checkForCriticalStrike();
 
@@ -271,7 +245,7 @@ public class GameScreen extends Game implements Screen {
                 shark = new Shark();
             }
             hasDamagedThisOrbit = true;
-        }
+        }*/
 
 
         for (int i = damageTexts.size - 1; i >= 0; i--) {
@@ -282,7 +256,7 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        if (enemies.size < 25) spawnEnemies();
+        if (enemies.size < 20) spawnEnemies();
 
 //        Sound sharkDeath = Gdx.audio.newSound(Gdx.files.internal("Thud.mp3"));
 //        long SharkDeathID = sharkDeath.play();
@@ -314,21 +288,23 @@ public class GameScreen extends Game implements Screen {
             }
 
             if (boomerang.getHitBox().overlaps(enemy.getHitbox())) {
-//                sharkDeath.setPitch(SharkDeathID, 2f);
-//                sharkDeath.resume(SharkDeathID);
+
 
                 boolean isCritical = checkForCriticalStrike();
 
                 if (isCritical) {
                     damage *= 2; // Dubblera skadan vid kritiskt slag
                 }
-                enemy.hit(boomerang.getDamage());
 
-                damageTexts.add(new DamageText(String.valueOf((int) damage),
-                    damageTextX,
-                    damageTextY,
-                    3.0f, // damageText visas i 3 sekunder
-                    isCritical));
+
+                if(enemy.hit(boomerang.getDamage())){
+                    damageTexts.add(new DamageText(String.valueOf((int) damage),
+                        damageTextX,
+                        damageTextY,
+                        3.0f, // damageText visas i 3 sekunder
+                        isCritical));
+                }
+
 
             }
         }
