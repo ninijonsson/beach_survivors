@@ -29,12 +29,15 @@ public class Shark extends Enemy {
 
     }
 
+
     public void hit(double damageTaken){
         setHealthPoints(-damageTaken);
         if(getHealthPoints()<=0){
             setAlive(false);
         }
+        playSound();
     }
+
 
     public void setX(float x) {
         this.x = x;

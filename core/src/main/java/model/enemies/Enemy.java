@@ -1,5 +1,7 @@
 package model.enemies;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Disposable;
@@ -21,6 +23,7 @@ public abstract class Enemy implements Disposable {
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitbox;
+    private Sound hitSound;
 
     public Enemy(String texturePath, int width, int height) {
         this.width = width;
@@ -28,9 +31,9 @@ public abstract class Enemy implements Disposable {
         this.texture = new Texture(texturePath);
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
+        this.hitSound = hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Shark_Damage.wav"));
 
         this.hitbox = new Rectangle(0, 0, width, height);
-
         healthPoints = 10;
         isAlive = true;
     }
@@ -71,6 +74,9 @@ public abstract class Enemy implements Disposable {
 
     public void setDamage(int damage) {
         this.damage = damage;
+    }
+    public void playSound(){
+        hitSound.setVolume(hitSound.play(), 0.2f);
     }
 
     public Texture getTexture() {

@@ -32,4 +32,5 @@ main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
 main_menu/sound/play_sound.wav
 placeholder.png
+sounds/Shark_Damage.wav
 speed_boost.png

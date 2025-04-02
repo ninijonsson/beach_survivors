@@ -254,6 +254,7 @@ public class GameScreen extends Game implements Screen {
             shark.hit(damage);
 
 
+
             int randomPathX = randomizeDirection.nextInt(50);
             int randomPathY = randomizeDirection.nextInt(50);
 
