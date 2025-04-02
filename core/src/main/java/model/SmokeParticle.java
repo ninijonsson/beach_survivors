@@ -10,7 +10,7 @@ public class SmokeParticle {
     private float lifeTime;
 
     public SmokeParticle(float x, float y) {
-        sprite = new Sprite(new Texture(Gdx.files.internal("assets/entities/Smoke.png"))); // fixa en liten rök-bild
+        sprite = new Sprite(new Texture("entities/Smoke.png")); // fixa en liten rök-bild
         sprite.setSize(16, 16);
         sprite.setPosition(x, y);
         lifeTime = 0.8f; // lever i 1 sekund

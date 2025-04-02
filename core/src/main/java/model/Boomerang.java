@@ -21,7 +21,6 @@ public class Boomerang {
     public void updatePosition(float x, float y) {
         sprite.setPosition(x, y);
         hitBox.setPosition(x, y);
-
     }
 
     public Sprite getSprite() {
