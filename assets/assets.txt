@@ -1,19 +1,10 @@
 .gitkeep
 Boomerangmc.png
-Maps/BeachSurvivorMap.tiled-project
-Maps/BeachSurvivorMap.tiled-session
-Maps/FirstBeachMap.tiled-project
-Maps/FirstBeachMap.tiled-session
-Maps/beachTest.tmx
-Maps/beachTest2.tmx
-Maps/beachTest3.tmx
-Maps/beachTest4.tmx
-Maps/strand.tsx
-Maps/tf_beach_tileA1.png
-Maps/tf_beach_tileA1.tsx
-Maps/tf_beach_tileB.png
-Maps/tf_beach_tileB.tsx
-Maps/vatten.tsx
+Map2/map2.tmx
+Map2/tf_beach_tileA1.png
+Map2/tf_beach_tileA1.tsx
+Map2/tf_beach_tileB.png
+Map2/tf_beach_tileB.tsx
 entities/Beer 2.png
 entities/Beer.png
 entities/Boomerangmc.png

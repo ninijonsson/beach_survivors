@@ -2,7 +2,6 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -44,7 +43,7 @@ public class GameScreen extends Game implements Screen {
     private Player player;
     private List<PowerUp> droppedItems;
 
-    private Coconut coconut;
+    private Boomerang boomerang;
     private float coconutSpeed = 280;
     private float angle;
     private float orbitRadius = 200;
@@ -71,16 +70,17 @@ public class GameScreen extends Game implements Screen {
         spriteBatch = new SpriteBatch();
 
         player = new Player();
+
         shark = new Shark();
         shapeRenderer = new ShapeRenderer();
 
-        tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx");
+        tiledMap = new TmxMapLoader().load("Map2/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
 
         stage = new Stage(gameviewport);
         stage.clear();
 
-        coconut = new Coconut();
+        boomerang = new Boomerang();
         angle = 0;
 
         font = new BitmapFont();
@@ -93,6 +93,8 @@ public class GameScreen extends Game implements Screen {
         mapHeight = tiledMap.getProperties().get("height", Integer.class) *
             tiledMap.getProperties().get("tileheight", Integer.class);
         System.out.println("Map width: " + mapWidth + ", Map height: " + mapHeight);
+        player.setPlayerX(mapWidth/2);
+        player.setPlayerY(mapHeight/2);
     }
 
     @Override
@@ -143,7 +145,7 @@ public class GameScreen extends Game implements Screen {
         player.getSprite().draw(spriteBatch);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
         shark.getSprite().draw(spriteBatch);
-        coconut.getSprite().draw(spriteBatch);
+        boomerang.getSprite().draw(spriteBatch);
 
         // Rita alla DamageText-objekt
         for (DamageText dt : damageTexts) {
@@ -163,7 +165,7 @@ public class GameScreen extends Game implements Screen {
 
         player.getSprite().draw(spriteBatch);
         shark.getSprite().draw(spriteBatch);
-        coconut.getSprite().draw(spriteBatch);
+        boomerang.getSprite().draw(spriteBatch);
 
         spriteBatch.end();
     }
@@ -206,13 +208,13 @@ public class GameScreen extends Game implements Screen {
 
         float radian = MathUtils.degreesToRadians * angle;
 
-        float coconutX = player.getPlayerX() + player.getSprite().getWidth() / 2 + MathUtils.cos(radian) * orbitRadius - coconut.getSprite().getWidth() / 2;
-        float coconutY = player.getPlayerY() + player.getSprite().getHeight() / 2 + MathUtils.sin(radian) * orbitRadius - coconut.getSprite().getHeight() / 2;
+        float coconutX = player.getPlayerX() + player.getSprite().getWidth() / 2 + MathUtils.cos(radian) * orbitRadius - boomerang.getSprite().getWidth() / 2;
+        float coconutY = player.getPlayerY() + player.getSprite().getHeight() / 2 + MathUtils.sin(radian) * orbitRadius - boomerang.getSprite().getHeight() / 2;
 
-        coconut.updatePosition(coconutX, coconutY);
+        boomerang.updatePosition(coconutX, coconutY);
 
         // SMOKE TRAIL
-        smokeTrail.add(new SmokeParticle(coconut.getSprite().getX(), coconut.getSprite().getY()));
+        smokeTrail.add(new SmokeParticle(boomerang.getSprite().getX(), boomerang.getSprite().getY()));
 
         for (int i = smokeTrail.size - 1; i >= 0; i--) {
             SmokeParticle s = smokeTrail.get(i);
@@ -222,8 +224,8 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        if (coconut.getHitBox().overlaps(shark.getHitbox()) && !hasDamagedThisOrbit) {
-            double damage = coconut.getDamage();
+        if (boomerang.getHitBox().overlaps(shark.getHitbox()) && !hasDamagedThisOrbit) {
+            double damage = boomerang.getDamage();
             boolean isCritical = checkForCriticalStrike();
 
             if (isCritical) {
@@ -298,7 +300,7 @@ public class GameScreen extends Game implements Screen {
         mapRenderer.dispose();
         tiledMap.dispose();
         player.dispose();
-        coconut.dispose();
+        boomerang.dispose();
         font.dispose();
     }
 }
