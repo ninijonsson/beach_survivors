@@ -1,5 +1,7 @@
 package model.abilities;
 
+import model.Player;
+
 public class Shield extends Ability {
 
     private int shieldStrength;  //Hur mycket HP skölden skyddar (ifall vi ska ha en vanlig HP-sköld)
@@ -15,6 +17,11 @@ public class Shield extends Ability {
 
     @Override
     public void use() {
+
+    }
+
+    @Override
+    public void use(Player player) {
 
     }
 }

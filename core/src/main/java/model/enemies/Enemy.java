@@ -40,9 +40,16 @@ public abstract class Enemy implements Disposable {
 
     public abstract void move();
     public abstract void attack();
-    public abstract void spawnEnemy();
     public abstract void onDeath();
     public abstract void dropItems();
+
+    public void hit(double damageTaken){
+        setHealthPoints(-damageTaken);
+        if(getHealthPoints()<=0){
+            setAlive(false);
+        }
+        playSound();
+    }
 
     public int getWidth() {
         return width;
@@ -101,6 +108,8 @@ public abstract class Enemy implements Disposable {
 
     @Override
     public void dispose() {
-        texture.dispose();
+        if (texture != null) {
+            texture.dispose();
+        }
     }
 }

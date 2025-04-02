@@ -18,10 +18,6 @@ public class Crab extends Enemy {
 
     }
 
-    @Override
-    public void spawnEnemy() {
-
-    }
 
     @Override
     public void onDeath() {

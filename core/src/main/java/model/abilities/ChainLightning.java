@@ -1,5 +1,7 @@
 package model.abilities;
 
+import model.Player;
+
 public class ChainLightning extends Ability {
 
     public ChainLightning(String texturePath, String type, double damage, double cooldown, int width, int height) {
@@ -13,6 +15,11 @@ public class ChainLightning extends Ability {
 
     @Override
     public void use() {
+
+    }
+
+    @Override
+    public void use(Player player) {
 
     }
 }
