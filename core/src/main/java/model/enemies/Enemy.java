@@ -15,12 +15,16 @@ public abstract class Enemy implements Disposable {
     private int damage;
     private int expOnDeath;
     private boolean isAlive;
+    private int width;
+    private int height;
 
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitbox;
 
     public Enemy(String texturePath, int width, int height) {
+        this.width = width;
+        this.height = height;
         this.texture = new Texture(texturePath);
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
@@ -36,6 +40,14 @@ public abstract class Enemy implements Disposable {
     public abstract void spawnEnemy();
     public abstract void onDeath();
     public abstract void dropItems();
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 
     public int getDamage() {
         return damage;

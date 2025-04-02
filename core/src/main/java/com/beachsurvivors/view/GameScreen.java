@@ -287,19 +287,32 @@ public class GameScreen extends Game implements Screen {
 //        long SharkDeathID = sharkDeath.play();
 
         for (int i = enemies.size - 1; i >= 0; i--) {
+            //
+            Shark enemy = enemies.get(i);
 
+            float delta = Gdx.graphics.getDeltaTime();
+            playerPos.set(player.getPlayerX(), player.getPlayerY());
+            Vector2 enemyPos = new Vector2(enemy.getSprite().getX(), enemy.getSprite().getY());
+            Vector2 vector = moveTowardsPlayer(delta, playerPos, enemyPos);
+            float speed = 300f;
+
+            enemy.getSprite().translateX(vector.x * speed * delta);
+            enemy.getSprite().translateY(vector.y * speed * delta);
+
+            enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
+            //
             double damage = boomerang.getDamage();
             int randomPathX = randomizeDirection.nextInt(50);
             int randomPathY = randomizeDirection.nextInt(50);
-            float damageTextX = enemies.get(i).getSprite().getX() + randomPathX;
-            float damageTextY = enemies.get(i).getSprite().getY() + enemies.get(i).getSprite().getHeight() + 10 + randomPathY;
+            float damageTextX = enemy.getSprite().getX() + randomPathX;
+            float damageTextY = enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomPathY;
 
 
-            if (enemies.get(i).isAlive() == false) {
+            if (enemy.isAlive() == false) {
                 enemies.removeIndex(i);
             }
 
-            if (boomerang.getHitBox().overlaps(enemies.get(i).getHitbox())) {
+            if (boomerang.getHitBox().overlaps(enemy.getHitbox())) {
 //                sharkDeath.setPitch(SharkDeathID, 2f);
 //                sharkDeath.resume(SharkDeathID);
 
@@ -308,7 +321,7 @@ public class GameScreen extends Game implements Screen {
                 if (isCritical) {
                     damage *= 2; // Dubblera skadan vid kritiskt slag
                 }
-                enemies.get(i).hit(boomerang.getDamage());
+                enemy.hit(boomerang.getDamage());
 
                 damageTexts.add(new DamageText(String.valueOf((int) damage),
                     damageTextX,
