@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -279,7 +281,43 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        spawnEnemies();
+        if (enemies.size < 25) spawnEnemies();
+
+//        Sound sharkDeath = Gdx.audio.newSound(Gdx.files.internal("Thud.mp3"));
+//        long SharkDeathID = sharkDeath.play();
+
+        for (int i = enemies.size - 1; i >= 0; i--) {
+
+            double damage = boomerang.getDamage();
+            int randomPathX = randomizeDirection.nextInt(50);
+            int randomPathY = randomizeDirection.nextInt(50);
+            float damageTextX = enemies.get(i).getSprite().getX() + randomPathX;
+            float damageTextY = enemies.get(i).getSprite().getY() + enemies.get(i).getSprite().getHeight() + 10 + randomPathY;
+
+
+            if (enemies.get(i).isAlive() == false) {
+                enemies.removeIndex(i);
+            }
+
+            if (boomerang.getHitBox().overlaps(enemies.get(i).getHitbox())) {
+//                sharkDeath.setPitch(SharkDeathID, 2f);
+//                sharkDeath.resume(SharkDeathID);
+
+                boolean isCritical = checkForCriticalStrike();
+
+                if (isCritical) {
+                    damage *= 2; // Dubblera skadan vid kritiskt slag
+                }
+                enemies.get(i).hit(boomerang.getDamage());
+
+                damageTexts.add(new DamageText(String.valueOf((int) damage),
+                    damageTextX,
+                    damageTextY,
+                    3.0f, // damageText visas i 3 sekunder
+                    isCritical));
+
+            }
+        }
 
         //kolla position
         player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, mapWidth*gameScale - player.getSprite().getWidth()));
@@ -379,8 +417,8 @@ public class GameScreen extends Game implements Screen {
         Shark shark = new Shark();
         Vector2 randomPos = getRandomOffscreenPosition(100);
         shark.getSprite().setPosition(randomPos.x, randomPos.y);
-//        shark.getHitbox().setX(randomPos.x);
-//        shark.getHitbox().setY(randomPos.y);
+        shark.getHitbox().setX(randomPos.x);
+        shark.getHitbox().setY(randomPos.y);
         enemies.add(shark);
     }
 }

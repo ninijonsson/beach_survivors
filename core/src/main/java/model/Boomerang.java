@@ -12,7 +12,7 @@ public class Boomerang {
     private double damage;
 
     public Boomerang() {
-        sprite = new Sprite(new Texture(Gdx.files.internal("assets/entities/Boomerangmc.png")));
+        sprite = new Sprite(new Texture(Gdx.files.internal("entities/Boomerangmc.png")));
         sprite.setSize(32, 32);
         hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         this.damage=10;
