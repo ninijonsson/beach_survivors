@@ -38,42 +38,23 @@ public class Player implements Disposable {
     }
 
     private void movementKeys() {
-
         float delta = Gdx.graphics.getDeltaTime();
-        if ((Gdx.input.isKeyPressed(Input.Keys.LEFT))  || (Gdx.input.isKeyPressed(Input.Keys.A))) {
+
+        if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
             playerX -= speed * delta;
-            if (playerX < 0) {
-                playerX = 0;
-            }
-            beachGuySprite.setX(playerX);
-            beachGuyHitBox.setX(playerX);
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
             playerX += speed * delta;
-            if (playerX > worldWidth-beachGuySprite.getWidth()) {
-                playerX = worldWidth-beachGuySprite.getWidth();
-            }
-           beachGuySprite.setX(playerX);
-            beachGuyHitBox.setX(playerX);
-
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
             playerY -= speed * delta;
-            if (playerY < 0) {
-                playerY = 0;
-            }
-            beachGuySprite.setY(playerY);
-            beachGuyHitBox.setY(playerY);
-
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.UP)) || (Gdx.input.isKeyPressed(Input.Keys.W))) {
             playerY += speed * delta;
-            if (playerY > worldHeight-beachGuySprite.getHeight()) {
-                playerY = worldHeight-beachGuySprite.getHeight();
-            }
-            beachGuySprite.setY(playerY);
-            beachGuyHitBox.setY(playerY);
         }
+
+        beachGuySprite.setPosition(playerX, playerY);
+        beachGuyHitBox.setPosition(playerX, playerY);
     }
 
     private void keyBinds() {

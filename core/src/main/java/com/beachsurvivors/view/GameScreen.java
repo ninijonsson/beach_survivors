@@ -55,6 +55,10 @@ public class GameScreen extends Game implements Screen {
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
 
+    private int mapWidth;
+    private int mapHeight;
+    private float gameScale;
+
     public GameScreen(Main main) {
         this.main = main;
         gameviewport = new FitViewport(worldWidth, worldHeight);
@@ -71,7 +75,7 @@ public class GameScreen extends Game implements Screen {
         shapeRenderer = new ShapeRenderer();
 
         tiledMap = new TmxMapLoader().load("Maps/beachTest2.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
 
         stage = new Stage(gameviewport);
         stage.clear();
@@ -82,6 +86,13 @@ public class GameScreen extends Game implements Screen {
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
+        gameScale = 2f;
+        mapWidth = tiledMap.getProperties().get("width", Integer.class) *
+            tiledMap.getProperties().get("tilewidth", Integer.class);
+
+        mapHeight = tiledMap.getProperties().get("height", Integer.class) *
+            tiledMap.getProperties().get("tileheight", Integer.class);
+        System.out.println("Map width: " + mapWidth + ", Map height: " + mapHeight);
     }
 
     @Override
@@ -106,7 +117,7 @@ public class GameScreen extends Game implements Screen {
 
     private void draw() {
         gameviewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
-
+        gameviewport.getCamera().update();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         gameviewport.apply();
 
@@ -222,7 +233,7 @@ public class GameScreen extends Game implements Screen {
             shark.hit(damage);
 
 
-            int randomPathX = randomizeDirection.nextInt(50) ;
+            int randomPathX = randomizeDirection.nextInt(50);
             int randomPathY = randomizeDirection.nextInt(50);
 
             float damageTextX = shark.getSprite().getX() + randomPathX;
@@ -248,8 +259,14 @@ public class GameScreen extends Game implements Screen {
                 damageTexts.removeIndex(i);
             }
         }
-    }
 
+        //kolla position
+        player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, mapWidth*gameScale - player.getSprite().getWidth()));
+        player.setPlayerY(MathUtils.clamp(player.getPlayerY(), 0, mapHeight*gameScale - player.getSprite().getHeight()));
+
+        player.getSprite().setPosition(player.getPlayerX(), player.getPlayerY());
+        player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
+    }
 
     private boolean checkForCriticalStrike() {
         float critChance = player.getCritChance();

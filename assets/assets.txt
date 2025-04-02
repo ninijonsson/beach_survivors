@@ -1,5 +1,7 @@
 .gitkeep
 Boomerangmc.png
+Maps/BeachSurvivorMap.tiled-project
+Maps/BeachSurvivorMap.tiled-session
 Maps/FirstBeachMap.tiled-project
 Maps/FirstBeachMap.tiled-session
 Maps/beachTest.tmx

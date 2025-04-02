@@ -3,9 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "beachTest2.tmx",
     "expandedProjectPaths": [
     ],
+    "file.lastUsedOpenFilter": "Alla filer (*)",
     "fileStates": {
         "beachTest.tmx": {
             "scale": 0.25,
@@ -14,6 +15,20 @@
                 "x": 1258,
                 "y": 896
             }
+        },
+        "beachTest2.tmx": {
+            "scale": 0.7595052083333332,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 960.4937424995716,
+                "y": 543.7750728613064
+            }
+        },
+        "strand.tsx": {
+            "scaleInDock": 1
+        },
+        "vatten.tsx": {
+            "scaleInDock": 1
         }
     },
     "last.imagePath": "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Maps",
@@ -23,9 +38,13 @@
     "map.tileWidth": 32,
     "map.width": 60,
     "openFiles": [
+        "beachTest.tmx",
+        "beachTest2.tmx"
     ],
     "project": "FirstBeachMap.tiled-project",
     "recentFiles": [
+        "beachTest.tmx",
+        "beachTest2.tmx"
     ],
     "tileset.lastUsedFormat": "tsx"
 }
