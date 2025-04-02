@@ -9,8 +9,8 @@ import java.util.Random;
 
 public class Shark extends Enemy {
 
-    private int x;
-    private int y;
+    private float x;
+    private float y;
 
     public Shark () {
 
@@ -18,11 +18,11 @@ public class Shark extends Enemy {
 
         setHealthPoints(10);
 
-        Random random = new Random();
-        x = random.nextInt(0, (int) (1920-getSprite().getWidth()));
-        y = random.nextInt(0, (int) (1080-getSprite().getHeight()));
+//        Random random = new Random();
+//        x = random.nextInt(0, (int) (1920-getSprite().getWidth()));
+//        y = random.nextInt(0, (int) (1080-getSprite().getHeight()));
 
-        getSprite().setPosition(getSprite().getX()+x,getSprite().getY()+y);
+//        getSprite().setPosition(getSprite().getX()+x,getSprite().getY()+y);
         getSprite().setPosition(x,y);
         getHitbox().setX(x);
         getHitbox().setY(y);
@@ -34,6 +34,14 @@ public class Shark extends Enemy {
         if(getHealthPoints()<=0){
             setAlive(false);
         }
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
     }
 
     @Override

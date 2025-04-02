@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import model.*;
+import model.enemies.Enemy;
 import model.enemies.Shark;
 import model.powerUps.PowerUp;
 
@@ -55,6 +57,9 @@ public class GameScreen extends Game implements Screen {
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
 
+    private Array<Shark> enemies = new Array<>();
+    private Vector2 playerPos;
+
     private int mapWidth;
     private int mapHeight;
     private float gameScale;
@@ -71,6 +76,9 @@ public class GameScreen extends Game implements Screen {
         spriteBatch = new SpriteBatch();
 
         player = new Player();
+        player.setPlayerX(worldWidth);
+        player.setPlayerY(worldHeight);
+        playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
         shark = new Shark();
         shapeRenderer = new ShapeRenderer();
 
@@ -127,6 +135,15 @@ public class GameScreen extends Game implements Screen {
 
         spriteBatch.setProjectionMatrix(gameviewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(gameviewport.getCamera().combined);
+
+        // Enemies
+        spriteBatch.begin();
+
+        for (Enemy enemy : enemies) {
+            enemy.getSprite().draw(spriteBatch);
+        }
+
+        spriteBatch.end();
 
         spriteBatch.begin();
         player.getSprite().draw(spriteBatch);
@@ -260,6 +277,8 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
+        spawnEnemies();
+
         //kolla position
         player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, mapWidth*gameScale - player.getSprite().getWidth()));
         player.setPlayerY(MathUtils.clamp(player.getPlayerY(), 0, mapHeight*gameScale - player.getSprite().getHeight()));
@@ -300,5 +319,66 @@ public class GameScreen extends Game implements Screen {
         player.dispose();
         coconut.dispose();
         font.dispose();
+    }
+
+    // Returns random position off-screen. Parameter 'margin' is the off-screen distance between spawn point and screen edge. Put margin = 0 for enemies to spawn exactly outside screen.
+    public Vector2 getRandomOffscreenPosition(float margin) {
+        float viewWidth = gameviewport.getCamera().viewportWidth;
+        float viewHeight = gameviewport.getCamera().viewportHeight;
+        float camX = gameviewport.getCamera().position.x;
+        float camY = gameviewport.getCamera().position.y;
+
+        System.out.println(camX);
+        System.out.println(camY);
+
+        // Get random edge: 0 = Top, 1 = Bottom, 2 = Left, 3 = Right
+        int edge = MathUtils.random(3);
+
+        float x, y;
+
+        switch (edge) {
+            case 0: // Top, dividing by 2 to find center
+                x = MathUtils.random(camX - viewWidth / 2, camX + viewWidth / 2);
+                y = camY + viewHeight / 2 + margin; // Above the screen
+                break;
+            case 1: // Bottom
+                x = MathUtils.random(camX - viewWidth / 2, camX + viewWidth / 2);
+                y = camY - viewHeight / 2 - margin; // Below the screen
+                break;
+            case 2: // Left
+                x = camX - viewWidth / 2 - margin; // Left of the screen
+                y = MathUtils.random(camY - viewHeight / 2, camY + viewHeight / 2);
+                break;
+            case 3: // Right
+                x = camX + viewWidth / 2 + margin; // Right of the screen
+                y = MathUtils.random(camY - viewHeight / 2, camY + viewHeight / 2);
+                break;
+            default:
+                System.out.println("Unexpected edge value: " + edge);
+
+                // Spawns at center of screen if something goes wroNg
+                x = camX;
+                y = camY;
+                break;
+        }
+
+        return new Vector2(x, y);
+    }
+
+    private Vector2 moveTowardsPlayer(float delta, Vector2 playerPosition, Vector2 enemyPosition) {
+        // Calculate direction towards the player
+        Vector2 direction = new Vector2(playerPosition.x - enemyPosition.x, playerPosition.y - enemyPosition.y);
+        direction.nor();
+
+        return direction ;
+    }
+
+    private void spawnEnemies() {
+        Shark shark = new Shark();
+        Vector2 randomPos = getRandomOffscreenPosition(100);
+        shark.getSprite().setPosition(randomPos.x, randomPos.y);
+//        shark.getHitbox().setX(randomPos.x);
+//        shark.getHitbox().setY(randomPos.y);
+        enemies.add(shark);
     }
 }

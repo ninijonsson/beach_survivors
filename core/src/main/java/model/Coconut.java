@@ -12,7 +12,7 @@ public class Coconut {
     private double damage;
 
     public Coconut() {
-        sprite = new Sprite(new Texture(Gdx.files.internal("assets/entities/Coconut.png")));
+        sprite = new Sprite(new Texture("entities/Coconut.png"));
         sprite.setSize(32, 32);
         hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         this.damage=10;
