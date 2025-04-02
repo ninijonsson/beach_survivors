@@ -2,10 +2,7 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -49,12 +46,9 @@ public class GameScreen extends Game implements Screen {
     private List<PowerUp> droppedItems;
 
     private Boomerang boomerang;
-    private float coconutSpeed = 380;
-    private float angle;
-    private float orbitRadius = 200;
-    private float previousAngle = 0;
+
     private Array<SmokeParticle> smokeTrail = new Array<>();
-    private boolean hasDamagedThisOrbit = false;
+
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
@@ -91,7 +85,7 @@ public class GameScreen extends Game implements Screen {
         stage.clear();
 
         boomerang = new Boomerang();
-        angle = 0;
+
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
@@ -188,23 +182,17 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void logic() {
+
+        pickUpPowerUp();
         player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, worldWidth - player.getSprite().getWidth()));
         player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, worldHeight - player.getSprite().getHeight()));
 
+        //allt som behövs för boomerang i denna klass nu
+        boomerang.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX() + player.getSprite().getWidth() / 2, player.getPlayerY() + player.getSprite().getHeight() / 2);
+
         pickUpPowerUp();
 
-        // COCONUT SPIN SKIT
-        angle += coconutSpeed * Gdx.graphics.getDeltaTime();
-        angle %= 360;
 
-        previousAngle = angle;
-
-        float radian = MathUtils.degreesToRadians * angle;
-
-        float coconutX = player.getPlayerX() + player.getSprite().getWidth() / 2 + MathUtils.cos(radian) * orbitRadius - boomerang.getSprite().getWidth() / 2;
-        float coconutY = player.getPlayerY() + player.getSprite().getHeight() / 2 + MathUtils.sin(radian) * orbitRadius - boomerang.getSprite().getHeight() / 2;
-
-        boomerang.updatePosition(coconutX, coconutY);
 
         // SMOKE TRAIL
         smokeTrail.add(new SmokeParticle(boomerang.getSprite().getX(), boomerang.getSprite().getY()));
@@ -217,37 +205,6 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        /*if (boomerang.getHitBox().overlaps(shark.getHitbox()) && !hasDamagedThisOrbit) {
-            double damage = boomerang.getDamage();
-            boolean isCritical = checkForCriticalStrike();
-
-            if (isCritical) {
-                damage *= 2; // Dubblera skadan vid kritiskt slag
-            }
-
-            shark.hit(damage);
-
-
-
-            int randomPathX = randomizeDirection.nextInt(50);
-            int randomPathY = randomizeDirection.nextInt(50);
-
-            float damageTextX = shark.getSprite().getX() + randomPathX;
-            float damageTextY = shark.getSprite().getY() + shark.getSprite().getHeight() + 10 + randomPathY;
-
-            damageTexts.add(new DamageText(String.valueOf((int) damage),
-                damageTextX,
-                damageTextY,
-                3.0f, // damageText visas i 3 sekunder
-                isCritical));
-            if (!shark.isAlive()) {
-                shark.dropItems(droppedItems);
-                shark = new Shark();
-            }
-            hasDamagedThisOrbit = true;
-        }*/
-
-
         for (int i = damageTexts.size - 1; i >= 0; i--) {
             DamageText dt = damageTexts.get(i);
             dt.update(Gdx.graphics.getDeltaTime());
@@ -258,11 +215,8 @@ public class GameScreen extends Game implements Screen {
 
         if (enemies.size < 20) spawnEnemies();
 
-//        Sound sharkDeath = Gdx.audio.newSound(Gdx.files.internal("Thud.mp3"));
-//        long SharkDeathID = sharkDeath.play();
-
         for (int i = enemies.size - 1; i >= 0; i--) {
-            //
+            
             Shark enemy = enemies.get(i);
 
             float delta = Gdx.graphics.getDeltaTime();
