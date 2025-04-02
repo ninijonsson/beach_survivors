@@ -17,7 +17,7 @@ public class Shark extends Enemy {
 
         super("entities/Shark.png", 100, 100);
 
-        setHealthPoints(10);
+        setHealthPoints(20);
 
 //        Random random = new Random();
 //        x = random.nextInt(0, (int) (1920-getSprite().getWidth()));
@@ -30,14 +30,18 @@ public class Shark extends Enemy {
 
     }
 
+    /*
+    public void hit(double damageTaken){
+        if(!justTookDamage()){
+            setHealthPoints(-damageTaken);
+            if(getHealthPoints()<=0){
+                setAlive(false);
+            }
+            playSound();
+        }
 
-//    public void hit(double damageTaken){
-//        setHealthPoints(-damageTaken);
-//        if(getHealthPoints()<=0){
-//            setAlive(false);
-//        }
-//        playSound();
-//    }
+    }*/
+
 
 
     public void setX(float x) {
@@ -62,7 +66,7 @@ public class Shark extends Enemy {
 
     @Override
     public void onDeath() {
-
+        dispose();
     }
 
     @Override

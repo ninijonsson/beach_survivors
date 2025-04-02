@@ -2,10 +2,12 @@ package model.enemies;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Disposable;
-
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
 
 
@@ -24,6 +26,7 @@ public abstract class Enemy implements Disposable {
     private Sprite sprite;
     private Rectangle hitbox;
     private Sound hitSound;
+    private boolean isImmune;
 
     public Enemy(String texturePath, int width, int height) {
         this.width = width;
@@ -34,7 +37,8 @@ public abstract class Enemy implements Disposable {
         this.hitSound = hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Shark_Damage.wav"));
 
         this.hitbox = new Rectangle(0, 0, width, height);
-        healthPoints = 10;
+        healthPoints = 20;
+        isImmune=false;
         isAlive = true;
     }
 
@@ -85,6 +89,39 @@ public abstract class Enemy implements Disposable {
     public void playSound(){
         hitSound.setVolume(hitSound.play(), 0.2f);
     }
+    public boolean hit(double damage) {
+        if (!isImmune) {
+            System.out.println("shark tog "+damage+ " skada");
+            healthPoints -= damage;
+            playSound();
+            if (healthPoints <= 0) {
+                isAlive = false;
+                sprite.setColor(Color.BLACK);
+                onDeath();
+                return true;
+            } else {
+                sprite.setColor(Color.RED);
+                isImmune = true;
+
+
+                Timer.schedule(new Task() {
+                    @Override
+                    public void run() {
+                        Gdx.app.postRunnable(() -> {
+                            sprite.setColor(Color.WHITE);
+                            isImmune = false;
+                            System.out.println("Immunity ended");
+
+                        });
+                    }
+                }, 0.2f);
+                return true;}
+        }
+        return false;
+    }
+
+
+
 
     public Texture getTexture() {
         return texture;

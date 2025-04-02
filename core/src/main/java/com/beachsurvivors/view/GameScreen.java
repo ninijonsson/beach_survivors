@@ -2,7 +2,10 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,6 +23,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import model.*;
 import model.abilities.Ability;
 import model.abilities.Boomerang;
+import model.abilities.Ability;
 import model.enemies.Enemy;
 import model.enemies.Shark;
 import model.powerUps.PowerUp;
@@ -147,6 +151,7 @@ public class GameScreen extends Game implements Screen {
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
         shark.getSprite().draw(spriteBatch);
 
+
         drawPlayer();
 
         stage.act();
@@ -170,8 +175,6 @@ public class GameScreen extends Game implements Screen {
         boomerang.showSmokeTrail(spriteBatch);
 
         player.getSprite().draw(spriteBatch);
-        shark.getSprite().draw(spriteBatch);
-        boomerang.getSprite().draw(spriteBatch);
 
         spriteBatch.end();
     }
@@ -245,6 +248,7 @@ public class GameScreen extends Game implements Screen {
             float damageTextX = enemy.getSprite().getX() + randomPathX;
             float damageTextY = enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomPathY;
 
+
             if (enemy.isAlive() == false) {
                 enemies.removeIndex(i);
             }
@@ -258,13 +262,16 @@ public class GameScreen extends Game implements Screen {
                 if (isCritical) {
                     damage *= 2; // Dubblera skadan vid kritiskt slag
                 }
-                enemy.hit(boomerang.getDamage());
 
-                damageTexts.add(new DamageText(String.valueOf((int) damage),
-                    damageTextX,
-                    damageTextY,
-                    3.0f, // damageText visas i 3 sekunder
-                    isCritical));
+
+                if(enemy.hit(boomerang.getDamage())){
+                    damageTexts.add(new DamageText(String.valueOf((int) damage),
+                        damageTextX,
+                        damageTextY,
+                        3.0f, // damageText visas i 3 sekunder
+                        isCritical));
+                }
+
 
             }
         }
@@ -375,7 +382,6 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void spawnEnemies() {
-        if (enemies.size > 25) return;
         Shark shark = new Shark();
         Vector2 randomPos = getRandomOffscreenPosition(100);
         shark.getSprite().setPosition(randomPos.x, randomPos.y);
