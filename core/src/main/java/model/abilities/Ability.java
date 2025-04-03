@@ -92,4 +92,11 @@ public abstract class Ability implements Disposable {
             texture.dispose();
         }
     }
+
+    public void updatePosition(float delta, float playerX, float playerY) {
+    }
+
+    public Rectangle getHitBox() {
+        return null;
+    }
 }
