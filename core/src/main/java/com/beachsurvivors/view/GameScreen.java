@@ -133,6 +133,13 @@ public class GameScreen extends Game implements Screen {
         input();
         logic();
         draw();
+
+//        for (int i = enemies.size - 1; i >= 0; i--) {
+//            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//            shapeRenderer.setColor(Color.RED);
+//            shapeRenderer.line(playerPos.x, playerPos.y, enemies.get(i).getSprite().getX(), enemies.get(i).getSprite().getY()); // Draw the line
+//            shapeRenderer.end();
+//        }
     }
 
     @Override
@@ -210,7 +217,7 @@ public class GameScreen extends Game implements Screen {
 
         //ABILITIES
         for (Ability a : abilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX() + player.getSprite().getWidth() / 2, player.getPlayerY() + player.getSprite().getHeight() / 2);
+            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX() , player.getPlayerY());
         }
 
         pickUpPowerUp();
@@ -290,7 +297,7 @@ public class GameScreen extends Game implements Screen {
         player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, mapWidth * gameScale - player.getSprite().getWidth()));
         player.setPlayerY(MathUtils.clamp(player.getPlayerY(), 0, mapHeight * gameScale - player.getSprite().getHeight()));
 
-        player.getSprite().setPosition(player.getPlayerX(), player.getPlayerY());
+        player.getSprite().setPosition(player.getPlayerX() - player.getSprite().getWidth()/2, player.getPlayerY() - player.getSprite().getHeight()/2);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
     }
 
