@@ -34,6 +34,5 @@ main_menu/menu_background.jpeg
 main_menu/sound/Holiday.wav
 main_menu/sound/play_sound.wav
 placeholder.png
-sounds/Holiday.wav
 sounds/Shark_Damage.wav
 speed_boost.png
