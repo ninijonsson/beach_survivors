@@ -11,7 +11,7 @@ public class DamageText {
     private float timer;
     private BitmapFont font;
     private Color color;
-    private float moveSpeed = 50f;
+    private float moveSpeed = 25f;
 
     public DamageText(String text, float x, float y, float duration, boolean isCritical) {
         this.text = text;
@@ -20,7 +20,8 @@ public class DamageText {
         this.duration = duration;
         this.timer = duration;
         this.font = new BitmapFont();
-        this.color = new Color(Color.YELLOW);
+        this.color = new Color(Color.LIGHT_GRAY);
+
 
 
         if (isCritical) {

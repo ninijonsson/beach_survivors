@@ -101,13 +101,13 @@ public abstract class Enemy implements Disposable {
                     @Override
                     public void run() {
                         Gdx.app.postRunnable(() -> {
-                            sprite.setColor(Color.WHITE);
+                            sprite.setColor(Color.CLEAR);
                             isImmune = false;
 
 
                         });
                     }
-                }, 0.2f);
+                }, 0.1f);
                 return true;}
         }
         return false;
