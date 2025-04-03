@@ -31,7 +31,9 @@ main_menu/buttons/play_button_scaled.png
 main_menu/logo.png
 main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
+main_menu/sound/Holiday.wav
 main_menu/sound/play_sound.wav
 placeholder.png
+sounds/Holiday.wav
 sounds/Shark_Damage.wav
 speed_boost.png

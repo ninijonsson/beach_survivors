@@ -79,7 +79,7 @@ public abstract class Enemy implements Disposable {
         this.damage = damage;
     }
     public void playSound(){
-        hitSound.setVolume(hitSound.play(), 0.2f);
+        hitSound.setVolume(hitSound.play(), 0.05f);
     }
     public boolean hit(double damage) {
         if (!isImmune) {

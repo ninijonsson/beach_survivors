@@ -65,7 +65,7 @@ public class MainMenuScreen implements Screen {
         backgroundTexture = new Texture("main_menu/menu_background.jpeg");
         logoTexture = new Texture("main_menu/logo_skiss_1.png");
 
-        playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/play_sound.wav"));
+        playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/Holiday.wav"));
 
         // PLAY
         playButtonTexture = new Texture("main_menu/buttons/play_button_2_scaled.png");
@@ -200,7 +200,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 exitButtonStyle.up = exitDrawable;
-                playSound.play(0.1f);
+                playSound.play(1f);
                 Gdx.app.exit();
             }
         });
