@@ -1,4 +1,4 @@
-package model;
+package com.beachsurvivors.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

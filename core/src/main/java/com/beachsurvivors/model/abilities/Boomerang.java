@@ -1,4 +1,4 @@
-package model.abilities;
+package com.beachsurvivors.model.abilities;
 
 
 import com.badlogic.gdx.Gdx;
@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import model.DamageText;
-import model.Player;
-import model.SmokeParticle;
+import com.beachsurvivors.model.DamageText;
+import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.SmokeParticle;
 
 import java.util.Random;
 

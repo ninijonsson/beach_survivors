@@ -1,4 +1,4 @@
-package model;
+package com.beachsurvivors.model;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;

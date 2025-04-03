@@ -1,6 +1,4 @@
-package model;
-
-import com.badlogic.gdx.math.Vector2;
+package com.beachsurvivors.model;
 
 public class ExperiencePoints implements PickUpAble {
 

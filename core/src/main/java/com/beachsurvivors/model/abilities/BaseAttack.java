@@ -1,11 +1,6 @@
-package model.abilities;
+package com.beachsurvivors.model.abilities;
 
-import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.view.GameScreen;
-import model.Player;
-import model.enemies.Enemy;
-import model.enemies.Shark;
+import com.beachsurvivors.model.Player;
 
 public class BaseAttack extends Ability{
     public BaseAttack(String name, String texturePath, AbilityType type, double baseDamage, double cooldown, int width, int height) {

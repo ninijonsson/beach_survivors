@@ -1,13 +1,12 @@
-package model;
+package com.beachsurvivors.model;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import model.abilities.Ability;
-import model.abilities.AbilityType;
+import com.beachsurvivors.model.abilities.Ability;
+import com.beachsurvivors.model.abilities.AbilityType;
 
 public class Boomerang extends Ability {
 

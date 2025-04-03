@@ -1,7 +1,7 @@
-package model.powerUps;
+package com.beachsurvivors.model.powerUps;
 
-import model.PickUpAble;
-import model.Player;
+import com.beachsurvivors.model.PickUpAble;
+import com.beachsurvivors.model.Player;
 
 public class LuckyClover extends PowerUp implements PickUpAble {
 

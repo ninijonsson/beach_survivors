@@ -1,8 +1,8 @@
-package model.powerUps;
+package com.beachsurvivors.model.powerUps;
 
 import com.badlogic.gdx.utils.Timer;
-import model.PickUpAble;
-import model.Player;
+import com.beachsurvivors.model.PickUpAble;
+import com.beachsurvivors.model.Player;
 
 public class SpeedBoost extends PowerUp implements PickUpAble {
 

@@ -1,4 +1,4 @@
-package model;
+package com.beachsurvivors.model;
 
 public interface PickUpAble {
 

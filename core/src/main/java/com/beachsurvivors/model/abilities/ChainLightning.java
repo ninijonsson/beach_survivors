@@ -1,6 +1,6 @@
-package model.abilities;
+package com.beachsurvivors.model.abilities;
 
-import model.Player;
+import com.beachsurvivors.model.Player;
 
 public class ChainLightning extends Ability {
 

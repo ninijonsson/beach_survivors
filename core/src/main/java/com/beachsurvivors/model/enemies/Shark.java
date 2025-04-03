@@ -1,12 +1,8 @@
-package model.enemies;
+package com.beachsurvivors.model.enemies;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import model.powerUps.PowerUp;
-import model.powerUps.SpeedBoost;
-
-import java.util.List;
-import java.util.Random;
+import com.beachsurvivors.model.powerUps.PowerUp;
+import com.beachsurvivors.model.powerUps.SpeedBoost;
 
 public class Shark extends Enemy {
 

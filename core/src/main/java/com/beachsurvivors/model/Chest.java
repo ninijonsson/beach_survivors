@@ -1,6 +1,6 @@
-package model;
+package com.beachsurvivors.model;
 
-import model.abilities.Ability;
+import com.beachsurvivors.model.abilities.Ability;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package model.enemies;
+package com.beachsurvivors.model.enemies;
 
 public class Crab extends Enemy {
 

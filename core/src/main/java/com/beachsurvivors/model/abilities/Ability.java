@@ -1,13 +1,10 @@
-package model.abilities;
+package com.beachsurvivors.model.abilities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
-import model.DamageText;
-import model.Player;
-
-import java.util.Random;
+import com.beachsurvivors.model.Player;
 
 public abstract class Ability implements Disposable {
 
