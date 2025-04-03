@@ -68,13 +68,15 @@ public class Player implements Disposable {
         tempHitBox.setPosition(newPlayerX, newPlayerY);
 
         // Check if the new position is inside the polygon and the move is valid
-        if (map.isInsidePolygon(newPlayerX, newPlayerY) && map.isValidMove(tempHitBox)) {
-            // Update player position if the new position is inside the polygon and the move is valid
+        if (map.isInsidePolygon(newPlayerX, newPlayerY) &&
+            map.isValidMove(tempHitBox) &&
+            !map.collidesWithObject(tempHitBox.getBoundingRectangle())) {
             playerX = newPlayerX;
             playerY = newPlayerY;
             beachGuySprite.setPosition(playerX, playerY);
             beachGuyHitBox.setPosition(playerX, playerY);
         }
+
     }
 
 

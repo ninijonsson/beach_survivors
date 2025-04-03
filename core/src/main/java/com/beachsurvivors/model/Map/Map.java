@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.model.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +21,14 @@ public class Map {
     private float gameScale;
     private float startingX;
     private float startingY;
+    private List<Rectangle> collisionObjects = new ArrayList<>();
 
     public Map(TiledMap map) {
         this.map = map;
         this.width = map.getProperties().get("width", Integer.class) *
-            map.getProperties().get("tilewidth", Integer.class);
+                map.getProperties().get("tilewidth", Integer.class);
         this.height = map.getProperties().get("height", Integer.class) *
-            map.getProperties().get("tileheight", Integer.class);
+                map.getProperties().get("tileheight", Integer.class);
         this.gameScale = 2f;
         this.collisionBoxes = new ArrayList<>();
         getMapLayer();
@@ -44,6 +46,17 @@ public class Map {
                 collisionBoxes.add(scalePolygon(polygon));
             }
         }
+
+        MapLayer objectsLayer = map.getLayers().get("collisionObjects");
+        if (objectsLayer == null) return;
+        for (MapObject object : objectsLayer.getObjects()) {
+            if (object instanceof RectangleMapObject) {
+                Rectangle rect = ((RectangleMapObject) object).getRectangle();
+                rect.set(rect.x * gameScale, rect.y * gameScale, rect.width * gameScale, rect.height * gameScale);
+                collisionObjects.add(rect);
+
+            }
+        }System.out.println(collisionObjects.size());
     }
 
     private void getStartPos() {
@@ -113,4 +126,15 @@ public class Map {
     public List<Polygon> getCollisionBoxes() {
         return collisionBoxes;
     }
+
+    public boolean collidesWithObject(Rectangle playerHitBox) {
+        for (Rectangle object : collisionObjects) {
+            if (playerHitBox.overlaps(object)) {
+                System.out.println("nu ska du träffa något");
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="9">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="30">
  <tileset firstgid="1" source="tf_beach_tileA1.tsx"/>
  <tileset firstgid="193" source="tf_beach_tileB.tsx"/>
  <layer id="1" name="Rutlager 1" width="100" height="100" locked="1">
@@ -106,7 +106,7 @@
 23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23
 </data>
  </layer>
- <layer id="2" name="Rutlager 2" width="100" height="100">
+ <layer id="2" name="Rutlager 2" width="100" height="100" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -425,5 +425,27 @@
  </objectgroup>
  <objectgroup id="6" name="startPos" locked="1">
   <object id="8" name="startPos" x="1614" y="1756"/>
+ </objectgroup>
+ <objectgroup id="8" name="collisionObjects">
+  <object id="9" x="1089.5" y="1908" width="31.8333" height="104.167"/>
+  <object id="10" x="1271.83" y="1861.33" width="31.6667" height="117.333"/>
+  <object id="11" x="1412" y="1735.83" width="28.5" height="119.333"/>
+  <object id="12" x="1024.17" y="1585.67" width="31.3333" height="104.167"/>
+  <object id="13" x="920.833" y="1391" width="28.3333" height="77"/>
+  <object id="14" x="966.333" y="1242.17" width="23.5" height="96.5"/>
+  <object id="15" x="1707.5" y="2000.33" width="75.5" height="72"/>
+  <object id="16" x="1488.17" y="1448" width="57.5" height="116.333"/>
+  <object id="17" x="1893.67" y="1484" width="23.8333" height="117.167"/>
+  <object id="18" x="1975.67" y="1612" width="25.8333" height="112"/>
+  <object id="19" x="1895" y="1833" width="24.1667" height="115.167"/>
+  <object id="20" x="1608.67" y="994.667" width="76.6667" height="181.333"/>
+  <object id="21" x="1824" y="1062.67" width="30.8333" height="118.667"/>
+  <object id="22" x="2234.67" y="1194.67" width="92" height="112"/>
+  <object id="23" x="2342.67" y="1352" width="81.3333" height="112"/>
+  <object id="24" x="1153.33" y="1689.5" width="126.667" height="34.5"/>
+  <object id="25" x="1180" y="1729.33" width="93.3333" height="28.1667"/>
+  <object id="26" x="1118.17" y="1453.33" width="130.667" height="37"/>
+  <object id="27" x="1222" y="1507" width="23.3333" height="49.1667"/>
+  <object id="28" x="1129.33" y="1541.83" width="46.1667" height="19"/>
  </objectgroup>
 </map>
