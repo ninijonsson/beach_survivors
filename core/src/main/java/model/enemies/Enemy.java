@@ -47,14 +47,6 @@ public abstract class Enemy implements Disposable {
     public abstract void onDeath();
     public abstract void dropItems();
 
-    public void hit(double damageTaken){
-        setHealthPoints(-damageTaken);
-        if(getHealthPoints()<=0){
-            setAlive(false);
-        }
-        playSound();
-    }
-
     public int getWidth() {
         return width;
     }

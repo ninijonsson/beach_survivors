@@ -16,4 +16,9 @@ public class BaseAttack extends Ability{
     public void use() {
 
     }
+
+    @Override
+    public void use(Player player) {
+
+    }
 }

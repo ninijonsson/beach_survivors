@@ -48,6 +48,11 @@ public class Boomerang extends Ability {
 
     }
 
+    @Override
+    public void use(Player player) {
+
+    }
+
     public Sprite getSprite() {
         return sprite;
     }
@@ -61,7 +66,7 @@ public class Boomerang extends Ability {
         sprite.getTexture().dispose();
     }
 
-    public double getDamage() {
+    public Double getBaseDamage() {
         return damage;
     }
 

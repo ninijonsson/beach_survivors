@@ -47,7 +47,7 @@ public abstract class Ability implements Disposable {
         return type;
     }
 
-    public Double getDamage() {
+    public Double getBaseDamage() {
         return damage;
     }
 
