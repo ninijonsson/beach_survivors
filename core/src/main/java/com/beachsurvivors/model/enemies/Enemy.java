@@ -4,7 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -21,12 +24,18 @@ public abstract class Enemy implements Disposable {
     private boolean isAlive;
     private int width;
     private int height;
+    private float x;
+    private float y;
 
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitbox;
     private Sound hitSound;
     private boolean isImmune;
+
+    private Animation<TextureRegion> walkAnimation;
+    private Texture walkSheet;
+    private float stateTime;
 
     public Enemy(String texturePath, int width, int height) {
         this.width = width;
@@ -40,6 +49,31 @@ public abstract class Enemy implements Disposable {
         healthPoints = 20;
         isImmune=false;
         isAlive = true;
+
+
+    }
+
+    public void createAnimation(String sheetPath, int sheetColumns, int sheetRows) {
+        walkSheet = new Texture(Gdx.files.internal(sheetPath));
+
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/sheetColumns, walkSheet.getHeight()/sheetRows);
+        TextureRegion[] walkFrames = new TextureRegion[sheetColumns * sheetRows];
+        int index = 0;
+        for (int i = 0; i < sheetRows; i++) {
+            for (int j = 0; j < sheetColumns; j++) {
+                walkFrames[index++] = tmp[i][j];
+            }
+        }
+        walkAnimation = new Animation<TextureRegion>(0.25f, walkFrames);
+        stateTime = 0f;
+    }
+
+    public void runAnimation(SpriteBatch spriteBatch) {
+        stateTime += Gdx.graphics.getDeltaTime();
+        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+//        spriteBatch.begin();
+        spriteBatch.draw(currentFrame, getSprite().getX(), getSprite().getY(), getWidth(), getHeight());
+//        spriteBatch.end();
     }
 
     public abstract void move();

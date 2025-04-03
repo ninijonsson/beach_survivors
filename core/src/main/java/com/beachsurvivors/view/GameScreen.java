@@ -94,7 +94,7 @@ public class GameScreen extends Game implements Screen {
         this.map = new Map(tiledMap);
         stage = new Stage(gameviewport);
         stage.clear();
-        player = new Player(map);
+        player = new Player(map, spriteBatch);
         playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         boomerang = new Boomerang();
@@ -128,6 +128,7 @@ public class GameScreen extends Game implements Screen {
 
     @Override
     public void show() {
+
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -161,15 +162,17 @@ public class GameScreen extends Game implements Screen {
         spriteBatch.setProjectionMatrix(gameviewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(gameviewport.getCamera().combined);
 
+        player.runAnimation();
+
 
         spriteBatch.begin();
 
-        drawPlayer();
+        //drawPlayer();
 
         stage.act();
         stage.draw();
 
-        player.getSprite().draw(spriteBatch);
+//        player.getSprite().draw(spriteBatch);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
 
         for (Ability a : abilities) {
@@ -188,7 +191,8 @@ public class GameScreen extends Game implements Screen {
         }
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
-                enemy.getSprite().draw(spriteBatch);
+               // enemy.getSprite().draw(spriteBatch);
+                enemy.runAnimation(spriteBatch);
             }
 
         }
