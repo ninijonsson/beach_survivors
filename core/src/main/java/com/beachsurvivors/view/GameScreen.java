@@ -24,10 +24,13 @@ import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.SmokeParticle;
 import com.beachsurvivors.model.abilities.Ability;
+import com.beachsurvivors.model.abilities.AbilityType;
+import com.beachsurvivors.model.abilities.BaseAttack;
 import com.beachsurvivors.model.enemies.Enemy;
 import com.beachsurvivors.model.enemies.Shark;
 import com.beachsurvivors.model.powerUps.PowerUp;
 
+//import java.lang.classfile.attribute.BootstrapMethodsAttribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -57,6 +60,8 @@ public class GameScreen extends Game implements Screen {
     private Boomerang boomerang2;
     private Boomerang boomerang3;
     private Boomerang boomerang4;
+    private BaseAttack bullet;
+    private float bulletTimer = 0f;
     private int sharksKilled;
 
     private Array<SmokeParticle> smokeTrail = new Array<>();
@@ -105,11 +110,13 @@ public class GameScreen extends Game implements Screen {
         boomerang4 = new Boomerang();
         boomerang4.setAngle(270);
 
+        bullet = new BaseAttack("bullet", "entities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
 
         abilities.add(boomerang);
         abilities.add(boomerang2);
         abilities.add(boomerang3);
         abilities.add(boomerang4);
+        abilities.add(bullet);
 
 
         font = new BitmapFont();
@@ -242,6 +249,15 @@ public class GameScreen extends Game implements Screen {
         //---------------
         */
 
+        // BULLET
+        float bulletCooldown = (float) bullet.getCooldown(); // Gör om cooldown till float
+
+        bulletTimer += Gdx.graphics.getDeltaTime();
+        if (bulletTimer >= bulletCooldown) {
+            bulletTimer = 0f;
+            shootAtNearestEnemy();
+        }
+
         for (int i = damageTexts.size - 1; i >= 0; i--) {
             DamageText dt = damageTexts.get(i);
             dt.update(Gdx.graphics.getDeltaTime() * 2);
@@ -277,20 +293,28 @@ public class GameScreen extends Game implements Screen {
                 //System.out.println("Sharks killed: " + sharksKilled++);
             }
 
-            for (Ability a : abilities) {
-                double damage = a.getBaseDamage();
+            for (int j = abilities.size() - 1; j >= 0; j--) {
+                Ability a = abilities.get(j);
+
                 if (a.getHitBox().overlaps(enemy.getHitbox())) {
                     boolean isCritical = checkForCriticalStrike();
+                    double damage = a.getBaseDamage();
                     if (isCritical) {
                         damage *= 2; // Dubblera skadan vid kritiskt slag
                     }
 
-                    if (enemy.hit(a.getBaseDamage())) {
+                    if (enemy.hit(damage)) {
                         damageTexts.add(new DamageText(String.valueOf((int) damage),
-                            damageTextX,
-                            damageTextY,
-                            1.0f, // damageText visas i 3 sekunder
+                            enemy.getSprite().getX() + randomizeDirection.nextInt(50),
+                            enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomizeDirection.nextInt(50),
+                            1.0f,
                             isCritical));
+                    }
+
+                    // Om ability inte är en boomerang så tar vi bort spriten när den kolliderat
+                    if (!(a instanceof Boomerang)) {
+                        a.dispose();
+                        abilities.remove(j);
                     }
                 }
             }
@@ -321,6 +345,49 @@ public class GameScreen extends Game implements Screen {
         droppedItems.removeAll(powerUpsToRemove);
     }
 
+    // Används för att skjuta på närmaste fienden
+    private Enemy getNearestEnemy() {
+        Enemy nearest = null;
+        float minDistance = Float.MAX_VALUE;
+        Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+
+        for (Enemy enemy : enemies) {
+            // Räkna ut avståndet mellan spelaren och fienden
+            float distance = playerPos.dst(enemy.getSprite().getX(), enemy.getSprite().getY());
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearest = enemy;
+            }
+        }
+
+        return nearest;
+    }
+
+    private void shootAtNearestEnemy() {
+        Enemy target = getNearestEnemy();
+
+        if (target != null) {
+            // Beräkna riktningen från spelaren till fienden
+            Vector2 direction = new Vector2(
+                target.getSprite().getX() - player.getPlayerX(),
+                target.getSprite().getY() - player.getPlayerY()
+            ).nor();
+
+            // Skapa en ny bullet
+            BaseAttack bullet = new BaseAttack("bullet", "entities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
+
+            bullet.updatePosition(player.getPlayerX(), player.getPlayerY()); // Startpositionen är spelarens position
+            bullet.setDirection(direction); // Mot fienden
+
+            //bullet.getSprite().setOriginCenter(); // Sätt spritens ursprung till mitten så rotationen blir korrekt
+            //float angleDeg = direction.angleDeg();
+            //bullet.getSprite().setRotation(angleDeg); // Rotera spriten så att den pekar mot riktningen
+
+            abilities.add(bullet);
+        }
+    }
+
+
 
     @Override
     public void resume() {
@@ -338,6 +405,7 @@ public class GameScreen extends Game implements Screen {
         player.dispose();
         boomerang.dispose();
         font.dispose();
+        //bullet.dispose();
     }
 
     // Returns random position off-screen. Parameter 'margin' is the off-screen distance between spawn point and screen edge. Put margin = 0 for enemies to spawn exactly outside screen.

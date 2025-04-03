@@ -16,6 +16,7 @@ entities/Coconut.png
 entities/Shark-Sheet.png
 entities/Shark.png
 entities/Smoke.png
+entities/bullet.png
 entities/beach_guy_sheet.png
 game_screen/Cool_beach_guy.png
 game_screen/beachguy.png
