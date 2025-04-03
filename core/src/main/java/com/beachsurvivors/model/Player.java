@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
+import com.beachsurvivors.model.Map.Map;
 
 public class Player implements Disposable {
 
@@ -20,15 +22,16 @@ public class Player implements Disposable {
     private float playerX;
     private float playerY;
 
-    private final int worldWidth = 1920;
-    private final int worldHeight = 1080;
+    private Map map;
 
-    public Player () {
-
+    public Player(Map map) {
+        this.map = map;
         beachguyImage = new Texture("game_screen/Cool_beach_guy.png");
         beachGuySprite = new Sprite(beachguyImage);
-        beachGuySprite.setSize(100,100);
-        beachGuyHitBox = new Rectangle(playerX, playerY, 80,80);
+        beachGuySprite.setSize(100, 100);
+        beachGuyHitBox = new Rectangle(map.getStartingX(), map.getStartingY(), 80, 80);
+        playerX = map.getStartingX();
+        playerY = map.getStartingY();
     }
 
     public void playerInput() {
@@ -39,23 +42,41 @@ public class Player implements Disposable {
 
     private void movementKeys() {
         float delta = Gdx.graphics.getDeltaTime();
+        float newPlayerX = playerX;
+        float newPlayerY = playerY;
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
-            playerX -= speed * delta;
+            newPlayerX -= speed * delta;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
-            playerX += speed * delta;
+            newPlayerX += speed * delta;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
-            playerY -= speed * delta;
+            newPlayerY -= speed * delta;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.UP)) || (Gdx.input.isKeyPressed(Input.Keys.W))) {
-            playerY += speed * delta;
+            newPlayerY += speed * delta;
         }
 
-        beachGuySprite.setPosition(playerX, playerY);
-        beachGuyHitBox.setPosition(playerX, playerY);
+        //LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
+        Polygon tempHitBox = new Polygon(new float[]{
+            0, 0,
+            beachGuyHitBox.width, 0,
+            beachGuyHitBox.width, beachGuyHitBox.height,
+            0, beachGuyHitBox.height
+        });
+        tempHitBox.setPosition(newPlayerX, newPlayerY);
+
+        // Check if the new position is inside the polygon and the move is valid
+        if (map.isInsidePolygon(newPlayerX, newPlayerY) && map.isValidMove(tempHitBox)) {
+            // Update player position if the new position is inside the polygon and the move is valid
+            playerX = newPlayerX;
+            playerY = newPlayerY;
+            beachGuySprite.setPosition(playerX, playerY);
+            beachGuyHitBox.setPosition(playerX, playerY);
+        }
     }
+
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {

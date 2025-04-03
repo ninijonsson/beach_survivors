@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.beachsurvivors.model.Boomerang;
 import com.beachsurvivors.model.DamageText;
+import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.SmokeParticle;
 import com.beachsurvivors.model.abilities.Ability;
@@ -38,12 +40,13 @@ public class GameScreen extends Game implements Screen {
     private FitViewport gameviewport;
     private Stage stage;
 
-    private final int worldWidth = 1920;
-    private final int worldHeight = 1080;
+    private final int screenWidth = 1920;
+    private final int screenHeight = 1080;
     private ShapeRenderer shapeRenderer;
 
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
+    private Map map;
 
 
     private Player player;
@@ -67,13 +70,12 @@ public class GameScreen extends Game implements Screen {
     private Array<Enemy> enemies = new Array<>();
     private Vector2 playerPos;
 
-    private int mapWidth;
-    private int mapHeight;
-    private float gameScale;
+
 
     public GameScreen(Main main) {
         this.main = main;
-        gameviewport = new FitViewport(worldWidth, worldHeight);
+
+        gameviewport = new FitViewport(screenWidth, screenHeight);
         droppedItems = new ArrayList<>();
         abilities = new ArrayList<>();
         sharksKilled = 0;
@@ -84,15 +86,16 @@ public class GameScreen extends Game implements Screen {
     public void create() {
         spriteBatch = new SpriteBatch();
 
-        player = new Player();
-        playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+
         shapeRenderer = new ShapeRenderer();
 
         tiledMap = new TmxMapLoader().load("Map2/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
-
+        this.map = new Map(tiledMap);
         stage = new Stage(gameviewport);
         stage.clear();
+        player = new Player(map);
+        playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         boomerang = new Boomerang();
         boomerang2 = new Boomerang();
@@ -112,15 +115,15 @@ public class GameScreen extends Game implements Screen {
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
-        gameScale = 2f;
-        mapWidth = tiledMap.getProperties().get("width", Integer.class) *
-            tiledMap.getProperties().get("tilewidth", Integer.class);
 
-        mapHeight = tiledMap.getProperties().get("height", Integer.class) *
-            tiledMap.getProperties().get("tileheight", Integer.class);
-        System.out.println("Map width: " + mapWidth + ", Map height: " + mapHeight);
-        player.setPlayerX(mapWidth * 0.5f);
-        player.setPlayerY(mapHeight * 0.5f);
+//        mapWidth = tiledMap.getProperties().get("width", Integer.class) *
+//            tiledMap.getProperties().get("tilewidth", Integer.class);
+//
+//        mapHeight = tiledMap.getProperties().get("height", Integer.class) *
+//            tiledMap.getProperties().get("tileheight", Integer.class);
+
+        player.setPlayerX(map.getStartingX());
+        player.setPlayerY(map.getStartingY());
     }
 
     @Override
@@ -129,18 +132,12 @@ public class GameScreen extends Game implements Screen {
     }
 
     @Override
-    public void render(float v) {
+    public void render(float delta) {
         input();
         logic();
         draw();
-
-//        for (int i = enemies.size - 1; i >= 0; i--) {
-//            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//            shapeRenderer.setColor(Color.RED);
-//            shapeRenderer.line(playerPos.x, playerPos.y, enemies.get(i).getSprite().getX(), enemies.get(i).getSprite().getY()); // Draw the line
-//            shapeRenderer.end();
-//        }
     }
+
 
     @Override
     public void resize(int width, int height) {
@@ -202,8 +199,10 @@ public class GameScreen extends Game implements Screen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.CLEAR);
         // HITBOXES
-        //shapeRenderer.rect(player.getSprite().getX(), player.getSprite().getY(), player.getSprite().getWidth(), player.getSprite().getHeight());
+        shapeRenderer.rect(player.getSprite().getX(), player.getSprite().getY(), player.getSprite().getWidth(), player.getSprite().getHeight());
         shapeRenderer.end();
+
+
     }
 
     private void input() {
@@ -212,8 +211,8 @@ public class GameScreen extends Game implements Screen {
 
     private void logic() {
         pickUpPowerUp();
-        player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, worldWidth - player.getSprite().getWidth()));
-        player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, worldHeight - player.getSprite().getHeight()));
+        player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, screenWidth - player.getSprite().getWidth()));
+        player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, screenHeight - player.getSprite().getHeight()));
 
         //ABILITIES
         for (Ability a : abilities) {
@@ -271,7 +270,7 @@ public class GameScreen extends Game implements Screen {
 
             if (enemy.isAlive() == false) {
                 enemies.removeIndex(i);
-                System.out.println("Sharks killed: " + sharksKilled++);
+                //System.out.println("Sharks killed: " + sharksKilled++);
             }
 
             for (Ability a : abilities) {
@@ -294,10 +293,10 @@ public class GameScreen extends Game implements Screen {
         }
 
         //kolla position
-        player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, mapWidth * gameScale - player.getSprite().getWidth()));
-        player.setPlayerY(MathUtils.clamp(player.getPlayerY(), 0, mapHeight * gameScale - player.getSprite().getHeight()));
-
-        player.getSprite().setPosition(player.getPlayerX() - player.getSprite().getWidth()/2, player.getPlayerY() - player.getSprite().getHeight()/2);
+//        player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, map.getWidth() * map.getGameScale() - player.getSprite().getWidth()));
+//        player.setPlayerY(MathUtils.clamp(player.getPlayerY(), 0, map.getHeight() * map.getGameScale() - player.getSprite().getHeight()));
+//
+       player.getSprite().setPosition(player.getPlayerX() - player.getSprite().getWidth()/2, player.getPlayerY() - player.getSprite().getHeight()/2);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
     }
 
