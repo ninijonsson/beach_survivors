@@ -26,6 +26,7 @@ public class DamageText {
 
         if (isCritical) {
             font.getData().setScale(3.0f);
+            color.set(Color.YELLOW);
         } else {
             font.getData().setScale(2.0f);
         }
