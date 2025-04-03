@@ -15,15 +15,15 @@ public abstract class Ability implements Disposable {
                                 // kanske flytta till subclass också
     private Texture texture;
     private Sprite sprite;
-    private Rectangle hitbox;  //Kanske flytta till subclasser eftersom alla abilities kanske inte har hitbox, t.ex shield eller healing
+    private Rectangle hitBox;  //Kanske flytta till subclasser eftersom alla abilities kanske inte har hitbox, t.ex shield eller healing
 
 
     public Ability (String name, String texturePath, AbilityType type, double damage, double cooldown, int width, int height) {
         this.texture = new Texture(texturePath);
         this.sprite = new Sprite(texture);
         sprite.setSize(width, height);
-        this.hitbox = new Rectangle();
-        hitbox.setSize(width, height);
+        this.hitBox = new Rectangle();
+        hitBox.setSize(width, height);
 
         this.name = name;
         this.type = type;
@@ -33,7 +33,7 @@ public abstract class Ability implements Disposable {
 
     public void updatePosition(float x, float y) {
         getSprite().setPosition(x, y);
-        getHitbox().setPosition(x, y);
+        getHitBox().setPosition(x, y);
     }
 
 
@@ -52,8 +52,12 @@ public abstract class Ability implements Disposable {
         return sprite;
     }
 
-    public Rectangle getHitbox() {
-        return hitbox;
+    public Rectangle getHitBox() {
+        return hitBox;
+    }
+
+    public double getCooldown() {
+        return cooldown;
     }
 
     public void setType(AbilityType type) {
@@ -72,8 +76,8 @@ public abstract class Ability implements Disposable {
         this.sprite = sprite;
     }
 
-    public void setHitbox(Rectangle hitbox) {
-        this.hitbox = hitbox;
+    public void setHitBox(Rectangle hitBox) {
+        this.hitBox = hitBox;
     }
 
     @Override
@@ -91,9 +95,5 @@ public abstract class Ability implements Disposable {
     }
 
     public void updatePosition(float delta, float playerX, float playerY) {
-    }
-
-    public Rectangle getHitBox() {
-        return null;
     }
 }
