@@ -1,12 +1,9 @@
 package model.enemies;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
 import model.powerUps.PowerUp;
 import model.powerUps.SpeedBoost;
 
 import java.util.List;
-import java.util.Random;
 
 public class Shark extends Enemy {
 
@@ -17,7 +14,7 @@ public class Shark extends Enemy {
 
         super("entities/Shark.png", 100, 100);
 
-        setHealthPoints(20);
+        setHealthPoints(10);
 
 //        Random random = new Random();
 //        x = random.nextInt(0, (int) (1920-getSprite().getWidth()));
@@ -30,18 +27,16 @@ public class Shark extends Enemy {
 
     }
 
-    /*
-    public void hit(double damageTaken){
-        if(!justTookDamage()){
-            setHealthPoints(-damageTaken);
-            if(getHealthPoints()<=0){
-                setAlive(false);
-            }
-            playSound();
+
+    public boolean hit(double damageTaken){
+        setHealthPoints(-damageTaken);
+        if(getHealthPoints()<=0){
+            setAlive(false);
         }
+        playSound();
 
-    }*/
-
+        return false;
+    }
 
 
     public void setX(float x) {
@@ -62,11 +57,18 @@ public class Shark extends Enemy {
 
     }
 
+    @Override
+    public void spawnEnemy() {
 
+    }
 
     @Override
     public void onDeath() {
+<<<<<<< Updated upstream
         dispose();
+=======
+
+>>>>>>> Stashed changes
     }
 
     @Override
@@ -74,7 +76,7 @@ public class Shark extends Enemy {
 
     }
 
-    public void dropItems(Array<PowerUp> droppedItems) {
+    public void dropItems(List<PowerUp> droppedItems) {
         SpeedBoost speedBoost = new SpeedBoost((getSprite().getWidth()/2)+x, (getSprite().getHeight()/2) + y);
         droppedItems.add(speedBoost);
         System.out.println("Item dropped");

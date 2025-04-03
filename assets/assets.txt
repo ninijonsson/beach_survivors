@@ -5,6 +5,7 @@ Map2/tf_beach_tileA1.png
 Map2/tf_beach_tileA1.tsx
 Map2/tf_beach_tileB.png
 Map2/tf_beach_tileB.tsx
+Maps/BeachSurvivorMap.tiled-session
 SharkDeath.wav
 Thud.mp3
 entities/Beer 2.png

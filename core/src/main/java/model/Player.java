@@ -27,7 +27,7 @@ public class Player implements Disposable {
 
         beachguyImage = new Texture("game_screen/Cool_beach_guy.png");
         beachGuySprite = new Sprite(beachguyImage);
-        beachGuySprite.setSize(100,100);
+        beachGuySprite.setSize(80,80);
         beachGuyHitBox = new Rectangle(playerX, playerY, 80,80);
     }
 
