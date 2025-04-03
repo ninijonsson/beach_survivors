@@ -6,8 +6,7 @@ import com.beachsurvivors.model.powerUps.SpeedBoost;
 
 public class Shark extends Enemy {
 
-    private float x;
-    private float y;
+
 
     public Shark () {
 
@@ -16,14 +15,6 @@ public class Shark extends Enemy {
 
         setHealthPoints(20);
 
-//        Random random = new Random();
-//        x = random.nextInt(0, (int) (1920-getSprite().getWidth()));
-//        y = random.nextInt(0, (int) (1080-getSprite().getHeight()));
-
-//        getSprite().setPosition(getSprite().getX()+x,getSprite().getY()+y);
-        getSprite().setPosition(x,y);
-        getHitbox().setX(x);
-        getHitbox().setY(y);
 
     }
 
@@ -41,13 +32,13 @@ public class Shark extends Enemy {
 
 
 
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
+//    public void setX(float x) {
+//        this.x = x;
+//    }
+//
+//    public void setY(float y) {
+//        this.y = y;
+//    }
 
     @Override
     public void move() {
@@ -72,11 +63,6 @@ public class Shark extends Enemy {
 
     }
 
-    public void dropItems(Array<PowerUp> droppedItems) {
-        SpeedBoost speedBoost = new SpeedBoost((getSprite().getWidth()/2)+x, (getSprite().getHeight()/2) + y);
-        droppedItems.add(speedBoost);
-        System.out.println("Item dropped");
 
-    }
 
 }

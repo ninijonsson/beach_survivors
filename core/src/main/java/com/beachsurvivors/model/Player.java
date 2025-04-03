@@ -180,6 +180,10 @@ public class Player implements Disposable {
         return beachGuySprite;
     }
 
+    public Texture getWalkSheet() {
+        return walkSheet;
+    }
+
     public void setBeachGuySprite(Sprite beachGuySprite) {
         this.beachGuySprite = beachGuySprite;
     }

@@ -61,6 +61,7 @@ public class Boomerang extends Ability {
         return hitBox;
     }
 
+    @Override
     public void dispose() {
         sprite.getTexture().dispose();
     }
@@ -92,4 +93,5 @@ public class Boomerang extends Ability {
     public void setOrbitRadius(float orbitRadius) {
         this.orbitRadius = orbitRadius;
     }
+
 }

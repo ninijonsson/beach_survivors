@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -53,9 +52,9 @@ public class GameScreen extends Game implements Screen {
 
 
     private Player player;
-    private List<PowerUp> droppedItems;
+    private Array<PowerUp> droppedItems;
 
-    private List<Ability> abilities;
+    private Array<Ability> abilities;
     private Boomerang boomerang;
     private Boomerang boomerang2;
     private Boomerang boomerang3;
@@ -81,8 +80,8 @@ public class GameScreen extends Game implements Screen {
         this.main = main;
 
         gameviewport = new FitViewport(screenWidth, screenHeight);
-        droppedItems = new ArrayList<>();
-        abilities = new ArrayList<>();
+        droppedItems = new Array<>();
+        abilities = new Array<>();
         sharksKilled = 0;
         create();
     }
@@ -111,6 +110,7 @@ public class GameScreen extends Game implements Screen {
         boomerang4.setAngle(270);
 
         bullet = new BaseAttack("bullet", "entities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
+
 
         abilities.add(boomerang);
         abilities.add(boomerang2);
@@ -171,7 +171,6 @@ public class GameScreen extends Game implements Screen {
 
         player.runAnimation();
 
-
         spriteBatch.begin();
 
         //drawPlayer();
@@ -199,7 +198,7 @@ public class GameScreen extends Game implements Screen {
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
                // enemy.getSprite().draw(spriteBatch);
-                enemy.runAnimation(spriteBatch);
+                enemy.drawAnimation(spriteBatch);
             }
 
         }
@@ -230,7 +229,7 @@ public class GameScreen extends Game implements Screen {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX() , player.getPlayerY());
         }
 
-        pickUpPowerUp();
+
 
         // SMOKE TRAIL
         /*
@@ -288,12 +287,13 @@ public class GameScreen extends Game implements Screen {
             float damageTextX = enemy.getSprite().getX() + randomPathX;
             float damageTextY = enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomPathY;
 
-            if (enemy.isAlive() == false) {
+            if (!enemy.isAlive()) {
+                enemy.dropItems(droppedItems);
                 enemies.removeIndex(i);
                 //System.out.println("Sharks killed: " + sharksKilled++);
             }
 
-            for (int j = abilities.size() - 1; j >= 0; j--) {
+            for (int j = abilities.size - 1; j >= 0; j--) {
                 Ability a = abilities.get(j);
 
                 if (a.getHitBox().overlaps(enemy.getHitbox())) {
@@ -314,7 +314,7 @@ public class GameScreen extends Game implements Screen {
                     // Om ability inte är en boomerang så tar vi bort spriten när den kolliderat
                     if (!(a instanceof Boomerang)) {
                         a.dispose();
-                        abilities.remove(j);
+                        abilities.removeIndex(j);
                     }
                 }
             }
@@ -334,15 +334,18 @@ public class GameScreen extends Game implements Screen {
     }
 
     public void pickUpPowerUp() {
-        List<PowerUp> powerUpsToRemove = new ArrayList<>();
+        Array<PowerUp> powerUpsToRemove = new Array<>();
         for (PowerUp powerUp : droppedItems) {
+        System.out.println("player X + Y " + player.getHitBox().getX() + " Y " +  player. getHitBox().getY());
+        System.out.println("power up X + Y " + powerUp.getHitbox().getX() +" Y " + powerUp.getHitbox().getY());
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
+                System.err.println("true");
                 powerUp.onPickup(player);
-                powerUp.dispose();
                 powerUpsToRemove.add(powerUp);
+                powerUp.dispose();
             }
         }
-        droppedItems.removeAll(powerUpsToRemove);
+        droppedItems.removeAll(powerUpsToRemove, true);
     }
 
     // Används för att skjuta på närmaste fienden

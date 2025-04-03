@@ -8,11 +8,15 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.model.powerUps.PowerUp;
+import com.beachsurvivors.model.powerUps.SpeedBoost;
 
+import java.util.Random;
 
 
 public abstract class Enemy implements Disposable {
@@ -68,7 +72,7 @@ public abstract class Enemy implements Disposable {
         stateTime = 0f;
     }
 
-    public void runAnimation(SpriteBatch spriteBatch) {
+    public void drawAnimation(SpriteBatch spriteBatch) {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 //        spriteBatch.begin();
@@ -115,6 +119,7 @@ public abstract class Enemy implements Disposable {
     public void playSound(){
         hitSound.setVolume(hitSound.play(), 0.05f);
     }
+
     public boolean hit(double damage) {
         if (!isImmune) {
 
@@ -167,6 +172,18 @@ public abstract class Enemy implements Disposable {
 
     public void setAlive(boolean alive) {
         isAlive = alive;
+    }
+
+
+    public void dropItems(Array<PowerUp> droppedItems) {
+        Random random = new Random();
+        int chance = random.nextInt(0,100);
+        if (chance == 1) {
+            SpeedBoost speedBoost = new SpeedBoost((getSprite().getWidth()/2)+getSprite().getX(), (getSprite().getHeight()/2) + getSprite().getY());
+            droppedItems.add(speedBoost);
+            System.out.println("Item dropped  X" + speedBoost.getHitbox().getX() + " Y " + speedBoost.getHitbox().getY());
+        }
+
     }
 
     @Override
