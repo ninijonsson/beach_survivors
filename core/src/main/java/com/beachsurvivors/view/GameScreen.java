@@ -2,10 +2,7 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -22,12 +19,12 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import model.*;
 import model.abilities.Ability;
-import model.abilities.Boomerang;
-import model.abilities.Ability;
 import model.enemies.Enemy;
 import model.enemies.Shark;
 import model.powerUps.PowerUp;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
@@ -45,18 +42,24 @@ public class GameScreen extends Game implements Screen {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
 
-    Shark shark;
-    private Player player;
-    private Array<PowerUp> droppedItems;
-    private Array<Ability> equippedAbilities;
 
+    private Player player;
+    private List<PowerUp> droppedItems;
+
+    private List<Ability> abilities;
     private Boomerang boomerang;
+    private Boomerang boomerang2;
+    private Boomerang boomerang3;
+    private Boomerang boomerang4;
+    private int sharksKilled;
 
     private Array<SmokeParticle> smokeTrail = new Array<>();
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
+
+
 
     private Array<Enemy> enemies = new Array<>();
     private Vector2 playerPos;
@@ -68,8 +71,9 @@ public class GameScreen extends Game implements Screen {
     public GameScreen(Main main) {
         this.main = main;
         gameviewport = new FitViewport(worldWidth, worldHeight);
-        droppedItems = new Array<>();
-        equippedAbilities = new Array<>();
+        droppedItems = new ArrayList<>();
+        abilities = new ArrayList<>();
+        sharksKilled = 0;
         create();
     }
 
@@ -78,10 +82,7 @@ public class GameScreen extends Game implements Screen {
         spriteBatch = new SpriteBatch();
 
         player = new Player();
-        player.setPlayerX(worldWidth);
-        player.setPlayerY(worldHeight);
         playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
-        shark = new Shark();
         shapeRenderer = new ShapeRenderer();
 
         tiledMap = new TmxMapLoader().load("Map2/map2.tmx");
@@ -91,7 +92,19 @@ public class GameScreen extends Game implements Screen {
         stage.clear();
 
         boomerang = new Boomerang();
-        equippedAbilities.add(boomerang);
+        boomerang2 = new Boomerang();
+        boomerang2.setAngle(90);
+        boomerang3 = new Boomerang();
+        boomerang3.setAngle(180);
+        boomerang4 = new Boomerang();
+        boomerang4.setAngle(270);
+
+
+        abilities.add(boomerang);
+        abilities.add(boomerang2);
+        abilities.add(boomerang3);
+        abilities.add(boomerang4);
+
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
@@ -103,8 +116,8 @@ public class GameScreen extends Game implements Screen {
         mapHeight = tiledMap.getProperties().get("height", Integer.class) *
             tiledMap.getProperties().get("tileheight", Integer.class);
         System.out.println("Map width: " + mapWidth + ", Map height: " + mapHeight);
-        player.setPlayerX(mapWidth/2);
-        player.setPlayerY(mapHeight/2);
+        player.setPlayerX(mapWidth * 0.5f);
+        player.setPlayerY(mapHeight * 0.5f);
     }
 
     @Override
@@ -125,7 +138,8 @@ public class GameScreen extends Game implements Screen {
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     private void draw() {
         gameviewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
@@ -140,28 +154,20 @@ public class GameScreen extends Game implements Screen {
         spriteBatch.setProjectionMatrix(gameviewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(gameviewport.getCamera().combined);
 
-        // Enemies
+
         spriteBatch.begin();
-
-        for (Enemy enemy : enemies) {
-            enemy.getSprite().draw(spriteBatch);
-        }
-
-        player.getSprite().draw(spriteBatch);
-        player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
-        shark.getSprite().draw(spriteBatch);
-
 
         drawPlayer();
 
         stage.act();
         stage.draw();
 
-
         player.getSprite().draw(spriteBatch);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
-        shark.getSprite().draw(spriteBatch);
-        boomerang.getSprite().draw(spriteBatch);
+
+        for (Ability a : abilities) {
+            a.getSprite().draw(spriteBatch);
+        }
 
         // Rita alla DamageText-objekt
         for (DamageText dt : damageTexts) {
@@ -170,20 +176,23 @@ public class GameScreen extends Game implements Screen {
         for (PowerUp powerUp : droppedItems) {
             powerUp.getSprite().draw(spriteBatch);
         }
+        for (SmokeParticle s : smokeTrail) {
+            s.getSprite().draw(spriteBatch);
+        }
+        for (Enemy enemy : enemies) {
+            if (enemy.isAlive()) {
+                enemy.getSprite().draw(spriteBatch);
+            }
 
-
-        boomerang.showSmokeTrail(spriteBatch);
-
-        player.getSprite().draw(spriteBatch);
-
+        }
         spriteBatch.end();
     }
 
     private void drawPlayer() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.CLEAR);
-        shapeRenderer.rect(player.getSprite().getX(), player.getSprite().getY(), player.getSprite().getWidth(), player.getSprite().getHeight());
-        shapeRenderer.rect(shark.getSprite().getX(), shark.getSprite().getY(), shark.getSprite().getWidth(), shark.getSprite().getHeight());
+        // HITBOXES
+        //shapeRenderer.rect(player.getSprite().getX(), player.getSprite().getY(), player.getSprite().getWidth(), player.getSprite().getHeight());
         shapeRenderer.end();
     }
 
@@ -192,43 +201,45 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void logic() {
+        pickUpPowerUp();
         player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, worldWidth - player.getSprite().getWidth()));
         player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, worldHeight - player.getSprite().getHeight()));
 
+        //ABILITIES
+        for (Ability a : abilities) {
+            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX() + player.getSprite().getWidth() / 2, player.getPlayerY() + player.getSprite().getHeight() / 2);
+        }
 
         pickUpPowerUp();
 
-        // COCONUT SPIN SKIT
-        boomerang.use(player);
-
         // SMOKE TRAIL
-        //boomerang.createSmokeTrail(); //flyttade till draw, vet ej var den ska vara.
+        /*
+        smokeTrail.add(new SmokeParticle(boomerang.getSprite().getX(), boomerang.getSprite().getY()));
+        smokeTrail.add(new SmokeParticle(boomerang2.getSprite().getX(), boomerang2.getSprite().getY()));
+        smokeTrail.add(new SmokeParticle(boomerang3.getSprite().getX(), boomerang3.getSprite().getY()));
+        smokeTrail.add(new SmokeParticle(boomerang4.getSprite().getX(), boomerang4.getSprite().getY()));
 
-        if (boomerang.getHitbox().overlaps(shark.getHitbox()) && !boomerang.hasDamagedThisOrbit()) {
-            double damage = boomerang.getDamage();
-            boolean isCritical = checkForCriticalStrike();
-
-            if (isCritical) {
-                damage *= 2; // Dubblera skadan vid kritiskt slag
+        for (int i = smokeTrail.size - 1; i >= 0; i--) {
+            SmokeParticle s = smokeTrail.get(i);
+            s.update(Gdx.graphics.getDeltaTime());
+            if (s.isDead()) {
+                smokeTrail.removeIndex(i);
             }
-            shark.hit(damage);
+        }
+        //---------------
+        */
 
-            if (!shark.isAlive()) {
-                shark.dropItems(droppedItems);
-                shark = new Shark();
+        for (int i = damageTexts.size - 1; i >= 0; i--) {
+            DamageText dt = damageTexts.get(i);
+            dt.update(Gdx.graphics.getDeltaTime() * 2);
+            if (!dt.isActive()) {
+                damageTexts.removeIndex(i);
             }
-            boomerang.setHasDamagedThisOrbit(true);
         }
 
-        drawDamageText();
-
-        spawnEnemies();
-
-//        Sound sharkDeath = Gdx.audio.newSound(Gdx.files.internal("Thud.mp3"));
-//        long SharkDeathID = sharkDeath.play();
-
+        if (enemies.size < 20) spawnEnemies();
         for (int i = enemies.size - 1; i >= 0; i--) {
-            //
+
             Enemy enemy = enemies.get(i);
 
             float delta = Gdx.graphics.getDeltaTime();
@@ -242,43 +253,39 @@ public class GameScreen extends Game implements Screen {
 
             enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
             //
-            double damage = boomerang.getDamage();
+
             int randomPathX = randomizeDirection.nextInt(50);
             int randomPathY = randomizeDirection.nextInt(50);
             float damageTextX = enemy.getSprite().getX() + randomPathX;
             float damageTextY = enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomPathY;
 
-
             if (enemy.isAlive() == false) {
                 enemies.removeIndex(i);
+                System.out.println("Sharks killed: " + sharksKilled++);
             }
 
-            if (boomerang.getHitbox().overlaps(enemy.getHitbox())) {
-//                sharkDeath.setPitch(SharkDeathID, 2f);
-//                sharkDeath.resume(SharkDeathID);
+            for (Ability a : abilities) {
+                double damage = a.getBaseDamage();
+                if (a.getHitBox().overlaps(enemy.getHitbox())) {
+                    boolean isCritical = checkForCriticalStrike();
+                    if (isCritical) {
+                        damage *= 2; // Dubblera skadan vid kritiskt slag
+                    }
 
-                boolean isCritical = checkForCriticalStrike();
-
-                if (isCritical) {
-                    damage *= 2; // Dubblera skadan vid kritiskt slag
+                    if (enemy.hit(a.getBaseDamage())) {
+                        damageTexts.add(new DamageText(String.valueOf((int) damage),
+                            damageTextX,
+                            damageTextY,
+                            1.0f, // damageText visas i 3 sekunder
+                            isCritical));
+                    }
                 }
-
-
-                if(enemy.hit(boomerang.getDamage())){
-                    damageTexts.add(new DamageText(String.valueOf((int) damage),
-                        damageTextX,
-                        damageTextY,
-                        3.0f, // damageText visas i 3 sekunder
-                        isCritical));
-                }
-
-
             }
         }
 
         //kolla position
-        player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, mapWidth*gameScale - player.getSprite().getWidth()));
-        player.setPlayerY(MathUtils.clamp(player.getPlayerY(), 0, mapHeight*gameScale - player.getSprite().getHeight()));
+        player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, mapWidth * gameScale - player.getSprite().getWidth()));
+        player.setPlayerY(MathUtils.clamp(player.getPlayerY(), 0, mapHeight * gameScale - player.getSprite().getHeight()));
 
         player.getSprite().setPosition(player.getPlayerX(), player.getPlayerY());
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
@@ -289,9 +296,8 @@ public class GameScreen extends Game implements Screen {
         return randomizeDirection.nextFloat() < critChance;
     }
 
-
     public void pickUpPowerUp() {
-        Array<PowerUp> powerUpsToRemove = new Array<>();
+        List<PowerUp> powerUpsToRemove = new ArrayList<>();
         for (PowerUp powerUp : droppedItems) {
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
                 powerUp.onPickup(player);
@@ -299,25 +305,17 @@ public class GameScreen extends Game implements Screen {
                 powerUpsToRemove.add(powerUp);
             }
         }
-        droppedItems.removeAll(powerUpsToRemove, true);
-    }
-
-    public void drawDamageText() {
-        for (int i = damageTexts.size - 1; i >= 0; i--) {
-            DamageText dt = damageTexts.get(i);
-            dt.update(Gdx.graphics.getDeltaTime());
-            if (!dt.isActive()) {
-                damageTexts.removeIndex(i);
-            }
-        }
+        droppedItems.removeAll(powerUpsToRemove);
     }
 
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
-    public void hide() {}
+    public void hide() {
+    }
 
     @Override
     public void dispose() {
@@ -335,9 +333,6 @@ public class GameScreen extends Game implements Screen {
         float viewHeight = gameviewport.getCamera().viewportHeight;
         float camX = gameviewport.getCamera().position.x;
         float camY = gameviewport.getCamera().position.y;
-
-        System.out.println(camX);
-        System.out.println(camY);
 
         // Get random edge: 0 = Top, 1 = Bottom, 2 = Left, 3 = Right
         int edge = MathUtils.random(3);
@@ -378,7 +373,7 @@ public class GameScreen extends Game implements Screen {
         Vector2 direction = new Vector2(playerPosition.x - enemyPosition.x, playerPosition.y - enemyPosition.y);
         direction.nor();
 
-        return direction ;
+        return direction;
     }
 
     private void spawnEnemies() {
@@ -388,5 +383,9 @@ public class GameScreen extends Game implements Screen {
         shark.getHitbox().setX(randomPos.x);
         shark.getHitbox().setY(randomPos.y);
         enemies.add(shark);
+    }
+
+    public Array<Enemy> getEnemies() {
+        return enemies;
     }
 }
