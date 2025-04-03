@@ -375,6 +375,10 @@ public class GameScreen extends Game implements Screen {
             bullet.updatePosition(player.getPlayerX(), player.getPlayerY()); // Startpositionen är spelarens position
             bullet.setDirection(direction); // Mot fienden
 
+            //bullet.getSprite().setOriginCenter(); // Sätt spritens ursprung till mitten så rotationen blir korrekt
+            //float angleDeg = direction.angleDeg();
+            //bullet.getSprite().setRotation(angleDeg); // Rotera spriten så att den pekar mot riktningen
+
             abilities.add(bullet);
         }
     }
