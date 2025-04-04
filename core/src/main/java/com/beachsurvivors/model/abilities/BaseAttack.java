@@ -8,10 +8,10 @@ public class BaseAttack extends Ability{
     private Vector2 direction;
     private Rectangle hitBox;
 
-    public BaseAttack(String name, String texturePath, AbilityType type, double baseDamage, double cooldown, int width, int height) {
-        super(name, texturePath, type, baseDamage, cooldown, width, height);
+    public BaseAttack() {
+        super("bullet", "entities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
         this.direction = new Vector2(0, 0);
-        this.hitBox = new Rectangle(getSprite().getX(), getSprite().getY(), width, height);
+        //this.hitBox = new Rectangle(getSprite().getX(), getSprite().getY(), 16, 16);
     }
 
     public Vector2 getDirection() { return direction; }

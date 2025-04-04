@@ -109,7 +109,7 @@ public class GameScreen extends Game implements Screen {
         boomerang4 = new Boomerang();
         boomerang4.setAngle(270);
 
-        bullet = new BaseAttack("bullet", "entities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
+        bullet = new BaseAttack();
 
 
         abilities.add(boomerang);
@@ -377,7 +377,7 @@ public class GameScreen extends Game implements Screen {
             ).nor();
 
             // Skapa en ny bullet
-            BaseAttack bullet = new BaseAttack("bullet", "entities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
+            BaseAttack bullet = new BaseAttack();
 
             bullet.updatePosition(player.getPlayerX(), player.getPlayerY()); // Startpositionen är spelarens position
             bullet.setDirection(direction); // Mot fienden
