@@ -44,12 +44,13 @@ public class Player implements Disposable {
         beachguyImage = new Texture("game_screen/Cool_beach_guy.png");
         beachGuySprite = new Sprite(beachguyImage);
         beachGuySprite.setSize(100, 100);
-        beachGuyHitBox = new Rectangle(map.getStartingX(), map.getStartingY(), playerWidth, playerHeight);
+        playerHeight = 128;
+        playerWidth = 128;
+        beachGuyHitBox = new Rectangle(map.getStartingX()+64, map.getStartingY()+64, playerWidth, playerHeight);
         playerX = map.getStartingX();
         playerY = map.getStartingY();
 
-        playerHeight = 128;
-        playerWidth = 128;
+
 
         createAnimation();
 
