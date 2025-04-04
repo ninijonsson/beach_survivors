@@ -43,7 +43,7 @@ public class Player implements Disposable {
         this.spriteBatch = spriteBatch;
         beachguyImage = new Texture("game_screen/Cool_beach_guy.png");
         beachGuySprite = new Sprite(beachguyImage);
-        beachGuySprite.setSize(100, 100);
+        beachGuySprite.setSize(128, 128);
         beachGuyHitBox = new Rectangle(map.getStartingX(), map.getStartingY(), playerWidth, playerHeight);
         playerX = map.getStartingX();
         playerY = map.getStartingY();

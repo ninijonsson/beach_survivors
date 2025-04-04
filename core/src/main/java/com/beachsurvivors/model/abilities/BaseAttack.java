@@ -11,7 +11,6 @@ public class BaseAttack extends Ability{
     public BaseAttack() {
         super("bullet", "entities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
         this.direction = new Vector2(0, 0);
-        //this.hitBox = new Rectangle(getSprite().getX(), getSprite().getY(), 16, 16);
     }
 
     public Vector2 getDirection() { return direction; }
