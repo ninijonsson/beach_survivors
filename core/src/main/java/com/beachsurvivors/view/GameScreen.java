@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.beachsurvivors.model.Boomerang;
+import com.beachsurvivors.model.abilities.Boomerang;
 import com.beachsurvivors.model.DamageText;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
