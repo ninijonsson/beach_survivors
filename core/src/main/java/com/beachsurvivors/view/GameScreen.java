@@ -37,7 +37,7 @@ import java.util.Random;
 public class GameScreen extends Game implements Screen {
 
     private Main main;
-
+    private int enemiesToSpawn = 20;
     private SpriteBatch spriteBatch;
     private FitViewport gameviewport;
     private Stage stage;
@@ -70,10 +70,8 @@ public class GameScreen extends Game implements Screen {
     private Random randomizeDirection = new Random();
 
 
-
     private Array<Enemy> enemies = new Array<>();
     private Vector2 playerPos;
-
 
 
     public GameScreen(Main main) {
@@ -181,38 +179,63 @@ public class GameScreen extends Game implements Screen {
 //        player.getSprite().draw(spriteBatch);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
 
-        for (Ability a : abilities) {
-            a.getSprite().draw(spriteBatch);
-        }
 
-        // Rita alla DamageText-objekt
-        for (DamageText dt : damageTexts) {
-            dt.draw(spriteBatch);
-        }
-        for (PowerUp powerUp : droppedItems) {
-            powerUp.getSprite().draw(spriteBatch);
-        }
-        for (SmokeParticle s : smokeTrail) {
-            s.getSprite().draw(spriteBatch);
-        }
+        drawStuff();
+
+        spriteBatch.end();
+    }
+
+    private void drawStuff() {
+        drawAbilities();
+        drawDamageText();
+        drawPowerUp();
+        drawSmokeTrail();
+        drawEnemies();
+    }
+
+    private void drawEnemies() {
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
-               // enemy.getSprite().draw(spriteBatch);
+                // enemy.getSprite().draw(spriteBatch);
                 enemy.drawAnimation(spriteBatch);
             }
 
         }
-        spriteBatch.end();
     }
 
+    private void drawSmokeTrail() {
+        for (SmokeParticle s : smokeTrail) {
+            s.getSprite().draw(spriteBatch);
+        }
+    }
+
+    private void drawPowerUp() {
+        for (PowerUp powerUp : droppedItems) {
+            powerUp.getSprite().draw(spriteBatch);
+        }
+    }
+
+    private void drawDamageText() {
+        for (DamageText dt : damageTexts) {
+            dt.draw(spriteBatch);
+        }
+    }
+
+    private void drawAbilities() {
+        for (Ability a : abilities) {
+            a.getSprite().draw(spriteBatch);
+        }
+    }
+
+    /**
+     * HITBOXES FOR PLAYER
+     */
     private void drawPlayer() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.CLEAR);
         // HITBOXES
         shapeRenderer.rect(player.getSprite().getX(), player.getSprite().getY(), player.getSprite().getWidth(), player.getSprite().getHeight());
         shapeRenderer.end();
-
-
     }
 
     private void input() {
@@ -226,27 +249,11 @@ public class GameScreen extends Game implements Screen {
 
         //ABILITIES
         for (Ability a : abilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX() , player.getPlayerY());
+            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
         }
 
+        //addSmokeTrails();
 
-
-        // SMOKE TRAIL
-        /*
-        smokeTrail.add(new SmokeParticle(boomerang.getSprite().getX(), boomerang.getSprite().getY()));
-        smokeTrail.add(new SmokeParticle(boomerang2.getSprite().getX(), boomerang2.getSprite().getY()));
-        smokeTrail.add(new SmokeParticle(boomerang3.getSprite().getX(), boomerang3.getSprite().getY()));
-        smokeTrail.add(new SmokeParticle(boomerang4.getSprite().getX(), boomerang4.getSprite().getY()));
-
-        for (int i = smokeTrail.size - 1; i >= 0; i--) {
-            SmokeParticle s = smokeTrail.get(i);
-            s.update(Gdx.graphics.getDeltaTime());
-            if (s.isDead()) {
-                smokeTrail.removeIndex(i);
-            }
-        }
-        //---------------
-        */
 
         // BULLET
         float bulletCooldown = (float) bullet.getCooldown(); // Gör om cooldown till float
@@ -265,7 +272,7 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        if (enemies.size < 20) spawnEnemies();
+        if (enemies.size < enemiesToSpawn) spawnEnemies();
         for (int i = enemies.size - 1; i >= 0; i--) {
 
             Enemy enemy = enemies.get(i);
@@ -319,13 +326,23 @@ public class GameScreen extends Game implements Screen {
                 }
             }
         }
-
-        //kolla position
-//        player.setPlayerX(MathUtils.clamp(player.getPlayerX(), 0, map.getWidth() * map.getGameScale() - player.getSprite().getWidth()));
-//        player.setPlayerY(MathUtils.clamp(player.getPlayerY(), 0, map.getHeight() * map.getGameScale() - player.getSprite().getHeight()));
-//
-       player.getSprite().setPosition(player.getPlayerX() - player.getSprite().getWidth()/2, player.getPlayerY() - player.getSprite().getHeight()/2);
+        player.getSprite().setPosition(player.getPlayerX() - player.getSprite().getWidth() / 2, player.getPlayerY() - player.getSprite().getHeight() / 2);
         player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
+    }
+
+    private void addSmokeTrails() {
+        smokeTrail.add(new SmokeParticle(boomerang.getSprite().getX(), boomerang.getSprite().getY()));
+        smokeTrail.add(new SmokeParticle(boomerang2.getSprite().getX(), boomerang2.getSprite().getY()));
+        smokeTrail.add(new SmokeParticle(boomerang3.getSprite().getX(), boomerang3.getSprite().getY()));
+        smokeTrail.add(new SmokeParticle(boomerang4.getSprite().getX(), boomerang4.getSprite().getY()));
+
+        for (int i = smokeTrail.size - 1; i >= 0; i--) {
+            SmokeParticle s = smokeTrail.get(i);
+            s.update(Gdx.graphics.getDeltaTime());
+            if (s.isDead()) {
+                smokeTrail.removeIndex(i);
+            }
+        }
     }
 
     private boolean checkForCriticalStrike() {
@@ -336,8 +353,8 @@ public class GameScreen extends Game implements Screen {
     public void pickUpPowerUp() {
         Array<PowerUp> powerUpsToRemove = new Array<>();
         for (PowerUp powerUp : droppedItems) {
-        System.out.println("player X + Y " + player.getHitBox().getX() + " Y " +  player. getHitBox().getY());
-        System.out.println("power up X + Y " + powerUp.getHitbox().getX() +" Y " + powerUp.getHitbox().getY());
+            System.out.println("player X + Y " + player.getHitBox().getX() + " Y " + player.getHitBox().getY());
+            System.out.println("power up X + Y " + powerUp.getHitbox().getX() + " Y " + powerUp.getHitbox().getY());
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
                 System.err.println("true");
                 powerUp.onPickup(player);
@@ -389,7 +406,6 @@ public class GameScreen extends Game implements Screen {
             abilities.add(bullet);
         }
     }
-
 
 
     @Override

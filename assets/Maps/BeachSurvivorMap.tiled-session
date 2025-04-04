@@ -4,11 +4,11 @@
     ],
     "fileStates": {
         "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Map2/map2.tmx": {
-            "scale": 0.33,
-            "selectedLayer": 1,
+            "scale": 2,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 1468.181818181818,
-                "y": 2084.848484848485
+                "x": 1689.25,
+                "y": 1970
             }
         },
         "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Map2/rpg.tsx": {
@@ -29,6 +29,7 @@
         "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Map2/tf_beach_tileB.tsx",
         "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Map2/tf_beach_tileA1.tsx"
     ],
+    "project": "",
     "recentFiles": [
         "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Map2/tf_beach_tileA1.tsx",
         "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Map2/tf_beach_tileB.tsx",
