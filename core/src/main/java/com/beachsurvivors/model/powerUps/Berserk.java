@@ -9,8 +9,8 @@ public class Berserk extends PowerUp implements PickUpAble {
     private double movementSpeedIncrease;
     private double attackSpeedIncrease;
 
-    public Berserk() {
-        super("" , 10);
+    public Berserk(float x, float y) {
+        super("" , 10, x, y);
     }
 
     @Override

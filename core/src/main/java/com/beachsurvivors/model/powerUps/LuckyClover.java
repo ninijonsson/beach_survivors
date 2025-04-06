@@ -8,12 +8,10 @@ import java.util.TimerTask;
 
 public class LuckyClover extends PowerUp implements PickUpAble {
 
-    private final int critChanceIncrease = 10;
+    private final float critChanceIncrease = 1f;
 
     public LuckyClover(float x, float y) {
-        super("entities/power_ups/lucky_clover.png",  20);
-        this.getSprite().setPosition(x, y);
-        this.getHitbox().setPosition(x, y);
+        super("entities/power_ups/lucky_clover.png",  20, x, y);
     }
 
     @Override
@@ -28,7 +26,7 @@ public class LuckyClover extends PowerUp implements PickUpAble {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                player.increaseCritChance(critChanceIncrease);
+                player.increaseCritChance(0.5f); // Återgår till 0.5f (standard)
             }
         }, getDuration());
     }

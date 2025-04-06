@@ -18,6 +18,7 @@ entities/Shark.png
 entities/Smoke.png
 entities/abilities/bullet.png
 entities/beach_guy_sheet.png
+entities/power_ups/health_heart.png
 entities/power_ups/lucky_clover.png
 entities/power_ups/speed_boost.png
 game_screen/Cool_beach_guy.png

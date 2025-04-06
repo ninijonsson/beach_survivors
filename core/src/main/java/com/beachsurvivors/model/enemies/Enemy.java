@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.model.powerUps.HealthHeart;
 import com.beachsurvivors.model.powerUps.LuckyClover;
 import com.beachsurvivors.model.powerUps.PowerUp;
 import com.beachsurvivors.model.powerUps.SpeedBoost;
@@ -192,6 +193,10 @@ public abstract class Enemy implements Disposable {
             case 2:
                 LuckyClover luckyClover = new LuckyClover(x, y);
                 droppedItems.add(luckyClover);
+                break;
+            case 3:
+                HealthHeart healthHeart = new HealthHeart(x, y);
+                droppedItems.add(healthHeart);
                 break;
         }
 

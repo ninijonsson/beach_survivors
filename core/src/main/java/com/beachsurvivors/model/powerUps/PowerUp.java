@@ -18,14 +18,18 @@ public abstract class PowerUp implements PickUpAble {
     private float x;
     private float y;
 
-    public PowerUp(String texturePath, int duration) {
+    public PowerUp(String texturePath, int duration, float x, float y) {
         this.duration = duration;
 
         createTexture(texturePath);
+
         sprite = new Sprite(texture);
         sprite.setSize(64, 64);
+        sprite.setPosition(x, y);
+
         hitbox = new Rectangle();
         hitbox.setSize(64,64);
+        hitbox.setPosition(x, y);
     }
 
     protected abstract void applyAffect(Player player);
