@@ -11,13 +11,14 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Map.Map;
+import com.beachsurvivors.model.abilities.BaseAttack;
 
 public class Player implements Disposable {
 
     private int healthPoints;
     private int experiencePoints;
     private float speed = 400f;
-    private float critChance=0.5f;
+    private float critChance = 0.5f;
 
     private Texture beachguyImage;
     private Sprite beachGuySprite;
@@ -49,11 +50,9 @@ public class Player implements Disposable {
         beachGuyHitBox = new Rectangle(map.getStartingX()+64, map.getStartingY()+64, playerWidth, playerHeight);
         playerX = map.getStartingX();
         playerY = map.getStartingY();
-
-
+        healthPoints = 100;
 
         createAnimation();
-
     }
 
     private void createAnimation() {
@@ -78,8 +77,6 @@ public class Player implements Disposable {
         spriteBatch.draw(currentFrame, playerX, playerY, playerWidth, playerHeight);
         spriteBatch.end();
     }
-
-
 
     public void playerInput() {
         movementKeys();
@@ -123,14 +120,12 @@ public class Player implements Disposable {
             beachGuySprite.setPosition(playerX, playerY);
             beachGuyHitBox.setPosition(playerX, playerY);
         }
-
     }
 
     public void setPlayerSize(float size) {
         playerWidth = size;
         playerHeight = size;
     }
-
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
@@ -171,6 +166,10 @@ public class Player implements Disposable {
 
     public void increaseSpeed(int speedIncrease) {
         speed += speedIncrease;
+    }
+
+    public void increaseCritChance(float critChanceIncrease) {
+        critChance = critChanceIncrease;
     }
 
     public void setBeachguyImage(Texture beachguyImage) {
@@ -216,4 +215,16 @@ public class Player implements Disposable {
     public float getCritChance() {
         return critChance;
     }
+
+    public int getHealthPoints() { return healthPoints; }
+
+    public void increaseHealthPoints(int increasedHealthPoints) {
+        healthPoints += increasedHealthPoints;
+
+        if (healthPoints > 100) {
+            healthPoints = 100;
+        }
+    }
+
+    public void increaseDamage(double increasedDamange) {}
 }
