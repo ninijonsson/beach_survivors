@@ -1,5 +1,8 @@
 package com.beachsurvivors.model.enemies;
 
+import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.model.Player;
+
 public class Crab extends Enemy {
 
     public Crab(String texturePath, int width, int height) {
@@ -14,7 +17,7 @@ public class Crab extends Enemy {
     }
 
     @Override
-    public void attack() {
+    public void attack(Player player, Array enemyAbilities) {
 
     }
 

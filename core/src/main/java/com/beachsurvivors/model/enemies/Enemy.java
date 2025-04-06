@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.powerUps.*;
 
 import java.util.Random;
@@ -81,7 +82,7 @@ public abstract class Enemy implements Disposable {
     }
 
     public abstract void move();
-    public abstract void attack();
+    public abstract void attack(Player player, Array enemyAbilities);
     public abstract void onDeath();
     public abstract void dropItems();
 

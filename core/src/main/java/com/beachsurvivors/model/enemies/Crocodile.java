@@ -1,5 +1,8 @@
 package com.beachsurvivors.model.enemies;
 
+import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.model.Player;
+
 public class Crocodile extends Enemy {
 
 
@@ -15,7 +18,7 @@ public class Crocodile extends Enemy {
     }
 
     @Override
-    public void attack() {
+    public void attack(Player player, Array enemyAbilities) {
 
     }
 

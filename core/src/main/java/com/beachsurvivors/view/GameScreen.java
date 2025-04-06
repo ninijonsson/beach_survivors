@@ -75,6 +75,7 @@ public class GameScreen extends Game implements Screen {
 
 
     private Array<Enemy> enemies = new Array<>();
+    private Array<Ability> enemyAbilities = new Array<>();
     private Vector2 playerPos;
 
 
@@ -195,6 +196,7 @@ public class GameScreen extends Game implements Screen {
         drawPowerUp();
         drawSmokeTrail();
         drawEnemies();
+        drawEnemyAbilities();
     }
 
     private void drawEnemies() {
@@ -231,6 +233,12 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    private void drawEnemyAbilities() {
+        for (Ability a : enemyAbilities) {
+            a.getSprite().draw(spriteBatch);
+        }
+    }
+
     /**
      * HITBOXES FOR PLAYER
      */
@@ -256,6 +264,8 @@ public class GameScreen extends Game implements Screen {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
         }
 
+        enemyAttacks();
+
         //addSmokeTrails();
 
 
@@ -267,6 +277,8 @@ public class GameScreen extends Game implements Screen {
         if (bulletTimer >= bulletCooldown) {
             bulletTimer = 0f;
             shootAtNearestEnemy();
+
+
         }
 
         for (int i = damageTexts.size - 1; i >= 0; i--) {
@@ -418,6 +430,17 @@ public class GameScreen extends Game implements Screen {
             abilities.add(bullet);
         }
     }
+
+    private void enemyAttacks() {
+        for (Enemy enemy : enemies) {
+            enemy.attack(player, enemyAbilities);
+        }
+        for (Ability a : enemyAbilities) {
+            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+        }
+    }
+
+
 
 
     @Override

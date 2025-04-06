@@ -19,6 +19,7 @@ entities/Shark-Sheet.png
 entities/Shark.png
 entities/Smoke.png
 entities/abilities/bullet.png
+entities/abilities/fireball.png
 entities/beach_guy_sheet.png
 entities/power_ups/beer.png
 entities/power_ups/health_heart.png

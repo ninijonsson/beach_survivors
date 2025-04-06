@@ -226,5 +226,13 @@ public class Player implements Disposable {
         }
     }
 
+    public float getPlayerWidth() {
+        return playerWidth;
+    }
+
+    public float getPlayerHeight() {
+        return playerHeight;
+    }
+
     public void increaseDamage(double increasedDamange) {}
 }
