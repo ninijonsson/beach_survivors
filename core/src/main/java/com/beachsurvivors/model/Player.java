@@ -173,6 +173,10 @@ public class Player implements Disposable {
         speed += speedIncrease;
     }
 
+    public void increaseCritChance(int critChanceIncrease) {
+        critChance += critChanceIncrease;
+    }
+
     public void setBeachguyImage(Texture beachguyImage) {
         this.beachguyImage = beachguyImage;
     }

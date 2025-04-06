@@ -23,10 +23,9 @@ public abstract class PowerUp implements PickUpAble {
 
         createTexture(texturePath);
         sprite = new Sprite(texture);
+        sprite.setSize(64, 64);
         hitbox = new Rectangle();
-        hitbox.setSize(32,32);
-
-
+        hitbox.setSize(64,64);
     }
 
     protected abstract void applyAffect(Player player);

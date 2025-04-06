@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.model.powerUps.LuckyClover;
 import com.beachsurvivors.model.powerUps.PowerUp;
 import com.beachsurvivors.model.powerUps.SpeedBoost;
 
@@ -174,15 +175,31 @@ public abstract class Enemy implements Disposable {
         isAlive = alive;
     }
 
-
     public void dropItems(Array<PowerUp> droppedItems) {
         Random random = new Random();
         int chance = random.nextInt(0,100);
-        if (chance == 1) {
+
+        // Drop items koordinater
+        float x = getSprite().getWidth()/2 + getSprite().getX();
+        float y = getSprite().getHeight()/2 + getSprite().getY();
+
+        switch (chance) {
+            case 1:
+                SpeedBoost speedBoost = new SpeedBoost(x, y);
+                droppedItems.add(speedBoost);
+                System.out.println("Item dropped  X" + speedBoost.getHitbox().getX() + " Y " + speedBoost.getHitbox().getY());
+                break;
+            case 2:
+                LuckyClover luckyClover = new LuckyClover(x, y);
+                droppedItems.add(luckyClover);
+                break;
+        }
+
+        /*if (chance == 1) {
             SpeedBoost speedBoost = new SpeedBoost((getSprite().getWidth()/2)+getSprite().getX(), (getSprite().getHeight()/2) + getSprite().getY());
             droppedItems.add(speedBoost);
             System.out.println("Item dropped  X" + speedBoost.getHitbox().getX() + " Y " + speedBoost.getHitbox().getY());
-        }
+        }*/
 
     }
 

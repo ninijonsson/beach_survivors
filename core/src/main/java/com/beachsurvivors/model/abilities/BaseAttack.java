@@ -9,7 +9,7 @@ public class BaseAttack extends Ability{
     private Rectangle hitBox;
 
     public BaseAttack() {
-        super("bullet", "entities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
+        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 5.0, 1, 16, 16);
         this.direction = new Vector2(0, 0);
     }
 
