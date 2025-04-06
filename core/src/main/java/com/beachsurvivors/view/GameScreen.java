@@ -28,6 +28,7 @@ import com.beachsurvivors.model.abilities.AbilityType;
 import com.beachsurvivors.model.abilities.BaseAttack;
 import com.beachsurvivors.model.enemies.Enemy;
 import com.beachsurvivors.model.enemies.Shark;
+import com.beachsurvivors.model.powerUps.Berserk;
 import com.beachsurvivors.model.powerUps.PowerUp;
 
 //import java.lang.classfile.attribute.BootstrapMethodsAttribute;
@@ -260,6 +261,7 @@ public class GameScreen extends Game implements Screen {
         float bulletCooldown = (float) bullet.getCooldown(); // Gör om cooldown till float
 
         bulletTimer += Gdx.graphics.getDeltaTime();
+
         if (bulletTimer >= bulletCooldown) {
             bulletTimer = 0f;
             shootAtNearestEnemy();
@@ -357,8 +359,16 @@ public class GameScreen extends Game implements Screen {
             System.out.println("player X + Y " + player.getHitBox().getX() + " Y " + player.getHitBox().getY());
             System.out.println("power up X + Y " + powerUp.getHitbox().getX() + " Y " + powerUp.getHitbox().getY());
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
-                System.err.println("true");
-                powerUp.onPickup(player);
+                // Extra kontroll eftersom vi vill skicka med bullet-objektet
+                // för att kunna justera damage och cooldown
+                if (powerUp instanceof Berserk) {
+                    powerUp.onPickup(player);
+                    ((Berserk) powerUp).onPickupBullet(bullet);
+                } else {
+                    System.err.println("true");
+                    powerUp.onPickup(player);
+                }
+
                 powerUpsToRemove.add(powerUp);
                 powerUp.dispose();
             }

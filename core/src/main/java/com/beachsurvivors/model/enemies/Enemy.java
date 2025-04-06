@@ -13,10 +13,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
-import com.beachsurvivors.model.powerUps.HealthHeart;
-import com.beachsurvivors.model.powerUps.LuckyClover;
-import com.beachsurvivors.model.powerUps.PowerUp;
-import com.beachsurvivors.model.powerUps.SpeedBoost;
+import com.beachsurvivors.model.powerUps.*;
 
 import java.util.Random;
 
@@ -198,6 +195,9 @@ public abstract class Enemy implements Disposable {
                 HealthHeart healthHeart = new HealthHeart(x, y);
                 droppedItems.add(healthHeart);
                 break;
+            case 4:
+                Berserk berserk = new Berserk(x, y);
+                droppedItems.add(berserk);
         }
 
         /*if (chance == 1) {

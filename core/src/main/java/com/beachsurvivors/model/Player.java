@@ -11,13 +11,14 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Map.Map;
+import com.beachsurvivors.model.abilities.BaseAttack;
 
 public class Player implements Disposable {
 
     private int healthPoints;
     private int experiencePoints;
     private float speed = 400f;
-    private float critChance=0.5f;
+    private float critChance = 0.5f;
 
     private Texture beachguyImage;
     private Sprite beachGuySprite;
@@ -224,4 +225,6 @@ public class Player implements Disposable {
             healthPoints = 100;
         }
     }
+
+    public void increaseDamage(double increasedDamange) {}
 }

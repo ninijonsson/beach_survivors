@@ -8,7 +8,6 @@ Map2/tf_beach_tileB.tsx
 Maps/BeachSurvivorMap.tiled-session
 SharkDeath.wav
 Thud.mp3
-entities/Beer 2.png
 entities/Beer.png
 entities/Boomerangmc.png
 entities/Burger.png
@@ -18,6 +17,7 @@ entities/Shark.png
 entities/Smoke.png
 entities/abilities/bullet.png
 entities/beach_guy_sheet.png
+entities/power_ups/beer.png
 entities/power_ups/health_heart.png
 entities/power_ups/lucky_clover.png
 entities/power_ups/speed_boost.png
