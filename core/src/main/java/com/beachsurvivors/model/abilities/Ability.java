@@ -11,7 +11,7 @@ public abstract class Ability implements Disposable {
     private String name;
     private AbilityType type;
     private double damage;
-    private double cooldown;  //Vissa abilities kanske behöver ha en cooldown?
+    private static double cooldown;  //Vissa abilities kanske behöver ha en cooldown?
                                 // kanske flytta till subclass också
     private Texture texture;
     private Sprite sprite;
@@ -60,12 +60,20 @@ public abstract class Ability implements Disposable {
         return cooldown;
     }
 
+    public void decreaseCooldown(double attackSpeed) {
+        this.cooldown -= attackSpeed;
+    }
+
     public void setType(AbilityType type) {
         this.type = type;
     }
 
     public void setDamage(double damage) {
         this.damage = damage;
+    }
+
+    public void increaseDamage(double damage) {
+        this.damage += damage;
     }
 
     public void setTexture(Texture texture) {
