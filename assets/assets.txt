@@ -13,6 +13,9 @@ entities/Beer.png
 entities/Boomerangmc.png
 entities/Burger.png
 entities/Coconut.png
+entities/Crocodile1.png
+entities/Crocodile2.png
+entities/Seal rocket launcher-Sheet.png
 entities/Shark-Sheet.png
 entities/Shark.png
 entities/Smoke.png

@@ -44,6 +44,9 @@ public abstract class Enemy implements Disposable {
     public Enemy(String texturePath, int width, int height) {
         this.width = width;
         this.height = height;
+        if (texturePath.isEmpty()) {
+            texturePath = "assets/placeholder.png";
+        }
         this.texture = new Texture(texturePath);
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
@@ -68,16 +71,14 @@ public abstract class Enemy implements Disposable {
                 walkFrames[index++] = tmp[i][j];
             }
         }
-        walkAnimation = new Animation<TextureRegion>(0.25f, walkFrames);
+        walkAnimation = new Animation<>(0.25f, walkFrames);
         stateTime = 0f;
     }
 
     public void drawAnimation(SpriteBatch spriteBatch) {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-//        spriteBatch.begin();
         spriteBatch.draw(currentFrame, getSprite().getX(), getSprite().getY(), getWidth(), getHeight());
-//        spriteBatch.end();
     }
 
     public abstract void move();

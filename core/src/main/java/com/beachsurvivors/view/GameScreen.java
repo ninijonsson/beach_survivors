@@ -26,7 +26,9 @@ import com.beachsurvivors.model.SmokeParticle;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.AbilityType;
 import com.beachsurvivors.model.abilities.BaseAttack;
+import com.beachsurvivors.model.enemies.Crocodile;
 import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.model.enemies.NavySeal;
 import com.beachsurvivors.model.enemies.Shark;
 import com.beachsurvivors.model.powerUps.PowerUp;
 
@@ -354,10 +356,7 @@ public class GameScreen extends Game implements Screen {
     public void pickUpPowerUp() {
         Array<PowerUp> powerUpsToRemove = new Array<>();
         for (PowerUp powerUp : droppedItems) {
-            System.out.println("player X + Y " + player.getHitBox().getX() + " Y " + player.getHitBox().getY());
-            System.out.println("power up X + Y " + powerUp.getHitbox().getX() + " Y " + powerUp.getHitbox().getY());
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
-                System.err.println("true");
                 powerUp.onPickup(player);
                 powerUpsToRemove.add(powerUp);
                 powerUp.dispose();
@@ -478,12 +477,29 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void spawnEnemies() {
-        Shark shark = new Shark();
+        Random random = new Random();
+        int enemyChoice = random.nextInt(0,3);
+        Enemy enemy = null;
+        switch (enemyChoice) {
+            case 0:
+                enemy = new Shark();
+                break;
+            case 1:
+                enemy = new NavySeal();
+                break;
+            case 2:
+                enemy = new Crocodile();
+                break;
+        }
+
+
+//        Shark shark = new Shark();
+
         Vector2 randomPos = getRandomOffscreenPosition(100);
-        shark.getSprite().setPosition(randomPos.x, randomPos.y);
-        shark.getHitbox().setX(randomPos.x);
-        shark.getHitbox().setY(randomPos.y);
-        enemies.add(shark);
+        enemy.getSprite().setPosition(randomPos.x, randomPos.y);
+        enemy.getHitbox().setX(randomPos.x);
+        enemy.getHitbox().setY(randomPos.y);
+        enemies.add(enemy);
     }
 
     public Array<Enemy> getEnemies() {
