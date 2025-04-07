@@ -114,6 +114,10 @@ public abstract class Enemy implements Disposable {
         this.movementSpeed = movementSpeed;
     }
 
+    public void setHitSound(Sound hitSound) {
+        this.hitSound = hitSound;
+    }
+
     public void setDamage(int damage) {
         this.damage = damage;
     }

@@ -5,5 +5,8 @@
     <file type="web" url="file://$PROJECT_DIR$/core" />
     <file type="web" url="file://$PROJECT_DIR$/lwjgl3" />
   </component>
+  <component name="LibGDXSkins">
+    <file url="file://$PROJECT_DIR$/assets/uiskin.json" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="openjdk-21" project-jdk-type="JavaSDK" />
 </project>

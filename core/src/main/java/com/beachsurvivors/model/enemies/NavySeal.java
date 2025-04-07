@@ -17,7 +17,7 @@ public class NavySeal extends Enemy {
         createAnimation("assets/entities/enemies/Seal rocket launcher-Sheet.png", 4, 1);
 
         setHealthPoints(30);
-
+        setHitSound(Gdx.audio.newSound(Gdx.files.internal("sounds/Seal_Damage.wav")));
     }
 
     @Override
