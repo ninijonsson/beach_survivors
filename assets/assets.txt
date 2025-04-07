@@ -12,15 +12,16 @@ entities/Beer.png
 entities/Boomerangmc.png
 entities/Burger.png
 entities/Coconut.png
-entities/Crocodile1.png
-entities/Crocodile2.png
-entities/Seal rocket launcher-Sheet.png
-entities/Shark-Sheet.png
-entities/Shark.png
 entities/Smoke.png
 entities/abilities/bullet.png
 entities/abilities/fireball.png
 entities/beach_guy_sheet.png
+entities/enemies/Crocodile1-Sheet.png
+entities/enemies/Crocodile1.png
+entities/enemies/Crocodile2.png
+entities/enemies/Seal rocket launcher-Sheet.png
+entities/enemies/Shark-Sheet.png
+entities/enemies/Shark.png
 entities/power_ups/beer.png
 entities/power_ups/health_heart.png
 entities/power_ups/lucky_clover.png

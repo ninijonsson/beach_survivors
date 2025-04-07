@@ -14,7 +14,7 @@ public class NavySeal extends Enemy {
     public NavySeal() {
         super("", 100, 100);
 
-        createAnimation("assets/entities/Seal rocket launcher-Sheet.png", 4, 1);
+        createAnimation("assets/entities/enemies/Seal rocket launcher-Sheet.png", 4, 1);
 
         setHealthPoints(30);
 

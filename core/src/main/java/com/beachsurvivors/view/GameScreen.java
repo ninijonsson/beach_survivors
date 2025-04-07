@@ -508,6 +508,7 @@ public class GameScreen extends Game implements Screen {
         Vector2 direction = new Vector2(playerPosition.x - enemyPosition.x, playerPosition.y - enemyPosition.y);
         direction.nor();
 
+
         return direction;
     }
 
