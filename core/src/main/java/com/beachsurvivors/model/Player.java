@@ -58,12 +58,12 @@ public class Player implements Disposable {
     private void createAnimation() {
         walkSheet = new Texture(Gdx.files.internal("assets/entities/beach_guy_sheet.png"));
 
-        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/FRAME_COLS, walkSheet.getHeight()/FRAME_ROWS);
+        TextureRegion[][] temp = TextureRegion.split(walkSheet, walkSheet.getWidth()/FRAME_COLS, walkSheet.getHeight()/FRAME_ROWS);
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
         int index = 0;
         for (int i = 0; i < FRAME_ROWS; i++) {
             for (int j = 0; j < FRAME_COLS; j++) {
-                walkFrames[index++] = tmp[i][j];
+                walkFrames[index++] = temp[i][j];
             }
         }
         walkAnimation = new Animation<TextureRegion>(0.25f, walkFrames);
@@ -123,25 +123,28 @@ public class Player implements Disposable {
     }
 
     public void setPlayerSize(float size) {
-        playerWidth = size;
-        playerHeight = size;
+        playerWidth += size;
+        playerHeight += size;
     }
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             System.out.println("big");
             beachGuySprite.setSize(120,120);
-            setPlayerSize(120);
+            setPlayerSize(20);
+            getHitBox().setSize(getPlayerWidth(), getPlayerHeight());
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             System.out.println("small");
             beachGuySprite.setSize(40,40);
-            setPlayerSize(40);
+            setPlayerSize(-20);
+            getHitBox().setSize(getPlayerWidth(), getPlayerHeight());
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             System.out.println("normal");
             beachGuySprite.setSize(80,80);
-            setPlayerSize(80);
+            setPlayerSize(0);
+            getHitBox().setSize(getPlayerWidth(), getPlayerHeight());
         }
     }
 
