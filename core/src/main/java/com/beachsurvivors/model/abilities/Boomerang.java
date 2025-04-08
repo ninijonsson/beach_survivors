@@ -35,8 +35,8 @@ public class Boomerang extends Ability {
         // Beräkna boomerangens position baserat på vinkeln
         float radian = (float) Math.toRadians(angle);
 
-        float coconutX = playerX + 64 + MathUtils.cos(radian) * orbitRadius - sprite.getWidth() / 2;  //Jag la till +64 temporärt för att boomerangerna snurrade off-center.
-        float coconutY = playerY + 64 + MathUtils.sin(radian) * orbitRadius - sprite.getHeight() / 2; //Tror att vi kan fixa det på något annat sätt men ska sova nu godnatt
+        float coconutX = playerX + MathUtils.cos(radian) * orbitRadius - sprite.getWidth() / 2;  //Jag la till +64 temporärt för att boomerangerna snurrade off-center.
+        float coconutY = playerY + MathUtils.sin(radian) * orbitRadius - sprite.getHeight() / 2; //Tror att vi kan fixa det på något annat sätt men ska sova nu godnatt
 
         // Uppdatera boomerangens position
         sprite.setPosition(coconutX, coconutY);

@@ -170,7 +170,7 @@ public class GameScreen extends Game implements Screen {
 
         spriteBatch.begin();
 
-        //drawPlayer();
+        drawPlayer();
 
         stage.act();
         stage.draw();
