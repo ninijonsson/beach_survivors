@@ -1,7 +1,9 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -10,6 +12,7 @@ public class GameUI {
     private Stage stage;
     private ProgressBar progressBar;
     private ProgressBar healthBar;
+    private Label percentageLabel;
 
     public GameUI(FitViewport viewport) {
         stage = new Stage(viewport);
@@ -17,34 +20,45 @@ public class GameUI {
         createPlayerHealthBar(viewport);
         stage.addActor(progressBar);
         stage.addActor(healthBar);
+        stage.addActor(percentageLabel);
     }
 
     private void createPlayerHealthBar(FitViewport viewport) {
-        Skin health = new Skin(Gdx.files.internal("assets/SkinComposer/healthbutton.json"));
-        healthBar = new ProgressBar(0, 100, 0.5f, false, health);
+        Skin healthSkin = new Skin(Gdx.files.internal("assets/SkinComposer/healthbutton.json"));
+        healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
         healthBar.setValue(86);
         healthBar.setPosition(910, 620);
         healthBar.setSize(100, 50);
         healthBar.setScale(0.5f);
+
+        percentageLabel = new Label(getHealthPercentage() + "%", healthSkin);
+        percentageLabel.setColor(Color.BLACK);
+        percentageLabel.setPosition(healthBar.getX()+37, healthBar.getY()+37); // Placera ovanför healthBar
     }
 
     public Stage getStage() {
         return stage;
     }
 
-    public void setProgressBarValue(float value){
+    public void setProgressBarValue(float value) {
         progressBar.setValue(value);
     }
 
-    public void setHealthBarValue(float value){
+    public void setHealthBarValue(float value) {
         healthBar.setValue(value);
+        percentageLabel.setText(getHealthPercentage() + "%"); // Uppdatera labeln när healthBar ändras
     }
 
-    public void createProgressBar(FitViewport viewport){
+    private String getHealthPercentage() {
+        double percentage = (healthBar.getValue() / healthBar.getMaxValue()) * 100;
+        return String.format("%.0f", percentage);
+    }
+
+    public void createProgressBar(FitViewport viewport) {
         Skin skin = new Skin(Gdx.files.internal("assets/SkinComposer/testbuttons.json"));
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
-        progressBar.setPosition(viewport.getScreenWidth()*0.5f+ progressBar.getWidth()*0.5f, viewport.getScreenHeight()+300); // Sätt position längst upp på skärmen
+        progressBar.setPosition(viewport.getScreenWidth() * 0.5f + progressBar.getWidth() * 0.5f, viewport.getScreenHeight() + 300); // Sätt position längst upp på skärmen
         progressBar.setSize(500, 50);
         progressBar.setScale(2f);
     }
