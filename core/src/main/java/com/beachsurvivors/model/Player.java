@@ -80,8 +80,8 @@ public class Player implements Disposable {
 
     public void playerInput() {
         movementKeys();
-        keyBinds();
         flipPlayer();
+        //FLYTTADE KEYBINDS TILL GAMESCREEN
     }
 
     private void movementKeys() {
@@ -132,20 +132,7 @@ public class Player implements Disposable {
         beachGuyHitBox.setSize(size, size);
     }
 
-    private void keyBinds() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            System.out.println("big");
-            setPlayerSize(120);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            System.out.println("small");
-            setPlayerSize(40);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
-            System.out.println("normal");
-            setPlayerSize(80);
-        }
-    }
+
 
     private void flipPlayer() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {

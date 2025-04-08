@@ -2,6 +2,7 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -40,31 +40,23 @@ public class GameScreen extends Game implements Screen {
     private Main main;
     private int enemiesToSpawn = 20;
     private SpriteBatch spriteBatch;
-    private FitViewport gameviewport;
+    private final FitViewport gameViewport;
     private Stage stage;
-    private GameUI gameUI; // UI-klass för HUD-element
+    private final GameUI gameUI;
 
-    private final int screenWidth = 1920;
-    private final int screenHeight = 1080;
     private ShapeRenderer shapeRenderer;
 
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
-    private Map map;
 
     private Player player;
     private Array<PowerUp> droppedItems;
 
     private Array<Ability> abilities;
     private Boomerang boomerang;
-    private Boomerang boomerang2;
-    private Boomerang boomerang3;
-    private Boomerang boomerang4;
     private BaseAttack bullet;
     private float bulletTimer = 0f;
     private int sharksKilled;
-
-    private Array<SmokeParticle> smokeTrail = new Array<>();
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
@@ -74,16 +66,20 @@ public class GameScreen extends Game implements Screen {
     private Array<Ability> enemyAbilities = new Array<>();
     private Vector2 playerPos;
 
+    private boolean isPaused = false;
+
     public GameScreen(Main main) {
         this.main = main;
 
-        gameviewport = new FitViewport(screenWidth, screenHeight);
+        int screenWidth = 1920;
+        int screenHeight = 1080;
+        gameViewport = new FitViewport(screenWidth, screenHeight);
         gameUI = new GameUI(new FitViewport(screenWidth, screenHeight));
+
         droppedItems = new Array<>();
         abilities = new Array<>();
         sharksKilled = 0;
         create();
-
     }
 
     @Override
@@ -93,38 +89,23 @@ public class GameScreen extends Game implements Screen {
 
         tiledMap = new TmxMapLoader().load("Map2/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
-        this.map = new Map(tiledMap);
-        stage = new Stage(gameviewport);
+        Map map = new Map(tiledMap);
+        stage = new Stage(gameViewport);
         stage.clear();
         player = new Player(map, spriteBatch);
-        playerPos = new Vector2(player.getPlayerX() - 64, player.getPlayerY() - 64);
+        playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
-        // Skapa GameUI med en separat Stage för UI-element
-
-
-        // ABILITIES
         boomerang = new Boomerang();
-        boomerang2 = new Boomerang();
-        boomerang2.setAngle(90);
-        boomerang3 = new Boomerang();
-        boomerang3.setAngle(180);
-        boomerang4 = new Boomerang();
-        boomerang4.setAngle(270);
         bullet = new BaseAttack();
         abilities.add(boomerang);
-        abilities.add(boomerang2);
-        abilities.add(boomerang3);
-        abilities.add(boomerang4);
         abilities.add(bullet);
 
-        // DAMAGETEXT
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
 
-        // PLAYER
-        player.setPlayerX(map.getStartingX() - 64);
-        player.setPlayerY(map.getStartingY() - 64);
+        player.setPlayerX(map.getStartingX());
+        player.setPlayerY(map.getStartingY());
     }
 
     @Override
@@ -135,17 +116,25 @@ public class GameScreen extends Game implements Screen {
     @Override
     public void render(float delta) {
         input();
-        logic();
-        draw();
 
-        // Uppdatera och rita UI-scenen
+        if (!isPaused) {
+            logic();
+            draw();
+        }
+
         gameUI.getStage().act(delta);
         gameUI.getStage().draw();
+
+        if (isPaused) {
+            spriteBatch.begin();
+            font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 150);
+            spriteBatch.end();
+        }
     }
 
     @Override
     public void resize(int width, int height) {
-        gameviewport.update(width, height, true);
+        gameViewport.update(width, height, true);
         gameUI.getStage().getViewport().update(width, height, true);
     }
 
@@ -154,39 +143,34 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void draw() {
-        gameviewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
-        gameviewport.getCamera().update();
+        gameViewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
+        gameViewport.getCamera().update();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        gameviewport.apply();
+        gameViewport.apply();
 
-        mapRenderer.setView((OrthographicCamera) gameviewport.getCamera());
+        mapRenderer.setView((OrthographicCamera) gameViewport.getCamera());
         mapRenderer.render();
 
-        spriteBatch.setProjectionMatrix(gameviewport.getCamera().combined);
-        shapeRenderer.setProjectionMatrix(gameviewport.getCamera().combined);
+        spriteBatch.setProjectionMatrix(gameViewport.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(gameViewport.getCamera().combined);
 
         player.runAnimation();
 
         spriteBatch.begin();
-
-        //drawPlayer();
-
         stage.act();
         stage.draw();
-
         drawStuff();
-
         spriteBatch.end();
+
 
     }
 
     private void drawStuff() {
         drawAbilities();
-        drawDamageText();
         drawPowerUp();
-        drawSmokeTrail();
         drawEnemies();
         drawEnemyAbilities();
+        drawDamageText();
     }
 
     private void drawEnemies() {
@@ -194,12 +178,6 @@ public class GameScreen extends Game implements Screen {
             if (enemy.isAlive()) {
                 enemy.drawAnimation(spriteBatch);
             }
-        }
-    }
-
-    private void drawSmokeTrail() {
-        for (SmokeParticle s : smokeTrail) {
-            s.getSprite().draw(spriteBatch);
         }
     }
 
@@ -228,25 +206,17 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    /**
-     * HITBOXES FOR PLAYER
-     */
-    private void drawPlayer() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        Rectangle hitbox = player.getHitBox();
-        shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
-        shapeRenderer.end();
-    }
 
     private void input() {
-        player.playerInput();
+        if (!isPaused) {
+            player.playerInput();
+        }
+        keyBinds();
     }
 
     private void logic() {
         pickUpPowerUp();
 
-        // ABILITIES
         for (Ability a : abilities) {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
         }
@@ -275,18 +245,11 @@ public class GameScreen extends Game implements Screen {
             float delta = Gdx.graphics.getDeltaTime();
             playerPos.set(player.getPlayerX(), player.getPlayerY());
             Vector2 enemyPos = new Vector2(enemy.getSprite().getX(), enemy.getSprite().getY());
-            Vector2 vector = moveTowardsPlayer(delta, playerPos, enemyPos);
-            float speed = 300f;
+            Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemyPos);
 
             enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
             enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
-
             enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
-
-            int randomPathX = randomizeDirection.nextInt(50);
-            int randomPathY = randomizeDirection.nextInt(50);
-            float damageTextX = enemy.getSprite().getX() + randomPathX;
-            float damageTextY = enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomPathY;
 
             if (!enemy.isAlive()) {
                 enemy.dropItems(droppedItems);
@@ -325,18 +288,15 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private void addSmokeTrails() {
-        smokeTrail.add(new SmokeParticle(boomerang.getSprite().getX(), bullet.getSprite().getY()));
-        smokeTrail.add(new SmokeParticle(boomerang2.getSprite().getX(), boomerang2.getSprite().getY()));
-        smokeTrail.add(new SmokeParticle(boomerang3.getSprite().getX(), boomerang3.getSprite().getY()));
-        smokeTrail.add(new SmokeParticle(boomerang4.getSprite().getX(), boomerang4.getSprite().getY()));
-
-        for (int i = smokeTrail.size - 1; i >= 0; i--) {
-            SmokeParticle s = smokeTrail.get(i);
-            s.update(Gdx.graphics.getDeltaTime());
-            if (s.isDead()) {
-                smokeTrail.removeIndex(i);
-            }
+    private void keyBinds() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            isPaused = !isPaused;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            System.out.println("small");
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+            System.out.println("normal");
         }
     }
 
@@ -425,10 +385,10 @@ public class GameScreen extends Game implements Screen {
     }
 
     public Vector2 getRandomOffscreenPosition(float margin) {
-        float viewWidth = gameviewport.getCamera().viewportWidth;
-        float viewHeight = gameviewport.getCamera().viewportHeight;
-        float camX = gameviewport.getCamera().position.x;
-        float camY = gameviewport.getCamera().position.y;
+        float viewWidth = gameViewport.getCamera().viewportWidth;
+        float viewHeight = gameViewport.getCamera().viewportHeight;
+        float camX = gameViewport.getCamera().position.x;
+        float camY = gameViewport.getCamera().position.y;
 
         int edge = MathUtils.random(3);
 
@@ -452,20 +412,11 @@ public class GameScreen extends Game implements Screen {
                 y = MathUtils.random(camY - viewHeight / 2, camY + viewHeight / 2);
                 break;
             default:
-                System.out.println("Unexpected edge value: " + edge);
                 x = camX;
                 y = camY;
                 break;
         }
-
         return new Vector2(x, y);
-    }
-
-    private Vector2 moveTowardsPlayer(float delta, Vector2 playerPosition, Vector2 enemyPosition) {
-        Vector2 direction = new Vector2(playerPosition.x - enemyPosition.x, playerPosition.y - enemyPosition.y);
-        direction.nor();
-
-        return direction;
     }
 
     private void spawnEnemies() {
@@ -491,7 +442,14 @@ public class GameScreen extends Game implements Screen {
         enemies.add(enemy);
     }
 
-    public Array<Enemy> getEnemies() {
-        return enemies;
+    /**
+     * USED TO DRAW PLAYER HIT BOX
+     */
+    private void drawPlayer() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        Rectangle hitbox = player.getHitBox();
+        shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+        shapeRenderer.end();
     }
 }
