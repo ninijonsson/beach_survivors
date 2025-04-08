@@ -13,23 +13,17 @@ public class NavySeal extends Enemy {
 
     public NavySeal() {
         super("", 100, 100);
-
         createAnimation("entities/enemies/Seal rocket launcher-Sheet.png", 4, 1);
-
         setHealthPoints(30);
         setHitSound(Gdx.audio.newSound(Gdx.files.internal("sounds/Seal_Damage.wav")));
+        setMovementSpeed(40f);
     }
 
     @Override
     public void move() {
-
     }
 
-
-
-
     public void attack(Player player, Array enemyAbilities) {
-
         float bulletCooldown = 3f; // Gör om cooldown till float
 
         bulletTimer += Gdx.graphics.getDeltaTime();
@@ -38,7 +32,7 @@ public class NavySeal extends Enemy {
             bulletTimer = 0f;
 
             Vector2 direction = new Vector2(
-                 player.getPlayerX() - this.getSprite().getX(),
+                player.getPlayerX() - this.getSprite().getX(),
                 player.getPlayerY() - this.getSprite().getY())
                 .nor();
 
@@ -53,11 +47,9 @@ public class NavySeal extends Enemy {
 
     @Override
     public void onDeath() {
-
     }
 
     @Override
     public void dropItems() {
-
     }
 }

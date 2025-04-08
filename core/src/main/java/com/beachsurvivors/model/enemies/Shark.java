@@ -10,41 +10,18 @@ public class Shark extends Enemy {
 
 
     public Shark () {
-
         super("entities/enemies/Shark.png", 100, 100);
         createAnimation("entities/enemies/Shark-Sheet.png" , 4, 1);
-
         setHealthPoints(20);
-
-
+        setMovementSpeed(300f);
     }
 
-    /*
-    public void hit(double damageTaken){
-        if(!justTookDamage()){
-            setHealthPoints(-damageTaken);
-            if(getHealthPoints()<=0){
-                setAlive(false);
-            }
-            playSound();
-        }
-
-    }*/
-
-
-
-//    public void setX(float x) {
-//        this.x = x;
-//    }
-//
-//    public void setY(float y) {
-//        this.y = y;
-//    }
 
     @Override
     public void move() {
 
     }
+
 
     @Override
     public void attack(Player player, Array enemyAbilities) {
@@ -55,7 +32,6 @@ public class Shark extends Enemy {
 
     @Override
     public void onDeath() {
-
         dispose();
     }
 

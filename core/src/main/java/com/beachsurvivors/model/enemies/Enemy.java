@@ -22,7 +22,7 @@ import java.util.Random;
 public abstract class Enemy implements Disposable {
 
     private double healthPoints;
-    private int movementSpeed;
+    private float movementSpeed;
     private int damage;
     private int expOnDeath;
     private boolean isAlive;
@@ -106,11 +106,11 @@ public abstract class Enemy implements Disposable {
         this.healthPoints = healthPoints;
     }
 
-    public int getMovementSpeed() {
+    public float getMovementSpeed() {
         return movementSpeed;
     }
 
-    public void setMovementSpeed(int movementSpeed) {
+    public void setMovementSpeed(float movementSpeed) {
         this.movementSpeed = movementSpeed;
     }
 
@@ -124,7 +124,8 @@ public abstract class Enemy implements Disposable {
     public void playSound(){
         hitSound.setVolume(hitSound.play(), 0.05f);
     }
-
+    public void setMovementSpeed(){
+    }
     public boolean hit(double damage) {
         if (!isImmune) {
 

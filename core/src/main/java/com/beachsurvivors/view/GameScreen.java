@@ -97,10 +97,9 @@ public class GameScreen extends Game implements Screen {
         stage = new Stage(gameviewport);
         stage.clear();
         player = new Player(map, spriteBatch);
-        playerPos = new Vector2(player.getPlayerX()-64, player.getPlayerY()-64);
+        playerPos = new Vector2(player.getPlayerX() - 64, player.getPlayerY() - 64);
 
         // Skapa GameUI med en separat Stage för UI-element
-
 
 
         // ABILITIES
@@ -124,8 +123,8 @@ public class GameScreen extends Game implements Screen {
         font.getData().setScale(2);
 
         // PLAYER
-        player.setPlayerX(map.getStartingX()-64);
-        player.setPlayerY(map.getStartingY()-64);
+        player.setPlayerX(map.getStartingX() - 64);
+        player.setPlayerY(map.getStartingY() - 64);
     }
 
     @Override
@@ -170,7 +169,7 @@ public class GameScreen extends Game implements Screen {
 
         spriteBatch.begin();
 
-        drawPlayer();
+        //drawPlayer();
 
         stage.act();
         stage.draw();
@@ -178,6 +177,7 @@ public class GameScreen extends Game implements Screen {
         drawStuff();
 
         spriteBatch.end();
+
     }
 
     private void drawStuff() {
@@ -205,6 +205,7 @@ public class GameScreen extends Game implements Screen {
 
     private void drawPowerUp() {
         for (PowerUp powerUp : droppedItems) {
+            powerUp.update(Gdx.graphics.getDeltaTime());
             powerUp.getSprite().draw(spriteBatch);
         }
     }
@@ -277,8 +278,8 @@ public class GameScreen extends Game implements Screen {
             Vector2 vector = moveTowardsPlayer(delta, playerPos, enemyPos);
             float speed = 300f;
 
-            enemy.getSprite().translateX(vector.x * speed * delta);
-            enemy.getSprite().translateY(vector.y * speed * delta);
+            enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
+            enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
 
             enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
 
@@ -290,9 +291,9 @@ public class GameScreen extends Game implements Screen {
             if (!enemy.isAlive()) {
                 enemy.dropItems(droppedItems);
                 enemies.removeIndex(i);
-                sharksKilled=sharksKilled+3;
-                if(sharksKilled>=100){
-                    sharksKilled=0;
+                sharksKilled = sharksKilled + 3;
+                if (sharksKilled >= 100) {
+                    sharksKilled = 0;
                 }
                 gameUI.setProgressBarValue(sharksKilled);
             }
@@ -325,7 +326,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void addSmokeTrails() {
-        smokeTrail.add(new SmokeParticle(boomerang.getSprite().getX(), boomerang.getSprite().getY()));
+        smokeTrail.add(new SmokeParticle(boomerang.getSprite().getX(), bullet.getSprite().getY()));
         smokeTrail.add(new SmokeParticle(boomerang2.getSprite().getX(), boomerang2.getSprite().getY()));
         smokeTrail.add(new SmokeParticle(boomerang3.getSprite().getX(), boomerang3.getSprite().getY()));
         smokeTrail.add(new SmokeParticle(boomerang4.getSprite().getX(), boomerang4.getSprite().getY()));

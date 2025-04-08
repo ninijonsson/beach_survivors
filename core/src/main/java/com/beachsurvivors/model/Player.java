@@ -161,6 +161,10 @@ public class Player implements Disposable {
         walkSheet.dispose();
     }
 
+    public void damagePlayer(float damage){
+
+    }
+
     public void increaseSpeed(int speedIncrease) {
         speed += speedIncrease;
     }
