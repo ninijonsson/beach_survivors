@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.abilities.BaseAttack;
@@ -47,7 +48,7 @@ public class Player implements Disposable {
         beachGuySprite.setSize(100, 100);
         playerHeight = 128;
         playerWidth = 128;
-        beachGuyHitBox = new Rectangle(map.getStartingX()+64, map.getStartingY()+64, playerWidth, playerHeight);
+        beachGuyHitBox = new Rectangle(map.getStartingX() + 64, map.getStartingY() + 64, playerWidth, playerHeight);
         playerX = map.getStartingX();
         playerY = map.getStartingY();
         healthPoints = 100;
@@ -58,7 +59,7 @@ public class Player implements Disposable {
     private void createAnimation() {
         walkSheet = new Texture(Gdx.files.internal("assets/entities/beach_guy_sheet.png"));
 
-        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/FRAME_COLS, walkSheet.getHeight()/FRAME_ROWS);
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
         int index = 0;
         for (int i = 0; i < FRAME_ROWS; i++) {
@@ -86,41 +87,47 @@ public class Player implements Disposable {
 
     private void movementKeys() {
         float delta = Gdx.graphics.getDeltaTime();
-        float newPlayerX = playerX;
-        float newPlayerY = playerY;
+        Vector2 direction = new Vector2(0, 0);
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
-            newPlayerX -= speed * delta;
+            direction.x -= 1;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
-            newPlayerX += speed * delta;
+            direction.x += 1;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
-            newPlayerY -= speed * delta;
+            direction.y -= 1;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.UP)) || (Gdx.input.isKeyPressed(Input.Keys.W))) {
-            newPlayerY += speed * delta;
+            direction.y += 1;
         }
 
-        //LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
+        if (direction.len() > 0) {
+            direction.nor();
+        }
+
+        Vector2 newPlayerPosition = new Vector2(playerX, playerY).add(direction.scl(speed * delta));
+
+        // LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
         Polygon tempHitBox = new Polygon(new float[]{
             0, 0,
             beachGuyHitBox.width, 0,
             beachGuyHitBox.width, beachGuyHitBox.height,
             0, beachGuyHitBox.height
         });
-        tempHitBox.setPosition(newPlayerX, newPlayerY);
+        tempHitBox.setPosition(newPlayerPosition.x, newPlayerPosition.y);
 
-        // Check if the new position is inside the polygon and the move is valid
-        if (map.isInsidePolygon(newPlayerX, newPlayerY) &&
+        // CHECKA OM DET GÅR ATT GÖRA MOVET
+        if (map.isInsidePolygon(newPlayerPosition.x, newPlayerPosition.y) &&
             map.isValidMove(tempHitBox) &&
             !map.collidesWithObject(tempHitBox.getBoundingRectangle())) {
-            playerX = newPlayerX;
-            playerY = newPlayerY;
+            playerX = newPlayerPosition.x;
+            playerY = newPlayerPosition.y;
             beachGuySprite.setPosition(playerX, playerY);
             beachGuyHitBox.setPosition(playerX, playerY);
         }
     }
+
 
     public void setPlayerSize(float size) {
         playerWidth = size;
@@ -130,17 +137,17 @@ public class Player implements Disposable {
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             System.out.println("big");
-            beachGuySprite.setSize(120,120);
+            beachGuySprite.setSize(120, 120);
             setPlayerSize(120);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             System.out.println("small");
-            beachGuySprite.setSize(40,40);
+            beachGuySprite.setSize(40, 40);
             setPlayerSize(40);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             System.out.println("normal");
-            beachGuySprite.setSize(80,80);
+            beachGuySprite.setSize(80, 80);
             setPlayerSize(80);
         }
     }
@@ -216,7 +223,9 @@ public class Player implements Disposable {
         return critChance;
     }
 
-    public int getHealthPoints() { return healthPoints; }
+    public int getHealthPoints() {
+        return healthPoints;
+    }
 
     public void increaseHealthPoints(int increasedHealthPoints) {
         healthPoints += increasedHealthPoints;
@@ -234,5 +243,6 @@ public class Player implements Disposable {
         return playerHeight;
     }
 
-    public void increaseDamage(double increasedDamange) {}
+    public void increaseDamage(double increasedDamange) {
+    }
 }

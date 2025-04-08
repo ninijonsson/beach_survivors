@@ -130,7 +130,6 @@ public class Map {
     public boolean collidesWithObject(Rectangle playerHitBox) {
         for (Rectangle object : collisionObjects) {
             if (playerHitBox.overlaps(object)) {
-                System.out.println("nu ska du träffa något");
                 return true;
             }
         }
