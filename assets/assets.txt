@@ -7,6 +7,14 @@ Map2/tf_beach_tileB.png
 Map2/tf_beach_tileB.tsx
 Maps/BeachSurvivorMap.tiled-session
 SharkDeath.wav
+SkinComposer/font-export.fnt
+SkinComposer/font-title-export.fnt
+SkinComposer/healthbutton.atlas
+SkinComposer/healthbutton.json
+SkinComposer/healthbutton.png
+SkinComposer/testbuttons.atlas
+SkinComposer/testbuttons.json
+SkinComposer/testbuttons.png
 Thud.mp3
 entities/Beer.png
 entities/Boomerangmc.png

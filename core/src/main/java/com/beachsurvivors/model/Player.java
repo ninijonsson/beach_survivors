@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Polygon;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Map.Map;
-import com.beachsurvivors.model.abilities.BaseAttack;
 
 public class Player implements Disposable {
 
@@ -21,8 +19,6 @@ public class Player implements Disposable {
     private float speed = 400f;
     private float critChance = 0.5f;
 
-    private Texture beachguyImage;
-    private Sprite beachGuySprite;
     private Rectangle beachGuyHitBox;
     private float playerX;
     private float playerY;
@@ -43,14 +39,14 @@ public class Player implements Disposable {
     public Player(Map map, SpriteBatch spriteBatch) {
         this.map = map;
         this.spriteBatch = spriteBatch;
-        beachguyImage = new Texture("game_screen/Cool_beach_guy.png");
-        beachGuySprite = new Sprite(beachguyImage);
-        beachGuySprite.setSize(100, 100);
         playerHeight = 128;
         playerWidth = 128;
-        beachGuyHitBox = new Rectangle(map.getStartingX() + 64, map.getStartingY() + 64, playerWidth, playerHeight);
+
+
         playerX = map.getStartingX();
         playerY = map.getStartingY();
+        beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
+
         healthPoints = 100;
 
         createAnimation();
@@ -75,7 +71,10 @@ public class Player implements Disposable {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
         spriteBatch.begin();
-        spriteBatch.draw(currentFrame, playerX, playerY, playerWidth, playerHeight);
+
+        // Rita animationen centrerad kring playerX och playerY
+        spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
+
         spriteBatch.end();
     }
 
@@ -115,7 +114,7 @@ public class Player implements Disposable {
             beachGuyHitBox.width, beachGuyHitBox.height,
             0, beachGuyHitBox.height
         });
-        tempHitBox.setPosition(newPlayerPosition.x, newPlayerPosition.y);
+        tempHitBox.setPosition(newPlayerPosition.x - playerWidth / 2, newPlayerPosition.y - playerHeight / 2);
 
         // CHECKA OM DET GÅR ATT GÖRA MOVET
         if (map.isInsidePolygon(newPlayerPosition.x, newPlayerPosition.y) &&
@@ -123,52 +122,43 @@ public class Player implements Disposable {
             !map.collidesWithObject(tempHitBox.getBoundingRectangle())) {
             playerX = newPlayerPosition.x;
             playerY = newPlayerPosition.y;
-            beachGuySprite.setPosition(playerX, playerY);
-            beachGuyHitBox.setPosition(playerX, playerY);
+            beachGuyHitBox.setPosition(playerX - playerWidth / 2, playerY - playerHeight / 2);
         }
     }
-
 
     public void setPlayerSize(float size) {
         playerWidth = size;
         playerHeight = size;
+        beachGuyHitBox.setSize(size, size);
     }
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             System.out.println("big");
-            beachGuySprite.setSize(120, 120);
             setPlayerSize(120);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             System.out.println("small");
-            beachGuySprite.setSize(40, 40);
             setPlayerSize(40);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             System.out.println("normal");
-            beachGuySprite.setSize(80, 80);
             setPlayerSize(80);
         }
     }
 
     private void flipPlayer() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            beachGuySprite.flip(true, false);
+            //beachGuySprite.flip(true, false);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            beachGuySprite.flip(true, false);
+            //beachGuySprite.flip(true, false);
         }
     }
 
     @Override
     public void dispose() {
-        beachguyImage.dispose();
         walkSheet.dispose();
-    }
-
-    public Texture getTexture() {
-        return beachguyImage;
     }
 
     public void increaseSpeed(int speedIncrease) {
@@ -179,28 +169,8 @@ public class Player implements Disposable {
         critChance = critChanceIncrease;
     }
 
-    public void setBeachguyImage(Texture beachguyImage) {
-        this.beachguyImage = beachguyImage;
-    }
-
-    public Sprite getSprite() {
-        return beachGuySprite;
-    }
-
-    public Texture getWalkSheet() {
-        return walkSheet;
-    }
-
-    public void setBeachGuySprite(Sprite beachGuySprite) {
-        this.beachGuySprite = beachGuySprite;
-    }
-
     public Rectangle getHitBox() {
         return beachGuyHitBox;
-    }
-
-    public void setBeachGuyHitBox(Rectangle beachGuyHitBox) {
-        this.beachGuyHitBox = beachGuyHitBox;
     }
 
     public float getPlayerX() {
@@ -209,6 +179,7 @@ public class Player implements Disposable {
 
     public void setPlayerX(float playerX) {
         this.playerX = playerX;
+        beachGuyHitBox.setX(playerX - playerWidth / 2);
     }
 
     public float getPlayerY() {
@@ -217,6 +188,7 @@ public class Player implements Disposable {
 
     public void setPlayerY(float playerY) {
         this.playerY = playerY;
+        beachGuyHitBox.setY(playerY - playerHeight / 2);
     }
 
     public float getCritChance() {
@@ -235,14 +207,7 @@ public class Player implements Disposable {
         }
     }
 
-    public float getPlayerWidth() {
-        return playerWidth;
-    }
-
-    public float getPlayerHeight() {
-        return playerHeight;
-    }
-
-    public void increaseDamage(double increasedDamange) {
+    public void increaseDamage(double increasedDamage) {
     }
 }
+
