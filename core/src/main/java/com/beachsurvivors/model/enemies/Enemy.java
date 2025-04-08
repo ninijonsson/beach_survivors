@@ -46,6 +46,7 @@ public abstract class Enemy implements Disposable {
     private float stateTime;
     private ProgressBar healthBar;
     private boolean healthBarAddedToStage = false;
+    private Timer.Task hideHealthBarTask;
     private Stage stage;
 
     public Enemy(String texturePath, int width, int height) {
@@ -76,7 +77,7 @@ public abstract class Enemy implements Disposable {
         healthBar.setScale(0.2f);
     }
 
-    public void addHealthBarToStage(Stage stage) {
+    public void addHealthBar(Stage stage) {
         if (!healthBarAddedToStage) {
             this.stage = stage;
             stage.addActor(healthBar);
@@ -89,8 +90,22 @@ public abstract class Enemy implements Disposable {
         healthBar.setValue(healthPoints);
     }
 
-    public ProgressBar getHealthBar() {
-        return healthBar;
+    public void showHealthBarTemporarily(float duration) {
+        healthBar.setVisible(true);
+
+        // Avbryt tidigare timer om den fortfarande körs
+        if (hideHealthBarTask != null) {
+            hideHealthBarTask.cancel();
+        }
+
+        // Skapa en ny timer som gömmer healthbaren efter en viss tid
+        hideHealthBarTask = new Timer.Task() {
+            @Override
+            public void run() {
+                Gdx.app.postRunnable(() -> healthBar.setVisible(false));
+            }
+        };
+        Timer.schedule(hideHealthBarTask, duration);
     }
 
     public void createAnimation(String sheetPath, int sheetColumns, int sheetRows) {
@@ -165,9 +180,9 @@ public abstract class Enemy implements Disposable {
     }
     public boolean hit(double damage) {
         if (!isImmune) {
-
             healthPoints -= damage;
             playSound();
+            showHealthBarTemporarily(2.0f);
             if (healthPoints <= 0) {
                 isAlive = false;
                 sprite.setColor(Color.BLACK);

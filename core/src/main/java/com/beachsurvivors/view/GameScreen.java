@@ -23,7 +23,6 @@ import com.beachsurvivors.model.abilities.Boomerang;
 import com.beachsurvivors.model.DamageText;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
-import com.beachsurvivors.model.SmokeParticle;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 import com.beachsurvivors.model.enemies.Crocodile;
@@ -244,7 +243,7 @@ public class GameScreen extends Game implements Screen {
 
             Enemy enemy = enemies.get(i);
             enemy.updateHealthBarPosition();
-            enemy.addHealthBarToStage(stage);
+            enemy.addHealthBar(stage);
             float delta = Gdx.graphics.getDeltaTime();
             playerPos.set(player.getPlayerX(), player.getPlayerY());
             Vector2 enemyPos = new Vector2(enemy.getSprite().getX(), enemy.getSprite().getY());
