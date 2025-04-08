@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -24,7 +25,6 @@ import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.SmokeParticle;
 import com.beachsurvivors.model.abilities.Ability;
-import com.beachsurvivors.model.abilities.AbilityType;
 import com.beachsurvivors.model.abilities.BaseAttack;
 import com.beachsurvivors.model.enemies.Crocodile;
 import com.beachsurvivors.model.enemies.Enemy;
@@ -33,9 +33,6 @@ import com.beachsurvivors.model.enemies.Shark;
 import com.beachsurvivors.model.powerUps.Berserk;
 import com.beachsurvivors.model.powerUps.PowerUp;
 
-//import java.lang.classfile.attribute.BootstrapMethodsAttribute;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
@@ -45,6 +42,7 @@ public class GameScreen extends Game implements Screen {
     private SpriteBatch spriteBatch;
     private FitViewport gameviewport;
     private Stage stage;
+    private GameUI gameUI; // UI-klass för HUD-element
 
     private final int screenWidth = 1920;
     private final int screenHeight = 1080;
@@ -53,7 +51,6 @@ public class GameScreen extends Game implements Screen {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private Map map;
-
 
     private Player player;
     private Array<PowerUp> droppedItems;
@@ -73,27 +70,25 @@ public class GameScreen extends Game implements Screen {
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
 
-
     private Array<Enemy> enemies = new Array<>();
     private Array<Ability> enemyAbilities = new Array<>();
     private Vector2 playerPos;
-
 
     public GameScreen(Main main) {
         this.main = main;
 
         gameviewport = new FitViewport(screenWidth, screenHeight);
+        gameUI = new GameUI(new FitViewport(screenWidth, screenHeight));
         droppedItems = new Array<>();
         abilities = new Array<>();
         sharksKilled = 0;
         create();
+
     }
 
     @Override
     public void create() {
         spriteBatch = new SpriteBatch();
-
-
         shapeRenderer = new ShapeRenderer();
 
         tiledMap = new TmxMapLoader().load("Map2/map2.tmx");
@@ -102,8 +97,13 @@ public class GameScreen extends Game implements Screen {
         stage = new Stage(gameviewport);
         stage.clear();
         player = new Player(map, spriteBatch);
-        playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        playerPos = new Vector2(player.getPlayerX()-64, player.getPlayerY()-64);
 
+        // Skapa GameUI med en separat Stage för UI-element
+
+
+
+        // ABILITIES
         boomerang = new Boomerang();
         boomerang2 = new Boomerang();
         boomerang2.setAngle(90);
@@ -111,34 +111,25 @@ public class GameScreen extends Game implements Screen {
         boomerang3.setAngle(180);
         boomerang4 = new Boomerang();
         boomerang4.setAngle(270);
-
         bullet = new BaseAttack();
-
-
         abilities.add(boomerang);
         abilities.add(boomerang2);
         abilities.add(boomerang3);
         abilities.add(boomerang4);
         abilities.add(bullet);
 
-
+        // DAMAGETEXT
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
 
-//        mapWidth = tiledMap.getProperties().get("width", Integer.class) *
-//            tiledMap.getProperties().get("tilewidth", Integer.class);
-//
-//        mapHeight = tiledMap.getProperties().get("height", Integer.class) *
-//            tiledMap.getProperties().get("tileheight", Integer.class);
-
-        player.setPlayerX(map.getStartingX());
-        player.setPlayerY(map.getStartingY());
+        // PLAYER
+        player.setPlayerX(map.getStartingX()-64);
+        player.setPlayerY(map.getStartingY()-64);
     }
 
     @Override
     public void show() {
-
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -147,12 +138,16 @@ public class GameScreen extends Game implements Screen {
         input();
         logic();
         draw();
-    }
 
+        // Uppdatera och rita UI-scenen
+        gameUI.getStage().act(delta);
+        gameUI.getStage().draw();
+    }
 
     @Override
     public void resize(int width, int height) {
         gameviewport.update(width, height, true);
+        gameUI.getStage().getViewport().update(width, height, true);
     }
 
     @Override
@@ -166,7 +161,6 @@ public class GameScreen extends Game implements Screen {
         gameviewport.apply();
 
         mapRenderer.setView((OrthographicCamera) gameviewport.getCamera());
-
         mapRenderer.render();
 
         spriteBatch.setProjectionMatrix(gameviewport.getCamera().combined);
@@ -176,14 +170,10 @@ public class GameScreen extends Game implements Screen {
 
         spriteBatch.begin();
 
-        drawPlayer();
+        //drawPlayer();
 
         stage.act();
         stage.draw();
-
-//        player.getSprite().draw(spriteBatch);
-        player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
-
 
         drawStuff();
 
@@ -202,10 +192,8 @@ public class GameScreen extends Game implements Screen {
     private void drawEnemies() {
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
-                // enemy.getSprite().draw(spriteBatch);
                 enemy.drawAnimation(spriteBatch);
             }
-
         }
     }
 
@@ -244,7 +232,7 @@ public class GameScreen extends Game implements Screen {
      */
     private void drawPlayer() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.CLEAR);
+        shapeRenderer.setColor(Color.RED);
         Rectangle hitbox = player.getHitBox();
         shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
         shapeRenderer.end();
@@ -256,29 +244,20 @@ public class GameScreen extends Game implements Screen {
 
     private void logic() {
         pickUpPowerUp();
-        player.getSprite().setX(MathUtils.clamp(player.getSprite().getX(), 0, screenWidth - player.getSprite().getWidth()));
-        player.getSprite().setY(MathUtils.clamp(player.getSprite().getY(), 0, screenHeight - player.getSprite().getHeight()));
 
-        //ABILITIES
+        // ABILITIES
         for (Ability a : abilities) {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
         }
 
         enemyAttacks();
 
-        //addSmokeTrails();
-
-
-        // BULLET
-        float bulletCooldown = (float) bullet.getCooldown(); // Gör om cooldown till float
-
+        float bulletCooldown = (float) bullet.getCooldown();
         bulletTimer += Gdx.graphics.getDeltaTime();
 
         if (bulletTimer >= bulletCooldown) {
             bulletTimer = 0f;
             shootAtNearestEnemy();
-
-
         }
 
         for (int i = damageTexts.size - 1; i >= 0; i--) {
@@ -291,9 +270,7 @@ public class GameScreen extends Game implements Screen {
 
         if (enemies.size < enemiesToSpawn) spawnEnemies();
         for (int i = enemies.size - 1; i >= 0; i--) {
-
             Enemy enemy = enemies.get(i);
-
             float delta = Gdx.graphics.getDeltaTime();
             playerPos.set(player.getPlayerX(), player.getPlayerY());
             Vector2 enemyPos = new Vector2(enemy.getSprite().getX(), enemy.getSprite().getY());
@@ -304,7 +281,6 @@ public class GameScreen extends Game implements Screen {
             enemy.getSprite().translateY(vector.y * speed * delta);
 
             enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
-            //
 
             int randomPathX = randomizeDirection.nextInt(50);
             int randomPathY = randomizeDirection.nextInt(50);
@@ -314,7 +290,11 @@ public class GameScreen extends Game implements Screen {
             if (!enemy.isAlive()) {
                 enemy.dropItems(droppedItems);
                 enemies.removeIndex(i);
-                //System.out.println("Sharks killed: " + sharksKilled++);
+                sharksKilled=sharksKilled+3;
+                if(sharksKilled>=100){
+                    sharksKilled=0;
+                }
+                gameUI.setProgressBarValue(sharksKilled);
             }
 
             for (int j = abilities.size - 1; j >= 0; j--) {
@@ -324,7 +304,7 @@ public class GameScreen extends Game implements Screen {
                     boolean isCritical = checkForCriticalStrike();
                     double damage = a.getBaseDamage();
                     if (isCritical) {
-                        damage *= 2; // Dubblera skadan vid kritiskt slag
+                        damage *= 2;
                     }
 
                     if (enemy.hit(damage)) {
@@ -335,7 +315,6 @@ public class GameScreen extends Game implements Screen {
                             isCritical));
                     }
 
-                    // Om ability inte är en boomerang så tar vi bort spriten när den kolliderat
                     if (!(a instanceof Boomerang)) {
                         a.dispose();
                         abilities.removeIndex(j);
@@ -343,8 +322,6 @@ public class GameScreen extends Game implements Screen {
                 }
             }
         }
-        player.getSprite().setPosition(player.getPlayerX() - player.getSprite().getWidth() / 2, player.getPlayerY() - player.getSprite().getHeight() / 2);
-        player.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
     }
 
     private void addSmokeTrails() {
@@ -372,13 +349,10 @@ public class GameScreen extends Game implements Screen {
         for (PowerUp powerUp : droppedItems) {
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
                 powerUp.onPickup(player);
-                // Extra kontroll eftersom vi vill skicka med bullet-objektet
-                // för att kunna justera damage och cooldown
                 if (powerUp instanceof Berserk) {
                     powerUp.onPickup(player);
                     ((Berserk) powerUp).onPickupBullet(bullet);
                 } else {
-                    System.err.println("true");
                     powerUp.onPickup(player);
                 }
 
@@ -389,14 +363,12 @@ public class GameScreen extends Game implements Screen {
         droppedItems.removeAll(powerUpsToRemove, true);
     }
 
-    // Används för att skjuta på närmaste fienden
     private Enemy getNearestEnemy() {
         Enemy nearest = null;
         float minDistance = Float.MAX_VALUE;
         Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         for (Enemy enemy : enemies) {
-            // Räkna ut avståndet mellan spelaren och fienden
             float distance = playerPos.dst(enemy.getSprite().getX(), enemy.getSprite().getY());
             if (distance < minDistance) {
                 minDistance = distance;
@@ -411,21 +383,14 @@ public class GameScreen extends Game implements Screen {
         Enemy target = getNearestEnemy();
 
         if (target != null) {
-            // Beräkna riktningen från spelaren till fienden
             Vector2 direction = new Vector2(
                 target.getSprite().getX() - player.getPlayerX(),
                 target.getSprite().getY() - player.getPlayerY()
             ).nor();
 
-            // Skapa en ny bullet
             BaseAttack bullet = new BaseAttack();
-
-            bullet.updatePosition(player.getPlayerX(), player.getPlayerY()); // Startpositionen är spelarens position
-            bullet.setDirection(direction); // Mot fienden
-
-            //bullet.getSprite().setOriginCenter(); // Sätt spritens ursprung till mitten så rotationen blir korrekt
-            //float angleDeg = direction.angleDeg();
-            //bullet.getSprite().setRotation(angleDeg); // Rotera spriten så att den pekar mot riktningen
+            bullet.updatePosition(player.getPlayerX(), player.getPlayerY());
+            bullet.setDirection(direction);
 
             abilities.add(bullet);
         }
@@ -439,9 +404,6 @@ public class GameScreen extends Game implements Screen {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
         }
     }
-
-
-
 
     @Override
     public void resume() {
@@ -459,42 +421,37 @@ public class GameScreen extends Game implements Screen {
         player.dispose();
         boomerang.dispose();
         font.dispose();
-        //bullet.dispose();
     }
 
-    // Returns random position off-screen. Parameter 'margin' is the off-screen distance between spawn point and screen edge. Put margin = 0 for enemies to spawn exactly outside screen.
     public Vector2 getRandomOffscreenPosition(float margin) {
         float viewWidth = gameviewport.getCamera().viewportWidth;
         float viewHeight = gameviewport.getCamera().viewportHeight;
         float camX = gameviewport.getCamera().position.x;
         float camY = gameviewport.getCamera().position.y;
 
-        // Get random edge: 0 = Top, 1 = Bottom, 2 = Left, 3 = Right
         int edge = MathUtils.random(3);
 
         float x, y;
 
         switch (edge) {
-            case 0: // Top, dividing by 2 to find center
+            case 0:
                 x = MathUtils.random(camX - viewWidth / 2, camX + viewWidth / 2);
-                y = camY + viewHeight / 2 + margin; // Above the screen
+                y = camY + viewHeight / 2 + margin;
                 break;
-            case 1: // Bottom
+            case 1:
                 x = MathUtils.random(camX - viewWidth / 2, camX + viewWidth / 2);
-                y = camY - viewHeight / 2 - margin; // Below the screen
+                y = camY - viewHeight / 2 - margin;
                 break;
-            case 2: // Left
-                x = camX - viewWidth / 2 - margin; // Left of the screen
+            case 2:
+                x = camX - viewWidth / 2 - margin;
                 y = MathUtils.random(camY - viewHeight / 2, camY + viewHeight / 2);
                 break;
-            case 3: // Right
-                x = camX + viewWidth / 2 + margin; // Right of the screen
+            case 3:
+                x = camX + viewWidth / 2 + margin;
                 y = MathUtils.random(camY - viewHeight / 2, camY + viewHeight / 2);
                 break;
             default:
                 System.out.println("Unexpected edge value: " + edge);
-
-                // Spawns at center of screen if something goes wroNg
                 x = camX;
                 y = camY;
                 break;
@@ -504,17 +461,15 @@ public class GameScreen extends Game implements Screen {
     }
 
     private Vector2 moveTowardsPlayer(float delta, Vector2 playerPosition, Vector2 enemyPosition) {
-        // Calculate direction towards the player
         Vector2 direction = new Vector2(playerPosition.x - enemyPosition.x, playerPosition.y - enemyPosition.y);
         direction.nor();
-
 
         return direction;
     }
 
     private void spawnEnemies() {
         Random random = new Random();
-        int enemyChoice = random.nextInt(0,3);
+        int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
         switch (enemyChoice) {
             case 0:
@@ -527,9 +482,6 @@ public class GameScreen extends Game implements Screen {
                 enemy = new Crocodile();
                 break;
         }
-
-
-//        Shark shark = new Shark();
 
         Vector2 randomPos = getRandomOffscreenPosition(100);
         enemy.getSprite().setPosition(randomPos.x, randomPos.y);

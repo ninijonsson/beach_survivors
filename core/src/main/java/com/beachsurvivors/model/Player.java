@@ -4,14 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Map.Map;
-import com.beachsurvivors.model.abilities.BaseAttack;
 
 public class Player implements Disposable {
 
@@ -20,8 +19,6 @@ public class Player implements Disposable {
     private float speed = 400f;
     private float critChance = 0.5f;
 
-    private Texture beachguyImage;
-    private Sprite beachGuySprite;
     private Rectangle beachGuyHitBox;
     private float playerX;
     private float playerY;
@@ -42,28 +39,28 @@ public class Player implements Disposable {
     public Player(Map map, SpriteBatch spriteBatch) {
         this.map = map;
         this.spriteBatch = spriteBatch;
-        beachguyImage = new Texture("game_screen/Cool_beach_guy.png");
-        beachGuySprite = new Sprite(beachguyImage);
-        beachGuySprite.setSize(100, 100);
         playerHeight = 128;
         playerWidth = 128;
-        beachGuyHitBox = new Rectangle(map.getStartingX()+64, map.getStartingY()+64, playerWidth, playerHeight);
+
+
         playerX = map.getStartingX();
         playerY = map.getStartingY();
+        beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
+
         healthPoints = 100;
 
         createAnimation();
     }
 
     private void createAnimation() {
-        walkSheet = new Texture(Gdx.files.internal("entities/beach_guy_sheet.png"));
+        walkSheet = new Texture(Gdx.files.internal("assets/entities/beach_guy_sheet.png"));
 
-        TextureRegion[][] temp = TextureRegion.split(walkSheet, walkSheet.getWidth()/FRAME_COLS, walkSheet.getHeight()/FRAME_ROWS);
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
         int index = 0;
         for (int i = 0; i < FRAME_ROWS; i++) {
             for (int j = 0; j < FRAME_COLS; j++) {
-                walkFrames[index++] = temp[i][j];
+                walkFrames[index++] = tmp[i][j];
             }
         }
         walkAnimation = new Animation<TextureRegion>(0.25f, walkFrames);
@@ -74,7 +71,10 @@ public class Player implements Disposable {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
         spriteBatch.begin();
-        spriteBatch.draw(currentFrame, playerX, playerY, playerWidth, playerHeight);
+
+        // Rita animationen centrerad kring playerX och playerY
+        spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
+
         spriteBatch.end();
     }
 
@@ -86,85 +86,79 @@ public class Player implements Disposable {
 
     private void movementKeys() {
         float delta = Gdx.graphics.getDeltaTime();
-        float newPlayerX = playerX;
-        float newPlayerY = playerY;
+        Vector2 direction = new Vector2(0, 0);
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
-            newPlayerX -= speed * delta;
+            direction.x -= 1;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
-            newPlayerX += speed * delta;
+            direction.x += 1;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
-            newPlayerY -= speed * delta;
+            direction.y -= 1;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.UP)) || (Gdx.input.isKeyPressed(Input.Keys.W))) {
-            newPlayerY += speed * delta;
+            direction.y += 1;
         }
 
-        //LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
+        if (direction.len() > 0) {
+            direction.nor();
+        }
+
+        Vector2 newPlayerPosition = new Vector2(playerX, playerY).add(direction.scl(speed * delta));
+
+        // LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
         Polygon tempHitBox = new Polygon(new float[]{
             0, 0,
             beachGuyHitBox.width, 0,
             beachGuyHitBox.width, beachGuyHitBox.height,
             0, beachGuyHitBox.height
         });
-        tempHitBox.setPosition(newPlayerX, newPlayerY);
+        tempHitBox.setPosition(newPlayerPosition.x - playerWidth / 2, newPlayerPosition.y - playerHeight / 2);
 
-        // Check if the new position is inside the polygon and the move is valid
-        if (map.isInsidePolygon(newPlayerX, newPlayerY) &&
+        // CHECKA OM DET GÅR ATT GÖRA MOVET
+        if (map.isInsidePolygon(newPlayerPosition.x, newPlayerPosition.y) &&
             map.isValidMove(tempHitBox) &&
             !map.collidesWithObject(tempHitBox.getBoundingRectangle())) {
-            playerX = newPlayerX;
-            playerY = newPlayerY;
-            beachGuySprite.setPosition(playerX, playerY);
-            beachGuyHitBox.setPosition(playerX, playerY);
+            playerX = newPlayerPosition.x;
+            playerY = newPlayerPosition.y;
+            beachGuyHitBox.setPosition(playerX - playerWidth / 2, playerY - playerHeight / 2);
         }
     }
 
     public void setPlayerSize(float size) {
-        playerWidth += size;
-        playerHeight += size;
+        playerWidth = size;
+        playerHeight = size;
+        beachGuyHitBox.setSize(size, size);
     }
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             System.out.println("big");
-            beachGuySprite.setSize(120,120);
-            setPlayerSize(20);
-            getHitBox().setSize(getPlayerWidth(), getPlayerHeight());
+            setPlayerSize(120);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             System.out.println("small");
-            beachGuySprite.setSize(40,40);
-            setPlayerSize(-20);
-            getHitBox().setSize(getPlayerWidth(), getPlayerHeight());
+            setPlayerSize(40);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             System.out.println("normal");
-            beachGuySprite.setSize(80,80);
-            setPlayerSize(0);
-            getHitBox().setSize(getPlayerWidth(), getPlayerHeight());
+            setPlayerSize(80);
         }
     }
 
     private void flipPlayer() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            beachGuySprite.flip(true, false);
+            //beachGuySprite.flip(true, false);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            beachGuySprite.flip(true, false);
+            //beachGuySprite.flip(true, false);
         }
     }
 
     @Override
     public void dispose() {
-        beachguyImage.dispose();
         walkSheet.dispose();
-    }
-
-    public Texture getTexture() {
-        return beachguyImage;
     }
 
     public void increaseSpeed(int speedIncrease) {
@@ -175,28 +169,8 @@ public class Player implements Disposable {
         critChance = critChanceIncrease;
     }
 
-    public void setBeachguyImage(Texture beachguyImage) {
-        this.beachguyImage = beachguyImage;
-    }
-
-    public Sprite getSprite() {
-        return beachGuySprite;
-    }
-
-    public Texture getWalkSheet() {
-        return walkSheet;
-    }
-
-    public void setBeachGuySprite(Sprite beachGuySprite) {
-        this.beachGuySprite = beachGuySprite;
-    }
-
     public Rectangle getHitBox() {
         return beachGuyHitBox;
-    }
-
-    public void setBeachGuyHitBox(Rectangle beachGuyHitBox) {
-        this.beachGuyHitBox = beachGuyHitBox;
     }
 
     public float getPlayerX() {
@@ -205,6 +179,7 @@ public class Player implements Disposable {
 
     public void setPlayerX(float playerX) {
         this.playerX = playerX;
+        beachGuyHitBox.setX(playerX - playerWidth / 2);
     }
 
     public float getPlayerY() {
@@ -213,13 +188,16 @@ public class Player implements Disposable {
 
     public void setPlayerY(float playerY) {
         this.playerY = playerY;
+        beachGuyHitBox.setY(playerY - playerHeight / 2);
     }
 
     public float getCritChance() {
         return critChance;
     }
 
-    public int getHealthPoints() { return healthPoints; }
+    public int getHealthPoints() {
+        return healthPoints;
+    }
 
     public void increaseHealthPoints(int increasedHealthPoints) {
         healthPoints += increasedHealthPoints;
@@ -229,13 +207,7 @@ public class Player implements Disposable {
         }
     }
 
-    public float getPlayerWidth() {
-        return playerWidth;
+    public void increaseDamage(double increasedDamage) {
     }
-
-    public float getPlayerHeight() {
-        return playerHeight;
-    }
-
-    public void increaseDamage(double increasedDamange) {}
 }
+
