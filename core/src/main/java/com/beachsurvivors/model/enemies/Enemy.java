@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
@@ -22,7 +25,7 @@ import java.util.Random;
 
 public abstract class Enemy implements Disposable {
 
-    private double healthPoints;
+    private float healthPoints;
     private float movementSpeed;
     private int damage;
     private int expOnDeath;
@@ -41,6 +44,9 @@ public abstract class Enemy implements Disposable {
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
     private float stateTime;
+    private ProgressBar healthBar;
+    private boolean healthBarAddedToStage = false;
+    private Stage stage;
 
     public Enemy(String texturePath, int width, int height) {
         this.width = width;
@@ -57,8 +63,34 @@ public abstract class Enemy implements Disposable {
         healthPoints = 20;
         isImmune=false;
         isAlive = true;
+        createHealthBar();
 
+    }
 
+    private void createHealthBar() {
+        Skin healthSkin = new Skin(Gdx.files.internal("assets/SkinComposer/healthbutton.json"));
+        healthBar = new ProgressBar(0, healthPoints, 0.5f, false, healthSkin);
+        healthBar.setValue(100);
+        healthBar.setPosition(hitbox.x+hitbox.width/2, hitbox.y+height);
+        healthBar.setSize(70, 50);
+        healthBar.setScale(0.2f);
+    }
+
+    public void addHealthBarToStage(Stage stage) {
+        if (!healthBarAddedToStage) {
+            this.stage = stage;
+            stage.addActor(healthBar);
+            healthBarAddedToStage = true;
+        }
+    }
+
+    public void updateHealthBarPosition() {
+        healthBar.setPosition(sprite.getX(), sprite.getY() + sprite.getHeight() + 5);
+        healthBar.setValue(healthPoints);
+    }
+
+    public ProgressBar getHealthBar() {
+        return healthBar;
     }
 
     public void createAnimation(String sheetPath, int sheetColumns, int sheetRows) {
@@ -84,7 +116,11 @@ public abstract class Enemy implements Disposable {
 
     public abstract void move();
     public abstract void attack(Player player, Array enemyAbilities);
-    public abstract void onDeath();
+    public void onDeath(){
+        if (stage != null) {
+            healthBar.remove();
+        }
+    }
     public abstract void dropItems();
 
     public int getWidth() {
@@ -103,7 +139,7 @@ public abstract class Enemy implements Disposable {
         return healthPoints;
     }
 
-    public void setHealthPoints(double healthPoints) {
+    public void setHealthPoints(float healthPoints) {
         this.healthPoints = healthPoints;
     }
 

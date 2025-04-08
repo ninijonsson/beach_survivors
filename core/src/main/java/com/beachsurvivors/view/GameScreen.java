@@ -241,7 +241,10 @@ public class GameScreen extends Game implements Screen {
 
         if (enemies.size < enemiesToSpawn) spawnEnemies();
         for (int i = enemies.size - 1; i >= 0; i--) {
+
             Enemy enemy = enemies.get(i);
+            enemy.updateHealthBarPosition();
+            enemy.addHealthBarToStage(stage);
             float delta = Gdx.graphics.getDeltaTime();
             playerPos.set(player.getPlayerX(), player.getPlayerY());
             Vector2 enemyPos = new Vector2(enemy.getSprite().getX(), enemy.getSprite().getY());

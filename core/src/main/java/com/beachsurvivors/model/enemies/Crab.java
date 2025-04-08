@@ -21,12 +21,6 @@ public class Crab extends Enemy {
 
     }
 
-
-    @Override
-    public void onDeath() {
-
-    }
-
     @Override
     public void dropItems() {
 

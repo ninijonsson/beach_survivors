@@ -28,13 +28,6 @@ public class Shark extends Enemy {
 
     }
 
-
-
-    @Override
-    public void onDeath() {
-        dispose();
-    }
-
     @Override
     public void dropItems() {
 

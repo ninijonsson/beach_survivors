@@ -24,11 +24,6 @@ public class Crocodile extends Enemy {
     }
 
     @Override
-    public void onDeath() {
-
-    }
-
-    @Override
     public void dropItems() {
 
     }
