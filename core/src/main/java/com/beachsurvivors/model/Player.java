@@ -53,7 +53,7 @@ public class Player implements Disposable {
     }
 
     private void createAnimation() {
-        walkSheet = new Texture(Gdx.files.internal("assets/entities/beach_guy_sheet.png"));
+        walkSheet = new Texture(Gdx.files.internal("entities/beach_girl-Sheet.png"));
 
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
