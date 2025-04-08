@@ -12,7 +12,7 @@ public class Shark extends Enemy {
     public Shark () {
 
         super("entities/enemies/Shark.png", 100, 100);
-        createAnimation("assets/entities/enemies/Shark-Sheet.png" , 4, 1);
+        createAnimation("entities/enemies/Shark-Sheet.png" , 4, 1);
 
         setHealthPoints(20);
 

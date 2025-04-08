@@ -8,7 +8,7 @@ public class Crocodile extends Enemy {
 
     public Crocodile() {
         super("", 200,100);
-        createAnimation("assets/entities/enemies/Crocodile1-Sheet.png", 2, 1);
+        createAnimation("entities/enemies/Crocodile1-Sheet.png", 2, 1);
     }
 
 

@@ -45,7 +45,7 @@ public abstract class Enemy implements Disposable {
         this.width = width;
         this.height = height;
         if (texturePath.isEmpty()) {
-            texturePath = "assets/placeholder.png";
+            texturePath = "placeholder.png";
         }
         this.texture = new Texture(texturePath);
         this.sprite = new Sprite(texture);

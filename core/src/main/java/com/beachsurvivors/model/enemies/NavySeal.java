@@ -14,7 +14,7 @@ public class NavySeal extends Enemy {
     public NavySeal() {
         super("", 100, 100);
 
-        createAnimation("assets/entities/enemies/Seal rocket launcher-Sheet.png", 4, 1);
+        createAnimation("entities/enemies/Seal rocket launcher-Sheet.png", 4, 1);
 
         setHealthPoints(30);
         setHitSound(Gdx.audio.newSound(Gdx.files.internal("sounds/Seal_Damage.wav")));
@@ -42,7 +42,7 @@ public class NavySeal extends Enemy {
                 player.getPlayerY() - this.getSprite().getY())
                 .nor();
 
-            BaseAttack bullet = new BaseAttack("assets/entities/abilities/fireball.png");
+            BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png");
             bullet.updatePosition(this.getSprite().getX(), this.getSprite().getY());
             bullet.setDirection(direction);
 

@@ -36,7 +36,7 @@ public abstract class PowerUp implements PickUpAble {
 
     public void createTexture(String texturePath) {
         if (texturePath.isEmpty()) {
-            texture = new Texture("assets/placeholder.png");
+            texture = new Texture("placeholder.png");
         } else {
             texture = new Texture(texturePath);
         }
