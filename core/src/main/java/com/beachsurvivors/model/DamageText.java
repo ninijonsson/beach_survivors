@@ -20,7 +20,7 @@ public class DamageText {
         this.duration = duration;
         this.timer = duration;
         this.font = new BitmapFont();
-        this.color = new Color(Color.LIGHT_GRAY);
+        this.color = new Color(Color.GRAY);
 
 
 

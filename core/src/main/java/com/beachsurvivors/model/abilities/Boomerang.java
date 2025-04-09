@@ -9,6 +9,8 @@ import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.AbilityType;
 
+import java.util.Random;
+
 public class Boomerang extends Ability {
 
     private Sprite sprite;
@@ -69,9 +71,7 @@ public class Boomerang extends Ability {
         sprite.getTexture().dispose();
     }
 
-    public Double getBaseDamage() {
-        return damage;
-    }
+
 
     public float getSpinSpeed() {
         return spinSpeed;

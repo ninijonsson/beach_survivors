@@ -42,6 +42,7 @@ public abstract class Enemy implements Disposable {
     private boolean isImmune;
 
     private Animation<TextureRegion> walkAnimation;
+    private Color tint = Color.WHITE;
     private Texture walkSheet;
     private float stateTime;
     private ProgressBar healthBar;
@@ -126,7 +127,9 @@ public abstract class Enemy implements Disposable {
     public void drawAnimation(SpriteBatch spriteBatch) {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, getSprite().getX(), getSprite().getY(), getWidth(), getHeight());
+        spriteBatch.setColor(Color.WHITE); // återställ så inte resten färgas
     }
 
     public abstract void move();
@@ -185,11 +188,10 @@ public abstract class Enemy implements Disposable {
             showHealthBarTemporarily(2.0f);
             if (healthPoints <= 0) {
                 isAlive = false;
-                sprite.setColor(Color.BLACK);
                 onDeath();
                 return true;
             } else {
-                sprite.setColor(Color.RED);
+                tint = Color.RED;
                 isImmune = true;
 
 
@@ -197,7 +199,7 @@ public abstract class Enemy implements Disposable {
                     @Override
                     public void run() {
                         Gdx.app.postRunnable(() -> {
-                            sprite.setColor(Color.CLEAR);
+                            tint = Color.WHITE;
                             isImmune = false;
 
 

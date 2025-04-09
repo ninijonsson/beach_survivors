@@ -45,7 +45,9 @@ public abstract class Ability implements Disposable {
     }
 
     public Double getBaseDamage() {
-        return damage;
+        double min = damage;
+        double max = damage*1.5;
+        return min + (int)(Math.random() * ((max - min) + 1));
     }
 
     public Sprite getSprite() {
@@ -104,4 +106,6 @@ public abstract class Ability implements Disposable {
 
     public void updatePosition(float delta, float playerX, float playerY) {
     }
+
+
 }

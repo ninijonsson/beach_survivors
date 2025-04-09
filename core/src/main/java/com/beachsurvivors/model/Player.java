@@ -17,7 +17,7 @@ public class Player implements Disposable {
     private int healthPoints;
     private int experiencePoints;
     private float speed = 400f;
-    private float critChance = 0.5f;
+    private float critChance = 0.15f;
 
     private Rectangle beachGuyHitBox;
     private float playerX;
