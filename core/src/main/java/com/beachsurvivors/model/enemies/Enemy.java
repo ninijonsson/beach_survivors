@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -35,6 +36,9 @@ public abstract class Enemy implements Disposable {
     private float x;
     private float y;
 
+    private Vector2 enemyPos = new Vector2();
+    private float radius;
+
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitbox;
@@ -60,6 +64,8 @@ public abstract class Enemy implements Disposable {
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
         this.hitSound = hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Shark_Damage.wav"));
+
+        this.radius = width /4;
 
         this.hitbox = new Rectangle(0, 0, width, height);
         healthPoints = 20;
@@ -281,5 +287,36 @@ public abstract class Enemy implements Disposable {
         direction.nor();
 
         return direction;
+    }
+
+    public Vector2 getEnemyPos() {
+        Vector2 vector = new Vector2(getSprite().getX(), getSprite().getY());
+        enemyPos = vector;
+
+        return enemyPos;
+    }
+
+    public void setEnemyPos(Vector2 enemyPos) {
+        this.enemyPos = enemyPos;
+    }
+
+    public Circle getCircle() {
+        return new Circle(enemyPos.x, enemyPos.y, radius);
+    }
+
+    public float getX() {
+        return sprite.getX();
+    }
+
+    public void setX(float x) {
+        sprite.setX(x);
+    }
+
+    public float getY() {
+        return sprite.getY();
+    }
+
+    public void setY(float y) {
+        sprite.setY(y);
     }
 }

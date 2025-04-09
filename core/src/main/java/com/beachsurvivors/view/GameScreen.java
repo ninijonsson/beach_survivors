@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -37,7 +38,7 @@ import java.util.Random;
 public class GameScreen extends Game implements Screen {
 
     private Main main;
-    private int enemiesToSpawn = 20;
+    private int enemiesToSpawn = 100;
     private SpriteBatch spriteBatch;
     private final FitViewport gameViewport;
     private Stage stage;
@@ -246,8 +247,7 @@ public class GameScreen extends Game implements Screen {
             enemy.addHealthBar(stage);
             float delta = Gdx.graphics.getDeltaTime();
             playerPos.set(player.getPlayerX(), player.getPlayerY());
-            Vector2 enemyPos = new Vector2(enemy.getSprite().getX(), enemy.getSprite().getY());
-            Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemyPos);
+            Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
 
             enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
             enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
@@ -285,6 +285,48 @@ public class GameScreen extends Game implements Screen {
                         a.dispose();
                         abilities.removeIndex(j);
                     }
+                }
+            }
+        }
+        resolveEnemyCollisions(enemies);
+    }
+
+    private void resolveEnemyCollisions(Array<Enemy> enemies) {
+        for (int i = 0; i < enemies.size; i++) {
+            Enemy e1 = enemies.get(i);
+            Circle c1 = e1.getCircle();
+
+            for (int j = i + 1; j < enemies.size; j++) { // i + 1 avoids comparing an enemy with itself
+                Enemy e2 = enemies.get(j);
+                Circle c2 = e2.getCircle();
+
+                if (c1.overlaps(c2)) {
+                    // Calculate push direction
+                    // dx, dy is the vector from enemy 1 to enemy 2.
+                    float dx = c2.x - c1.x;
+                    float dy = c2.y - c1.y;
+                    // dist is how far apart their centers are.
+                    float dist = (float)Math.sqrt(dx * dx + dy * dy);
+                    float minDist = c1.radius + c2.radius;
+
+                    if (dist == 0) dist = 0.01f; // avoid divide by zero
+
+                    float overlap = minDist - dist;
+
+                    // Normalize direction, gives clean push, 0% wonky
+                    float nx = dx / dist;
+                    float ny = dy / dist;
+
+                    // Push enemies apart
+                    float push = overlap / 2f;
+                    float e1X = e1.getX();
+                    float e1Y = e1.getY();
+                    float e2X = e2.getX();
+                    float e2Y = e2.getY();
+                    e1.setX(e1X -= nx * push);
+                    e1.setY(e1Y -= ny * push);
+                    e2.setX(e2X += nx * push);
+                    e2.setY(e2Y += ny * push);
                 }
             }
         }
