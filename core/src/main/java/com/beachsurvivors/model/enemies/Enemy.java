@@ -69,7 +69,7 @@ public abstract class Enemy implements Disposable {
     }
 
     private void createHealthBar() {
-        Skin healthSkin = new Skin(Gdx.files.internal("assets/SkinComposer/healthbutton.json"));
+        Skin healthSkin = new Skin(Gdx.files.internal("SkinComposer/healthbutton.json"));
         healthBar = new ProgressBar(0, healthPoints, 0.5f, false, healthSkin);
         healthBar.setValue(100);
         healthBar.setPosition(hitbox.x+hitbox.width/2, hitbox.y+height);

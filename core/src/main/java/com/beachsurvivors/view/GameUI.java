@@ -24,7 +24,7 @@ public class GameUI {
     }
 
     private void createPlayerHealthBar(FitViewport viewport) {
-        Skin healthSkin = new Skin(Gdx.files.internal("assets/SkinComposer/healthbutton.json"));
+        Skin healthSkin = new Skin(Gdx.files.internal("SkinComposer/healthbutton.json"));
         healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
         healthBar.setValue(86);
         healthBar.setPosition(910, 620);
@@ -55,7 +55,7 @@ public class GameUI {
     }
 
     public void createProgressBar(FitViewport viewport) {
-        Skin skin = new Skin(Gdx.files.internal("assets/SkinComposer/testbuttons.json"));
+        Skin skin = new Skin(Gdx.files.internal("SkinComposer/testbuttons.json"));
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
         progressBar.setPosition(viewport.getScreenWidth() * 0.5f + progressBar.getWidth() * 0.5f, viewport.getScreenHeight() + 300); // Sätt position längst upp på skärmen
