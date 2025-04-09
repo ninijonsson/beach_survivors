@@ -1,7 +1,6 @@
 package com.beachsurvivors.model.powerUps;
 
 import com.badlogic.gdx.utils.Timer;
-import com.beachsurvivors.model.PickUpAble;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.BaseAttack;
 

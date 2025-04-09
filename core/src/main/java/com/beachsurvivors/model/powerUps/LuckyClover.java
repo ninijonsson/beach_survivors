@@ -1,10 +1,7 @@
 package com.beachsurvivors.model.powerUps;
 
 import com.badlogic.gdx.utils.Timer;
-import com.beachsurvivors.model.PickUpAble;
 import com.beachsurvivors.model.Player;
-
-import java.util.TimerTask;
 
 public class LuckyClover extends PowerUp implements PickUpAble {
 

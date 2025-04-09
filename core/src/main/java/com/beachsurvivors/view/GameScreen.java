@@ -21,14 +21,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.beachsurvivors.model.abilities.Boomerang;
-import com.beachsurvivors.model.DamageText;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
-import com.beachsurvivors.model.enemies.Crocodile;
 import com.beachsurvivors.model.enemies.Enemy;
-import com.beachsurvivors.model.enemies.NavySeal;
 import com.beachsurvivors.model.enemies.Shark;
 import com.beachsurvivors.model.powerUps.Berserk;
 import com.beachsurvivors.model.powerUps.PowerUp;
@@ -126,15 +123,15 @@ public class GameScreen extends Game implements Screen {
         if (!isPaused) {
             logic();
             draw();
-        }
+
 
         gameUI.getStage().act(delta);
         gameUI.update(Gdx.graphics.getDeltaTime());
         gameUI.draw();
-
+        }
         if (isPaused) {
             spriteBatch.begin();
-            font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 150);
+            font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 200);
             spriteBatch.end();
         }
     }
@@ -145,9 +142,6 @@ public class GameScreen extends Game implements Screen {
         gameUI.getStage().getViewport().update(width, height, true);
     }
 
-    @Override
-    public void pause() {
-    }
 
     private void draw() {
         gameViewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
