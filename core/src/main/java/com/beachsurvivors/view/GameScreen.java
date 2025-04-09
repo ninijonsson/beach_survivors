@@ -37,8 +37,14 @@ import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
 
+    private int baseEnemies = 1;
+
+    // amount of enemies on screen gets multiplied by this number after every interval
+    private float growthRate = 2f;
+    // how often enemies get multiplied, in seconds.
+    private int secondsBetweenIntervals = 10;
+
     private Main main;
-    private int enemiesToSpawn = 100;
     private SpriteBatch spriteBatch;
     private final FitViewport gameViewport;
     private Stage stage;
@@ -123,7 +129,8 @@ public class GameScreen extends Game implements Screen {
         }
 
         gameUI.getStage().act(delta);
-        gameUI.getStage().draw();
+        gameUI.update(Gdx.graphics.getDeltaTime());
+        gameUI.draw();
 
         if (isPaused) {
             spriteBatch.begin();
@@ -239,7 +246,12 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        if (enemies.size < enemiesToSpawn) spawnEnemies();
+        float gameTimeSeconds = gameUI.getGameTimeSeconds();
+        int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
+        int maxEnemies = (int) (baseEnemies * Math.pow(growthRate, interval));
+
+        if (enemies.size < maxEnemies) spawnEnemies();
+
         for (int i = enemies.size - 1; i >= 0; i--) {
 
             Enemy enemy = enemies.get(i);
@@ -467,19 +479,21 @@ public class GameScreen extends Game implements Screen {
         Random random = new Random();
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
-        switch (enemyChoice) {
-            case 0:
-                enemy = new Shark();
-                break;
-            case 1:
-                enemy = new NavySeal();
-                break;
-            case 2:
-                enemy = new Crocodile();
-                break;
-        }
 
-        Vector2 randomPos = getRandomOffscreenPosition(100);
+
+//        switch (enemyChoice) {
+//            case 0:
+                enemy = new Shark();
+//                break;
+//            case 1:
+//                enemy = new NavySeal();
+//                break;
+//            case 2:
+//                enemy = new Crocodile();
+//                break;
+//        }
+
+        Vector2 randomPos = getRandomOffscreenPosition(150);
         enemy.getSprite().setPosition(randomPos.x, randomPos.y);
         enemy.getHitbox().setX(randomPos.x);
         enemy.getHitbox().setY(randomPos.y);
