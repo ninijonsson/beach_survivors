@@ -290,7 +290,7 @@ public abstract class Enemy implements Disposable {
     }
 
     public Vector2 getEnemyPos() {
-        Vector2 vector = new Vector2(getSprite().getX(), getSprite().getY());
+        Vector2 vector = new Vector2(getSprite().getX() + getWidth()/2, getSprite().getY() + getHeight()/2);
         enemyPos = vector;
 
         return enemyPos;
