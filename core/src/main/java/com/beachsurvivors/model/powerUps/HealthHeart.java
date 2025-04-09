@@ -1,6 +1,5 @@
 package com.beachsurvivors.model.powerUps;
 
-import com.beachsurvivors.model.PickUpAble;
 import com.beachsurvivors.model.Player;
 
 public class HealthHeart extends PowerUp implements PickUpAble {

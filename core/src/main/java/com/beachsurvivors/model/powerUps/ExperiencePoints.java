@@ -1,4 +1,6 @@
-package com.beachsurvivors.model;
+package com.beachsurvivors.model.powerUps;
+
+import com.beachsurvivors.model.Player;
 
 public class ExperiencePoints implements PickUpAble {
 

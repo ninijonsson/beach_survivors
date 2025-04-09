@@ -3,7 +3,6 @@ package com.beachsurvivors.model.powerUps;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
-import com.beachsurvivors.model.PickUpAble;
 import com.beachsurvivors.model.Player;
 
 public abstract class PowerUp implements PickUpAble {

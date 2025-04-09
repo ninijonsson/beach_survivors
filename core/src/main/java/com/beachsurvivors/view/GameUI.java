@@ -81,11 +81,15 @@ public class GameUI {
 
         int minutes = (int)(gameTime / 60f);
         int seconds = (int)(gameTime % 60f);
-        String timeText = String.format("%02d:%02d", minutes, seconds);
 
-        timerLabel.setText(timeText);
+            String timeText = String.format("%02d:%02d", minutes, seconds);
+
+            timerLabel.setText(timeText);
+
+
 
         stage.act(deltaTime);
+
     }
 
     public void draw() {

@@ -1,5 +1,6 @@
-package com.beachsurvivors.model;
+package com.beachsurvivors.model.powerUps;
 
+import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 
 import java.util.List;
