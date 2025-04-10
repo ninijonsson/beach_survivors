@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
 import com.beachsurvivors.model.Player;
-import com.beachsurvivors.model.powerUps.*;
+import com.beachsurvivors.model.groundItems.*;
 
 import java.util.Random;
 

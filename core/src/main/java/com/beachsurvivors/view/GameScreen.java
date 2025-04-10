@@ -27,8 +27,8 @@ import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 import com.beachsurvivors.model.enemies.Enemy;
 import com.beachsurvivors.model.enemies.Shark;
-import com.beachsurvivors.model.powerUps.Berserk;
-import com.beachsurvivors.model.powerUps.PowerUp;
+import com.beachsurvivors.model.groundItems.Berserk;
+import com.beachsurvivors.model.groundItems.PowerUp;
 
 import java.util.Random;
 
@@ -92,6 +92,7 @@ public class GameScreen extends Game implements Screen {
 
         tiledMap = new TmxMapLoader().load("Map2/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
+        assert tiledMap != null;
         Map map = new Map(tiledMap);
         stage = new Stage(gameViewport);
         stage.clear();
@@ -166,47 +167,6 @@ public class GameScreen extends Game implements Screen {
 
     }
 
-    private void drawStuff() {
-        drawAbilities();
-        drawPowerUp();
-        drawEnemies();
-        drawEnemyAbilities();
-        drawDamageText();
-    }
-
-    private void drawEnemies() {
-        for (Enemy enemy : enemies) {
-            if (enemy.isAlive()) {
-                enemy.drawAnimation(spriteBatch);
-            }
-        }
-    }
-
-    private void drawPowerUp() {
-        for (PowerUp powerUp : droppedItems) {
-            powerUp.update(Gdx.graphics.getDeltaTime());
-            powerUp.getSprite().draw(spriteBatch);
-        }
-    }
-
-    private void drawDamageText() {
-        for (DamageText dt : damageTexts) {
-            dt.draw(spriteBatch);
-        }
-    }
-
-    private void drawAbilities() {
-        for (Ability a : abilities) {
-            a.getSprite().draw(spriteBatch);
-        }
-    }
-
-    private void drawEnemyAbilities() {
-        for (Ability a : enemyAbilities) {
-            a.getSprite().draw(spriteBatch);
-        }
-    }
-
 
     private void input() {
         if (!isPaused) {
@@ -217,82 +177,21 @@ public class GameScreen extends Game implements Screen {
 
     private void logic() {
         pickUpPowerUp();
-
-        for (Ability a : abilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
-        }
+        updateAbilityMovement();
 
         enemyAttacks();
+        playerShoot();
+        updateDamageText();
 
-        float bulletCooldown = (float) bullet.getCooldown();
-        bulletTimer += Gdx.graphics.getDeltaTime();
-
-        if (bulletTimer >= bulletCooldown) {
-            bulletTimer = 0f;
-            shootAtNearestEnemy();
-        }
-
-        for (int i = damageTexts.size - 1; i >= 0; i--) {
-            DamageText dt = damageTexts.get(i);
-            dt.update(Gdx.graphics.getDeltaTime() * 2);
-            if (!dt.isActive()) {
-                damageTexts.removeIndex(i);
-            }
-        }
-
-        float gameTimeSeconds = gameUI.getGameTimeSeconds();
-        int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
-        int maxEnemies = (int) (baseEnemies * Math.pow(growthRate, interval));
-
-        if (enemies.size < maxEnemies) spawnEnemies();
+        spawnEnemies();
 
         for (int i = enemies.size - 1; i >= 0; i--) {
 
             Enemy enemy = enemies.get(i);
-            enemy.updateHealthBarPosition();
-            enemy.addHealthBar(stage);
-            float delta = Gdx.graphics.getDeltaTime();
-            playerPos.set(player.getPlayerX(), player.getPlayerY());
-            Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
+            updateEnemyMovement(enemy);
+            handleEnemyDeaths(enemy, i);
+            checkPlayerAbilityHits(enemy);
 
-            enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
-            enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
-            enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
-
-            if (!enemy.isAlive()) {
-                enemy.dropItems(droppedItems);
-                enemies.removeIndex(i);
-                sharksKilled = sharksKilled + 3;
-                if (sharksKilled >= 100) {
-                    sharksKilled = 0;
-                }
-                gameUI.setProgressBarValue(sharksKilled);
-            }
-
-            for (int j = abilities.size - 1; j >= 0; j--) {
-                Ability a = abilities.get(j);
-
-                if (a.getHitBox().overlaps(enemy.getHitbox())) {
-                    boolean isCritical = checkForCriticalStrike();
-                    double damage = a.getBaseDamage();
-                    if (isCritical) {
-                        damage *= 2;
-                    }
-
-                    if (enemy.hit(damage)) {
-                        damageTexts.add(new DamageText(String.valueOf((int) damage),
-                            enemy.getSprite().getX() + randomizeDirection.nextInt(50),
-                            enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomizeDirection.nextInt(50),
-                            1.0f,
-                            isCritical));
-                    }
-
-                    if (!(a instanceof Boomerang)) {
-                        a.dispose();
-                        abilities.removeIndex(j);
-                    }
-                }
-            }
         }
         resolveEnemyCollisions(enemies);
     }
@@ -342,12 +241,6 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = !isPaused;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            System.out.println("small");
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
-            System.out.println("normal");
-        }
     }
 
     private boolean checkForCriticalStrike() {
@@ -355,7 +248,7 @@ public class GameScreen extends Game implements Screen {
         return randomizeDirection.nextFloat() < critChance;
     }
 
-    public void pickUpPowerUp() {
+    private void pickUpPowerUp() {
         Array<PowerUp> powerUpsToRemove = new Array<>();
         for (PowerUp powerUp : droppedItems) {
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
@@ -374,20 +267,24 @@ public class GameScreen extends Game implements Screen {
         droppedItems.removeAll(powerUpsToRemove, true);
     }
 
-    private Enemy getNearestEnemy() {
-        Enemy nearest = null;
-        float minDistance = Float.MAX_VALUE;
-        Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
-
-        for (Enemy enemy : enemies) {
-            float distance = playerPos.dst(enemy.getSprite().getX(), enemy.getSprite().getY());
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearest = enemy;
+    private void updateDamageText() {
+        for (int i = damageTexts.size - 1; i >= 0; i--) {
+            DamageText dt = damageTexts.get(i);
+            dt.update(Gdx.graphics.getDeltaTime() * 2);
+            if (!dt.isActive()) {
+                damageTexts.removeIndex(i);
             }
         }
+    }
 
-        return nearest;
+    private void playerShoot() {  //Flytta alla player-shoot metoder till player i stället?
+        float bulletCooldown = (float) bullet.getCooldown();
+        bulletTimer += Gdx.graphics.getDeltaTime();
+
+        if (bulletTimer >= bulletCooldown) {
+            bulletTimer = 0f;
+            shootAtNearestEnemy();
+        }
     }
 
     private void shootAtNearestEnemy() {
@@ -405,6 +302,21 @@ public class GameScreen extends Game implements Screen {
 
             abilities.add(bullet);
         }
+    }
+
+    private Enemy getNearestEnemy() {
+        Enemy nearest = null;
+        float minDistance = Float.MAX_VALUE;
+        Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+
+        for (Enemy enemy : enemies) {
+            float distance = playerPos.dst(enemy.getSprite().getX(), enemy.getSprite().getY());
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearest = enemy;
+            }
+        }
+        return nearest;
     }
 
     private void enemyAttacks() {
@@ -470,6 +382,12 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void spawnEnemies() {
+        float gameTimeSeconds = gameUI.getGameTimeSeconds();
+        int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
+        int maxEnemies = (int) (baseEnemies * Math.pow(growthRate, interval));
+        if (!(enemies.size < maxEnemies)) {
+            return;
+        }
         Random random = new Random();
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
@@ -494,14 +412,111 @@ public class GameScreen extends Game implements Screen {
         enemies.add(enemy);
     }
 
-    /**
-     * USED TO DRAW PLAYER HIT BOX
-     */
-    private void drawPlayer() {
+    private void updateAbilityMovement() {
+        for (Ability a : abilities) {
+            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+        }
+    }
+
+    private void updateEnemyMovement(Enemy enemy) {
+        enemy.updateHealthBarPosition();
+        enemy.addHealthBar(stage);
+        float delta = Gdx.graphics.getDeltaTime();
+        playerPos.set(player.getPlayerX(), player.getPlayerY());
+        Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
+
+        enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
+        enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
+        enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
+
+    }
+
+    private void handleEnemyDeaths(Enemy enemy, int i) {
+        if (!enemy.isAlive()) {
+            enemy.dropItems(droppedItems);
+            enemies.removeIndex(i);
+            sharksKilled = sharksKilled + 3;
+            if (sharksKilled >= 100) {
+                sharksKilled = 0;
+            }
+            gameUI.setProgressBarValue(sharksKilled);
+        }
+    }
+
+    private void checkPlayerAbilityHits(Enemy enemy) {
+        for (int j = abilities.size - 1; j >= 0; j--) {
+            Ability a = abilities.get(j);
+
+            if (a.getHitBox().overlaps(enemy.getHitbox())) {
+                boolean isCritical = checkForCriticalStrike();
+                double damage = a.getBaseDamage();
+                if (isCritical) {
+                    damage *= 2;
+                }
+
+                if (enemy.hit(damage)) {
+                    damageTexts.add(new DamageText(String.valueOf((int) damage),
+                        enemy.getSprite().getX() + randomizeDirection.nextInt(50),
+                        enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomizeDirection.nextInt(50),
+                        1.0f,
+                        isCritical));
+                }
+
+                if (!(a instanceof Boomerang)) {
+                    a.dispose();
+                    abilities.removeIndex(j);
+                }
+            }
+        }
+    }
+
+
+    private void drawStuff() {
+        drawPlayerAbilities();
+        drawPowerUps();
+        drawEnemies();
+        drawEnemyAbilities();
+        drawDamageText();
+    }
+
+    private void drawPlayerHitbox() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
         Rectangle hitbox = player.getHitBox();
         shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
         shapeRenderer.end();
+    }
+
+    private void drawEnemies() {
+        for (Enemy enemy : enemies) {
+            if (enemy.isAlive()) {
+                enemy.drawAnimation(spriteBatch);
+            }
+        }
+    }
+
+    private void drawPowerUps() {
+        for (PowerUp powerUp : droppedItems) {
+            powerUp.update(Gdx.graphics.getDeltaTime());
+            powerUp.getSprite().draw(spriteBatch);
+        }
+    }
+
+    private void drawDamageText() {
+        for (DamageText dt : damageTexts) {
+            dt.draw(spriteBatch);
+        }
+    }
+
+    private void drawPlayerAbilities() {
+        for (Ability a : abilities) {
+            a.getSprite().draw(spriteBatch);
+        }
+    }
+
+    private void drawEnemyAbilities() {
+        for (Ability a : enemyAbilities) {
+            a.getSprite().draw(spriteBatch);
+        }
     }
 }

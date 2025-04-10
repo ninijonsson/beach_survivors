@@ -1,4 +1,4 @@
-package com.beachsurvivors.model.powerUps;
+package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;

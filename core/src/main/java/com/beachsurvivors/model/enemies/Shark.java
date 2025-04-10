@@ -2,8 +2,6 @@ package com.beachsurvivors.model.enemies;
 
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.Player;
-import com.beachsurvivors.model.powerUps.PowerUp;
-import com.beachsurvivors.model.powerUps.SpeedBoost;
 
 public class Shark extends Enemy {
 

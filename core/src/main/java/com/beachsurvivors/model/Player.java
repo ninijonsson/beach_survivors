@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Map.Map;
 
 public class Player extends Actor {
@@ -81,12 +80,11 @@ public class Player extends Actor {
 
     public void playerInput() {
         movementKeys();
-        flipPlayer();
         //FLYTTADE KEYBINDS TILL GAMESCREEN
     }
 
     private void movementKeys() {
-        float delta = Gdx.graphics.getDeltaTime();
+        float delta = Math.min(Gdx.graphics.getDeltaTime(), 1/30f);
         Vector2 direction = new Vector2(0, 0);
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
@@ -134,16 +132,6 @@ public class Player extends Actor {
     }
 
 
-
-    private void flipPlayer() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            //beachGuySprite.flip(true, false);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            //beachGuySprite.flip(true, false);
-        }
-    }
-
     public void dispose() {
         walkSheet.dispose();
     }
@@ -153,7 +141,11 @@ public class Player extends Actor {
     }
 
     public void increaseSpeed(int speedIncrease) {
-        speed += speedIncrease;
+        if (speed + speedIncrease > 1200f) {
+            speed = 1200f;
+        } else {
+            speed += speedIncrease;
+        }
     }
 
     public void increaseCritChance(float critChanceIncrease) {

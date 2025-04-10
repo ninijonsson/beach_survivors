@@ -1,4 +1,4 @@
-package com.beachsurvivors.model.powerUps;
+package com.beachsurvivors.model.groundItems;
 
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
