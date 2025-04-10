@@ -26,8 +26,10 @@ import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.model.enemies.MiniBoss;
 import com.beachsurvivors.model.enemies.Shark;
 import com.beachsurvivors.model.groundItems.Berserk;
+import com.beachsurvivors.model.groundItems.GroundItem;
 import com.beachsurvivors.model.groundItems.PowerUp;
 
 import java.util.Random;
@@ -53,7 +55,7 @@ public class GameScreen extends Game implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
 
     private Player player;
-    private Array<PowerUp> droppedItems;
+    private Array<GroundItem> groundItems;
 
     private Array<Ability> abilities;
     private Boomerang boomerang;
@@ -79,7 +81,7 @@ public class GameScreen extends Game implements Screen {
         gameViewport = new FitViewport(screenWidth, screenHeight);
         gameUI = new GameUI(new FitViewport(screenWidth, screenHeight));
 
-        droppedItems = new Array<>();
+        groundItems = new Array<>();
         abilities = new Array<>();
         sharksKilled = 0;
         create();
@@ -156,9 +158,13 @@ public class GameScreen extends Game implements Screen {
         spriteBatch.setProjectionMatrix(gameViewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(gameViewport.getCamera().combined);
 
+
         player.runAnimation();
 
+
         spriteBatch.begin();
+
+
         stage.act();
         stage.draw();
         drawStuff();
@@ -249,22 +255,22 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void pickUpPowerUp() {
-        Array<PowerUp> powerUpsToRemove = new Array<>();
-        for (PowerUp powerUp : droppedItems) {
-            if (player.getHitBox().overlaps(powerUp.getHitbox())) {
-                powerUp.onPickup(player);
-                if (powerUp instanceof Berserk) {
-                    powerUp.onPickup(player);
-                    ((Berserk) powerUp).onPickupBullet(bullet);
+        Array<GroundItem> powerUpsToRemove = new Array<>();
+        for (GroundItem groundItem : groundItems) {
+            if (player.getHitBox().overlaps(groundItem.getHitbox())) {
+                groundItem.onPickup(player);
+                if (groundItem instanceof Berserk) {
+                    groundItem.onPickup(player);
+                    (PowerUp) groundItem.onPickupBullet(bullet);
                 } else {
-                    powerUp.onPickup(player);
+                    groundItem.onPickup(player);
                 }
 
-                powerUpsToRemove.add(powerUp);
-                powerUp.dispose();
+                powerUpsToRemove.add(groundItem);
+                groundItem.dispose();
             }
         }
-        droppedItems.removeAll(powerUpsToRemove, true);
+        groundItems.removeAll(powerUpsToRemove, true);
     }
 
     private void updateDamageText() {
@@ -433,7 +439,10 @@ public class GameScreen extends Game implements Screen {
 
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
-            enemy.dropItems(droppedItems);
+            if (enemy instanceof MiniBoss miniBoss) {
+
+            }
+            enemy.dropItems(groundItems);
             enemies.removeIndex(i);
             sharksKilled = sharksKilled + 3;
             if (sharksKilled >= 100) {
@@ -496,9 +505,11 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void drawPowerUps() {
-        for (PowerUp powerUp : droppedItems) {
-            powerUp.update(Gdx.graphics.getDeltaTime());
-            powerUp.getSprite().draw(spriteBatch);
+        for (GroundItem groundItem : groundItems) {
+            if (groundItem instanceof PowerUp powerUp) {
+                powerUp.update(Gdx.graphics.getDeltaTime());
+            }
+            groundItem.getSprite().draw(spriteBatch);
         }
     }
 

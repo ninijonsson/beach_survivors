@@ -16,7 +16,7 @@ public class Player extends Actor {
 
     private int healthPoints;
     private int experiencePoints;
-    private float speed = 400f;
+    private float speed = 500f;
     private float critChance = 0.15f;
 
     private Rectangle beachGuyHitBox;
@@ -29,6 +29,7 @@ public class Player extends Actor {
     private static final int FRAME_COLS = 2, FRAME_ROWS = 1;
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
+    private boolean isMoving;
 
     private float stateTime;
 
@@ -41,7 +42,7 @@ public class Player extends Actor {
         this.spriteBatch = spriteBatch;
         playerHeight = 128;
         playerWidth = 128;
-
+        isMoving = false;
 
         playerX = map.getStartingX();
         playerY = map.getStartingY();
@@ -53,7 +54,7 @@ public class Player extends Actor {
     }
 
     private void createAnimation() {
-        walkSheet = new Texture(Gdx.files.internal("entities/beach_girl-Sheet.png"));
+        walkSheet = new Texture(Gdx.files.internal("entities/beach_guy_sheet.png"));
 
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
@@ -68,9 +69,16 @@ public class Player extends Actor {
     }
 
     public void runAnimation() {
+        TextureRegion currentFrame;
         stateTime += Gdx.graphics.getDeltaTime();
-        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+
+        if (isMoving) {
+            currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        } else {
+            currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
+        }
         spriteBatch.begin();
+
 
         // Rita animationen centrerad kring playerX och playerY
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
@@ -103,6 +111,11 @@ public class Player extends Actor {
         if (direction.len() > 0) {
             direction.nor();
         }
+        if (!direction.isZero()) {
+            isMoving = true;
+        } else {
+            isMoving = false;
+        }
 
         Vector2 newPlayerPosition = new Vector2(playerX, playerY).add(direction.scl(speed * delta));
 
@@ -134,6 +147,7 @@ public class Player extends Actor {
 
     public void dispose() {
         walkSheet.dispose();
+
     }
 
     public void damagePlayer(float damage){
@@ -191,6 +205,10 @@ public class Player extends Actor {
     }
 
     public void increaseDamage(double increasedDamage) {
+    }
+
+    public boolean isMoving() {
+        return isMoving;
     }
 }
 

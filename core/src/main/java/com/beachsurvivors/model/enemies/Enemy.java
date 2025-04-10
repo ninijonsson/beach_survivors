@@ -240,7 +240,8 @@ public abstract class Enemy implements Disposable {
         isAlive = alive;
     }
 
-    public void dropItems(Array<PowerUp> droppedItems) {
+
+    public void dropItems(Array<GroundItem> droppedItems) {
         Random random = new Random();
         int chance = random.nextInt(0,100);
 
@@ -266,12 +267,6 @@ public abstract class Enemy implements Disposable {
                 Berserk berserk = new Berserk(x, y);
                 droppedItems.add(berserk);
         }
-
-        /*if (chance == 1) {
-            SpeedBoost speedBoost = new SpeedBoost((getSprite().getWidth()/2)+getSprite().getX(), (getSprite().getHeight()/2) + getSprite().getY());
-            droppedItems.add(speedBoost);
-            System.out.println("Item dropped  X" + speedBoost.getHitbox().getX() + " Y " + speedBoost.getHitbox().getY());
-        }*/
 
     }
 
