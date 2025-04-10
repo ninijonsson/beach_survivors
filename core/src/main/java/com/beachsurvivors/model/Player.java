@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Map.Map;
+import com.beachsurvivors.view.GameScreen;
 
 public class Player extends Actor {
 
@@ -37,12 +38,15 @@ public class Player extends Actor {
 
     private Map map;
 
-    public Player(Map map, SpriteBatch spriteBatch) {
+    private GameScreen gameScreen;
+
+    public Player(Map map, SpriteBatch spriteBatch, GameScreen gameScreen) {
         this.map = map;
         this.spriteBatch = spriteBatch;
+        this.gameScreen = gameScreen;
+
         playerHeight = 128;
         playerWidth = 128;
-
 
         playerX = map.getStartingX();
         playerY = map.getStartingY();
@@ -195,6 +199,14 @@ public class Player extends Actor {
 
         if (healthPoints > 100) {
             healthPoints = 100;
+        }
+    }
+
+    public void takeDamage(int damage) {
+        healthPoints -= damage;
+
+        if (healthPoints <= 0) {
+            gameScreen.loseGame();
         }
     }
 

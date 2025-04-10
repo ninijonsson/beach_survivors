@@ -17,6 +17,7 @@ public class GameUI {
 
     private Label timerLabel;
     private float gameTime = 0f;
+    private float health = 100f;
 
     public GameUI(FitViewport viewport) {
         stage = new Stage(viewport);
@@ -30,7 +31,7 @@ public class GameUI {
     private void createPlayerHealthBar(FitViewport viewport) {
         Skin healthSkin = new Skin(Gdx.files.internal("SkinComposer/healthbutton.json"));
         healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
-        healthBar.setValue(86);
+        healthBar.setValue(100);
         healthBar.setPosition(910, 620);
         healthBar.setSize(100, 50);
         healthBar.setScale(0.5f);
@@ -58,7 +59,8 @@ public class GameUI {
     }
 
     public void setHealthBarValue(float value) {
-        healthBar.setValue(value);
+        health = health - value;
+        healthBar.setValue(health);
         percentageLabel.setText(getHealthPercentage() + "%"); // Uppdatera labeln när healthBar ändras
     }
 

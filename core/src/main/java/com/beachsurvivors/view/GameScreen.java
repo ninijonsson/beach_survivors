@@ -95,7 +95,7 @@ public class GameScreen extends Game implements Screen {
         Map map = new Map(tiledMap);
         stage = new Stage(gameViewport);
         stage.clear();
-        player = new Player(map, spriteBatch);
+        player = new Player(map, spriteBatch, this);
         playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         boomerang = new Boomerang();
@@ -207,7 +207,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-
     private void input() {
         if (!isPaused) {
             player.playerInput();
@@ -266,6 +265,7 @@ public class GameScreen extends Game implements Screen {
                 if (sharksKilled >= 100) {
                     sharksKilled = 0;
                 }
+
                 gameUI.setProgressBarValue(sharksKilled);
             }
 
@@ -285,6 +285,10 @@ public class GameScreen extends Game implements Screen {
                             enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomizeDirection.nextInt(50),
                             1.0f,
                             isCritical));
+
+                        player.takeDamage((int) damage);
+                        gameUI.setHealthBarValue((float) damage);
+                        System.out.println("Player current health: " + player.getHealthPoints());
                     }
 
                     if (!(a instanceof Boomerang)) {
@@ -503,5 +507,10 @@ public class GameScreen extends Game implements Screen {
         Rectangle hitbox = player.getHitBox();
         shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
         shapeRenderer.end();
+    }
+
+    public void loseGame() {
+        // HUD-ruta som visar att man förlorat
+        System.out.println("Du förlorade!");
     }
 }
