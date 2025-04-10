@@ -58,12 +58,14 @@ public class Player extends Actor {
 
     private void createAnimation() {
         Random random = new Random();
-        int choice = random.nextInt(0,2);
+        int choice = random.nextInt(1,3);
         switch (choice) {
             case 1:
                 walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
+                break;
             case 2:
                 walkSheet = new Texture(Gdx.files.internal("entities/beach_guy_sheet.png"));
+                break;
         }
 
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
