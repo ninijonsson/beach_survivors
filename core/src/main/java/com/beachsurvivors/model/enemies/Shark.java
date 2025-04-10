@@ -8,8 +8,8 @@ public class Shark extends Enemy {
 
 
     public Shark () {
-        super("entities/enemies/Shark.png", 100, 100);
-        createAnimation("entities/enemies/Shark-Sheet.png" , 4, 1);
+        super("entities/enemies/shark.png", 100, 100);
+        createAnimation("entities/enemies/shark_sheet.png" , 4, 1);
         setHealthPoints(20);
         setMovementSpeed(300f);
     }
