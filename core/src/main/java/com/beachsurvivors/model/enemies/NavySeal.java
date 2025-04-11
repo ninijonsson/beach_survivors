@@ -12,7 +12,7 @@ public class NavySeal extends Enemy {
 
 
     public NavySeal() {
-        super("", 100, 100);
+        super("", 100, 100, 20);
         createAnimation("entities/enemies/navy_seal_sheet.png", 4, 1);
         setHealthPoints(30);
         setHitSound(Gdx.audio.newSound(Gdx.files.internal("sounds/Seal_Damage.wav")));

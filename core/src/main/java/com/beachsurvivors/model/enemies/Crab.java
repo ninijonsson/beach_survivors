@@ -7,7 +7,7 @@ public class Crab extends Enemy {
 
     public Crab(String texturePath, int width, int height) {
 
-        super(texturePath, width, height);
+        super(texturePath, width, height, 20);
 
     }
 

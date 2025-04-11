@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -26,8 +27,10 @@ import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.model.enemies.MiniBoss;
 import com.beachsurvivors.model.enemies.Shark;
 import com.beachsurvivors.model.groundItems.Berserk;
+import com.beachsurvivors.model.groundItems.GroundItem;
 import com.beachsurvivors.model.groundItems.PowerUp;
 
 import java.util.Random;
@@ -65,6 +68,9 @@ public class GameScreen extends Game implements Screen {
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
 
+    private Array<GroundItem> groundItems = new Array<>();
+    private Queue<Integer> miniBossQueue = new Queue<>(10);
+
     private Array<Enemy> enemies = new Array<>();
     private Array<Ability> enemyAbilities = new Array<>();
     private Vector2 playerPos;
@@ -83,6 +89,10 @@ public class GameScreen extends Game implements Screen {
         abilities = new Array<>();
         sharksKilled = 0;
         create();
+
+        for (int i = 15; i <= 100; i+=15) {
+            miniBossQueue.addLast(i);
+        }
     }
 
     @Override
@@ -381,10 +391,22 @@ public class GameScreen extends Game implements Screen {
         return new Vector2(x, y);
     }
 
+    private void spawnMiniBoss(float gameTimeSeconds) {
+
+        if (!(miniBossQueue.isEmpty()) && miniBossQueue.first() <= gameTimeSeconds) {
+            MiniBoss miniBoss = new MiniBoss();
+            enemies.add(miniBoss);
+            miniBossQueue.removeFirst();
+        }
+    }
+
     private void spawnEnemies() {
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
         int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
         int maxEnemies = (int) (baseEnemies * Math.pow(growthRate, interval));
+
+        spawnMiniBoss(gameTimeSeconds);
+
         if (!(enemies.size < maxEnemies)) {
             return;
         }
@@ -519,4 +541,5 @@ public class GameScreen extends Game implements Screen {
             a.getSprite().draw(spriteBatch);
         }
     }
+
 }

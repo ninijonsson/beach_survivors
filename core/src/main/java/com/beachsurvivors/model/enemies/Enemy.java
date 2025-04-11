@@ -54,7 +54,7 @@ public abstract class Enemy implements Disposable {
     private Timer.Task hideHealthBarTask;
     private Stage stage;
 
-    public Enemy(String texturePath, int width, int height) {
+    public Enemy(String texturePath, int width, int height, int healthPoints) {
         this.width = width;
         this.height = height;
         if (texturePath.isEmpty()) {
@@ -68,17 +68,17 @@ public abstract class Enemy implements Disposable {
         this.radius = width /4;
 
         this.hitbox = new Rectangle(0, 0, width, height);
-        healthPoints = 20;
+        this.healthPoints = healthPoints;
         isImmune=false;
         isAlive = true;
-        createHealthBar();
+        createHealthBar(healthPoints);
 
     }
 
-    private void createHealthBar() {
+    private void createHealthBar(int healthPoints) {
         Skin healthSkin = new Skin(Gdx.files.internal("SkinComposer/healthbutton.json"));
         healthBar = new ProgressBar(0, healthPoints, 0.5f, false, healthSkin);
-        healthBar.setValue(100);
+        healthBar.setValue(healthPoints);
         healthBar.setPosition(hitbox.x+hitbox.width/2, hitbox.y+height);
         healthBar.setSize(70, 50);
         healthBar.setScale(0.2f);
