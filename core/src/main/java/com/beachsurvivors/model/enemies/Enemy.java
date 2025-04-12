@@ -36,6 +36,9 @@ public abstract class Enemy implements Disposable {
     private float x;
     private float y;
 
+    private boolean movingRight = true;
+    private boolean movingLeft = false;
+
     private Vector2 enemyPos = new Vector2();
     private float radius;
 
@@ -133,9 +136,16 @@ public abstract class Enemy implements Disposable {
     public void drawAnimation(SpriteBatch spriteBatch) {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        if (isMovingLeft() && !currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        } else if (isMovingRight() && currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        }
+
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, getSprite().getX(), getSprite().getY(), getWidth(), getHeight());
         spriteBatch.setColor(Color.WHITE); // återställ så inte resten färgas
+
     }
 
     public abstract void move();
@@ -228,6 +238,14 @@ public abstract class Enemy implements Disposable {
         return sprite;
     }
 
+    public Texture getWalkSheet() {
+        return walkSheet;
+    }
+
+    public Animation<TextureRegion> getWalkAnimation() {
+        return walkAnimation;
+    }
+
     public Rectangle getHitbox() {
         return hitbox;
     }
@@ -267,12 +285,6 @@ public abstract class Enemy implements Disposable {
                 droppedItems.add(berserk);
         }
 
-        /*if (chance == 1) {
-            SpeedBoost speedBoost = new SpeedBoost((getSprite().getWidth()/2)+getSprite().getX(), (getSprite().getHeight()/2) + getSprite().getY());
-            droppedItems.add(speedBoost);
-            System.out.println("Item dropped  X" + speedBoost.getHitbox().getX() + " Y " + speedBoost.getHitbox().getY());
-        }*/
-
     }
 
     @Override
@@ -290,9 +302,7 @@ public abstract class Enemy implements Disposable {
     }
 
     public Vector2 getEnemyPos() {
-        Vector2 vector = new Vector2(getSprite().getX() + getWidth()/2, getSprite().getY() + getHeight()/2);
-        enemyPos = vector;
-
+        enemyPos = new Vector2(getSprite().getX() + getWidth()/2, getSprite().getY() + getHeight()/2);
         return enemyPos;
     }
 
@@ -302,6 +312,23 @@ public abstract class Enemy implements Disposable {
 
     public Circle getCircle() {
         return new Circle(enemyPos.x, enemyPos.y, radius);
+    }
+
+    public void setMovingLeftRight(boolean movingLeft, boolean movingRight) {
+        this.movingLeft = movingLeft;
+        this.movingRight = movingRight;
+    }
+
+    public void setMovingLeftRight(float x) {
+        if (x < 0) setMovingLeftRight(true, false);
+        else setMovingLeftRight(false, true);
+    }
+
+    public boolean isMovingLeft() {
+        return movingLeft;
+    }
+    public boolean isMovingRight() {
+        return movingRight;
     }
 
     public float getX() {

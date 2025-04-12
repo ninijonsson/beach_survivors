@@ -32,6 +32,8 @@ public class Player extends Actor {
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
     private boolean isMoving;
+    private boolean movingRight = true;
+    private boolean movingLeft = false;
 
     private float stateTime;
 
@@ -85,6 +87,11 @@ public class Player extends Actor {
         TextureRegion currentFrame;
         if (isMoving) {
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+            if (isMovingLeft() && !currentFrame.isFlipX()) {
+                currentFrame.flip(true, false);
+            } else if (isMovingRight() && currentFrame.isFlipX()) {
+                currentFrame.flip(true, false);
+            }
         } else {
             currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
         }
@@ -107,9 +114,11 @@ public class Player extends Actor {
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
             direction.x -= 1;
+            setMovingLeftRight(true, false);
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
             direction.x += 1;
+            setMovingLeftRight(false, true);
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
             direction.y -= 1;
@@ -146,6 +155,18 @@ public class Player extends Actor {
             playerY = newPlayerPosition.y;
             beachGuyHitBox.setPosition(playerX - playerWidth / 2, playerY - playerHeight / 2);
         }
+    }
+
+    public void setMovingLeftRight(boolean movingLeft, boolean movingRight) {
+        this.movingLeft = movingLeft;
+        this.movingRight = movingRight;
+    }
+
+    public boolean isMovingLeft() {
+        return movingLeft;
+    }
+    public boolean isMovingRight() {
+        return movingRight;
     }
 
     public void setPlayerSize(float size) {

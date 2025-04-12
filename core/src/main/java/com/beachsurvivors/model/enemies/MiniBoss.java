@@ -8,11 +8,10 @@ import com.beachsurvivors.model.groundItems.GroundItem;
 public class MiniBoss extends Enemy {
 
     public MiniBoss() {
-        super("entities/enemies/crocodile2.png", 128*3, 128*3, 1000);
+        super("entities/enemies/crocodile2.png", 128*3, 128*3, 500);
         createAnimation("entities/enemies/crocodile2.png", 1, 1);
-        setX(1000);
-        setY(1000);
-        setHealthPoints(1000);
+        setMovementSpeed(200f);
+
     }
 
     @Override
@@ -32,6 +31,7 @@ public class MiniBoss extends Enemy {
 
     public void dropChest(Array<GroundItem> groundItems) {
 
-        Chest chest = new Chest(getX(), getY());
+        Chest chest = new Chest(getX()+getWidth()/2, getY()+getHeight()/2);
+        groundItems.add(chest);
     }
 }

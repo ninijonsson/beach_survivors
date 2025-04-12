@@ -68,8 +68,8 @@ public class GameScreen extends Game implements Screen {
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
 
-    private Array<GroundItem> groundItems = new Array<>();
-    private Queue<Integer> miniBossQueue = new Queue<>(10);
+    private Array<GroundItem> groundItems = new Array<>();  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
+    private Queue<Integer> miniBossSchedule = new Queue<>(10); ////array med intervaller på när miniboss ska spawna
 
     private Array<Enemy> enemies = new Array<>();
     private Array<Ability> enemyAbilities = new Array<>();
@@ -90,9 +90,7 @@ public class GameScreen extends Game implements Screen {
         sharksKilled = 0;
         create();
 
-        for (int i = 15; i <= 100; i+=15) {
-            miniBossQueue.addLast(i);
-        }
+
     }
 
     @Override
@@ -120,6 +118,8 @@ public class GameScreen extends Game implements Screen {
 
         player.setPlayerX(map.getStartingX());
         player.setPlayerY(map.getStartingY());
+
+        createMiniBossSchedule();
     }
 
     @Override
@@ -187,8 +187,9 @@ public class GameScreen extends Game implements Screen {
 
     private void logic() {
         pickUpPowerUp();
-        updateAbilityMovement();
+        pickUpGroundItem();
 
+        updateAbilityMovement();
         enemyAttacks();
         playerShoot();
         updateDamageText();
@@ -275,6 +276,18 @@ public class GameScreen extends Game implements Screen {
             }
         }
         droppedItems.removeAll(powerUpsToRemove, true);
+    }
+
+    private void pickUpGroundItem() {
+        Array<GroundItem> groundItemsToRemove = new Array<>();
+        for (GroundItem groundItem : groundItems) {
+            if (player.getHitBox().overlaps(groundItem.getHitbox())) {
+                groundItem.onPickup(player);
+                groundItemsToRemove.add(groundItem);
+                groundItem.dispose();
+            }
+        }
+        groundItems.removeAll(groundItemsToRemove, true);
     }
 
     private void updateDamageText() {
@@ -391,14 +404,6 @@ public class GameScreen extends Game implements Screen {
         return new Vector2(x, y);
     }
 
-    private void spawnMiniBoss(float gameTimeSeconds) {
-
-        if (!(miniBossQueue.isEmpty()) && miniBossQueue.first() <= gameTimeSeconds) {
-            MiniBoss miniBoss = new MiniBoss();
-            enemies.add(miniBoss);
-            miniBossQueue.removeFirst();
-        }
-    }
 
     private void spawnEnemies() {
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
@@ -434,6 +439,25 @@ public class GameScreen extends Game implements Screen {
         enemies.add(enemy);
     }
 
+    private void spawnMiniBoss(float gameTimeSeconds) {
+
+        if (!(miniBossSchedule.isEmpty()) && miniBossSchedule.first() <= gameTimeSeconds) {
+            Enemy miniBoss = new MiniBoss();
+            Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
+            miniBoss.setEnemyPos(randomPos);
+            miniBoss.setX(randomPos.x);
+            miniBoss.setY(randomPos.y);
+            enemies.add(miniBoss);
+            miniBossSchedule.removeFirst();
+        }
+    }
+
+    private void createMiniBossSchedule() {
+        for (int i = 10; i <= 100; i+=10) {
+            miniBossSchedule.addLast(i);
+        }
+    }
+
     private void updateAbilityMovement() {
         for (Ability a : abilities) {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
@@ -446,6 +470,7 @@ public class GameScreen extends Game implements Screen {
         float delta = Gdx.graphics.getDeltaTime();
         playerPos.set(player.getPlayerX(), player.getPlayerY());
         Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
+        enemy.setMovingLeftRight(vector.x);
 
         enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
         enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
@@ -453,9 +478,13 @@ public class GameScreen extends Game implements Screen {
 
     }
 
+
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
             enemy.dropItems(droppedItems);
+            if (enemy instanceof MiniBoss) {
+                ((MiniBoss) enemy).dropChest(groundItems);
+            }
             enemies.removeIndex(i);
             sharksKilled = sharksKilled + 3;
             if (sharksKilled >= 100) {
@@ -499,6 +528,7 @@ public class GameScreen extends Game implements Screen {
         drawEnemies();
         drawEnemyAbilities();
         drawDamageText();
+        drawGroundItems();
     }
 
     private void drawPlayerHitbox() {
@@ -521,6 +551,12 @@ public class GameScreen extends Game implements Screen {
         for (PowerUp powerUp : droppedItems) {
             powerUp.update(Gdx.graphics.getDeltaTime());
             powerUp.getSprite().draw(spriteBatch);
+        }
+    }
+
+    private void drawGroundItems() {
+        for (GroundItem groundItem : groundItems) {
+            groundItem.getSprite().draw(spriteBatch);
         }
     }
 
