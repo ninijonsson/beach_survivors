@@ -34,10 +34,10 @@ import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
 
-    private int baseEnemies = 1;
+    private int baseEnemies = 200;
 
     // amount of enemies on screen gets multiplied by this number after every interval
-    private float growthRate = 2f;
+    private float growthRate = 1f;
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
 
@@ -76,7 +76,7 @@ public class GameScreen extends Game implements Screen {
 
         int screenWidth = 1920;
         int screenHeight = 1080;
-        gameViewport = new FitViewport(screenWidth, screenHeight);
+        gameViewport = new FitViewport(screenWidth*3/2, screenHeight*3/2);
         gameUI = new GameUI(new FitViewport(screenWidth, screenHeight));
 
         droppedItems = new Array<>();
@@ -460,6 +460,8 @@ public class GameScreen extends Game implements Screen {
                         enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomizeDirection.nextInt(50),
                         1.0f,
                         isCritical));
+
+                    checkSplash(enemies, enemy);
                 }
 
                 if (!(a instanceof Boomerang)) {
@@ -517,6 +519,27 @@ public class GameScreen extends Game implements Screen {
     private void drawEnemyAbilities() {
         for (Ability a : enemyAbilities) {
             a.getSprite().draw(spriteBatch);
+        }
+    }
+
+    private Circle getCircleAroundPosition(Vector2 position) {
+        float radius = 500;
+        return new Circle(position.x, position.y, radius);
+    }
+
+    private void checkSplash(Array<Enemy> enemies, Enemy enemy) {
+        Vector2 enemyPos = enemy.getEnemyPos();
+        Circle splash = getCircleAroundPosition(enemyPos);
+
+        for (int i = enemies.size - 1; i >= 0; i--) {
+            if (enemies.get(i) == enemy) {
+                continue;
+            }
+
+            if (enemies.get(i).getCircle().overlaps(splash)) {
+                enemies.get(i).hit(100);
+                damageTexts.add(new DamageText("100", enemies.get(i).getX(), enemies.get(i).getY(), 1.0f, true));
+            }
         }
     }
 }
