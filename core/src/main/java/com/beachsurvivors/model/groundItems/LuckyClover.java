@@ -1,4 +1,4 @@
-package com.beachsurvivors.model.powerUps;
+package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.model.Player;

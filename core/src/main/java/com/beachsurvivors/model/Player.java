@@ -10,14 +10,15 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Map.Map;
+
+import java.util.Random;
 
 public class Player extends Actor {
 
     private int healthPoints;
     private int experiencePoints;
-    private float speed = 400f;
+    private float speed = 500f;
     private float critChance = 0.15f;
 
     private Rectangle beachGuyHitBox;
@@ -30,6 +31,7 @@ public class Player extends Actor {
     private static final int FRAME_COLS = 2, FRAME_ROWS = 1;
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
+    private boolean isMoving;
 
     private float stateTime;
 
@@ -43,6 +45,7 @@ public class Player extends Actor {
         playerHeight = 128;
         playerWidth = 128;
 
+        isMoving = false;
 
         playerX = map.getStartingX();
         playerY = map.getStartingY();
@@ -54,7 +57,16 @@ public class Player extends Actor {
     }
 
     private void createAnimation() {
-        walkSheet = new Texture(Gdx.files.internal("entities/beach_girl-Sheet.png"));
+        Random random = new Random();
+        int choice = random.nextInt(1,3);
+        switch (choice) {
+            case 1:
+                walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
+                break;
+            case 2:
+                walkSheet = new Texture(Gdx.files.internal("entities/beach_guy_sheet.png"));
+                break;
+        }
 
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
@@ -70,7 +82,12 @@ public class Player extends Actor {
 
     public void runAnimation() {
         stateTime += Gdx.graphics.getDeltaTime();
-        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        TextureRegion currentFrame;
+        if (isMoving) {
+            currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        } else {
+            currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
+        }
         spriteBatch.begin();
 
         // Rita animationen centrerad kring playerX och playerY
@@ -81,12 +98,11 @@ public class Player extends Actor {
 
     public void playerInput() {
         movementKeys();
-        flipPlayer();
         //FLYTTADE KEYBINDS TILL GAMESCREEN
     }
 
     private void movementKeys() {
-        float delta = Gdx.graphics.getDeltaTime();
+        float delta = Math.min(Gdx.graphics.getDeltaTime(), 1/30f);
         Vector2 direction = new Vector2(0, 0);
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
@@ -104,6 +120,11 @@ public class Player extends Actor {
 
         if (direction.len() > 0) {
             direction.nor();
+        }
+        if (!direction.isZero()) {
+            isMoving = true;
+        } else {
+            isMoving = false;
         }
 
         Vector2 newPlayerPosition = new Vector2(playerX, playerY).add(direction.scl(speed * delta));
@@ -134,16 +155,6 @@ public class Player extends Actor {
     }
 
 
-
-    private void flipPlayer() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-            //beachGuySprite.flip(true, false);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-            //beachGuySprite.flip(true, false);
-        }
-    }
-
     public void dispose() {
         walkSheet.dispose();
     }
@@ -153,7 +164,11 @@ public class Player extends Actor {
     }
 
     public void increaseSpeed(int speedIncrease) {
-        speed += speedIncrease;
+        if (speed + speedIncrease > 1200f) {
+            speed = 1200f;
+        } else {
+            speed += speedIncrease;
+        }
     }
 
     public void increaseCritChance(float critChanceIncrease) {
