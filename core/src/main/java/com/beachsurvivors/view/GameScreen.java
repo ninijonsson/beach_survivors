@@ -34,7 +34,7 @@ import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
 
-    private int baseEnemies = 200;
+    private int baseEnemies = 50;
 
     // amount of enemies on screen gets multiplied by this number after every interval
     private float growthRate = 1f;
@@ -101,7 +101,7 @@ public class GameScreen extends Game implements Screen {
 
         boomerang = new Boomerang();
         bullet = new BaseAttack();
-        abilities.add(boomerang);
+//        abilities.add(boomerang);
         abilities.add(bullet);
 
         font = new BitmapFont();
@@ -523,7 +523,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private Circle getCircleAroundPosition(Vector2 position) {
-        float radius = 500;
+        float radius = 250;
         return new Circle(position.x, position.y, radius);
     }
 
@@ -537,8 +537,8 @@ public class GameScreen extends Game implements Screen {
             }
 
             if (enemies.get(i).getCircle().overlaps(splash)) {
-                enemies.get(i).hit(100);
-                damageTexts.add(new DamageText("100", enemies.get(i).getX(), enemies.get(i).getY(), 1.0f, true));
+                enemies.get(i).hit(5);
+                damageTexts.add(new DamageText("5", enemies.get(i).getX(), enemies.get(i).getY(), 1.0f, false));
             }
         }
     }
