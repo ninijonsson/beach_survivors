@@ -85,6 +85,9 @@ public class GameScreen extends Game implements Screen {
         create();
     }
 
+    /**
+     * This method is used by Libgdx for constructing and adding certain objects to the game.
+     */
     @Override
     public void create() {
         spriteBatch = new SpriteBatch();
@@ -143,7 +146,10 @@ public class GameScreen extends Game implements Screen {
         gameUI.getStage().getViewport().update(width, height, true);
     }
 
-
+    /**
+     * This method is used by libgdx to draw everything on the screen every gametic. This method is called upon every
+     * single game tick and is used to update the visuals of the game.
+     */
     private void draw() {
         gameViewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
         gameViewport.getCamera().update();
@@ -175,6 +181,9 @@ public class GameScreen extends Game implements Screen {
         keyBinds();
     }
 
+    /**
+     * As the name suggests, Logic is where the game's logic is put.
+     */
     private void logic() {
         pickUpPowerUp();
         updateAbilityMovement();
@@ -196,6 +205,11 @@ public class GameScreen extends Game implements Screen {
         resolveEnemyCollisions(enemies);
     }
 
+    /**
+     * This method is used to control enemy moving behaviour. Each enemy is given a radius in which other enemies tries
+     * to avoid. This method prevents cluttering of enemies and having several enemies on the same game square.
+     * @param enemies
+     */
     private void resolveEnemyCollisions(Array<Enemy> enemies) {
         for (int i = 0; i < enemies.size; i++) {
             Enemy e1 = enemies.get(i);
@@ -267,6 +281,9 @@ public class GameScreen extends Game implements Screen {
         droppedItems.removeAll(powerUpsToRemove, true);
     }
 
+    /**
+     * Method for updating the position of damage text above enemies and then removing them after a certain amount of time.
+     */
     private void updateDamageText() {
         for (int i = damageTexts.size - 1; i >= 0; i--) {
             DamageText dt = damageTexts.get(i);
@@ -286,6 +303,7 @@ public class GameScreen extends Game implements Screen {
             shootAtNearestEnemy();
         }
     }
+
 
     private void shootAtNearestEnemy() {
         Enemy target = getNearestEnemy();
@@ -346,6 +364,12 @@ public class GameScreen extends Game implements Screen {
         font.dispose();
     }
 
+    /**
+     * Method for generating a random position outside of the visible screen, this position could then be used to summon
+     * enemies outside of the game screen.
+     * @param margin
+     * @return a vector for the enemy to move.
+     */
     public Vector2 getRandomOffscreenPosition(float margin) {
         float viewWidth = gameViewport.getCamera().viewportWidth;
         float viewHeight = gameViewport.getCamera().viewportHeight;
@@ -470,7 +494,9 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-
+    /**
+     * Decluttering method for keeping the draw-method simple.
+     */
     private void drawStuff() {
         drawPlayerAbilities();
         drawPowerUps();
@@ -479,6 +505,9 @@ public class GameScreen extends Game implements Screen {
         drawDamageText();
     }
 
+    /**
+     * This method draws a rectangle around the player, used in play testing for checking various collisions.
+     */
     private void drawPlayerHitbox() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
@@ -487,6 +516,9 @@ public class GameScreen extends Game implements Screen {
         shapeRenderer.end();
     }
 
+    /**
+     * Draws living enemies every game tic
+     */
     private void drawEnemies() {
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {

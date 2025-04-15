@@ -30,6 +30,8 @@ entities/enemies/navy_seal_sheet.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
 entities/power_ups/beer.png
+entities/power_ups/freeze.png
+entities/power_ups/health_boost.png
 entities/power_ups/health_heart.png
 entities/power_ups/lucky_clover.png
 entities/power_ups/speed_boost.png
