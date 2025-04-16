@@ -32,6 +32,7 @@ public class Player extends Actor {
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
     private boolean isMoving;
+    private boolean isFacingLeft;
 
     private float stateTime;
 
@@ -46,7 +47,7 @@ public class Player extends Actor {
         playerWidth = 128;
 
         isMoving = false;
-
+        isFacingLeft = false;
         playerX = map.getStartingX();
         playerY = map.getStartingY();
         beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
@@ -64,7 +65,7 @@ public class Player extends Actor {
                 walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
                 break;
             case 2:
-                walkSheet = new Texture(Gdx.files.internal("entities/beach_guy_sheet.png"));
+                walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
                 break;
         }
 
@@ -89,7 +90,11 @@ public class Player extends Actor {
             currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
         }
         spriteBatch.begin();
-
+        if (isFacingLeft && !currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        } else if (!isFacingLeft && currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        }
         // Rita animationen centrerad kring playerX och playerY
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
 
@@ -107,9 +112,11 @@ public class Player extends Actor {
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
             direction.x -= 1;
+            isFacingLeft = true;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
             direction.x += 1;
+            isFacingLeft = false;
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
             direction.y -= 1;
