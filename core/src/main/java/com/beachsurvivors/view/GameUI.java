@@ -99,4 +99,8 @@ public class GameUI {
     public float getGameTimeSeconds() {
         return gameTime;
     }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
 }

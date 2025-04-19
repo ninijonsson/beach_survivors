@@ -37,6 +37,11 @@ entities/power_ups/lucky_clover.png
 entities/power_ups/speed_boost.png
 entities/smoke.png
 game_screen/Cool_beach_guy.png
+levelUpScreen/default.fnt
+levelUpScreen/default.png
+levelUpScreen/uiskin.atlas
+levelUpScreen/uiskin.json
+levelUpScreen/uiskin.png
 main_menu/buttons/exit_button.png
 main_menu/buttons/exit_button_2_hover_scaled.png
 main_menu/buttons/exit_button_2_pressed_scaled.png
