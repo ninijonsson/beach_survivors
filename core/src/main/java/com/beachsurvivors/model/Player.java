@@ -20,6 +20,7 @@ public class Player extends Actor {
     private int experiencePoints;
     private float speed = 500f;
     private float critChance = 0.15f;
+    private int level = 1;
 
     private Rectangle beachGuyHitBox;
     private float playerX;
@@ -221,6 +222,18 @@ public class Player extends Actor {
     }
 
     public void increaseDamage(double increasedDamage) {
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }
 

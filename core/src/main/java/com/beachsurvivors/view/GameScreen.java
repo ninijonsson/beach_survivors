@@ -34,12 +34,15 @@ import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
 
-    private int baseEnemies = 1;
+    private int baseEnemies = 2;
 
     // amount of enemies on screen gets multiplied by this number after every interval
-    private float growthRate = 2f;
+    private float growthRate = 1.5f;
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
+
+    private int screenWidth = 1920;
+    private int screenHeight = 1080;
 
     private Main main;
     private SpriteBatch spriteBatch;
@@ -74,8 +77,6 @@ public class GameScreen extends Game implements Screen {
     public GameScreen(Main main) {
         this.main = main;
 
-        int screenWidth = 1920;
-        int screenHeight = 1080;
         gameViewport = new FitViewport(screenWidth, screenHeight);
         gameUI = new GameUI(new FitViewport(screenWidth, screenHeight));
 
@@ -348,6 +349,8 @@ public class GameScreen extends Game implements Screen {
 
     @Override
     public void resume() {
+        setPaused(false);
+        main.setScreen(this);
     }
 
     @Override
@@ -460,10 +463,9 @@ public class GameScreen extends Game implements Screen {
             enemy.dropItems(droppedItems);
             enemies.removeIndex(i);
             sharksKilled = sharksKilled + 3;
-            if (sharksKilled >= 100) {
-                sharksKilled = 0;
-            }
-            gameUI.setProgressBarValue(sharksKilled);
+            checkLevelUp(); // kommentera bort detta för att avaktivera levelup systemet
+
+            gameUI.setProgressBarValue(sharksKilled/player.getLevel());
         }
     }
 
@@ -550,5 +552,35 @@ public class GameScreen extends Game implements Screen {
         for (Ability a : enemyAbilities) {
             a.getSprite().draw(spriteBatch);
         }
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
+
+    private void checkLevelUp() {
+        if (sharksKilled >= 100 * player.getLevel()) {
+            System.out.println("levelup");
+            setPaused(true);
+            main.levelUp();
+            player.setLevel(player.getLevel() + 1);
+            sharksKilled = 0;
+        }
+    }
+
+    public void addBoomerang() {
+        abilities.add(new Boomerang());
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }
