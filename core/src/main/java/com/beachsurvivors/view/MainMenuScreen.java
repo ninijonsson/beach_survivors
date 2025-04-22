@@ -2,6 +2,7 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -28,6 +29,7 @@ public class MainMenuScreen implements Screen {
     private Main main;
     private Stage stage;
     Sound playSound;
+    Music mainTheme;
 
     Texture backgroundTexture;
     Texture logoTexture;
@@ -66,7 +68,10 @@ public class MainMenuScreen implements Screen {
         logoTexture = new Texture("main_menu/logo_skiss_1.png");
 
         playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/Holiday.wav"));
-
+        mainTheme = Gdx.audio.newMusic(Gdx.files.internal("sounds/beach.mp3"));
+        mainTheme.play();
+        mainTheme.setVolume(0.5f);
+        mainTheme.setLooping(true);
         // PLAY
         playButtonTexture = new Texture("main_menu/buttons/play_button_2_scaled.png");
         playButtonHoverTexture = new Texture("main_menu/buttons/play_button_2_hover_scaled.png");
@@ -183,7 +188,11 @@ public class MainMenuScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 playButtonStyle.up = playDrawable;
-                playSound.play(0.1f);
+                mainTheme.stop();
+               // playSound.play(0.1f);
+
+                playSound.setLooping(playSound.play(0.1f),true);
+                playSound.setPitch(0,0.7f);
                 main.switchScreen();
             }
         });
