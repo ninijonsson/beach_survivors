@@ -1,9 +1,7 @@
 package com.beachsurvivors.view;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -11,17 +9,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.model.Player;
 
 public class LevelUpScreen implements Screen {
 
     private Stage stage;
     private GameScreen game;
     private Skin skin;
+    private Player player;
 
-    public LevelUpScreen(GameScreen game) {
+    public LevelUpScreen(GameScreen game, Player player) {
         this.game = game;
+        this.player = player;
 
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
@@ -33,18 +33,29 @@ public class LevelUpScreen implements Screen {
 
     private void buildUI() {
         Table table = new Table();
-        table.setFillParent(true);
-//        table.center();
+//        table.setDebug(true);
 
+        table.setBackground(skin.getDrawable("textfield"));
         Label title = new Label("Level Up!", skin);
         TextButton upgrade1 = new TextButton("+1 BOOMERANG", skin);
-        TextButton upgrade2 = new TextButton("+50% DAMAGE", skin);
-        TextButton continueButton = new TextButton("Continue", skin);
+        TextButton upgrade2 = new TextButton("25% INCREASED MOVEMENT SPEED", skin);
+        TextButton upgrade3 = new TextButton("+10% CRIT CHANCE", skin);
+        TextButton skipButton = new TextButton("Skip", skin);
 
-        table.add(title).padBottom(40).row();
-        table.add(upgrade1).pad(10).row();
-        table.add(upgrade2).pad(10).row();
-        table.add(continueButton).padTop(40);
+        title.setFontScale(2f);
+        table.add(title).padBottom(40).colspan(3).center();
+        table.row();
+        table.add(upgrade1).pad(10);
+        table.add(upgrade2).pad(10);
+        table.add(upgrade3).pad(10);
+        table.row();
+        table.add(skipButton).padTop(40).colspan(3).center();
+
+        table.pack();
+        table.setPosition(
+            (stage.getWidth() - table.getWidth()) / 2f,
+            (stage.getHeight() - table.getHeight()) / 2f
+        );
 
         stage.addActor(table);
 
@@ -52,18 +63,28 @@ public class LevelUpScreen implements Screen {
         upgrade1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                applyUpgrade("damage");
+                applyUpgrade("boomerang");
+                resumeGame();
             }
         });
 
         upgrade2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                applyUpgrade("cooldown");
+                player.increaseSpeed((int)((player.getSpeed()/100)*25));
+                resumeGame();
             }
         });
 
-        continueButton.addListener(new ChangeListener() {
+        upgrade3.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                player.increaseCritChance(player.getCritChance()+0.1f);
+                resumeGame();
+            }
+        });
+
+        skipButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 resumeGame();
@@ -72,6 +93,7 @@ public class LevelUpScreen implements Screen {
     }
 
     private void applyUpgrade(String type) {
+        game.addBoomerang();
         System.out.println("Upgrade chosen: " + type);
     }
 

@@ -34,10 +34,10 @@ import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
 
-    private int baseEnemies = 80;
+    private int baseEnemies = 2;
 
     // amount of enemies on screen gets multiplied by this number after every interval
-    private float growthRate = 1f;
+    private float growthRate = 1.5f;
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
 
@@ -463,11 +463,9 @@ public class GameScreen extends Game implements Screen {
             enemy.dropItems(droppedItems);
             enemies.removeIndex(i);
             sharksKilled = sharksKilled + 3;
-            checkLevelUp();
-            if (sharksKilled >= 100) {
-                sharksKilled = 0;
-            }
-            gameUI.setProgressBarValue(sharksKilled);
+            checkLevelUp(); // kommentera bort detta för att avaktivera levelup systemet
+
+            gameUI.setProgressBarValue(sharksKilled/player.getLevel());
         }
     }
 
@@ -569,10 +567,20 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void checkLevelUp() {
-        if (sharksKilled >= 100) {
+        if (sharksKilled >= 100 * player.getLevel()) {
             System.out.println("levelup");
             setPaused(true);
             main.levelUp();
+            player.setLevel(player.getLevel() + 1);
+            sharksKilled = 0;
         }
+    }
+
+    public void addBoomerang() {
+        abilities.add(new Boomerang());
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }
