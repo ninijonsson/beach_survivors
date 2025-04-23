@@ -20,6 +20,7 @@ public class Player extends Actor {
     private int experiencePoints;
     private float speed = 500f;
     private float critChance = 0.15f;
+    private int level = 1;
 
     private Rectangle beachGuyHitBox;
     private float playerX;
@@ -32,6 +33,7 @@ public class Player extends Actor {
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
     private boolean isMoving;
+
     private boolean movingRight = true;
     private boolean movingLeft = false;
 
@@ -48,7 +50,7 @@ public class Player extends Actor {
         playerWidth = 128;
 
         isMoving = false;
-
+        isFacingLeft = false;
         playerX = map.getStartingX();
         playerY = map.getStartingY();
         beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
@@ -66,7 +68,7 @@ public class Player extends Actor {
                 walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
                 break;
             case 2:
-                walkSheet = new Texture(Gdx.files.internal("entities/beach_guy_sheet.png"));
+                walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
                 break;
         }
 
@@ -96,7 +98,11 @@ public class Player extends Actor {
             currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
         }
         spriteBatch.begin();
-
+        if (isFacingLeft && !currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        } else if (!isFacingLeft && currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        }
         // Rita animationen centrerad kring playerX och playerY
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
 
@@ -116,9 +122,12 @@ public class Player extends Actor {
             direction.x -= 1;
             setMovingLeftRight(true, false);
         }
+      
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
             direction.x += 1;
             setMovingLeftRight(false, true);
+        }
+        
         }
         if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
             direction.y -= 1;
@@ -235,6 +244,18 @@ public class Player extends Actor {
     }
 
     public void increaseDamage(double increasedDamage) {
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }
 

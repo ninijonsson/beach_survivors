@@ -31,11 +31,18 @@ entities/enemies/navy_seal_sheet.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
 entities/power_ups/beer.png
+entities/power_ups/freeze.png
+entities/power_ups/health_boost.png
 entities/power_ups/health_heart.png
 entities/power_ups/lucky_clover.png
 entities/power_ups/speed_boost.png
 entities/smoke.png
 game_screen/Cool_beach_guy.png
+levelUpScreen/default.fnt
+levelUpScreen/default.png
+levelUpScreen/uiskin.atlas
+levelUpScreen/uiskin.json
+levelUpScreen/uiskin.png
 main_menu/buttons/exit_button.png
 main_menu/buttons/exit_button_2_hover_scaled.png
 main_menu/buttons/exit_button_2_pressed_scaled.png
@@ -54,3 +61,7 @@ main_menu/sound/play_sound.wav
 placeholder.png
 sounds/Seal_Damage.wav
 sounds/Shark_Damage.wav
+sounds/Shark_Damage2.wav
+sounds/beach.mp3
+sounds/beach.wav
+sounds/powerUp_pickUp.wav

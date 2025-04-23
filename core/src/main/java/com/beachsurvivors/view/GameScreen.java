@@ -37,12 +37,15 @@ import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
 
-    private int baseEnemies = 1;
+    private int baseEnemies = 2;
 
     // amount of enemies on screen gets multiplied by this number after every interval
-    private float growthRate = 2f;
+    private float growthRate = 1.5f;
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
+
+    private int screenWidth = 1920;
+    private int screenHeight = 1080;
 
     private Main main;
     private SpriteBatch spriteBatch;
@@ -80,8 +83,6 @@ public class GameScreen extends Game implements Screen {
     public GameScreen(Main main) {
         this.main = main;
 
-        int screenWidth = 1920;
-        int screenHeight = 1080;
         gameViewport = new FitViewport(screenWidth, screenHeight);
         gameUI = new GameUI(new FitViewport(screenWidth, screenHeight));
 
@@ -93,6 +94,9 @@ public class GameScreen extends Game implements Screen {
 
     }
 
+    /**
+     * This method is used by Libgdx for constructing and adding certain objects to the game.
+     */
     @Override
     public void create() {
         spriteBatch = new SpriteBatch();
@@ -153,7 +157,10 @@ public class GameScreen extends Game implements Screen {
         gameUI.getStage().getViewport().update(width, height, true);
     }
 
-
+    /**
+     * This method is used by libgdx to draw everything on the screen every gametic. This method is called upon every
+     * single game tick and is used to update the visuals of the game.
+     */
     private void draw() {
         gameViewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
         gameViewport.getCamera().update();
@@ -185,6 +192,9 @@ public class GameScreen extends Game implements Screen {
         keyBinds();
     }
 
+    /**
+     * As the name suggests, Logic is where the game's logic is put.
+     */
     private void logic() {
         pickUpPowerUp();
         pickUpGroundItem();
@@ -208,6 +218,11 @@ public class GameScreen extends Game implements Screen {
 
     }
 
+    /**
+     * This method is used to control enemy moving behaviour. Each enemy is given a radius in which other enemies tries
+     * to avoid. This method prevents cluttering of enemies and having several enemies on the same game square.
+     * @param enemies
+     */
     private void resolveEnemyCollisions(Array<Enemy> enemies) {
         for (int i = 0; i < enemies.size; i++) {
             Enemy e1 = enemies.get(i);
@@ -279,6 +294,7 @@ public class GameScreen extends Game implements Screen {
         droppedItems.removeAll(powerUpsToRemove, true);
     }
 
+
     private void pickUpGroundItem() {
         Array<GroundItem> groundItemsToRemove = new Array<>();
         for (GroundItem groundItem : groundItems) {
@@ -290,6 +306,11 @@ public class GameScreen extends Game implements Screen {
         }
         groundItems.removeAll(groundItemsToRemove, true);
     }
+
+
+    /**
+     * Method for updating the position of damage text above enemies and then removing them after a certain amount of time.
+     */
 
     private void updateDamageText() {
         for (int i = damageTexts.size - 1; i >= 0; i--) {
@@ -310,6 +331,7 @@ public class GameScreen extends Game implements Screen {
             shootAtNearestEnemy();
         }
     }
+
 
     private void shootAtNearestEnemy() {
         Enemy target = getNearestEnemy();
@@ -354,6 +376,8 @@ public class GameScreen extends Game implements Screen {
 
     @Override
     public void resume() {
+        setPaused(false);
+        main.setScreen(this);
     }
 
     @Override
@@ -370,6 +394,12 @@ public class GameScreen extends Game implements Screen {
         font.dispose();
     }
 
+    /**
+     * Method for generating a random position outside of the visible screen, this position could then be used to summon
+     * enemies outside of the game screen.
+     * @param margin
+     * @return a vector for the enemy to move.
+     */
     public Vector2 getRandomOffscreenPosition(float margin) {
         float viewWidth = gameViewport.getCamera().viewportWidth;
         float viewHeight = gameViewport.getCamera().viewportHeight;
@@ -489,10 +519,9 @@ public class GameScreen extends Game implements Screen {
             }
             enemies.removeIndex(i);
             sharksKilled = sharksKilled + 3;
-            if (sharksKilled >= 100) {
-                sharksKilled = 0;
-            }
-            gameUI.setProgressBarValue(sharksKilled);
+            checkLevelUp(); // kommentera bort detta för att avaktivera levelup systemet
+
+            gameUI.setProgressBarValue(sharksKilled/player.getLevel());
         }
     }
 
@@ -523,7 +552,9 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-
+    /**
+     * Decluttering method for keeping the draw-method simple.
+     */
     private void drawStuff() {
         drawPlayerAbilities();
         drawPowerUps();
@@ -533,6 +564,9 @@ public class GameScreen extends Game implements Screen {
         drawGroundItems();
     }
 
+    /**
+     * This method draws a rectangle around the player, used in play testing for checking various collisions.
+     */
     private void drawPlayerHitbox() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
@@ -541,10 +575,15 @@ public class GameScreen extends Game implements Screen {
         shapeRenderer.end();
     }
 
+    /**
+     * Draws living enemies every game tic
+     */
     private void drawEnemies() {
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
                 enemy.drawAnimation(spriteBatch);
+            } else {
+                enemy.dispose();
             }
         }
     }
@@ -578,6 +617,36 @@ public class GameScreen extends Game implements Screen {
         for (Ability a : enemyAbilities) {
             a.getSprite().draw(spriteBatch);
         }
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
+
+    private void checkLevelUp() {
+        if (sharksKilled >= 100 * player.getLevel()) {
+            System.out.println("levelup");
+            setPaused(true);
+            main.levelUp();
+            player.setLevel(player.getLevel() + 1);
+            sharksKilled = 0;
+        }
+    }
+
+    public void addBoomerang() {
+        abilities.add(new Boomerang());
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
 }
