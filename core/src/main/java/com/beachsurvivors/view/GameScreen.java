@@ -205,6 +205,7 @@ public class GameScreen extends Game implements Screen {
 
         }
         resolveEnemyCollisions(enemies);
+
     }
 
     private void resolveEnemyCollisions(Array<Enemy> enemies) {
@@ -475,6 +476,7 @@ public class GameScreen extends Game implements Screen {
         enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
         enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
         enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
+
 
     }
 
