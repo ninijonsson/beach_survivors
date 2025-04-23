@@ -50,7 +50,7 @@ public class Player extends Actor {
         playerWidth = 128;
 
         isMoving = false;
-        isFacingLeft = false;
+
         playerX = map.getStartingX();
         playerY = map.getStartingY();
         beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
@@ -98,9 +98,9 @@ public class Player extends Actor {
             currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
         }
         spriteBatch.begin();
-        if (isFacingLeft && !currentFrame.isFlipX()) {
+        if (isMovingLeft() && !currentFrame.isFlipX()) {
             currentFrame.flip(true, false);
-        } else if (!isFacingLeft && currentFrame.isFlipX()) {
+        } else if (!isMovingLeft() && currentFrame.isFlipX()) {
             currentFrame.flip(true, false);
         }
         // Rita animationen centrerad kring playerX och playerY
@@ -122,13 +122,12 @@ public class Player extends Actor {
             direction.x -= 1;
             setMovingLeftRight(true, false);
         }
-      
+
         if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
             direction.x += 1;
             setMovingLeftRight(false, true);
         }
-        
-        }
+
         if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
             direction.y -= 1;
         }
