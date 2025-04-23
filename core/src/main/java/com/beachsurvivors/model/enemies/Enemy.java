@@ -36,6 +36,9 @@ public abstract class Enemy implements Disposable {
     private float x;
     private float y;
 
+    private boolean movingRight = true;
+    private boolean movingLeft = false;
+
     private Vector2 enemyPos = new Vector2();
     private float radius;
 
@@ -54,7 +57,7 @@ public abstract class Enemy implements Disposable {
     private Timer.Task hideHealthBarTask;
     private Stage stage;
 
-    public Enemy(String texturePath, int width, int height) {
+    public Enemy(String texturePath, int width, int height, int healthPoints) {
         this.width = width;
         this.height = height;
         if (texturePath.isEmpty()) {
@@ -68,17 +71,21 @@ public abstract class Enemy implements Disposable {
         this.radius = width /4;
 
         this.hitbox = new Rectangle(0, 0, width, height);
-        healthPoints = 20;
+        this.healthPoints = healthPoints;
         isImmune=false;
         isAlive = true;
-        createHealthBar();
+        createHealthBar(healthPoints);
 
     }
 
-    private void createHealthBar() {
+    public abstract void move();
+    public abstract void attack(Player player, Array enemyAbilities);
+    public abstract void dropItems();
+
+    private void createHealthBar(int healthPoints) {
         Skin healthSkin = new Skin(Gdx.files.internal("SkinComposer/healthbutton.json"));
         healthBar = new ProgressBar(0, healthPoints, 0.5f, false, healthSkin);
-        healthBar.setValue(100);
+        healthBar.setValue(healthPoints);
         healthBar.setPosition(hitbox.x+hitbox.width/2, hitbox.y+height);
         healthBar.setSize(70, 50);
         healthBar.setScale(0.2f);
@@ -117,15 +124,16 @@ public abstract class Enemy implements Disposable {
 
     public void createAnimation(String sheetPath, int sheetColumns, int sheetRows) {
         walkSheet = new Texture(Gdx.files.internal(sheetPath));
-
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/sheetColumns, walkSheet.getHeight()/sheetRows);
         TextureRegion[] walkFrames = new TextureRegion[sheetColumns * sheetRows];
         int index = 0;
+
         for (int i = 0; i < sheetRows; i++) {
             for (int j = 0; j < sheetColumns; j++) {
                 walkFrames[index++] = tmp[i][j];
             }
         }
+
         walkAnimation = new Animation<>(0.25f, walkFrames);
         stateTime = 0f;
     }
@@ -133,19 +141,23 @@ public abstract class Enemy implements Disposable {
     public void drawAnimation(SpriteBatch spriteBatch) {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        if (isMovingLeft() && !currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        } else if (isMovingRight() && currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        }
+
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, getSprite().getX(), getSprite().getY(), getWidth(), getHeight());
         spriteBatch.setColor(Color.WHITE); // återställ så inte resten färgas
+
     }
 
-    public abstract void move();
-    public abstract void attack(Player player, Array enemyAbilities);
     public void onDeath(){
         if (stage != null) {
             healthBar.remove();
         }
     }
-    public abstract void dropItems();
 
     public int getWidth() {
         return width;
@@ -185,8 +197,8 @@ public abstract class Enemy implements Disposable {
     public void playSound(){
         hitSound.play(0.2f);
     }
-    public void setMovementSpeed(){
-    }
+    public void setMovementSpeed() {}
+
     public boolean hit(double damage) {
         if (!isImmune) {
             healthPoints -= damage;
@@ -217,15 +229,20 @@ public abstract class Enemy implements Disposable {
         return false;
     }
 
-
-
-
     public Texture getTexture() {
         return texture;
     }
 
     public Sprite getSprite() {
         return sprite;
+    }
+
+    public Texture getWalkSheet() {
+        return walkSheet;
+    }
+
+    public Animation<TextureRegion> getWalkAnimation() {
+        return walkAnimation;
     }
 
     public Rectangle getHitbox() {
@@ -265,14 +282,9 @@ public abstract class Enemy implements Disposable {
             case 4:
                 Berserk berserk = new Berserk(x, y);
                 droppedItems.add(berserk);
+                break;
+            default:
         }
-
-        /*if (chance == 1) {
-            SpeedBoost speedBoost = new SpeedBoost((getSprite().getWidth()/2)+getSprite().getX(), (getSprite().getHeight()/2) + getSprite().getY());
-            droppedItems.add(speedBoost);
-            System.out.println("Item dropped  X" + speedBoost.getHitbox().getX() + " Y " + speedBoost.getHitbox().getY());
-        }*/
-
     }
 
     @Override
@@ -290,9 +302,7 @@ public abstract class Enemy implements Disposable {
     }
 
     public Vector2 getEnemyPos() {
-        Vector2 vector = new Vector2(getSprite().getX() + getWidth()/2, getSprite().getY() + getHeight()/2);
-        enemyPos = vector;
-
+        enemyPos = new Vector2(getSprite().getX() + getWidth()/2, getSprite().getY() + getHeight()/2);
         return enemyPos;
     }
 
@@ -302,6 +312,23 @@ public abstract class Enemy implements Disposable {
 
     public Circle getCircle() {
         return new Circle(enemyPos.x, enemyPos.y, radius);
+    }
+
+    public void setMovingLeftRight(boolean movingLeft, boolean movingRight) {
+        this.movingLeft = movingLeft;
+        this.movingRight = movingRight;
+    }
+
+    public void setMovingLeftRight(float x) {
+        if (x < 0) setMovingLeftRight(true, false);
+        else setMovingLeftRight(false, true);
+    }
+
+    public boolean isMovingLeft() {
+        return movingLeft;
+    }
+    public boolean isMovingRight() {
+        return movingRight;
     }
 
     public float getX() {

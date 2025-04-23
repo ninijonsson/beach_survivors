@@ -15,6 +15,6 @@ public class Chest extends GroundItem implements PickUpAble {
 
     @Override
     public void onPickup(Player player) {
-
+        System.out.println("You picked up a chest");
     }
 }
