@@ -63,5 +63,3 @@ sounds/Seal_Damage.wav
 sounds/Shark_Damage.wav
 sounds/Shark_Damage2.wav
 sounds/beach.mp3
-sounds/beach.wav
-sounds/powerUp_pickUp.wav

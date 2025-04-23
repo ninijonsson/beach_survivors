@@ -80,6 +80,13 @@ public class GameScreen extends Game implements Screen {
 
     private boolean isPaused = false;
 
+
+    //Boolean variables to toggle when testing the game with/without
+    //some elements. Set all to true for testing everything.
+    private boolean playerAbilitiesTestMode = true; //Toggles if player use abilities
+    private boolean spawnEnemiesTestMode = true; //Toggles if enemies spawn
+    private boolean spawnMinibossesTestMode = true; //Toggles if minibosses spawn
+
     public GameScreen(Main main) {
         this.main = main;
 
@@ -181,9 +188,7 @@ public class GameScreen extends Game implements Screen {
         drawStuff();
         spriteBatch.end();
 
-
     }
-
 
     private void input() {
         if (!isPaused) {
@@ -199,20 +204,26 @@ public class GameScreen extends Game implements Screen {
         pickUpPowerUp();
         pickUpGroundItem();
 
-        updateAbilityMovement();
         enemyAttacks();
-        playerShoot();
+
+        if (playerAbilitiesTestMode) {
+            playerShoot();
+            updateAbilityMovement();
+        }
+
         updateDamageText();
 
-        spawnEnemies();
+        if (spawnEnemiesTestMode) {
+            spawnEnemies();
 
-        for (int i = enemies.size - 1; i >= 0; i--) {
+            for (int i = enemies.size - 1; i >= 0; i--) {
 
-            Enemy enemy = enemies.get(i);
-            updateEnemyMovement(enemy);
-            handleEnemyDeaths(enemy, i);
-            checkPlayerAbilityHits(enemy);
+                Enemy enemy = enemies.get(i);
+                updateEnemyMovement(enemy);
+                handleEnemyDeaths(enemy, i);
+                checkPlayerAbilityHits(enemy);
 
+            }
         }
         resolveEnemyCollisions(enemies);
 
@@ -441,7 +452,9 @@ public class GameScreen extends Game implements Screen {
         int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
         int maxEnemies = (int) (baseEnemies * Math.pow(growthRate, interval));
 
-        spawnMiniBoss(gameTimeSeconds);
+        if (spawnMinibossesTestMode) {
+            spawnMiniBoss(gameTimeSeconds);
+        }
 
         if (!(enemies.size < maxEnemies)) {
             return;
@@ -483,18 +496,29 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    /**
+     * Method for creating a schedule for when minibosses should spawn
+     * var i is for seconds
+     */
     private void createMiniBossSchedule() {
-        for (int i = 10; i <= 100; i+=10) {
+        for (int i = 10; i <= 100; i+=20) {
             miniBossSchedule.addLast(i);
         }
     }
 
+    /**
+     * Updates position of all abilities that enemies use
+     */
     private void updateAbilityMovement() {
         for (Ability a : abilities) {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
         }
     }
 
+    /**
+     * Updates the position of an enemy
+     * @param enemy - the enemy that's updated
+     */
     private void updateEnemyMovement(Enemy enemy) {
         enemy.updateHealthBarPosition();
         enemy.addHealthBar(stage);
@@ -511,6 +535,11 @@ public class GameScreen extends Game implements Screen {
     }
 
 
+    /**
+     * What happens when an enemy dies
+     * @param enemy - the enemy that is handled
+     * @param i - index for removing the correct enemy in the array
+     */
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
             enemy.dropItems(droppedItems);
@@ -525,6 +554,11 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    /**
+     * Checks if the player's abilities hitboxes overlaps with any of the enemies
+     * hitboxes
+     * @param enemy
+     */
     private void checkPlayerAbilityHits(Enemy enemy) {
         for (int j = abilities.size - 1; j >= 0; j--) {
             Ability a = abilities.get(j);
