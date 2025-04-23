@@ -525,6 +525,8 @@ public class GameScreen extends Game implements Screen {
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
                 enemy.drawAnimation(spriteBatch);
+            } else {
+                enemy.dispose();
             }
         }
     }
