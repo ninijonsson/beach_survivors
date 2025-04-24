@@ -3,6 +3,7 @@ package com.beachsurvivors.model.abilities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.model.Player;
 
@@ -108,4 +109,7 @@ public abstract class Ability implements Disposable {
     }
 
 
+    public String getName() {
+        return name;
+    }
 }

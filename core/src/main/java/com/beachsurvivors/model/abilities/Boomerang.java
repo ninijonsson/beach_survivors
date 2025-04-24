@@ -5,11 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beachsurvivors.model.Player;
-import com.beachsurvivors.model.abilities.Ability;
-import com.beachsurvivors.model.abilities.AbilityType;
-
-import java.util.Random;
 
 public class Boomerang extends Ability {
 

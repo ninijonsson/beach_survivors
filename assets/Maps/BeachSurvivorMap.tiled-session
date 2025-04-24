@@ -4,11 +4,11 @@
     ],
     "fileStates": {
         "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Map2/map2.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 5,
+            "scale": 0.25,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 1232.6666666666665,
-                "y": 1750.6666666666665
+                "x": 970,
+                "y": 1912
             }
         },
         "C:/Users/Hampf/Documents/GitHub/beach_survivors/assets/Map2/rpg.tsx": {

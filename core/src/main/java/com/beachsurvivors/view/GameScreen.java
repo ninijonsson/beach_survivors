@@ -91,7 +91,7 @@ public class GameScreen extends Game implements Screen {
         this.main = main;
 
         gameViewport = new FitViewport(screenWidth, screenHeight);
-        gameUI = new GameUI(new FitViewport(screenWidth, screenHeight));
+        gameUI = new GameUI(new FitViewport(screenWidth, screenHeight), this);
 
         droppedItems = new Array<>();
         abilities = new Array<>();
@@ -122,6 +122,7 @@ public class GameScreen extends Game implements Screen {
         bullet = new BaseAttack();
         abilities.add(boomerang);
         abilities.add(bullet);
+
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
@@ -591,11 +592,12 @@ public class GameScreen extends Game implements Screen {
      */
     private void drawStuff() {
         drawPlayerAbilities();
+        drawGroundItems();
         drawPowerUps();
         drawEnemies();
         drawEnemyAbilities();
         drawDamageText();
-        drawGroundItems();
+
     }
 
     /**
@@ -683,4 +685,7 @@ public class GameScreen extends Game implements Screen {
         return player;
     }
 
+    public Array<Ability> getAbilities() {
+        return abilities;
+    }
 }
