@@ -11,6 +11,11 @@ SkinComposer/font-title-export.fnt
 SkinComposer/healthbutton.atlas
 SkinComposer/healthbutton.json
 SkinComposer/healthbutton.png
+SkinComposer/test/font-export.fnt
+SkinComposer/test/font-title-export.fnt
+SkinComposer/test/test.atlas
+SkinComposer/test/test.json
+SkinComposer/test/test.png
 SkinComposer/testbuttons.atlas
 SkinComposer/testbuttons.json
 SkinComposer/testbuttons.png
@@ -38,6 +43,12 @@ entities/power_ups/health_heart.png
 entities/power_ups/lucky_clover.png
 entities/power_ups/speed_boost.png
 entities/smoke.png
+fonts/level.fnt
+fonts/level.png
+fonts/pixeled.fnt
+fonts/pixeled.ttf
+fonts/timer.fnt
+fonts/timer.png
 game_screen/Cool_beach_guy.png
 levelUpScreen/default.fnt
 levelUpScreen/default.png
