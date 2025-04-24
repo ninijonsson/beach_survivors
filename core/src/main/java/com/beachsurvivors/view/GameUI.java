@@ -23,6 +23,7 @@ public class GameUI {
     private Label currentLevel;
     private Table abilityTable;
     private BitmapFont abilityFont;
+    private BitmapFont levelFont;
     private Label.LabelStyle abilityLabelStyle;
 
     private Table progressbarTable;
@@ -58,7 +59,7 @@ public class GameUI {
     }
 
     private void createAbilityTable() {
-        abilityFont = new BitmapFont();
+        abilityFont = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
         abilityFont.getData().setScale(2);
         abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
@@ -87,20 +88,19 @@ public class GameUI {
 
 
     private void createTimerLabel() {
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(2);
+        BitmapFont font = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
 
         Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
         Label timeLabelTop = new Label("Elapsed time:", style);
 
         timeLabelTop.setColor(Color.WHITE);
-        timeLabelTop.setPosition(30, viewport.getWorldHeight() - 50);
+        timeLabelTop.setPosition(30, viewport.getWorldHeight() - 70);
 
         stage.addActor(timeLabelTop);
 
         timerLabel = new Label("00:00", style);
         timerLabel.setColor(Color.WHITE);
-        timerLabel.setPosition(30, viewport.getWorldHeight() - timerLabel.getHeight() - 50);
+        timerLabel.setPosition(30, viewport.getWorldHeight() - timerLabel.getHeight() - 70);
     }
 
     private void createPlayerHealthBar() {
@@ -137,7 +137,8 @@ public class GameUI {
 
     public void createProgressBar() {
         progressbarTable = new Table();
-        Skin skin = new Skin(Gdx.files.internal("SkinComposer/testbuttons.json"));
+        //Skin skin = new Skin(Gdx.files.internal("SkinComposer/testbuttons.json"));
+        Skin skin = new Skin(Gdx.files.internal("SkinComposer/test/test.json"));
 
 
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
@@ -145,10 +146,10 @@ public class GameUI {
         progressBar.setSize(500, 50);
 
 
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(2f);
-        font.setColor(Color.WHITE);
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
+        Label.LabelStyle style = new Label.LabelStyle(levelFont, Color.WHITE);
+        levelFont.setColor(Color.WHITE);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(levelFont, Color.WHITE);
 
 
         currentLevel = new Label("Level: " +getPlayerLevel(), labelStyle);
@@ -170,7 +171,9 @@ public class GameUI {
     }
 
     private void updateLevelLabels() {
-        currentLevel.setText("Level: " +getPlayerLevel());
+        levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
+        Label.LabelStyle style = new Label.LabelStyle(levelFont, Color.WHITE);
+        currentLevel = new Label("Level: " + getPlayerLevel(), style);
         nextLevel.setText(String.valueOf(game.getPlayer().getLevel() + 1));
     }
 
@@ -195,5 +198,9 @@ public class GameUI {
 
     public float getGameTimeSeconds() {
         return gameTime;
+    }
+
+    public void loadFont() {
+        //FreeTypeFontGenerator generator = new FreeTypeFontGenerator();
     }
 }
