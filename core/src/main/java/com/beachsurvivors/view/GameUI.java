@@ -56,33 +56,18 @@ public class GameUI {
     }
 
     private void createAbilityTable() {
-        abilityFont = new BitmapFont(); // Skapas en gång
+        abilityFont = new BitmapFont();
         abilityFont.getData().setScale(2);
         abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
         abilityTable = new Table();
-        abilityTable.setPosition(50, 50); // Justera position efter behov
+        abilityTable.setPosition(50, 50);
 
         updateAbilityBar();
     }
 
     private void updateAbilityBar() {
-        abilityTable.clearChildren();
-        if(game.getAbilities()!=null){
             Array<Ability> abilities = game.getAbilities();
-            Ability firstAbility = abilities.first();
-            Sprite icon = firstAbility.getSprite();
-
-            Image abilityIcon = new Image(icon);
-            abilityIcon.setScaling(Scaling.fit);
-
-            Container<Image> iconContainer = new Container<>(abilityIcon);
-            iconContainer.setSize(50, 50);
-            iconContainer.center();
-            abilityTable.add(iconContainer).pad(5);
-            //abilityTable.add(abilities.first().getSprite());
-        }
-
     }
 
 
