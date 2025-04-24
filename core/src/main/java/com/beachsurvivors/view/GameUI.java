@@ -63,15 +63,15 @@ public class GameUI {
         abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
         this.abilityTable = new Table();
-        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test.abilitybar.png"));
-
-        Image abilityBackground = new Image(imageTexture);
-        abilityBackground.setSize(400, 70);
-        abilityBackground.setScale(1.5f);
-        abilityTable.add(abilityBackground);
-        abilityTable.bottom();
-        abilityTable.center();
-        abilityTable.pack();
+//        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test.abilitybar.png"));
+//
+//        Image abilityBackground = new Image(imageTexture);
+//        abilityBackground.setSize(400, 70);
+//        abilityBackground.setScale(1.5f);
+//        abilityTable.add(abilityBackground);
+//        abilityTable.bottom();
+//        abilityTable.center();
+//        abilityTable.pack();
 
         abilityTable.setPosition(
             ((viewport.getWorldWidth() - abilityTable.getWidth()*1.5f) / 2), 0
@@ -106,7 +106,7 @@ public class GameUI {
     private void createPlayerHealthBar() {
         Skin healthSkin = new Skin(Gdx.files.internal("SkinComposer/healthbutton.json"));
         healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
-        healthBar.setValue(86);
+        healthBar.setValue(100);
         healthBar.setSize(100, 50);
         percentageLabel = new Label(getHealthPercentage() + "%", healthSkin);
         percentageLabel.setColor(Color.BLACK);

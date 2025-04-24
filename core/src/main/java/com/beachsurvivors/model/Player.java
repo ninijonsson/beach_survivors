@@ -2,6 +2,9 @@ package com.beachsurvivors.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beachsurvivors.model.Map.Map;
 
 import java.util.Random;
+import java.util.TimerTask;
 
 public class Player extends Actor {
 
@@ -21,6 +25,9 @@ public class Player extends Actor {
     private float speed = 500f;
     private float critChance = 0.15f;
     private int level = 1;
+    private boolean isImmune;
+    private boolean isAlive;
+
 
     private Rectangle beachGuyHitBox;
     private float playerX;
@@ -33,6 +40,7 @@ public class Player extends Actor {
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
     private boolean isMoving;
+    private Color tint = Color.WHITE;
 
     private boolean movingRight = true;
     private boolean movingLeft = false;
@@ -50,6 +58,8 @@ public class Player extends Actor {
         playerWidth = 128;
 
         isMoving = false;
+        isAlive = true;
+        isImmune = false;
 
         playerX = map.getStartingX();
         playerY = map.getStartingY();
@@ -104,7 +114,9 @@ public class Player extends Actor {
             currentFrame.flip(true, false);
         }
         // Rita animationen centrerad kring playerX och playerY
+        spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
+
 
         spriteBatch.end();
     }
@@ -188,8 +200,38 @@ public class Player extends Actor {
         walkSheet.dispose();
     }
 
-    public void damagePlayer(float damage){
+    public void takeDamage(float damage){
+        if (!isImmune) {
+            healthPoints -= damage;
+            if (healthPoints <= 0) {
+                setAlive(false);
+                return;
+            }
 
+            isImmune = true; //Immunitet när man tar damage
+            tint = Color.RED; //Ändrar färgen när man tar damage
+
+            Timer.schedule(new Task() {  //resetar immunitet efter 0,3sekunder
+                @Override
+                public void run() {
+                    isImmune = false;
+                }
+            }, 0.3f);
+
+            //Jag gjorde två olika tasks för att 0.1sekunder immunitet kändes lite om där är mkt mobs
+            //men det kanske är fine med 0.1? i så fall kan vi slå ihop båda tasks
+
+            Timer.schedule(new Task() {  //resetar färgen efter 0.1sekunder
+                @Override
+                public void run() {
+                    tint = Color.WHITE;
+                }
+            }, 0.1f);
+        }
+    }
+
+    public void onDeath() {
+        dispose();
     }
 
     public void increaseSpeed(int speedIncrease) {
@@ -232,6 +274,14 @@ public class Player extends Actor {
 
     public int getHealthPoints() {
         return healthPoints;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean isAlive) {
+        this.isAlive = false;
     }
 
     public void increaseHealthPoints(int increasedHealthPoints) {
