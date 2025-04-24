@@ -364,7 +364,7 @@ public class GameScreen extends Game implements Screen {
 
     private Enemy getNearestEnemy() {
         Enemy nearest = null;
-        float minDistance = Float.MAX_VALUE;
+        float minDistance = 1000;
         Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         for (Enemy enemy : enemies) {

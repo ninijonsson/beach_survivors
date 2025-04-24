@@ -2,6 +2,7 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -43,10 +44,11 @@ public class GameUI {
      * Creates all UI-components and places them on the stage (screen).
      */
     private void createTables() {
+        createAbilityTable();
         createProgressBar();
         createPlayerHealthBar();
         createTimerLabel();
-        createAbilityTable();
+
 
         stage.addActor(healthTable);
         stage.addActor(progressbarTable);
@@ -60,10 +62,21 @@ public class GameUI {
         abilityFont.getData().setScale(2);
         abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
-        abilityTable = new Table();
-        abilityTable.setPosition(50, 50);
+        this.abilityTable = new Table();
+        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test.abilitybar.png"));
 
-        updateAbilityBar();
+        Image abilityBackground = new Image(imageTexture);
+        abilityBackground.setSize(400, 70);
+        abilityBackground.setScale(1.5f);
+        abilityTable.add(abilityBackground);
+        abilityTable.bottom();
+        abilityTable.center();
+        abilityTable.pack();
+
+        abilityTable.setPosition(
+            ((viewport.getWorldWidth() - abilityTable.getWidth()*1.5f) / 2), 0
+        );
+        //updateAbilityBar();
     }
 
     private void updateAbilityBar() {
@@ -126,6 +139,7 @@ public class GameUI {
         progressbarTable = new Table();
         Skin skin = new Skin(Gdx.files.internal("SkinComposer/testbuttons.json"));
 
+
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
         progressBar.setSize(500, 50);
@@ -170,7 +184,7 @@ public class GameUI {
         timerLabel.setText(timeText);
 
         updateLevelLabels();
-        updateAbilityBar();
+        //updateAbilityBar();
 
         stage.act(deltaTime);
     }
