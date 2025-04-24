@@ -36,7 +36,7 @@ public class LevelUpScreen implements Screen {
 //        table.setDebug(true);
 
         table.setBackground(skin.getDrawable("textfield"));
-        Label title = new Label("Level Up!", skin);
+        Label title = new Label("You've reached level "+ player.getLevel()+1 + "!", skin);
         TextButton upgrade1 = new TextButton("+1 BOOMERANG", skin);
         TextButton upgrade2 = new TextButton("25% INCREASED MOVEMENT SPEED", skin);
         TextButton upgrade3 = new TextButton("+10% CRIT CHANCE", skin);
