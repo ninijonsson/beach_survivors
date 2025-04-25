@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.model.abilities.Ability;
 
@@ -25,12 +23,13 @@ public class GameUI {
     private BitmapFont abilityFont;
     private Label.LabelStyle abilityLabelStyle;
 
-    private Table progressbarTable;
+    private Table progressBarTable;
     private Table healthTable;
-
+    private Table xpTable;
 
     private Label timerLabel;
     private float gameTime = 0f;
+
 
     public GameUI(FitViewport viewport, GameScreen game) {
         this.viewport = viewport;
@@ -51,9 +50,11 @@ public class GameUI {
 
 
         stage.addActor(healthTable);
-        stage.addActor(progressbarTable);
+
         stage.addActor(timerLabel);
         stage.addActor(abilityTable);
+        stage.addActor(xpTable);
+        stage.addActor(progressBarTable);
 
     }
 
@@ -77,6 +78,19 @@ public class GameUI {
             ((viewport.getWorldWidth() - abilityTable.getWidth()*1.5f) / 2), 0
         );
         //updateAbilityBar();
+
+        this.xpTable = new Table();
+        Texture xpTexture = new Texture(Gdx.files.internal("entities/abilities/xpBar.png"));
+        Image xpBar = new Image(xpTexture);
+        xpBar.setScale(1.5f);
+        xpBar.setSize(400,70);
+        xpTable.add(xpBar);
+        xpTable.top();
+        xpTable.center();
+        xpTable.pack();
+        xpTable.setPosition(
+            ((viewport.getWorldWidth() - xpTable.getWidth()*1.5f) / 2), viewport.getWorldHeight()-xpTable.getHeight()*1.5f
+        );
     }
 
     private void updateAbilityBar() {
@@ -136,13 +150,13 @@ public class GameUI {
     }
 
     public void createProgressBar() {
-        progressbarTable = new Table();
+        progressBarTable = new Table();
         Skin skin = new Skin(Gdx.files.internal("SkinComposer/testbuttons.json"));
 
 
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
-        progressBar.setSize(500, 50);
+        progressBar.setSize(700, 70);
 
 
         BitmapFont font = new BitmapFont();
@@ -154,12 +168,12 @@ public class GameUI {
         currentLevel = new Label("Level: " +getPlayerLevel(), labelStyle);
         nextLevel = new Label(getPlayerLevel(), labelStyle);
 
-        progressbarTable.add(currentLevel).padRight(20);
-        progressbarTable.add(progressBar).expandX().fillX();
-        progressbarTable.add(nextLevel).padLeft(20);
+        progressBarTable.add(currentLevel).padRight(50);
+        progressBarTable.add(progressBar).expandX().fillX();
+        progressBarTable.add(nextLevel).padLeft(40);
 
-        progressbarTable.setSize(700, 100);
-        progressbarTable.setPosition(viewport.getWorldWidth() / 2 - progressbarTable.getWidth()  / 2, viewport.getWorldHeight() - progressbarTable.getHeight() - 10);
+        progressBarTable.setSize(720, 70);
+        progressBarTable.setPosition(xpTable.getX()-currentLevel.getWidth(), xpTable.getY()+progressBar.getHeight()*0.55f);
     }
 
     private String getPlayerLevel() {

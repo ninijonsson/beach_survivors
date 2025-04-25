@@ -18,6 +18,7 @@ Thud.mp3
 entities/abilities/bullet.png
 entities/abilities/fireball.png
 entities/abilities/test.abilitybar.png
+entities/abilities/xpBar.png
 entities/beach_girl_sheet.png
 entities/beach_guy_sheet.png
 entities/beer.png

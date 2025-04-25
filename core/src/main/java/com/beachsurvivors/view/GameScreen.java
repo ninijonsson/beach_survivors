@@ -90,7 +90,7 @@ public class GameScreen extends Game implements Screen {
     public GameScreen(Main main) {
         this.main = main;
 
-        gameViewport = new FitViewport(screenWidth, screenHeight);
+        gameViewport = new FitViewport(screenWidth*1.5f, screenHeight*1.5f);
         gameUI = new GameUI(new FitViewport(screenWidth, screenHeight), this);
 
         droppedItems = new Array<>();
