@@ -97,7 +97,7 @@ public class LevelUpScreen implements Screen {
 
     private void applyUpgrade(String type) {
         game.addBoomerang();
-        System.out.println("Upgrade chosen: " + type);
+        game.printLog("Upgrade chosen: " + type);
     }
 
     private void resumeGame() {

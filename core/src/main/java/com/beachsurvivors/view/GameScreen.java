@@ -666,11 +666,13 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void checkLevelUp() {
-        if (sharksKilled >= 100 * player.getLevel()) {
-            System.out.println("levelup");
+        if (sharksKilled >= 10 * player.getLevel()) {
+            player.setLevel(player.getLevel() + 1);
+            gameUI.updateInfoTable("Congratulations, you are now level "+ player.getLevel());
             setPaused(true);
             main.levelUp();
-            player.setLevel(player.getLevel() + 1);
+
+
             sharksKilled = 0;
         }
     }
@@ -685,5 +687,9 @@ public class GameScreen extends Game implements Screen {
 
     public Array<Ability> getAbilities() {
         return abilities;
+    }
+
+    public void printLog(String s) {
+        gameUI.updateInfoTable(s);
     }
 }
