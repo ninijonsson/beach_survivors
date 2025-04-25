@@ -64,7 +64,7 @@ public class GameUI {
         abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
         this.abilityTable = new Table();
-        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test.abilitybar.png"));
+        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/abilityBar.png"));
 
         Image abilityBackground = new Image(imageTexture);
         abilityBackground.setSize(400, 70);

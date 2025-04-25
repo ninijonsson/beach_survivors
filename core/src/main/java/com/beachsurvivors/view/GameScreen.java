@@ -97,8 +97,6 @@ public class GameScreen extends Game implements Screen {
         abilities = new Array<>();
         sharksKilled = 0;
         create();
-
-
     }
 
     /**
