@@ -159,6 +159,7 @@ public class GameScreen extends Game implements Screen {
             font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 200);
             spriteBatch.end();
         }
+
     }
 
     @Override
@@ -282,6 +283,9 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = !isPaused;
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            main.gameOver();
+        }
     }
 
     private boolean checkForCriticalStrike() {
@@ -396,7 +400,6 @@ public class GameScreen extends Game implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
@@ -470,7 +473,6 @@ public class GameScreen extends Game implements Screen {
         Random random = new Random();
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
-
 
 //        switch (enemyChoice) {
 //            case 0:
@@ -602,7 +604,7 @@ public class GameScreen extends Game implements Screen {
 
             if (!player.isAlive()) {
                 System.out.println("You died");
-                isPaused = true;
+                main.gameOver();
             }
         }
     }
@@ -618,10 +620,9 @@ public class GameScreen extends Game implements Screen {
 
                 if (!player.isAlive()) {
                     System.out.println("You died");
-                    isPaused = true;
+                    main.gameOver();
                 }
             }
-
         }
     }
 
@@ -725,5 +726,9 @@ public class GameScreen extends Game implements Screen {
 
     public Array<Ability> getAbilities() {
         return abilities;
+    }
+
+    public Main getMain() {
+        return main;
     }
 }

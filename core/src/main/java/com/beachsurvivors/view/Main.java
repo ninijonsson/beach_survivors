@@ -23,7 +23,22 @@ public class Main extends Game {
         } else {
             setScreen(menuScreen);
         }
+    }
 
+    public void goToMainMenu() {
+        menuScreen = new MainMenuScreen(this);
+        gameScreen.dispose();
+        gameScreen = null;
+        setScreen(menuScreen);
+    }
+
+    public void restart() {
+        gameScreen = new GameScreen(this);
+        setScreen(gameScreen);
+    }
+
+    public void gameOver() {
+        setScreen(new DeathScreen(gameScreen));
     }
 
     public void levelUp() {

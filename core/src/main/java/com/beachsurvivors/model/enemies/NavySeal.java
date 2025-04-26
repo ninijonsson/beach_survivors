@@ -37,7 +37,7 @@ public class NavySeal extends Enemy {
                 player.getPlayerY() - this.getSprite().getY())
                 .nor();
 
-            BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png");
+            BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png", getDamage());
             bullet.updatePosition(this.getSprite().getX(), this.getSprite().getY());
             bullet.setDirection(direction);
 

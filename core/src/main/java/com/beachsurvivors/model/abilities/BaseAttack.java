@@ -13,8 +13,10 @@ public class BaseAttack extends Ability {
         this.direction = new Vector2(0, 0);
     }
 
-    public BaseAttack(String texturePath) {
-        super("bullet", texturePath, AbilityType.ATTACK, 5.0, 1, 32, 32);
+
+
+    public BaseAttack(String texturePath, int damage) {
+        super("bullet", texturePath, AbilityType.ATTACK, damage, 1, 32, 32);
 
     }
 
