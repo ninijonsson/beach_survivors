@@ -31,7 +31,7 @@ public class DeathScreen implements Screen {
         stage = new Stage(new FitViewport(gameScreen.getScreenWidth(), gameScreen.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
 
-        skin = new Skin(Gdx.files.internal("death_screen/aa.json"));
+        skin = new Skin(Gdx.files.internal("game_over_screen/gameover_skin.json"));
 
         createActors();
 
