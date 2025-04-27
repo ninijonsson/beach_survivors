@@ -731,9 +731,11 @@ public class GameScreen extends Game implements Screen {
 
     public Main getMain() {
         return main;
+    }
 
     public void printLog(String s) {
         gameUI.updateInfoTable(s);
 
     }
+
 }
