@@ -5,8 +5,16 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -26,10 +34,33 @@ public class GameUI {
     private BitmapFont levelFont;
     private Label.LabelStyle abilityLabelStyle;
 
+    private Texture resumeTexture;
+    private Texture resumeHoverTexture;
+    private Texture helpTexture;
+    private Texture helpHoverTexture;
+    private Texture exitTexture;
+    private Texture exitHoverTexture;
+
+    private ImageButton resumeButton;
+    private ImageButton.ImageButtonStyle resumeButtonStyle;
+    private ImageButton helpButton;
+    private ImageButton.ImageButtonStyle helpButtonStyle;
+    private ImageButton exitButton;
+    private ImageButton.ImageButtonStyle exitButtonStyle;
+
+    private TextureRegionDrawable resumeDrawable;
+    private TextureRegionDrawable helpDrawable;
+    private TextureRegionDrawable exitDrawable;
+
+    private TextureRegionDrawable resumeHoverDrawable;
+    private TextureRegionDrawable helpHoverDrawable;
+    private TextureRegionDrawable exitHoverDrawable;
+
+    private Group pauseMenuGroup;
+
+    private Image backgroundImage;
     private Table progressbarTable;
     private Table healthTable;
-
-
     private Label timerLabel;
     private float gameTime = 0f;
 
@@ -39,6 +70,168 @@ public class GameUI {
         stage = new Stage(viewport);
 
         createTables();
+    }
+
+    public void createPauseMenu() {
+        pauseMenuGroup = new Group();
+
+        createPauseMenuBackground();
+        createPauseMenuButtons();
+
+        onResumeButtonPressed();
+        onHelpButtonPressed();
+        onExitButtonPressed();
+
+        stage.addActor(pauseMenuGroup);
+    }
+
+    public void createPauseMenuBackground() {
+        Texture backgroundTexture = new Texture(Gdx.files.internal("pause_menu/pause_menu_scaled-600.png"));
+        Drawable backgroundDrawable = new TextureRegionDrawable(new TextureRegion(backgroundTexture));
+        backgroundImage = new Image(backgroundDrawable);
+
+        pauseMenuGroup.addActor(backgroundImage);
+    }
+
+    public void createPauseMenuButtons() {
+        createResumeButton();
+        createHelpButton();
+        createExitButton();
+
+        setPauseMenuPositions();
+        // metod som gör backgrunden mörkare när pausmenyn är igång
+    }
+
+    public void removePauseMenu() {
+        /*if (backgroundImage != null) {
+            //stage.getActors().removeValue(backgroundImage, true);
+            backgroundImage.remove();
+            backgroundImage = null;
+        }
+
+        if (resumeButton != null) {
+            resumeButton.remove();
+            //stage.getActors().removeValue(resumeButton, true);
+        }
+        if (helpButton != null) {
+            helpButton.remove();
+            //stage.getActors().removeValue(helpButton, true);
+        }
+        if (exitButton != null) {
+            exitButton.remove();
+            //stage.getActors().removeValue(exitButton, true);
+        }*/
+
+        if (pauseMenuGroup != null) {
+            pauseMenuGroup.remove();
+        }
+    }
+
+
+    public void createResumeButton() {
+        resumeTexture = new Texture(Gdx.files.internal("pause_menu/resume/resume_button_scaled-200.png"));
+        resumeHoverTexture = new Texture(Gdx.files.internal("pause_menu/resume/resume_button_hover_scaled-200.png"));
+
+        resumeDrawable = new TextureRegionDrawable(new TextureRegion(resumeTexture));
+        resumeHoverDrawable = new TextureRegionDrawable(new TextureRegion(resumeHoverTexture));
+
+        resumeButtonStyle = new ImageButton.ImageButtonStyle();
+        resumeButtonStyle.up = resumeDrawable;
+        resumeButtonStyle.over = resumeHoverDrawable;
+
+        resumeButton = new ImageButton(resumeButtonStyle);
+        resumeButton.setSize(resumeTexture.getWidth()*2, resumeTexture.getHeight()*2);
+
+        pauseMenuGroup.addActor(resumeButton);
+    }
+
+    public void createHelpButton() {
+        helpTexture = new Texture(Gdx.files.internal("pause_menu/help/help_button_scaled-200.png"));
+        helpHoverTexture = new Texture(Gdx.files.internal("pause_menu/help/help_button_hover_scaled-200.png"));
+
+        helpDrawable = new TextureRegionDrawable(new TextureRegion(helpTexture));
+        helpHoverDrawable = new TextureRegionDrawable(new TextureRegion(helpHoverTexture));
+
+        helpButtonStyle = new ImageButton.ImageButtonStyle();
+        helpButtonStyle.up = helpDrawable;
+        helpButtonStyle.over = helpHoverDrawable;
+
+        helpButton = new ImageButton(helpButtonStyle);
+        helpButton.setSize(helpTexture.getWidth()*2, helpTexture.getHeight()*2);
+
+        pauseMenuGroup.addActor(helpButton);
+    }
+
+    public void createExitButton() {
+        exitTexture = new Texture(Gdx.files.internal("pause_menu/exit/exit_button_scaled-200.png"));
+        exitHoverTexture = new Texture(Gdx.files.internal("pause_menu/exit/exit_button_hover_scaled-200.png"));
+
+        exitDrawable = new TextureRegionDrawable(new TextureRegion(exitTexture));
+        exitHoverDrawable = new TextureRegionDrawable(new TextureRegion(exitHoverTexture));
+
+        exitButtonStyle = new ImageButton.ImageButtonStyle();
+        exitButtonStyle.up = exitDrawable;
+        exitButtonStyle.over = exitHoverDrawable;
+
+        exitButton = new ImageButton(exitButtonStyle);
+        exitButton.setSize(exitTexture.getWidth()*2, exitTexture.getHeight()*2);
+
+        pauseMenuGroup.addActor(exitButton);
+    }
+
+    public void setPauseMenuPositions() {
+        float width = viewport.getWorldWidth();
+        float height = viewport.getWorldHeight();
+        backgroundImage.setPosition((width/2-backgroundImage.getWidth()/2f), height/14f);
+
+        resumeButton.setPosition(width / 2f - resumeButton.getWidth() / 2f, height * 0.4f);
+        helpButton.setPosition(width / 2f - helpButton.getWidth() / 2f, height * 0.3f);
+        exitButton.setPosition(width / 2f - exitButton.getWidth() / 2f, height * 0.2f);
+    }
+
+    public void onResumeButtonPressed() {
+        resumeButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                resumeButtonStyle.over = resumeHoverDrawable;
+                return true; // Viktigt! returnera true så att touchUp() aktiveras
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                resumeButtonStyle.up = resumeDrawable;
+            }
+        });
+    }
+
+    public void onHelpButtonPressed() {
+        helpButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                helpButtonStyle.over = helpHoverDrawable;
+                return true; // Viktigt! returnera true så att touchUp() aktiveras
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                helpButtonStyle.up = helpDrawable;
+            }
+        });
+    }
+
+    public void onExitButtonPressed() {
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                exitButtonStyle.over = exitHoverDrawable;
+                return true; // Viktigt! returnera true så att touchUp() aktiveras
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                exitButtonStyle.up = exitDrawable;
+            }
+        });
     }
 
     /**
@@ -198,9 +391,5 @@ public class GameUI {
 
     public float getGameTimeSeconds() {
         return gameTime;
-    }
-
-    public void loadFont() {
-        //FreeTypeFontGenerator generator = new FreeTypeFontGenerator();
     }
 }

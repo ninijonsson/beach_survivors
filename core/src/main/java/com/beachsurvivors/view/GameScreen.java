@@ -4,16 +4,24 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -32,6 +40,7 @@ import com.beachsurvivors.model.enemies.Shark;
 import com.beachsurvivors.model.groundItems.Berserk;
 import com.beachsurvivors.model.groundItems.GroundItem;
 import com.beachsurvivors.model.groundItems.PowerUp;
+import net.dermetfan.gdx.physics.box2d.PositionController;
 
 import java.util.Random;
 
@@ -97,8 +106,6 @@ public class GameScreen extends Game implements Screen {
         abilities = new Array<>();
         sharksKilled = 0;
         create();
-
-
     }
 
     /**
@@ -147,14 +154,19 @@ public class GameScreen extends Game implements Screen {
             logic();
             draw();
 
-
-        gameUI.getStage().act(delta);
-        gameUI.update(Gdx.graphics.getDeltaTime());
-        gameUI.draw();
-        }
-        if (isPaused) {
+            gameUI.getStage().act(delta);
+            gameUI.update(Gdx.graphics.getDeltaTime());
+            gameUI.draw();
+            gameUI.removePauseMenu();
+        } else {
             spriteBatch.begin();
-            font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 200);
+
+            gameUI.getStage().act(delta);
+            gameUI.update(Gdx.graphics.getDeltaTime());
+            gameUI.draw();
+            gameUI.createPauseMenu();
+
+            // font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 200);
             spriteBatch.end();
         }
     }
@@ -279,6 +291,7 @@ public class GameScreen extends Game implements Screen {
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = !isPaused;
+            System.out.println("isPaused is " + isPaused);
         }
     }
 
@@ -687,5 +700,9 @@ public class GameScreen extends Game implements Screen {
 
     public Array<Ability> getAbilities() {
         return abilities;
+    }
+
+    public boolean getIsPaused() {
+        return isPaused;
     }
 }
