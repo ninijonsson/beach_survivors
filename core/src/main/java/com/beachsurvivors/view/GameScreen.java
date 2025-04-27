@@ -26,10 +26,7 @@ import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
-import com.beachsurvivors.model.enemies.Enemy;
-import com.beachsurvivors.model.enemies.MiniBoss;
-import com.beachsurvivors.model.enemies.NavySeal;
-import com.beachsurvivors.model.enemies.Shark;
+import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.Berserk;
 import com.beachsurvivors.model.groundItems.GroundItem;
 import com.beachsurvivors.model.groundItems.PowerUp;
@@ -141,6 +138,14 @@ public class GameScreen extends Game implements Screen {
     }
 
 
+    /**
+     * The rendering of the game. This method is called 60 times per second
+     * (depending on the frame rate (FPS) that you can set in Lwjgl3Launcher.java)
+     * by the rendering thread. This is the most important method in LibGdx.
+     * It calls input(), logic() and draw() which handles all the logics and visuals
+     * for the game.
+     * @param delta
+     */
     @Override
     public void render(float delta) {
         input();
@@ -194,6 +199,9 @@ public class GameScreen extends Game implements Screen {
 
     }
 
+    /**
+     * Handles all the input and keypresses. Is called in render()
+     */
     private void input() {
         if (!isPaused) {
             player.playerInput();
@@ -474,17 +482,17 @@ public class GameScreen extends Game implements Screen {
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
 
-//        switch (enemyChoice) {
-//            case 0:
-   //             enemy = new Shark();
-//                break;
-//            case 1:
+        switch (enemyChoice) {
+            case 0:
+                enemy = new Shark();
+                break;
+            case 1:
                 enemy = new NavySeal();
-//                break;
-//            case 2:
-//                enemy = new Crocodile();
-//                break;
-//        }
+                break;
+            case 2:
+                enemy = new Crocodile();
+                break;
+        }
 
         Vector2 randomPos = getRandomOffscreenPosition(150);
         enemy.getSprite().setPosition(randomPos.x, randomPos.y);
