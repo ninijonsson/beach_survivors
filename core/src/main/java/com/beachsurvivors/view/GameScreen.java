@@ -67,6 +67,7 @@ public class GameScreen extends Game implements Screen {
     private BaseAttack bullet;
     private float bulletTimer = 0f;
     private int sharksKilled;
+    private int totalEnemiesKilled;
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
@@ -97,6 +98,7 @@ public class GameScreen extends Game implements Screen {
         droppedItems = new Array<>();
         abilities = new Array<>();
         sharksKilled = 0;
+        totalEnemiesKilled = 0;
         create();
 
 
@@ -284,7 +286,7 @@ public class GameScreen extends Game implements Screen {
             isPaused = !isPaused;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            main.gameOver();
+            main.gameOver(totalEnemiesKilled);
         }
     }
 
@@ -551,6 +553,7 @@ public class GameScreen extends Game implements Screen {
      */
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
+            totalEnemiesKilled++;
             enemy.dropItems(droppedItems);
             if (enemy instanceof MiniBoss) {
                 ((MiniBoss) enemy).dropChest(groundItems);
@@ -597,32 +600,29 @@ public class GameScreen extends Game implements Screen {
 
     private void checkDamageAgainstPlayer(Enemy enemy) {
         if (enemy.getHitbox().overlaps(player.getHitBox())) {
-            player.takeDamage(enemy.getDamage());
-            gameUI.setHealthBarValue(player.getHealthPoints());
-            System.out.println("player HP : " + player.getHealthPoints());
-
-            if (!player.isAlive()) {
-                System.out.println("You died");
-                main.gameOver();
-            }
+            damagePlayer(enemy.getDamage());
         }
     }
 
     private void checkEnemyAbilitiesDamagePlayer() {
-        for (int i = 0; i < enemyAbilities.size; i++) {
-
+        for (int i = enemyAbilities.size -1; i >= 0; i--) {
             if (enemyAbilities.get(i).getHitBox().overlaps(player.getHitBox())) {
-                player.takeDamage(enemyAbilities.get(i).getDamage());
-                gameUI.setHealthBarValue(player.getHealthPoints());
-                System.out.println("player HP : " + player.getHealthPoints());
+                damagePlayer(enemyAbilities.get(i).getDamage());
                 enemyAbilities.get(i).dispose();
                 enemyAbilities.removeIndex(i);
 
-                if (!player.isAlive()) {
-                    System.out.println("You died");
-                    main.gameOver();
-                }
             }
+        }
+    }
+
+    private void damagePlayer(double damage) {
+        player.takeDamage(damage);
+        gameUI.setHealthBarValue(player.getHealthPoints());
+        System.out.println("player HP : " + player.getHealthPoints());
+
+        if (!player.isAlive()) {
+            System.out.println("You died");
+            main.gameOver(totalEnemiesKilled);
         }
     }
 

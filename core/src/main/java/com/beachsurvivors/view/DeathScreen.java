@@ -18,15 +18,19 @@ public class DeathScreen implements Screen {
     private Skin skin;
     private GameScreen gameScreen;
     private Table table;
+    private Table leftTable;
 
     private TextButton retryButton;
     private TextButton exitButton;
     private TextButton mainMenuButton;
     private Label textLabel;
+    private Label enemiesKilledText;
+    private int enemiesKilled;
 
 
-    public DeathScreen(GameScreen gameScreen) {
+    public DeathScreen(GameScreen gameScreen, int enemiesKilled) {
         this.gameScreen = gameScreen;
+        this.enemiesKilled = enemiesKilled;
 
         stage = new Stage(new FitViewport(gameScreen.getScreenWidth(), gameScreen.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
@@ -39,19 +43,25 @@ public class DeathScreen implements Screen {
 
     public void createActors() {
         table = new Table();
+        leftTable = new Table();
 
         textLabel = new Label("YOU DIED" , skin);
         textLabel.setFontScale(12);
         textLabel.setColor(Color.RED);
+
+        enemiesKilledText = new Label("Enemies killed: " + enemiesKilled , skin);
+        enemiesKilledText.setFontScale(4);
+        enemiesKilledText.setColor(Color.MAGENTA);
+
         skin.getFont("font-over").getData().setScale(3f);
 
         retryButton = new TextButton("Retry", skin, "wooden_sign");
         retryButton.setSize(256,128);
 
-        mainMenuButton = new TextButton("Main menu" , skin, "wooden_sign");
+        mainMenuButton = new TextButton("Back to main menu" , skin, "wooden_sign");
         mainMenuButton.setSize(256,128);
 
-        exitButton = new TextButton("Exit" , skin, "wooden_sign");
+        exitButton = new TextButton("Quit game" , skin, "wooden_sign");
         exitButton.setSize(256,128);
 
         addActors();
@@ -69,6 +79,10 @@ public class DeathScreen implements Screen {
 
         table.setPosition(gameScreen.getScreenWidth()/2f, gameScreen.getScreenHeight()/2f);
         stage.addActor(table);
+
+        leftTable.add(enemiesKilledText);
+        leftTable.setPosition(gameScreen.getScreenWidth()-1600, gameScreen.getScreenHeight()/2f);
+        stage.addActor(leftTable);
     }
 
     public void addListeners() {

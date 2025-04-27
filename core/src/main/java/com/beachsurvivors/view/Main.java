@@ -40,8 +40,8 @@ public class Main extends Game {
         menuScreen.startGameMusic();
     }
 
-    public void gameOver() {
-        setScreen(new DeathScreen(gameScreen));
+    public void gameOver(int enemiesKilled) {
+        setScreen(new DeathScreen(gameScreen, enemiesKilled));
     }
 
     public void levelUp() {
