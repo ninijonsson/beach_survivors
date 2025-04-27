@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.model.abilities.Ability;
 
@@ -23,14 +21,16 @@ public class GameUI {
     private Label currentLevel;
     private Table abilityTable;
     private BitmapFont abilityFont;
-    private Label.LabelStyle abilityLabelStyle;
+    private Array<String> infoLog;
+    private Array<Label> infoLabels;
 
-    private Table progressbarTable;
+    private Table progressBarTable;
     private Table healthTable;
-
+    private Table xpTable;
 
     private Label timerLabel;
     private float gameTime = 0f;
+
 
     public GameUI(FitViewport viewport, GameScreen game) {
         this.viewport = viewport;
@@ -48,40 +48,101 @@ public class GameUI {
         createProgressBar();
         createPlayerHealthBar();
         createTimerLabel();
+        createInfoTable();
 
 
         stage.addActor(healthTable);
-        stage.addActor(progressbarTable);
+
         stage.addActor(timerLabel);
         stage.addActor(abilityTable);
+        stage.addActor(xpTable);
+        stage.addActor(progressBarTable);
 
     }
 
     private void createAbilityTable() {
         abilityFont = new BitmapFont();
         abilityFont.getData().setScale(2);
-        abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
         this.abilityTable = new Table();
-//        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test.abilitybar.png"));
-//
-//        Image abilityBackground = new Image(imageTexture);
-//        abilityBackground.setSize(400, 70);
-//        abilityBackground.setScale(1.5f);
-//        abilityTable.add(abilityBackground);
-//        abilityTable.bottom();
-//        abilityTable.center();
-//        abilityTable.pack();
+
+        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/abilityBar.png"));
+
+        Image abilityBackground = new Image(imageTexture);
+        abilityBackground.setSize(400, 70);
+        abilityBackground.setScale(1.5f);
+        abilityTable.add(abilityBackground);
+        abilityTable.bottom();
+        abilityTable.center();
+        abilityTable.pack();
 
         abilityTable.setPosition(
             ((viewport.getWorldWidth() - abilityTable.getWidth()*1.5f) / 2), 0
         );
-        //updateAbilityBar();
+
+
+        this.xpTable = new Table();
+        Texture xpTexture = new Texture(Gdx.files.internal("entities/abilities/xpBar.png"));
+        Image xpBar = new Image(xpTexture);
+        xpBar.setScale(1.5f);
+        xpBar.setSize(400,70);
+        xpTable.add(xpBar);
+        xpTable.top();
+        xpTable.center();
+        xpTable.pack();
+        xpTable.setPosition(
+            ((viewport.getWorldWidth() - xpTable.getWidth()*1.5f) / 2), viewport.getWorldHeight()-xpTable.getHeight()*1.5f
+        );
     }
 
     private void updateAbilityBar() {
             Array<Ability> abilities = game.getAbilities();
+            for(Ability a : abilities){
+                //a.getName()
+            }
     }
+
+    private void createInfoTable() {
+        infoLog = new Array<>();
+        infoLabels = new Array<>();
+
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(1.5f);
+        Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
+
+        float startY = 150;
+        float spacing = 25;
+
+        for (int i = 0; i < 5; i++) {
+            Label label = new Label("", style);
+            label.setPosition(40, startY - i * spacing);
+            infoLabels.add(label);
+            stage.addActor(label);
+        }
+        updateInfoTable("Welcome to Beach Survivors, try not to die");
+    }
+
+    public void updateInfoTable(String logMessage){
+        if(infoLog.size == 5){
+            infoLog.removeIndex(0);
+        }
+
+        int minutes = (int)(gameTime / 60f);
+        int seconds = (int)(gameTime % 60f);
+        String timestamp = String.format("[%02d:%02d] ", minutes, seconds);
+
+        infoLog.add(timestamp + logMessage);
+
+        for (int i = 0; i < infoLabels.size; i++) {
+            if (i < infoLog.size) {
+                infoLabels.get(i).setText(infoLog.get(i));
+            } else {
+                infoLabels.get(i).setText("");
+            }
+        }
+    }
+
+
 
 
 
@@ -136,13 +197,13 @@ public class GameUI {
     }
 
     public void createProgressBar() {
-        progressbarTable = new Table();
+        progressBarTable = new Table();
         Skin skin = new Skin(Gdx.files.internal("SkinComposer/testbuttons.json"));
 
 
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
-        progressBar.setSize(500, 50);
+        progressBar.setSize(700, 70);
 
 
         BitmapFont font = new BitmapFont();
@@ -154,12 +215,12 @@ public class GameUI {
         currentLevel = new Label("Level: " +getPlayerLevel(), labelStyle);
         nextLevel = new Label(getPlayerLevel(), labelStyle);
 
-        progressbarTable.add(currentLevel).padRight(20);
-        progressbarTable.add(progressBar).expandX().fillX();
-        progressbarTable.add(nextLevel).padLeft(20);
+        progressBarTable.add(currentLevel).padRight(50);
+        progressBarTable.add(progressBar).expandX().fillX();
+        progressBarTable.add(nextLevel).padLeft(40);
 
-        progressbarTable.setSize(700, 100);
-        progressbarTable.setPosition(viewport.getWorldWidth() / 2 - progressbarTable.getWidth()  / 2, viewport.getWorldHeight() - progressbarTable.getHeight() - 10);
+        progressBarTable.setSize(720, 70);
+        progressBarTable.setPosition(xpTable.getX()-currentLevel.getWidth(), xpTable.getY()+progressBar.getHeight()*0.55f);
     }
 
     private String getPlayerLevel() {

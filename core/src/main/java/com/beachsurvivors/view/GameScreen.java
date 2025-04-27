@@ -92,7 +92,7 @@ public class GameScreen extends Game implements Screen {
     public GameScreen(Main main) {
         this.main = main;
 
-        gameViewport = new FitViewport(screenWidth, screenHeight);
+        gameViewport = new FitViewport(screenWidth*1.5f, screenHeight*1.5f);
         gameUI = new GameUI(new FitViewport(screenWidth, screenHeight), this);
 
         droppedItems = new Array<>();
@@ -100,8 +100,6 @@ public class GameScreen extends Game implements Screen {
         sharksKilled = 0;
         totalEnemiesKilled = 0;
         create();
-
-
     }
 
     /**
@@ -707,11 +705,13 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void checkLevelUp() {
-        if (sharksKilled >= 100 * player.getLevel()) {
-            System.out.println("levelup");
+        if (sharksKilled >= 10 * player.getLevel()) {
+            player.setLevel(player.getLevel() + 1);
+            gameUI.updateInfoTable("Congratulations, you are now level "+ player.getLevel());
             setPaused(true);
             main.levelUp();
-            player.setLevel(player.getLevel() + 1);
+
+
             sharksKilled = 0;
         }
     }
@@ -728,7 +728,12 @@ public class GameScreen extends Game implements Screen {
         return abilities;
     }
 
+
     public Main getMain() {
         return main;
+
+    public void printLog(String s) {
+        gameUI.updateInfoTable(s);
+
     }
 }

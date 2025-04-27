@@ -74,5 +74,7 @@ public abstract class PowerUp implements PickUpAble {
         hitbox.setPosition(x, newY);
 
     }
-
+    public void printInfo(){
+        
+    }
 }
