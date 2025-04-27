@@ -45,8 +45,6 @@ entities/power_ups/speed_boost.png
 entities/smoke.png
 fonts/level.fnt
 fonts/level.png
-fonts/pixeled.fnt
-fonts/pixeled.ttf
 fonts/timer.fnt
 fonts/timer.png
 game_screen/Cool_beach_guy.png
