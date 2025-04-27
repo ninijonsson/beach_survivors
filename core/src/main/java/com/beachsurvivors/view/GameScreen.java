@@ -541,7 +541,6 @@ public class GameScreen extends Game implements Screen {
         enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
         enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
 
-
     }
 
 
@@ -613,6 +612,7 @@ public class GameScreen extends Game implements Screen {
         for (int i = 0; i < enemyAbilities.size; i++) {
 
             if (enemyAbilities.get(i).getHitBox().overlaps(player.getHitBox())) {
+                player.takeDamage(enemyAbilities.get(i).getDamage());
                 gameUI.setHealthBarValue(player.getHealthPoints());
                 System.out.println("player HP : " + player.getHealthPoints());
                 enemyAbilities.get(i).dispose();

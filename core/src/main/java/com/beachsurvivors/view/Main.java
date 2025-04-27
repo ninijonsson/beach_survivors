@@ -26,15 +26,18 @@ public class Main extends Game {
     }
 
     public void goToMainMenu() {
-        menuScreen = new MainMenuScreen(this);
+        menuScreen.mainTheme.play();
+        menuScreen.playSound.stop();
         gameScreen.dispose();
         gameScreen = null;
         setScreen(menuScreen);
     }
 
     public void restart() {
+        menuScreen.playSound.stop();    //Vi kanske skulle flytta playSound till gamescreen?
         gameScreen = new GameScreen(this);
         setScreen(gameScreen);
+        menuScreen.startGameMusic();
     }
 
     public void gameOver() {

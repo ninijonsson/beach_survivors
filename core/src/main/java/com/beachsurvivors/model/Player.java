@@ -200,7 +200,7 @@ public class Player extends Actor {
         walkSheet.dispose();
     }
 
-    public void takeDamage(float damage){
+    public void takeDamage(double damage){
         if (!isImmune) {
             healthPoints -= damage;
             if (healthPoints <= 0) {
@@ -211,12 +211,12 @@ public class Player extends Actor {
             isImmune = true; //Immunitet när man tar damage
             tint = Color.RED; //Ändrar färgen när man tar damage
 
-            Timer.schedule(new Task() {  //resetar immunitet efter 0,3sekunder
+            Timer.schedule(new Task() {  //resetar immunitet efter 0,5sekunder
                 @Override
                 public void run() {
                     isImmune = false;
                 }
-            }, 0.3f);
+            }, 0.5f);
 
             //Jag gjorde två olika tasks för att 0.1sekunder immunitet kändes lite om där är mkt mobs
             //men det kanske är fine med 0.1? i så fall kan vi slå ihop båda tasks

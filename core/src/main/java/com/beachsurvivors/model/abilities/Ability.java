@@ -51,6 +51,10 @@ public abstract class Ability implements Disposable {
         return min + (int)(Math.random() * ((max - min) + 1));
     }
 
+    public double getDamage() {
+        return damage;
+    }
+
     public Sprite getSprite() {
         return sprite;
     }

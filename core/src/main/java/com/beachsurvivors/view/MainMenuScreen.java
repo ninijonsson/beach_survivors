@@ -191,8 +191,7 @@ public class MainMenuScreen implements Screen {
                 mainTheme.stop();
                // playSound.play(0.1f);
 
-                playSound.setLooping(playSound.play(0.1f),true);
-                playSound.setPitch(0,0.7f);
+                startGameMusic();
                 main.switchScreen();
             }
         });
@@ -213,5 +212,10 @@ public class MainMenuScreen implements Screen {
                 Gdx.app.exit();
             }
         });
+    }
+
+    public void startGameMusic() {
+        playSound.setLooping(playSound.play(0.1f),true);
+        playSound.setPitch(0,0.7f);
     }
 }
