@@ -16,10 +16,13 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -89,6 +92,32 @@ public class GameScreen extends Game implements Screen {
 
     private boolean isPaused = false;
 
+    private Texture resumeTexture;
+    private Texture resumeHoverTexture;
+    private Texture helpTexture;
+    private Texture helpHoverTexture;
+    private Texture exitTexture;
+    private Texture exitHoverTexture;
+
+    private ImageButton resumeButton;
+    private ImageButton.ImageButtonStyle resumeButtonStyle;
+    private ImageButton helpButton;
+    private ImageButton.ImageButtonStyle helpButtonStyle;
+    private ImageButton exitButton;
+    private ImageButton.ImageButtonStyle exitButtonStyle;
+
+    private TextureRegionDrawable resumeDrawable;
+    private TextureRegionDrawable helpDrawable;
+    private TextureRegionDrawable exitDrawable;
+
+    private TextureRegionDrawable resumeHoverDrawable;
+    private TextureRegionDrawable helpHoverDrawable;
+    private TextureRegionDrawable exitHoverDrawable;
+
+    private Group pauseMenuGroup;
+
+    private Image backgroundImage;
+
 
     //Boolean variables to toggle when testing the game with/without
     //some elements. Set all to true for testing everything.
@@ -157,7 +186,7 @@ public class GameScreen extends Game implements Screen {
             gameUI.getStage().act(delta);
             gameUI.update(Gdx.graphics.getDeltaTime());
             gameUI.draw();
-            gameUI.removePauseMenu();
+            //removePauseMenu();
         } else {
             spriteBatch.begin();
 
@@ -610,7 +639,6 @@ public class GameScreen extends Game implements Screen {
         drawEnemies();
         drawEnemyAbilities();
         drawDamageText();
-
     }
 
     /**

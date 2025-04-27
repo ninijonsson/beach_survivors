@@ -103,7 +103,7 @@ public class GameUI {
     }
 
     public void removePauseMenu() {
-        /*if (backgroundImage != null) {
+        if (backgroundImage != null) {
             //stage.getActors().removeValue(backgroundImage, true);
             backgroundImage.remove();
             backgroundImage = null;
@@ -120,10 +120,11 @@ public class GameUI {
         if (exitButton != null) {
             exitButton.remove();
             //stage.getActors().removeValue(exitButton, true);
-        }*/
+        }
 
         if (pauseMenuGroup != null) {
             pauseMenuGroup.remove();
+            pauseMenuGroup = null;
         }
     }
 
@@ -274,11 +275,8 @@ public class GameUI {
     }
 
     private void updateAbilityBar() {
-            Array<Ability> abilities = game.getAbilities();
+        Array<Ability> abilities = game.getAbilities();
     }
-
-
-
 
     private void createTimerLabel() {
         BitmapFont font = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
