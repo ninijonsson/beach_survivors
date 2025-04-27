@@ -17,6 +17,7 @@ public class NavySeal extends Enemy {
         setHealthPoints(30);
         setHitSound(Gdx.audio.newSound(Gdx.files.internal("sounds/Seal_Damage.wav")));
         setMovementSpeed(40f);
+        setDamage(10);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class NavySeal extends Enemy {
                 player.getPlayerY() - this.getSprite().getY())
                 .nor();
 
-            BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png");
+            BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png", getDamage());
             bullet.updatePosition(this.getSprite().getX(), this.getSprite().getY());
             bullet.setDirection(direction);
 

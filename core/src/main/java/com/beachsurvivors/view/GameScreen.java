@@ -28,6 +28,7 @@ import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 import com.beachsurvivors.model.enemies.Enemy;
 import com.beachsurvivors.model.enemies.MiniBoss;
+import com.beachsurvivors.model.enemies.NavySeal;
 import com.beachsurvivors.model.enemies.Shark;
 import com.beachsurvivors.model.groundItems.Berserk;
 import com.beachsurvivors.model.groundItems.GroundItem;
@@ -66,6 +67,7 @@ public class GameScreen extends Game implements Screen {
     private BaseAttack bullet;
     private float bulletTimer = 0f;
     private int sharksKilled;
+    private int totalEnemiesKilled;
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
@@ -96,6 +98,7 @@ public class GameScreen extends Game implements Screen {
         droppedItems = new Array<>();
         abilities = new Array<>();
         sharksKilled = 0;
+        totalEnemiesKilled = 0;
         create();
     }
 
@@ -137,6 +140,7 @@ public class GameScreen extends Game implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+
     @Override
     public void render(float delta) {
         input();
@@ -155,6 +159,7 @@ public class GameScreen extends Game implements Screen {
             font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 200);
             spriteBatch.end();
         }
+
     }
 
     @Override
@@ -216,13 +221,13 @@ public class GameScreen extends Game implements Screen {
             spawnEnemies();
 
             for (int i = enemies.size - 1; i >= 0; i--) {
-
                 Enemy enemy = enemies.get(i);
                 updateEnemyMovement(enemy);
                 handleEnemyDeaths(enemy, i);
                 checkPlayerAbilityHits(enemy);
-
+                checkDamageAgainstPlayer(enemy);
             }
+            checkEnemyAbilitiesDamagePlayer();
         }
         resolveEnemyCollisions(enemies);
 
@@ -277,6 +282,9 @@ public class GameScreen extends Game implements Screen {
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             isPaused = !isPaused;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            main.gameOver(totalEnemiesKilled);
         }
     }
 
@@ -391,6 +399,10 @@ public class GameScreen extends Game implements Screen {
     }
 
     @Override
+    public void pause() {
+    }
+
+    @Override
     public void hide() {
     }
 
@@ -462,13 +474,12 @@ public class GameScreen extends Game implements Screen {
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
 
-
 //        switch (enemyChoice) {
 //            case 0:
-                enemy = new Shark();
+   //             enemy = new Shark();
 //                break;
 //            case 1:
-//                enemy = new NavySeal();
+                enemy = new NavySeal();
 //                break;
 //            case 2:
 //                enemy = new Crocodile();
@@ -530,7 +541,6 @@ public class GameScreen extends Game implements Screen {
         enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
         enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
 
-
     }
 
 
@@ -541,6 +551,7 @@ public class GameScreen extends Game implements Screen {
      */
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
+            totalEnemiesKilled++;
             enemy.dropItems(droppedItems);
             if (enemy instanceof MiniBoss) {
                 ((MiniBoss) enemy).dropChest(groundItems);
@@ -582,6 +593,34 @@ public class GameScreen extends Game implements Screen {
                     abilities.removeIndex(j);
                 }
             }
+        }
+    }
+
+    private void checkDamageAgainstPlayer(Enemy enemy) {
+        if (enemy.getHitbox().overlaps(player.getHitBox())) {
+            damagePlayer(enemy.getDamage());
+        }
+    }
+
+    private void checkEnemyAbilitiesDamagePlayer() {
+        for (int i = enemyAbilities.size -1; i >= 0; i--) {
+            if (enemyAbilities.get(i).getHitBox().overlaps(player.getHitBox())) {
+                damagePlayer(enemyAbilities.get(i).getDamage());
+                enemyAbilities.get(i).dispose();
+                enemyAbilities.removeIndex(i);
+
+            }
+        }
+    }
+
+    private void damagePlayer(double damage) {
+        player.takeDamage(damage);
+        gameUI.setHealthBarValue(player.getHealthPoints());
+        System.out.println("player HP : " + player.getHealthPoints());
+
+        if (!player.isAlive()) {
+            System.out.println("You died");
+            main.gameOver(totalEnemiesKilled);
         }
     }
 
@@ -689,7 +728,12 @@ public class GameScreen extends Game implements Screen {
         return abilities;
     }
 
+
+    public Main getMain() {
+        return main;
+
     public void printLog(String s) {
         gameUI.updateInfoTable(s);
+
     }
 }

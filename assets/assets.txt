@@ -39,6 +39,12 @@ entities/power_ups/health_heart.png
 entities/power_ups/lucky_clover.png
 entities/power_ups/speed_boost.png
 entities/smoke.png
+game_over_screen/font-export.fnt
+game_over_screen/font-over-export.fnt
+game_over_screen/font-pressed-export.fnt
+game_over_screen/game_over_skin.png
+game_over_screen/gameover_skin.atlas
+game_over_screen/gameover_skin.json
 game_screen/Cool_beach_guy.png
 levelUpScreen/default.fnt
 levelUpScreen/default.png

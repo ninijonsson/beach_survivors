@@ -12,6 +12,7 @@ public class Shark extends Enemy {
         createAnimation("entities/enemies/shark_sheet.png" , 4, 1);
         setHealthPoints(20);
         setMovementSpeed(300f);
+        setDamage(5);
     }
 
 

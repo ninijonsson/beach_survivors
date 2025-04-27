@@ -23,7 +23,25 @@ public class Main extends Game {
         } else {
             setScreen(menuScreen);
         }
+    }
 
+    public void goToMainMenu() {
+        menuScreen.mainTheme.play();
+        menuScreen.playSound.stop();
+        gameScreen.dispose();
+        gameScreen = null;
+        setScreen(menuScreen);
+    }
+
+    public void restart() {
+        menuScreen.playSound.stop();    //Vi kanske skulle flytta playSound till gamescreen?
+        gameScreen = new GameScreen(this);
+        setScreen(gameScreen);
+        menuScreen.startGameMusic();
+    }
+
+    public void gameOver(int enemiesKilled) {
+        setScreen(new DeathScreen(gameScreen, enemiesKilled));
     }
 
     public void levelUp() {

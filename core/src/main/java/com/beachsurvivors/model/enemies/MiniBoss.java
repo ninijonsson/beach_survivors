@@ -11,6 +11,7 @@ public class MiniBoss extends Enemy {
         super("entities/enemies/crocodile2.png", 128*3, 128*3, 500);
         createAnimation("entities/enemies/crocodile2.png", 1, 1);
         setMovementSpeed(200f);
+        setDamage(20);
 
     }
 
