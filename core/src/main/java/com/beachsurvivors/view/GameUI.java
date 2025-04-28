@@ -143,10 +143,6 @@ public class GameUI {
     }
 
 
-
-
-
-
     private void createTimerLabel() {
         BitmapFont font = new BitmapFont();
         font.getData().setScale(2);

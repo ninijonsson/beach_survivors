@@ -15,7 +15,7 @@ public class Boomerang extends Ability {
     private double damage;
     private float spinSpeed = 360;
     private float angle;
-    private float orbitRadius = 200;
+    private float orbitRadius = 300;
 
     public Boomerang() {
         super("Boomerang", "entities/boomerangmc.png", AbilityType.AoE, 10, 0, 32,32);

@@ -317,9 +317,9 @@ public class GameScreen extends Game implements Screen {
                 powerUp.dispose();
             }
         }
+        gameUI.setHealthBarValue(player.getHealthPoints());
         droppedItems.removeAll(powerUpsToRemove, true);
     }
-
 
     private void pickUpGroundItem() {
         Array<GroundItem> groundItemsToRemove = new Array<>();

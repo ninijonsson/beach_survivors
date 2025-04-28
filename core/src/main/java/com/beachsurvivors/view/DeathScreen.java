@@ -45,7 +45,7 @@ public class DeathScreen implements Screen {
         table = new Table();
         leftTable = new Table();
 
-        textLabel = new Label("YOU DIED" , skin);
+        textLabel = new Label("YOU FUCKING DIED " , skin);
         textLabel.setFontScale(12);
         textLabel.setColor(Color.RED);
 
