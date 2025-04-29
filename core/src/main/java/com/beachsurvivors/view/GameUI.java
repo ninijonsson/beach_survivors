@@ -51,13 +51,16 @@ public class GameUI {
         createInfoTable();
 
 
+        addActors();
+    }
+
+    private void addActors(){
         stage.addActor(healthTable);
 
         stage.addActor(timerLabel);
         stage.addActor(abilityTable);
         stage.addActor(xpTable);
         stage.addActor(progressBarTable);
-
     }
 
     private void createAbilityTable() {
