@@ -65,6 +65,8 @@ public class GameScreen extends Game implements Screen {
     private float bulletTimer = 0f;
     private int sharksKilled;
     private int totalEnemiesKilled;
+    private double totalPlayerDamageDealt;
+    private double totalPlayerDamageTaken;
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
@@ -292,7 +294,7 @@ public class GameScreen extends Game implements Screen {
             isPaused = !isPaused;
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            main.gameOver(totalEnemiesKilled);
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds());
         }
     }
 
@@ -588,6 +590,7 @@ public class GameScreen extends Game implements Screen {
                 }
 
                 if (enemy.hit(damage)) {
+                    totalPlayerDamageDealt += damage;
                     damageTexts.add(new DamageText(String.valueOf((int) damage),
                         enemy.getSprite().getX() + randomizeDirection.nextInt(50),
                         enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomizeDirection.nextInt(50),
@@ -627,7 +630,7 @@ public class GameScreen extends Game implements Screen {
 
         if (!player.isAlive()) {
             System.out.println("You died");
-            main.gameOver(totalEnemiesKilled);
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds());
         }
     }
 
