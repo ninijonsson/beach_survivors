@@ -26,12 +26,16 @@ entities/boomerangmc.png
 entities/burger.png
 entities/chest.png
 entities/coconut.png
+entities/death.png
 entities/enemies/crocodile1.png
 entities/enemies/crocodile1_sheet.png
 entities/enemies/crocodile2.png
 entities/enemies/navy_seal_sheet.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
+entities/howToPlay.png
+entities/particles/blueFlame.p
+entities/particles/bullet.png
 entities/power_ups/beer.png
 entities/power_ups/freeze.png
 entities/power_ups/health_boost.png
@@ -46,6 +50,7 @@ game_over_screen/game_over_skin.png
 game_over_screen/gameover_skin.atlas
 game_over_screen/gameover_skin.json
 game_screen/Cool_beach_guy.png
+gdx-particle-editor.jar
 levelUpScreen/default.fnt
 levelUpScreen/default.png
 levelUpScreen/uiskin.atlas
