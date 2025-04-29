@@ -305,7 +305,6 @@ public class GameScreen extends Game implements Screen {
         Array<PowerUp> powerUpsToRemove = new Array<>();
         for (PowerUp powerUp : droppedItems) {
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
-                powerUp.onPickup(player);
                 if (powerUp instanceof Berserk) {
                     powerUp.onPickup(player);
                     ((Berserk) powerUp).onPickupBullet(bullet);
