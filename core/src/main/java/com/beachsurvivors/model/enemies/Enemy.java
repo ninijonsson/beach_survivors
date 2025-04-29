@@ -66,7 +66,7 @@ public abstract class Enemy implements Disposable {
         this.texture = new Texture(texturePath);
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
-        this.hitSound = hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Shark_Damage2.wav"));
+        this.hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Shark_Damage2.wav"));
 
         this.radius = width /4;
 
