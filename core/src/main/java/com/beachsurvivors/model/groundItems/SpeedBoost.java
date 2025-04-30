@@ -1,6 +1,7 @@
 package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.utils.Timer;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class SpeedBoost extends PowerUp implements PickUpAble {
@@ -12,7 +13,7 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
     }*/
 
     public SpeedBoost(float x, float y) {
-        super("entities/power_ups/speed_boost.png" , 10, x, y);
+        super(AssetLoader.get().getTexture("assets/entities/power_ups/speed_boost.png"), 10, x, y);
     }
 
     @Override

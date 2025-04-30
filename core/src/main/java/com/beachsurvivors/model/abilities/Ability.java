@@ -3,8 +3,8 @@ package com.beachsurvivors.model.abilities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public abstract class Ability implements Disposable {
@@ -12,15 +12,13 @@ public abstract class Ability implements Disposable {
     private String name;
     private AbilityType type;
     private double damage;
-    private static double cooldown;  //Vissa abilities kanske behöver ha en cooldown?
-                                // kanske flytta till subclass också
+    private static double cooldown;
     private Texture texture;
     private Sprite sprite;
-    private Rectangle hitBox;  //Kanske flytta till subclasser eftersom alla abilities kanske inte har hitbox, t.ex shield eller healing
+    private Rectangle hitBox;
 
-
-    public Ability (String name, String texturePath, AbilityType type, double damage, double cooldown, int width, int height) {
-        this.texture = new Texture(texturePath);
+    public Ability(String name, String texturePath, AbilityType type, double damage, double cooldown, int width, int height) {
+        this.texture = AssetLoader.get().getTexture(texturePath);
         this.sprite = new Sprite(texture);
         sprite.setSize(width, height);
         this.hitBox = new Rectangle();
@@ -29,14 +27,13 @@ public abstract class Ability implements Disposable {
         this.name = name;
         this.type = type;
         this.damage = damage;
-        this.cooldown = cooldown;
+        Ability.cooldown = cooldown;
     }
 
     public void updatePosition(float x, float y) {
         getSprite().setPosition(x, y);
         getHitBox().setPosition(x, y);
     }
-
 
     public abstract void use();
     public abstract void use(Player player);
@@ -47,7 +44,7 @@ public abstract class Ability implements Disposable {
 
     public Double getBaseDamage() {
         double min = damage;
-        double max = damage*1.5;
+        double max = damage * 1.5;
         return min + (int)(Math.random() * ((max - min) + 1));
     }
 
@@ -68,7 +65,7 @@ public abstract class Ability implements Disposable {
     }
 
     public void decreaseCooldown(double attackSpeed) {
-        this.cooldown -= attackSpeed;
+        Ability.cooldown -= attackSpeed;
     }
 
     public void setType(AbilityType type) {
@@ -95,25 +92,23 @@ public abstract class Ability implements Disposable {
         this.hitBox = hitBox;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void updatePosition(float delta, float playerX, float playerY) {}
+
     @Override
     public String toString() {
-        return name + " | Type: " +type +
-                    " | Base damage: " + damage +
-                    " | Cooldown " + cooldown + "s" ;
+        return name + " | Type: " + type +
+            " | Base damage: " + damage +
+            " | Cooldown " + cooldown + "s";
     }
 
     @Override
     public void dispose() {
         if (texture != null) {
-            texture.dispose();
+            sprite=null;
         }
-    }
-
-    public void updatePosition(float delta, float playerX, float playerY) {
-    }
-
-
-    public String getName() {
-        return name;
     }
 }

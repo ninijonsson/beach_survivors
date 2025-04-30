@@ -1,6 +1,7 @@
 package com.beachsurvivors.model.enemies;
 
 import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class Shark extends Enemy {
@@ -8,10 +9,10 @@ public class Shark extends Enemy {
 
 
     public Shark () {
-        super("entities/enemies/shark.png", 100, 100, 20);
-        createAnimation("entities/enemies/shark_sheet.png" , 4, 1);
+        super( 100, 100, 20);
+        createAnimation((AssetLoader.get().getTexture("assets/entities/enemies/shark_sheet.png")) , 4, 1);
         setHealthPoints(20);
-        setMovementSpeed(300f);
+        setMovementSpeed(150f);
         setDamage(5);
     }
 

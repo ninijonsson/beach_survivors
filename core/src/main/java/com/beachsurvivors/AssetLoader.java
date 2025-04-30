@@ -30,18 +30,24 @@ public class AssetLoader {
 
     private void addTextures() {
         manager.load("assets/placeholder.png", Texture.class);
+        manager.load("assets/entities/particles/bullet.png", Texture.class);
         manager.load("assets/entities/beer.png", Texture.class);
-        manager.load("assets/entities/boomerangmc.png", Texture.class);
         manager.load("assets/entities/burger.png", Texture.class);
         manager.load("assets/entities/chest.png", Texture.class);
         manager.load("assets/entities/coconut.png", Texture.class);
         manager.load("assets/entities/death.png", Texture.class);
         manager.load("assets/entities/howToPlay.png", Texture.class);
+        manager.load("assets/entities/abilities/xpBar.png", Texture.class);
+        manager.load("assets/entities/abilities/abilityBar.png", Texture.class);
+        manager.load("assets/entities/abilities/bullet.png", Texture.class);
+        manager.load("assets/entities/abilities/boomerangmc.png", Texture.class);
+        manager.load("assets/entities/abilities/fireball.png", Texture.class);
         manager.load("assets/entities/smoke.png", Texture.class);
         manager.load("assets/entities/enemies/shark.png", Texture.class);
         manager.load("assets/entities/enemies/shark_sheet.png", Texture.class);
         manager.load("assets/entities/enemies/crocodile1.png", Texture.class);
         manager.load("assets/entities/enemies/crocodile1_sheet.png", Texture.class);
+        manager.load("assets/entities/enemies/navy_seal_sheet.png", Texture.class);
         manager.load("assets/entities/enemies/crocodile2.png", Texture.class);
         manager.load("assets/entities/beach_girl_sheet.png", Texture.class);
         manager.load("assets/entities/beach_guy_sheet.png", Texture.class);

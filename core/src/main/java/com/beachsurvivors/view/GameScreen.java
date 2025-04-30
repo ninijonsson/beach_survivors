@@ -21,11 +21,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.abilities.Boomerang;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
+import com.beachsurvivors.model.abilities.WaterWave;
 import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.Berserk;
 import com.beachsurvivors.model.groundItems.GroundItem;
@@ -41,6 +43,7 @@ public class GameScreen extends Game implements Screen {
     private float growthRate = 1.5f;
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
+    ParticleEffectPoolManager poolManager;
 
     private int screenWidth = 1920;
     private int screenHeight = 1080;
@@ -65,10 +68,13 @@ public class GameScreen extends Game implements Screen {
     private float bulletTimer = 0f;
     private int sharksKilled;
     private int totalEnemiesKilled;
-
+    private Ability wave;
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
+    private float waveCooldown = 1.5f;
+    private float waveTimer = 0f;
+
 
     private Array<GroundItem> groundItems = new Array<>();  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
     private Queue<Integer> miniBossSchedule = new Queue<>(10); ////array med intervaller på när miniboss ska spawna
@@ -128,7 +134,11 @@ public class GameScreen extends Game implements Screen {
 
         player.setPlayerX(map.getStartingX());
         player.setPlayerY(map.getStartingY());
-
+        poolManager = new ParticleEffectPoolManager();
+        poolManager.register("assets/entities/particles/blueFlame.p", 5, 20);
+        Vector2 startPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        WaterWave wave = new WaterWave("WaterWave",  15, 1.2, 32, 32, startPos, poolManager);
+        abilities.add(wave);
         createMiniBossSchedule();
     }
 
@@ -239,6 +249,18 @@ public class GameScreen extends Game implements Screen {
         }
         resolveEnemyCollisions(enemies);
 
+        Enemy target = getNearestEnemy();
+        waveTimer += Gdx.graphics.getDeltaTime();
+        if (target != null && waveTimer >= waveCooldown) {
+            waveTimer = 0f;
+            Vector2 from = new Vector2(player.getPlayerX(), player.getPlayerY());
+            Vector2 to = new Vector2(target.getX(), target.getY());
+            Vector2 dir = to.sub(from).nor();
+
+            WaterWave wave = new WaterWave("WaterWave", 15, 1.2, 32, 32, from, poolManager);
+            wave.setDirection(dir);
+            abilities.add(wave);
+        }
     }
 
     /**
@@ -529,7 +551,18 @@ public class GameScreen extends Game implements Screen {
      */
     private void updateAbilityMovement() {
         for (Ability a : abilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+            if (a instanceof WaterWave) {
+                ((WaterWave) a).update(Gdx.graphics.getDeltaTime());
+            } else {
+                a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+            }
+        }
+        for (int i = abilities.size - 1; i >= 0; i--) {
+            Ability a = abilities.get(i);
+            if (a instanceof WaterWave && ((WaterWave) a).isComplete()) {
+                a.dispose();
+                abilities.removeIndex(i);
+            }
         }
     }
 
@@ -690,7 +723,12 @@ public class GameScreen extends Game implements Screen {
 
     private void drawPlayerAbilities() {
         for (Ability a : abilities) {
-            a.getSprite().draw(spriteBatch);
+            if (a instanceof WaterWave) {
+                ((WaterWave) a).draw(spriteBatch);
+
+            } else {
+                a.getSprite().draw(spriteBatch);
+            }
         }
     }
 

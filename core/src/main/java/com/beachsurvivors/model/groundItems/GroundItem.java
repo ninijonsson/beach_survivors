@@ -16,9 +16,9 @@ public abstract class GroundItem implements PickUpAble {
 
     private Vector2 position;
 
-    public GroundItem(String texturePath, float x, float y) {
+    public GroundItem(Texture texturePath, float x, float y) {
 
-        createTexture(texturePath);
+        this.texture=texturePath;
 
         sprite = new Sprite(texture);
         sprite.setSize(64, 64);
@@ -33,13 +33,6 @@ public abstract class GroundItem implements PickUpAble {
 
     }
 
-    public void createTexture(String texturePath) {
-        if (texturePath.isEmpty()) {
-            texture = new Texture("placeholder.png");
-        } else {
-            texture = new Texture(texturePath);
-        }
-    }
 
     public Texture getTexture() {
         return texture;

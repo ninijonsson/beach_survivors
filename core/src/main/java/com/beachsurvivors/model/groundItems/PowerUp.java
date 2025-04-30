@@ -22,7 +22,7 @@ public abstract class PowerUp implements PickUpAble {
 
     public PowerUp(Texture texture, int duration, float x, float y) {
         this.duration = duration;
-
+        this.texture=texture;
         sprite = new Sprite(texture);
         sprite.setSize(64, 64);
         sprite.setPosition(x, y);
@@ -55,7 +55,7 @@ public abstract class PowerUp implements PickUpAble {
     }
 
     public void dispose() {
-        texture.dispose();
+        sprite = null;
     }
 
     public void update(float deltaTime) {
