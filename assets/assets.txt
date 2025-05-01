@@ -28,6 +28,7 @@ Thud.mp3
 entities/abilities/abilityBar.png
 entities/abilities/bullet.png
 entities/abilities/fireball.png
+entities/abilities/test.abilitybar.png
 entities/abilities/xpBar.png
 entities/beach_girl_sheet.png
 entities/beach_guy_sheet.png
@@ -83,6 +84,16 @@ main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
 main_menu/sound/Holiday.wav
 main_menu/sound/play_sound.wav
+pause_menu/exit/exit_button_hover_scaled-200.png
+pause_menu/exit/exit_button_scaled-200.png
+pause_menu/help/help_button_hover_scaled-200.png
+pause_menu/help/help_button_scaled-200.png
+pause_menu/pause_menu_scaled-200.png
+pause_menu/pause_menu_scaled-300.png
+pause_menu/pause_menu_scaled-500.png
+pause_menu/pause_menu_scaled-600.png
+pause_menu/resume/resume_button_hover_scaled-200.png
+pause_menu/resume/resume_button_scaled-200.png
 placeholder.png
 sounds/Seal_Damage.wav
 sounds/Shark_Damage.wav

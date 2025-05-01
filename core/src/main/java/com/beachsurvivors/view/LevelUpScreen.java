@@ -23,7 +23,7 @@ public class LevelUpScreen implements Screen {
         this.game = game;
         this.player = player;
 
-        stage = new Stage(new FitViewport(game.getSCREEN_WIDTH(), game.getSCREEN_HEIGHT()));
+        stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin(Gdx.files.internal("levelUpScreen/uiskin.json"));

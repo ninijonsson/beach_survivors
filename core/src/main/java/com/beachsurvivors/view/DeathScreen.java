@@ -38,7 +38,7 @@ public class DeathScreen implements Screen {
         this.totalDamage = totalDamage;
         this.timeSurvived = timeSurvived;
 
-        stage = new Stage(new FitViewport(gameScreen.getSCREEN_WIDTH(), gameScreen.getSCREEN_HEIGHT()));
+        stage = new Stage(new FitViewport(gameScreen.getScreenWidth(), gameScreen.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin(Gdx.files.internal("game_over_screen/gameover_skin.json"));
@@ -93,7 +93,7 @@ public class DeathScreen implements Screen {
         table.row();
         table.add(exitButton).width(600).height(150);
 
-        table.setPosition(gameScreen.getSCREEN_WIDTH()*0.7f, gameScreen.getSCREEN_HEIGHT()/2.5f);
+        table.setPosition(gameScreen.getScreenWidth()*0.7f, gameScreen.getScreenHeight()/2.5f);
         stage.addActor(table);
 
     }
@@ -105,7 +105,7 @@ public class DeathScreen implements Screen {
         leftTable.row();
         leftTable.add(totalDamageDone).left();
 
-        leftTable.setPosition(gameScreen.getSCREEN_WIDTH()-1300, gameScreen.getSCREEN_HEIGHT()/2f);
+        leftTable.setPosition(gameScreen.getScreenWidth()-1300, gameScreen.getScreenHeight()/2f);
         stage.addActor(leftTable);
     }
 

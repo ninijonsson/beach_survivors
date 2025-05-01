@@ -705,11 +705,11 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    public int getSCREEN_WIDTH() {
+    public int getScreenWidth() {
         return SCREEN_WIDTH;
     }
 
-    public int getSCREEN_HEIGHT() {
+    public int getScreenHeight() {
         return SCREEN_HEIGHT;
     }
 
