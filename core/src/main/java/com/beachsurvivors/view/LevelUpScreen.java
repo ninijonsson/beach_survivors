@@ -23,7 +23,7 @@ public class LevelUpScreen implements Screen {
         this.game = game;
         this.player = player;
 
-        stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
+        stage = new Stage(new FitViewport(game.getSCREEN_WIDTH(), game.getSCREEN_HEIGHT()));
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin(Gdx.files.internal("levelUpScreen/uiskin.json"));
@@ -80,7 +80,7 @@ public class LevelUpScreen implements Screen {
         upgrade3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                player.increaseCritChance(player.getCritChance()+0.1f);
+                player.increaseCritChance(player.getCriticalHitChance()+0.1f);
                 resumeGame();
             }
         });

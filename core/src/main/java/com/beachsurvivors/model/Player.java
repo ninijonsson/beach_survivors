@@ -16,18 +16,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beachsurvivors.model.Map.Map;
 
 import java.util.Random;
-import java.util.TimerTask;
 
 public class Player extends Actor {
 
     private int healthPoints;
     private int experiencePoints;
     private float speed = 500f;
-    private float critChance = 0.15f;
+    private float criticalHitChance = 0.15f;
+    private double criticalHitDamage = 2;
     private int level = 1;
     private boolean isImmune;
     private boolean isAlive;
-
 
     private Rectangle beachGuyHitBox;
     private float playerX;
@@ -36,7 +35,8 @@ public class Player extends Actor {
     private float playerHeight;
     private float playerWidth;
 
-    private static final int FRAME_COLS = 2, FRAME_ROWS = 1;
+    private static final int FRAME_COLS = 2;
+    private static final int FRAME_ROWS = 1;
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
     private boolean isMoving;
@@ -47,8 +47,8 @@ public class Player extends Actor {
 
     private float stateTime;
 
+    private Random random;
     private SpriteBatch spriteBatch;
-
     private Map map;
 
     public Player(Map map, SpriteBatch spriteBatch) {
@@ -71,7 +71,7 @@ public class Player extends Actor {
     }
 
     private void createAnimation() {
-        Random random = new Random();
+        random = new Random();
         int choice = random.nextInt(1,3);
         switch (choice) {
             case 1:
@@ -85,6 +85,7 @@ public class Player extends Actor {
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);
         TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
         int index = 0;
+
         for (int i = 0; i < FRAME_ROWS; i++) {
             for (int j = 0; j < FRAME_COLS; j++) {
                 walkFrames[index++] = tmp[i][j];
@@ -94,11 +95,13 @@ public class Player extends Actor {
         stateTime = 0f;
     }
 
-    public void runAnimation() {
+    public void drawAnimation() {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame;
+
         if (isMoving) {
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+
             if (isMovingLeft() && !currentFrame.isFlipX()) {
                 currentFrame.flip(true, false);
             } else if (isMovingRight() && currentFrame.isFlipX()) {
@@ -107,18 +110,10 @@ public class Player extends Actor {
         } else {
             currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
         }
-        spriteBatch.begin();
-        if (isMovingLeft() && !currentFrame.isFlipX()) {
-            currentFrame.flip(true, false);
-        } else if (!isMovingLeft() && currentFrame.isFlipX()) {
-            currentFrame.flip(true, false);
-        }
         // Rita animationen centrerad kring playerX och playerY
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
 
-
-        spriteBatch.end();
     }
 
     public void playerInput() {
@@ -195,7 +190,6 @@ public class Player extends Actor {
         beachGuyHitBox.setSize(size, size);
     }
 
-
     public void dispose() {
         walkSheet.dispose();
     }
@@ -242,8 +236,12 @@ public class Player extends Actor {
         }
     }
 
+    public boolean isCriticalHit() {
+        return random.nextFloat() < criticalHitChance;
+    }
+
     public void increaseCritChance(float critChanceIncrease) {
-        critChance = critChanceIncrease;
+        criticalHitChance = critChanceIncrease;
     }
 
     public Rectangle getHitBox() {
@@ -268,8 +266,8 @@ public class Player extends Actor {
         beachGuyHitBox.setY(playerY - playerHeight / 2);
     }
 
-    public float getCritChance() {
-        return critChance;
+    public float getCriticalHitChance() {
+        return criticalHitChance;
     }
 
     public int getHealthPoints() {
@@ -281,7 +279,7 @@ public class Player extends Actor {
     }
 
     public void setAlive(boolean isAlive) {
-        this.isAlive = false;
+        this.isAlive = isAlive;
     }
 
     public void increaseHealthPoints(int increasedHealthPoints) {
@@ -305,6 +303,10 @@ public class Player extends Actor {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public double getCriticalHitDamage() {
+        return criticalHitDamage;
     }
 }
 

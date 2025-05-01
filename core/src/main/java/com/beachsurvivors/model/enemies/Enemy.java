@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.groundItems.*;
 
 import java.util.Random;
@@ -79,7 +80,7 @@ public abstract class Enemy implements Disposable {
     }
 
     public abstract void move();
-    public abstract void attack(Player player, Array enemyAbilities);
+    public abstract void attack(Player player, Array<Ability> enemyAbilities);
     public abstract void dropItems();
 
     private void createHealthBar(int healthPoints) {
@@ -260,7 +261,7 @@ public abstract class Enemy implements Disposable {
     public void dropItems(Array<PowerUp> droppedItems) {
         Random random = new Random();
         int chance = random.nextInt(0,100);
-        chance = 3;
+
 
         // Drop items koordinater
         float x = getSprite().getWidth()/2 + getSprite().getX();
@@ -270,7 +271,6 @@ public abstract class Enemy implements Disposable {
             case 1:
                 SpeedBoost speedBoost = new SpeedBoost(x, y);
                 droppedItems.add(speedBoost);
-                System.out.println("Item dropped  X" + speedBoost.getHitbox().getX() + " Y " + speedBoost.getHitbox().getY());
                 break;
             case 2:
                 LuckyClover luckyClover = new LuckyClover(x, y);

@@ -42,8 +42,8 @@ public class GameScreen extends Game implements Screen {
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
 
-    private int screenWidth = 1920;
-    private int screenHeight = 1080;
+    private final int SCREEN_WIDTH = 1920;
+    private final int SCREEN_HEIGHT = 1080;
 
     private Main main;
     private SpriteBatch spriteBatch;
@@ -91,8 +91,8 @@ public class GameScreen extends Game implements Screen {
     public GameScreen(Main main) {
         this.main = main;
 
-        gameViewport = new FitViewport(screenWidth*1.5f, screenHeight*1.5f);
-        gameUI = new GameUI(new FitViewport(screenWidth, screenHeight), this);
+        gameViewport = new FitViewport(SCREEN_WIDTH *1.5f, SCREEN_HEIGHT *1.5f);
+        gameUI = new GameUI(new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT), this);
 
         droppedItems = new Array<>();
         abilities = new Array<>();
@@ -135,9 +135,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
-    }
+    public void show() {}
 
 
     /**
@@ -190,8 +188,6 @@ public class GameScreen extends Game implements Screen {
 
         spriteBatch.setProjectionMatrix(gameViewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(gameViewport.getCamera().combined);
-
-        player.runAnimation();
 
         spriteBatch.begin();
         stage.act();
@@ -298,15 +294,14 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private boolean checkForCriticalStrike() {
-        float critChance = player.getCritChance();
-        return randomizeDirection.nextFloat() < critChance;
-    }
 
     private void pickUpPowerUp() {
         Array<PowerUp> powerUpsToRemove = new Array<>();
+
         for (PowerUp powerUp : droppedItems) {
+
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
+
                 if (powerUp instanceof Berserk) {
                     powerUp.onPickup(player);
                     ((Berserk) powerUp).onPickupBullet(bullet);
@@ -324,7 +319,9 @@ public class GameScreen extends Game implements Screen {
 
     private void pickUpGroundItem() {
         Array<GroundItem> groundItemsToRemove = new Array<>();
+
         for (GroundItem groundItem : groundItems) {
+
             if (player.getHitBox().overlaps(groundItem.getHitbox())) {
                 groundItem.onPickup(player);
                 groundItemsToRemove.add(groundItem);
@@ -384,6 +381,7 @@ public class GameScreen extends Game implements Screen {
 
         for (Enemy enemy : enemies) {
             float distance = playerPos.dst(enemy.getSprite().getX(), enemy.getSprite().getY());
+
             if (distance < minDistance) {
                 minDistance = distance;
                 nearest = enemy;
@@ -546,6 +544,8 @@ public class GameScreen extends Game implements Screen {
         Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
         enemy.setMovingLeftRight(vector.x);
 
+        //Uppdaterar Spritens X och Y position baserat på riktningen på fiendens vector2 * speed * tid.
+        //vector.x/y är riktningen, movementSpeed är hastighet och delta är tid.
         enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
         enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
         enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
@@ -580,13 +580,13 @@ public class GameScreen extends Game implements Screen {
      */
     private void checkPlayerAbilityHits(Enemy enemy) {
         for (int j = abilities.size - 1; j >= 0; j--) {
-            Ability a = abilities.get(j);
+            Ability ability = abilities.get(j);
 
-            if (a.getHitBox().overlaps(enemy.getHitbox())) {
-                boolean isCritical = checkForCriticalStrike();
-                double damage = a.getBaseDamage();
+            if (ability.getHitBox().overlaps(enemy.getHitbox())) {
+                boolean isCritical = player.isCriticalHit();
+                double damage = ability.getBaseDamage();
                 if (isCritical) {
-                    damage *= 2;
+                    damage *= player.getCriticalHitDamage();
                 }
 
                 if (enemy.hit(damage)) {
@@ -598,8 +598,8 @@ public class GameScreen extends Game implements Screen {
                         isCritical));
                 }
 
-                if (!(a instanceof Boomerang)) {
-                    a.dispose();
+                if (!(ability instanceof Boomerang)) {
+                    ability.dispose();
                     abilities.removeIndex(j);
                 }
             }
@@ -644,6 +644,7 @@ public class GameScreen extends Game implements Screen {
         drawEnemies();
         drawEnemyAbilities();
         drawDamageText();
+        player.drawAnimation();
 
     }
 
@@ -702,12 +703,12 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    public int getScreenWidth() {
-        return screenWidth;
+    public int getSCREEN_WIDTH() {
+        return SCREEN_WIDTH;
     }
 
-    public int getScreenHeight() {
-        return screenHeight;
+    public int getSCREEN_HEIGHT() {
+        return SCREEN_HEIGHT;
     }
 
     public void setPaused(boolean paused) {
@@ -720,8 +721,6 @@ public class GameScreen extends Game implements Screen {
             gameUI.updateInfoTable("Congratulations, you are now level "+ player.getLevel());
             setPaused(true);
             main.levelUp();
-
-
             sharksKilled = 0;
         }
     }

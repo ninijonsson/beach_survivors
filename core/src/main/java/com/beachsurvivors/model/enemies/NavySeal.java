@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 
 public class NavySeal extends Enemy {
@@ -24,7 +25,7 @@ public class NavySeal extends Enemy {
     public void move() {
     }
 
-    public void attack(Player player, Array enemyAbilities) {
+    public void attack(Player player, Array<Ability> enemyAbilities) {
         float bulletCooldown = 3f; // Gör om cooldown till float
 
         bulletTimer += Gdx.graphics.getDeltaTime();

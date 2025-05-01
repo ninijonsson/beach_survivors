@@ -2,7 +2,6 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -33,14 +32,13 @@ public class DeathScreen implements Screen {
     private String timeStamp;
 
 
-
     public DeathScreen(GameScreen gameScreen, int enemiesKilled, double totalDamage, float timeSurvived) {
         this.gameScreen = gameScreen;
         this.enemiesKilled = enemiesKilled;
         this.totalDamage = totalDamage;
         this.timeSurvived = timeSurvived;
 
-        stage = new Stage(new FitViewport(gameScreen.getScreenWidth(), gameScreen.getScreenHeight()));
+        stage = new Stage(new FitViewport(gameScreen.getSCREEN_WIDTH(), gameScreen.getSCREEN_HEIGHT()));
         Gdx.input.setInputProcessor(stage);
 
         skin = new Skin(Gdx.files.internal("game_over_screen/gameover_skin.json"));
@@ -95,19 +93,19 @@ public class DeathScreen implements Screen {
         table.row();
         table.add(exitButton).width(600).height(150);
 
-        table.setPosition(gameScreen.getScreenWidth()*0.7f, gameScreen.getScreenHeight()/2.5f);
+        table.setPosition(gameScreen.getSCREEN_WIDTH()*0.7f, gameScreen.getSCREEN_HEIGHT()/2.5f);
         stage.addActor(table);
 
     }
 
     private void addActorsLeftTable() {
-        leftTable.add(enemiesKilledText).padBottom(10);
+        leftTable.add(enemiesKilledText).padBottom(10).left();
         leftTable.row();
-        leftTable.add(timeSurvivedText).padBottom(10);
+        leftTable.add(timeSurvivedText).padBottom(10).left();
         leftTable.row();
-        leftTable.add(totalDamageDone);
+        leftTable.add(totalDamageDone).left();
 
-        leftTable.setPosition(gameScreen.getScreenWidth()-1400, gameScreen.getScreenHeight()/2f);
+        leftTable.setPosition(gameScreen.getSCREEN_WIDTH()-1300, gameScreen.getSCREEN_HEIGHT()/2f);
         stage.addActor(leftTable);
     }
 
