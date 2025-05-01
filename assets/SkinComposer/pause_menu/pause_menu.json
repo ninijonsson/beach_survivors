@@ -128,6 +128,21 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 		up: exit_button_scaled-300
 		over: exit_button_hover_scaled-300
 	}
+	sound_on: {
+		up: round_sound-on_scaled-200
+		down: round_sound-on_pressed_scaled-200
+		over: round_sound-on_hover_scaled-200
+	}
+	sound_off: {
+		up: round_sound-off_scaled-200
+		down: round_sound-off_pressed_scaled-200
+		over: round_sound-off_hover_scaled-200
+	}
+	restart: {
+		up: round_restart_scaled-200
+		down: round_restart_pressed_scaled-200
+		over: round_restart_hover_scaled-200
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 	default: {
