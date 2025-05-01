@@ -37,6 +37,14 @@ entities/enemies/shark_sheet.png
 entities/howToPlay.png
 entities/particles/blueFlame.p
 entities/particles/bullet.png
+entities/particles/lootBeam.p
+entities/particles/lootBeam2.p
+entities/particles/lootPile.p
+entities/particles/particle-ball1.png
+entities/particles/particle-ball2.png
+entities/particles/particle-ball3.png
+entities/particles/particle-ball4.png
+entities/particles/particle.png
 entities/power_ups/beer.png
 entities/power_ups/freeze.png
 entities/power_ups/health_boost.png

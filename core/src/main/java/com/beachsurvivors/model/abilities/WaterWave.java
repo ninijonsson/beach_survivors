@@ -14,7 +14,7 @@ public class WaterWave extends Ability {
     private Vector2 startPosition;
     private float maxDistance = 1500f;
     private float speed = 500f;
-    private float scaleFactor = 0.01f;
+    private float scaleFactor = 1f;
     private float waveAmplitude = 10f;
     private float waveFrequency = 10f;
     private float totalDistanceTraveled = 0f;

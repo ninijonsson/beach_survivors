@@ -2,6 +2,7 @@ package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.BaseAttack;
 
@@ -11,8 +12,8 @@ public class Berserk extends PowerUp implements PickUpAble {
     private final int movementSpeedIncrease = 200;
     private double attackSpeedIncrease = 2.5;
 
-    public Berserk(float x, float y) {
-        super(AssetLoader.get().getTexture("assets/entities/beer.png"), 20, x, y);
+    public Berserk(float x, float y, ParticleEffectPoolManager ppm) {
+        super(AssetLoader.get().getTexture("assets/entities/beer.png"), 20, x, y, ppm);
     }
 
     @Override

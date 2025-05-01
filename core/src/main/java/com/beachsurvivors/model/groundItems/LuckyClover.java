@@ -2,14 +2,15 @@ package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 
 public class LuckyClover extends PowerUp implements PickUpAble {
 
     private final float critChanceIncrease = 1f;
 
-    public LuckyClover(float x, float y) {
-        super(AssetLoader.get().getTexture("assets/entities/power_ups/lucky_clover.png"),  20, x, y);
+    public LuckyClover(float x, float y, ParticleEffectPoolManager ppm) {
+        super(AssetLoader.get().getTexture("assets/entities/power_ups/lucky_clover.png"),  20, x, y, ppm);
     }
 
     @Override

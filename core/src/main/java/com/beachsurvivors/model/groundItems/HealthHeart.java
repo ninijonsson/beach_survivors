@@ -1,14 +1,15 @@
 package com.beachsurvivors.model.groundItems;
 
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 
 public class HealthHeart extends PowerUp implements PickUpAble {
 
     private final int healthAmount = 10;
 
-    public HealthHeart(float x, float y) {
-        super(AssetLoader.get().getTexture("assets/entities/power_ups/health_heart.png"), 0, x, y);
+    public HealthHeart(float x, float y, ParticleEffectPoolManager ppm) {
+        super(AssetLoader.get().getTexture("assets/entities/power_ups/health_heart.png"), 0, x, y, ppm);
 
     }
 

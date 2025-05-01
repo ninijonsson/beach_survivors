@@ -2,6 +2,7 @@ package com.beachsurvivors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -20,23 +21,33 @@ public class AssetLoader {
         addTextures();
         addSounds();
         addParticles();
+        addMusic();
         manager.finishLoading();
+    }
+
+    private void addMusic() {
+        manager.load("assets/sounds/beach.mp3", Music.class);
     }
 
     private void addSounds() {
         manager.load("assets/sounds/Shark_Damage2.wav", Sound.class);
         manager.load("assets/sounds/Seal_Damage.wav", Sound.class);
+        manager.load("assets/main_menu/sound/play_sound.wav", Sound.class);
+        manager.load("assets/main_menu/sound/Holiday.wav", Sound.class);
     }
 
     private void addTextures() {
         manager.load("assets/placeholder.png", Texture.class);
         manager.load("assets/entities/particles/bullet.png", Texture.class);
+        manager.load("assets/entities/particles/particle.png", Texture.class);
         manager.load("assets/entities/beer.png", Texture.class);
         manager.load("assets/entities/burger.png", Texture.class);
         manager.load("assets/entities/chest.png", Texture.class);
         manager.load("assets/entities/coconut.png", Texture.class);
         manager.load("assets/entities/death.png", Texture.class);
         manager.load("assets/entities/howToPlay.png", Texture.class);
+        manager.load("assets/main_menu/logo_skiss_1.png", Texture.class);
+        manager.load("assets/main_menu/menu_background.jpeg", Texture.class);
         manager.load("assets/entities/abilities/xpBar.png", Texture.class);
         manager.load("assets/entities/abilities/abilityBar.png", Texture.class);
         manager.load("assets/entities/abilities/bullet.png", Texture.class);
@@ -59,9 +70,17 @@ public class AssetLoader {
     }
 
     private void addParticles() {
-        ParticleEffectLoader.ParticleEffectParameter params = new ParticleEffectLoader.ParticleEffectParameter();
-        params.imagesDir = Gdx.files.internal("assets/entities/particles");
-        manager.load("assets/entities/particles/blueFlame.p", ParticleEffect.class, params);
+        ParticleEffectLoader.ParticleEffectParameter blueFlame = new ParticleEffectLoader.ParticleEffectParameter();
+        blueFlame.imagesDir = Gdx.files.internal("assets/entities/particles");
+        manager.load("assets/entities/particles/blueFlame.p", ParticleEffect.class, blueFlame);
+
+        ParticleEffectLoader.ParticleEffectParameter lootBeam = new ParticleEffectLoader.ParticleEffectParameter();
+        blueFlame.imagesDir = Gdx.files.internal("assets/entities/particles");
+        manager.load("assets/entities/particles/lootBeam.p", ParticleEffect.class, lootBeam);
+
+        ParticleEffectLoader.ParticleEffectParameter lootPile = new ParticleEffectLoader.ParticleEffectParameter();
+        blueFlame.imagesDir = Gdx.files.internal("assets/entities/particles");
+        manager.load("assets/entities/particles/lootPile.p", ParticleEffect.class, lootPile);
     }
 
     private void addSkins() {

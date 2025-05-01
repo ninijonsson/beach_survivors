@@ -11,12 +11,8 @@ public class Main extends Game {
     @Override
     public void create() {
         menuScreen = new MainMenuScreen(this);
-        setScreen(menuScreen);
-    }
-
-    public void startNewGame() {
-        loadingScreen = new LoadingScreen(this, true);
         setScreen(loadingScreen);
+        setScreen(menuScreen);
     }
 
     public void startGame() {

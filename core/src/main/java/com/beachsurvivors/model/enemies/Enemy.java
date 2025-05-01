@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.*;
 
@@ -256,7 +257,7 @@ public abstract class Enemy implements Disposable {
         isAlive = alive;
     }
 
-    public void dropItems(Array<PowerUp> droppedItems) {
+    public void dropItems(Array<PowerUp> droppedItems, ParticleEffectPoolManager poolManager) {
         Random random = new Random();
         int chance = random.nextInt(0,100);
         chance = 3;
@@ -267,20 +268,20 @@ public abstract class Enemy implements Disposable {
 
         switch (chance) {
             case 1:
-                SpeedBoost speedBoost = new SpeedBoost(x, y);
+                SpeedBoost speedBoost = new SpeedBoost(x, y, poolManager);
                 droppedItems.add(speedBoost);
                 System.out.println("Item dropped  X" + speedBoost.getHitbox().getX() + " Y " + speedBoost.getHitbox().getY());
                 break;
             case 2:
-                LuckyClover luckyClover = new LuckyClover(x, y);
+                LuckyClover luckyClover = new LuckyClover(x, y, poolManager);
                 droppedItems.add(luckyClover);
                 break;
             case 3:
-                HealthHeart healthHeart = new HealthHeart(x, y);
+                HealthHeart healthHeart = new HealthHeart(x, y, poolManager);
                 droppedItems.add(healthHeart);
                 break;
             case 4:
-                Berserk berserk = new Berserk(x, y);
+                Berserk berserk = new Berserk(x, y, poolManager);
                 droppedItems.add(berserk);
                 break;
             default:
