@@ -193,7 +193,7 @@ public class GameScreen extends Game implements Screen {
             gameUI.getStage().act(delta);
             gameUI.update(Gdx.graphics.getDeltaTime());
             gameUI.draw();
-            gameUI.createPauseMenu();
+            main.pause();
 
             // font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 200);
             spriteBatch.end();

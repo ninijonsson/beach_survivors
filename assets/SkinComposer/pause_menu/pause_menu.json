@@ -80,13 +80,6 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 		}
 	}
 }
-com.beachsurvivors.view.PauseMenu$PauseMenuStyle: {
-	default: {
-		resume: resume
-		help: help
-		exit: exit
-	}
-}
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
 		up: round-gray
@@ -124,16 +117,16 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 		checkedOver: round-light-gray
 	}
 	resume: {
-		up: resume_button_scaled-200
-		over: resume_button_hover_scaled-200
+		up: resume_button_scaled-300
+		over: resume_button_hover_scaled-300
 	}
 	help: {
-		up: help_button_scaled-200
-		over: help_button_hover_scaled-200
+		up: help_button_scaled-300
+		over: help_button_hover_scaled-300
 	}
 	exit: {
-		up: exit_button_2_scaled
-		over: exit_button_hover_scaled-200
+		up: exit_button_scaled-300
+		over: exit_button_hover_scaled-300
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
@@ -270,7 +263,7 @@ com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: {
-		background: pause_menu_scaled-200
+		background: pause_menu_scaled-600
 		titleFont: font
 		titleFontColor: black
 	}

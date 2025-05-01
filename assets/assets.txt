@@ -16,7 +16,6 @@ SkinComposer/pause_menu/font-title-export.fnt
 SkinComposer/pause_menu/pause_menu.atlas
 SkinComposer/pause_menu/pause_menu.json
 SkinComposer/pause_menu/pause_menu.png
-SkinComposer/pause_menu/pause_menu_scaled-200.png
 SkinComposer/test/font-export.fnt
 SkinComposer/test/font-title-export.fnt
 SkinComposer/test/test.atlas
