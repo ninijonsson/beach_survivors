@@ -75,7 +75,7 @@ public class Player extends Actor {
         int choice = random.nextInt(1,3);
         switch (choice) {
             case 1:
-                walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
+                walkSheet = new Texture(Gdx.files.internal("entities/beach_guy_sheet.png"));
                 break;
             case 2:
                 walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));

@@ -296,7 +296,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-
     private void pickUpPowerUp() {
         Array<PowerUp> powerUpsToRemove = new Array<>();
 
@@ -337,7 +336,6 @@ public class GameScreen extends Game implements Screen {
     /**
      * Method for updating the position of damage text above enemies and then removing them after a certain amount of time.
      */
-
     private void updateDamageText() {
         for (int i = damageTexts.size - 1; i >= 0; i--) {
             DamageText dt = damageTexts.get(i);
@@ -466,7 +464,6 @@ public class GameScreen extends Game implements Screen {
         return new Vector2(x, y);
     }
 
-
     private void spawnEnemies() {
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
         int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
@@ -483,6 +480,7 @@ public class GameScreen extends Game implements Screen {
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
 
+        // TODO: Lägg in krabba
         switch (enemyChoice) {
             case 0:
                 enemy = new Shark();
@@ -551,7 +549,6 @@ public class GameScreen extends Game implements Screen {
         enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
         enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
         enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
-
     }
 
 
@@ -564,11 +561,16 @@ public class GameScreen extends Game implements Screen {
         if (!enemy.isAlive()) {
             totalEnemiesKilled++;
             enemy.dropItems(droppedItems);
+
+            // Om fienden är en miniboss ska den droppa en kista
             if (enemy instanceof MiniBoss) {
                 ((MiniBoss) enemy).dropChest(groundItems);
             }
-            enemies.removeIndex(i);
-            sharksKilled = sharksKilled + 3;
+
+            enemies.removeIndex(i); // Ta bort från fiende-arrayen
+            enemy.dispose(); // Ta även bort själva bilden på fienden
+
+            sharksKilled = sharksKilled + 3; // TODO: Fixa ett riktigt EXP-system, i samband med checkLevelUp()
             checkLevelUp(); // kommentera bort detta för att avaktivera levelup systemet
 
             gameUI.setProgressBarValue(sharksKilled/player.getLevel());
@@ -717,6 +719,7 @@ public class GameScreen extends Game implements Screen {
         isPaused = paused;
     }
 
+    // TODO: Fixa ett riktigt EXP-system
     private void checkLevelUp() {
         if (sharksKilled >= 10 * player.getLevel()) {
             player.setLevel(player.getLevel() + 1);
