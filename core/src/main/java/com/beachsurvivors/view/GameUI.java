@@ -23,6 +23,8 @@ public class GameUI {
     private BitmapFont abilityFont;
     private Array<String> infoLog;
     private Array<Label> infoLabels;
+    private BitmapFont levelFont;
+    private Label.LabelStyle abilityLabelStyle;
 
     private Table progressBarTable;
     private Table healthTable;
@@ -30,7 +32,6 @@ public class GameUI {
 
     private Label timerLabel;
     private float gameTime = 0f;
-
 
     public GameUI(FitViewport viewport, GameScreen game) {
         this.viewport = viewport;
@@ -64,12 +65,12 @@ public class GameUI {
     }
 
     private void createAbilityTable() {
-        abilityFont = new BitmapFont();
+        abilityFont = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
         abilityFont.getData().setScale(2);
+        abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
         this.abilityTable = new Table();
-
-        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/abilityBar.png"));
+        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test.abilitybar.png"));
 
         Image abilityBackground = new Image(imageTexture);
         abilityBackground.setSize(400, 70);
@@ -205,10 +206,10 @@ public class GameUI {
         progressBar.setSize(700, 70);
 
 
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(2f);
-        font.setColor(Color.WHITE);
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
+        Label.LabelStyle style = new Label.LabelStyle(levelFont, Color.WHITE);
+        levelFont.setColor(Color.WHITE);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(levelFont, Color.WHITE);
 
 
         currentLevel = new Label("Level: " +getPlayerLevel(), labelStyle);
@@ -230,7 +231,9 @@ public class GameUI {
     }
 
     private void updateLevelLabels() {
-        currentLevel.setText("Level: " +getPlayerLevel());
+        levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
+        Label.LabelStyle style = new Label.LabelStyle(levelFont, Color.WHITE);
+        currentLevel = new Label("Level: " + getPlayerLevel(), style);
         nextLevel.setText(String.valueOf(game.getPlayer().getLevel() + 1));
     }
 
