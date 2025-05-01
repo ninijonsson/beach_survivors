@@ -156,17 +156,19 @@ public class GameScreen extends Game implements Screen {
             logic();
             draw();
 
-
-        gameUI.getStage().act(delta);
-        gameUI.update(Gdx.graphics.getDeltaTime());
-        gameUI.draw();
-        }
-        if (isPaused) {
+            gameUI.getStage().act(delta);
+            gameUI.update(Gdx.graphics.getDeltaTime());
+            gameUI.draw();
+        } else {
             spriteBatch.begin();
-            font.draw(spriteBatch, "PAUSED", player.getPlayerX() - 60, player.getPlayerY() + 200);
+
+            gameUI.getStage().act(delta);
+            gameUI.update(Gdx.graphics.getDeltaTime());
+            gameUI.draw();
+            main.pause();
+
             spriteBatch.end();
         }
-
     }
 
     @Override
@@ -644,7 +646,6 @@ public class GameScreen extends Game implements Screen {
         drawEnemies();
         drawEnemyAbilities();
         drawDamageText();
-
     }
 
     /**
