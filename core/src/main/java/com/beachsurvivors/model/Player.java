@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Map.Map;
 
 import java.util.Random;
@@ -75,10 +76,11 @@ public class Player extends Actor {
         int choice = random.nextInt(1,3);
         switch (choice) {
             case 1:
-                walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
+                ''
+                walkSheet = AssetLoader.get().manager.get("assets/entities/beach_girl_sheet.png");
                 break;
             case 2:
-                walkSheet = new Texture(Gdx.files.internal("entities/beach_girl_sheet.png"));
+                walkSheet = AssetLoader.get().manager.get("assets/entities/beach_guy_sheet.png");
                 break;
         }
 
