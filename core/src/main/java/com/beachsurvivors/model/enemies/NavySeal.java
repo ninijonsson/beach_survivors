@@ -16,7 +16,7 @@ public class NavySeal extends Enemy {
         super("", 100, 100, 20);
         createAnimation("entities/enemies/navy_seal_sheet.png", 4, 1);
         setHealthPoints(30);
-        setHitSound(Gdx.audio.newSound(Gdx.files.internal("sounds/Seal_Damage.wav")));
+        setHitSound(Gdx.audio.newSound(Gdx.files.internal("sounds/seal_damage.wav")));
         setMovementSpeed(40f);
         setDamage(10);
     }

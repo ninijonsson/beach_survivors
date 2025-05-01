@@ -109,7 +109,7 @@ public class GameScreen extends Game implements Screen {
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
 
-        tiledMap = new TmxMapLoader().load("Map2/map2.tmx");
+        tiledMap = new TmxMapLoader().load("map2/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
         assert tiledMap != null;
         Map map = new Map(tiledMap);

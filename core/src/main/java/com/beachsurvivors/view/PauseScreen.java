@@ -23,7 +23,7 @@ public class PauseScreen implements Screen {
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
 
-        skin = new Skin(Gdx.files.internal("SkinComposer/pause_menu/pause_menu.json"));
+        skin = new Skin(Gdx.files.internal("skin_composer/pause_menu/pause_menu.json"));
 
         buildUI();
     }

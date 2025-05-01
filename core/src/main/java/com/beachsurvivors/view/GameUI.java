@@ -70,7 +70,7 @@ public class GameUI {
         abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
         this.abilityTable = new Table();
-        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test.abilitybar.png"));
+        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test_ability_bar.png"));
 
         Image abilityBackground = new Image(imageTexture);
         abilityBackground.setSize(400, 70);
@@ -86,7 +86,7 @@ public class GameUI {
 
 
         this.xpTable = new Table();
-        Texture xpTexture = new Texture(Gdx.files.internal("entities/abilities/xpBar.png"));
+        Texture xpTexture = new Texture(Gdx.files.internal("entities/abilities/exp_bar.png"));
         Image xpBar = new Image(xpTexture);
         xpBar.setScale(1.5f);
         xpBar.setSize(400,70);
@@ -165,7 +165,7 @@ public class GameUI {
     }
 
     private void createPlayerHealthBar() {
-        Skin healthSkin = new Skin(Gdx.files.internal("SkinComposer/healthbutton.json"));
+        Skin healthSkin = new Skin(Gdx.files.internal("skin_composer/healthbutton.json"));
         healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
         healthBar.setValue(100);
         healthBar.setSize(100, 50);
@@ -198,7 +198,7 @@ public class GameUI {
 
     public void createProgressBar() {
         progressBarTable = new Table();
-        Skin skin = new Skin(Gdx.files.internal("SkinComposer/testbuttons.json"));
+        Skin skin = new Skin(Gdx.files.internal("skin_composer/testbuttons.json"));
 
 
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);

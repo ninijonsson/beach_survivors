@@ -67,7 +67,7 @@ public abstract class Enemy implements Disposable {
         this.texture = new Texture(texturePath);
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
-        this.hitSound = hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/Shark_Damage2.wav"));
+        this.hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shark_damage_2.wav"));
 
         this.radius = width /4;
 
@@ -84,7 +84,7 @@ public abstract class Enemy implements Disposable {
     public abstract void dropItems();
 
     private void createHealthBar(int healthPoints) {
-        Skin healthSkin = new Skin(Gdx.files.internal("SkinComposer/healthbutton.json"));
+        Skin healthSkin = new Skin(Gdx.files.internal("skin_composer/healthbutton.json"));
         healthBar = new ProgressBar(0, healthPoints, 0.5f, false, healthSkin);
         healthBar.setValue(healthPoints);
         healthBar.setPosition(hitbox.x+hitbox.width/2, hitbox.y+height);

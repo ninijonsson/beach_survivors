@@ -67,7 +67,7 @@ public class MainMenuScreen implements Screen {
         backgroundTexture = new Texture("main_menu/menu_background.jpeg");
         logoTexture = new Texture("main_menu/logo_skiss_1.png");
 
-        playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/Holiday.wav"));
+        playSound = Gdx.audio.newSound(Gdx.files.internal("main_menu/sound/holiday.wav"));
         mainTheme = Gdx.audio.newMusic(Gdx.files.internal("sounds/beach.mp3"));
         mainTheme.play();
         mainTheme.setVolume(0.5f);
