@@ -1,10 +1,4 @@
 .gitkeep
-Map2/map2.tmx
-Map2/tf_beach_tileA1.png
-Map2/tf_beach_tileA1.tsx
-Map2/tf_beach_tileB.png
-Map2/tf_beach_tileB.tsx
-Maps/BeachSurvivorMap.tiled-session
 SharkDeath.wav
 SkinComposer/font-export.fnt
 SkinComposer/font-title-export.fnt
@@ -19,7 +13,6 @@ SkinComposer/pause_menu/pause_menu.png
 SkinComposer/testbuttons.atlas
 SkinComposer/testbuttons.json
 SkinComposer/testbuttons.png
-Thud.mp3
 entities/abilities/abilityBar.png
 entities/abilities/bullet.png
 entities/abilities/fireball.png
@@ -39,7 +32,7 @@ entities/enemies/crocodile2.png
 entities/enemies/navy_seal_sheet.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
-entities/howToPlay.png
+entities/how_to_play.png
 entities/power_ups/beer.png
 entities/power_ups/freeze.png
 entities/power_ups/health_boost.png
@@ -58,7 +51,7 @@ game_over_screen/game_over_skin.png
 game_over_screen/gameover_skin.atlas
 game_over_screen/gameover_skin.json
 game_over_screen/you died screen.png
-game_screen/Cool_beach_guy.png
+game_screen/cool_beach_guy.png
 levelUpScreen/default.fnt
 levelUpScreen/default.png
 levelUpScreen/uiskin.atlas
@@ -77,20 +70,17 @@ main_menu/buttons/play_button_scaled.png
 main_menu/logo.png
 main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
-main_menu/sound/Holiday.wav
+main_menu/sound/holiday.wav
 main_menu/sound/play_sound.wav
-pause_menu/exit/exit_button_hover_scaled-200.png
-pause_menu/exit/exit_button_scaled-200.png
-pause_menu/help/help_button_hover_scaled-200.png
-pause_menu/help/help_button_scaled-200.png
-pause_menu/pause_menu_scaled-200.png
-pause_menu/pause_menu_scaled-300.png
-pause_menu/pause_menu_scaled-500.png
-pause_menu/pause_menu_scaled-600.png
-pause_menu/resume/resume_button_hover_scaled-200.png
-pause_menu/resume/resume_button_scaled-200.png
+map2/map2.tmx
+map2/tf_beach_tileA1.png
+map2/tf_beach_tileA1.tsx
+map2/tf_beach_tileB.png
+map2/tf_beach_tileB.tsx
+maps/BeachSurvivorMap.tiled-session
 placeholder.png
-sounds/Seal_Damage.wav
-sounds/Shark_Damage.wav
 sounds/Shark_Damage2.wav
 sounds/beach.mp3
+sounds/seal_damage.wav
+sounds/shark_damage.wav
+thud.mp3

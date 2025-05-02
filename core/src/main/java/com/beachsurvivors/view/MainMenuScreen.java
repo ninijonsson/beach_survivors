@@ -43,6 +43,8 @@ public class MainMenuScreen implements Screen {
     Texture exitButtonPressedTexture;
 
     SpriteBatch spriteBatch;
+
+    // TODO: Ändra via Skin Composer med knapparna
     // PLAY-KNAPP
     private TextureRegionDrawable playDrawable;
     private TextureRegionDrawable playHoverDrawable;
