@@ -126,7 +126,7 @@ public class GameScreen extends Game implements Screen {
         stage = new Stage(gameViewport);
         stage.clear();
 
-        player = new Player(map, spriteBatch);
+        player = new Player(map, spriteBatch, this);
         playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         boomerang = new Boomerang();
@@ -194,11 +194,6 @@ public class GameScreen extends Game implements Screen {
             gameUI.getStage().act(delta);
             gameUI.update(Gdx.graphics.getDeltaTime());
             gameUI.draw();
-
-        System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
-        System.out.println("Java heap: " + Gdx.app.getJavaHeap() / 1024 / 1024 + " MB");
-        System.out.println("Native heap: " + Gdx.app.getNativeHeap() / 1024 / 1024 + " MB");
-
     }
 
     /**
@@ -599,6 +594,8 @@ public class GameScreen extends Game implements Screen {
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
             totalEnemiesKilled++;
+            gameUI.updateInfoTable("You gained " + enemy.getExp() + " exp.");
+
             // Om fienden är en miniboss ska den droppa en kista
             enemy.dropItems(droppedItems, poolManager);
             if (enemy instanceof MiniBoss) {
@@ -608,10 +605,11 @@ public class GameScreen extends Game implements Screen {
             enemies.removeIndex(i); // Ta bort från fiende-arrayen
             enemy.dispose(); // Ta även bort själva bilden på fienden
 
-            sharksKilled = sharksKilled + 3; // TODO: Fixa ett riktigt EXP-system, i samband med checkLevelUp()
-            checkLevelUp(); // kommentera bort detta för att avaktivera levelup systemet
+            // I denna metoden kontrollerar vi även om vi ska levela eller inte
+            player.gainExp(enemy.getExp());
 
-            gameUI.setProgressBarValue(sharksKilled/player.getLevel());
+            // Uppdatera progress bar (exp)
+            gameUI.setProgressBarValue(player.getLevelSystem().getCurrentExp());
         }
     }
 
@@ -758,17 +756,6 @@ public class GameScreen extends Game implements Screen {
         isPaused = paused;
     }
 
-    // TODO: Fixa ett riktigt EXP-system
-    private void checkLevelUp() {
-        if (sharksKilled >= 10 * player.getLevel()) {
-            player.setLevel(player.getLevel() + 1);
-            gameUI.updateInfoTable("Congratulations, you are now level " + player.getLevel());
-            setPaused(true);
-            main.levelUp();
-            sharksKilled = 0;
-        }
-    }
-
     public void addBoomerang() {
         abilities.add(new Boomerang());
     }
@@ -791,4 +778,7 @@ public class GameScreen extends Game implements Screen {
 
     }
 
+    public GameUI getGameUI() {
+        return gameUI;
+    }
 }

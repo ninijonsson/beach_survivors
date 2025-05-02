@@ -14,7 +14,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.controller.LevelSystem;
 import com.beachsurvivors.model.Map.Map;
+import com.beachsurvivors.view.GameScreen;
+import com.beachsurvivors.view.GameUI;
 
 import java.util.Random;
 
@@ -25,9 +28,11 @@ public class Player extends Actor {
     private float speed = 500f;
     private float criticalHitChance = 0.15f;
     private double criticalHitDamage = 2;
-    private int level = 1;
+    //private int level = 1;
     private boolean isImmune;
     private boolean isAlive;
+    private LevelSystem levelSystem;
+    private GameScreen gameScreen;
 
     private Rectangle beachGuyHitBox;
     private float playerX;
@@ -52,11 +57,15 @@ public class Player extends Actor {
     private SpriteBatch spriteBatch;
     private Map map;
 
-    public Player(Map map, SpriteBatch spriteBatch) {
+    public Player(Map map, SpriteBatch spriteBatch, GameScreen gameScreen) {
         this.map = map;
         this.spriteBatch = spriteBatch;
+        this.gameScreen = gameScreen;
+
         playerHeight = 128;
         playerWidth = 128;
+
+        levelSystem = new LevelSystem(this.gameScreen.getGameUI(), this.gameScreen.getMain());
 
         isMoving = false;
         isAlive = true;
@@ -114,6 +123,10 @@ public class Player extends Actor {
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
 
+    }
+
+    public void gainExp(int exp) {
+        levelSystem.gainExp(exp);
     }
 
     public void playerInput() {
@@ -298,15 +311,15 @@ public class Player extends Actor {
     }
 
     public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
+        return levelSystem.getCurrentLevel();
     }
 
     public double getCriticalHitDamage() {
         return criticalHitDamage;
+    }
+
+    public LevelSystem getLevelSystem() {
+        return levelSystem;
     }
 }
 

@@ -7,9 +7,8 @@ import com.beachsurvivors.model.groundItems.Chest;
 import com.beachsurvivors.model.groundItems.GroundItem;
 
 public class MiniBoss extends Enemy {
-
     public MiniBoss() {
-        super(128*3, 128*3, 500);
+        super(128*3, 128*3, 500, 100);
         createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/crocodile2.png"), 1, 1);
         setMovementSpeed(200f);
         setDamage(20);
