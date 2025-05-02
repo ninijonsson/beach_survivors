@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.AssetLoader;
 
 import javax.swing.event.ChangeEvent;
 
@@ -23,7 +24,7 @@ public class PauseScreen implements Screen {
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
 
-        skin = new Skin(Gdx.files.internal("skin_composer/pause_menu/pause_menu.json"));
+        skin = AssetLoader.get().getSkin("skin_composer/pause_menu/pause_menu.json");
 
         buildUI();
     }

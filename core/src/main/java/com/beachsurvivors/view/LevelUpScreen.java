@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class LevelUpScreen implements Screen {
@@ -26,7 +27,7 @@ public class LevelUpScreen implements Screen {
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
 
-        skin = new Skin(Gdx.files.internal("level_up_screen/uiskin.json"));
+        skin = AssetLoader.get().getSkin("level_up_screen/uiskin.json");
 
         buildUI();
     }

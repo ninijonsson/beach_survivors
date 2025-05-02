@@ -33,7 +33,7 @@ public class AssetLoader {
         manager.load("assets/sounds/shark_damage_2.wav", Sound.class);
         manager.load("assets/sounds/Seal_Damage.wav", Sound.class);
         manager.load("assets/main_menu/sound/play_sound.wav", Sound.class);
-        manager.load("assets/main_menu/sound/Holiday.wav", Sound.class);
+        manager.load("assets/main_menu/sound/holiday.wav", Sound.class);
     }
 
     private void addTextures() {
@@ -46,8 +46,15 @@ public class AssetLoader {
         manager.load("assets/entities/coconut.png", Texture.class);
         manager.load("assets/entities/death.png", Texture.class);
         manager.load("assets/entities/how_to_play.png", Texture.class);
+        manager.load("assets/game_over_screen/you died screen.png", Texture.class);
         manager.load("assets/main_menu/logo_skiss_1.png", Texture.class);
         manager.load("assets/main_menu/menu_background.jpeg", Texture.class);
+        manager.load("assets/main_menu/buttons/play_button_2_scaled.png", Texture.class);
+        manager.load("assets/main_menu/buttons/play_button_2_hover_scaled.png", Texture.class);
+        manager.load("assets/main_menu/buttons/play_button_2_pressed_scaled.png", Texture.class);
+        manager.load("assets/main_menu/buttons/exit_button_2_scaled.png", Texture.class);
+        manager.load("assets/main_menu/buttons/exit_button_2_hover_scaled.png", Texture.class);
+        manager.load("assets/main_menu/buttons/exit_button_2_pressed_scaled.png", Texture.class);
         manager.load("assets/entities/abilities/exp_bar.png", Texture.class);
         manager.load("assets/entities/abilities/ability_bar.png", Texture.class);
         manager.load("assets/entities/abilities/bullet.png", Texture.class);
@@ -84,7 +91,10 @@ public class AssetLoader {
     }
 
     private void addSkins() {
+        manager.load("assets/game_over_screen/gameover_skin.json", Skin.class);
         manager.load("skin_composer/healthbutton.json", Skin.class);
+        manager.load("level_up_screen/uiskin.json", Skin.class);
+        manager.load("skin_composer/pause_menu/pause_menu.json", Skin.class);
     }
 
     public Texture getTexture(String path) {

@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.AssetLoader;
 
 public class DeathScreen implements Screen {
 
@@ -41,7 +42,7 @@ public class DeathScreen implements Screen {
         stage = new Stage(new FitViewport(gameScreen.getScreenWidth(), gameScreen.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
 
-        skin = new Skin(Gdx.files.internal("game_over_screen/gameover_skin.json"));
+        skin = AssetLoader.get().manager.get("assets/game_over_screen/gameover_skin.json");
 
         int minutes = (int)(timeSurvived / 60f);
         int seconds = (int)(timeSurvived % 60f);
@@ -54,7 +55,7 @@ public class DeathScreen implements Screen {
     public void createActors() {
         table = new Table();
 
-        Texture backgroundTexture = new Texture(Gdx.files.internal("game_over_screen/you died screen.png"));
+        Texture backgroundTexture = AssetLoader.get().manager.get("assets/game_over_screen/you died screen.png");
         Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
 
         Stack stack = new Stack();
