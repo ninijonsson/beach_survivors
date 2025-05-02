@@ -18,6 +18,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.groundItems.*;
@@ -58,16 +60,14 @@ public abstract class Enemy implements Disposable {
     private Timer.Task hideHealthBarTask;
     private Stage stage;
 
-    public Enemy(String texturePath, int width, int height, int healthPoints) {
+    public Enemy(int width, int height, int healthPoints) {
         this.width = width;
         this.height = height;
-        if (texturePath.isEmpty()) {
-            texturePath = "placeholder.png";
-        }
-        this.texture = new Texture(texturePath);
+
+        this.texture = AssetLoader.get().getTexture("assets/placeholder.png");
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
-        this.hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/shark_damage_2.wav"));
+        this.hitSound = AssetLoader.get().getSound("assets/sounds/Shark_Damage2.wav");
 
         this.radius = width /4;
 
@@ -123,8 +123,8 @@ public abstract class Enemy implements Disposable {
         Timer.schedule(hideHealthBarTask, duration);
     }
 
-    public void createAnimation(String sheetPath, int sheetColumns, int sheetRows) {
-        walkSheet = new Texture(Gdx.files.internal(sheetPath));
+    public void createAnimation(Texture texture, int sheetColumns, int sheetRows) {
+        walkSheet=texture;
         TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/sheetColumns, walkSheet.getHeight()/sheetRows);
         TextureRegion[] walkFrames = new TextureRegion[sheetColumns * sheetRows];
         int index = 0;
@@ -258,7 +258,7 @@ public abstract class Enemy implements Disposable {
         isAlive = alive;
     }
 
-    public void dropItems(Array<PowerUp> droppedItems) {
+    public void dropItems(Array<PowerUp> droppedItems, ParticleEffectPoolManager poolManager) {
         Random random = new Random();
         int chance = random.nextInt(0,100);
 
@@ -269,19 +269,19 @@ public abstract class Enemy implements Disposable {
 
         switch (chance) {
             case 1:
-                SpeedBoost speedBoost = new SpeedBoost(x, y);
+                SpeedBoost speedBoost = new SpeedBoost(x, y, poolManager);
                 droppedItems.add(speedBoost);
                 break;
             case 2:
-                LuckyClover luckyClover = new LuckyClover(x, y);
+                LuckyClover luckyClover = new LuckyClover(x, y, poolManager);
                 droppedItems.add(luckyClover);
                 break;
             case 3:
-                HealthHeart healthHeart = new HealthHeart(x, y);
+                HealthHeart healthHeart = new HealthHeart(x, y, poolManager);
                 droppedItems.add(healthHeart);
                 break;
             case 4:
-                Berserk berserk = new Berserk(x, y);
+                Berserk berserk = new Berserk(x, y, poolManager);
                 droppedItems.add(berserk);
                 break;
             default:

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class Boomerang extends Ability {
@@ -18,8 +19,8 @@ public class Boomerang extends Ability {
     private float orbitRadius = 300;
 
     public Boomerang() {
-        super("Boomerang", "entities/boomerangmc.png", AbilityType.AoE, 10, 0, 32,32);
-        sprite = new Sprite(new Texture(Gdx.files.internal("entities/boomerangmc.png")));
+        super("Boomerang", "assets/entities/abilities/boomerangmc.png", AbilityType.AoE, 10, 0, 32,32);
+        sprite = new Sprite(AssetLoader.get().getTexture("assets/entities/abilities/boomerangmc.png"));
         sprite.setSize(32, 32);
         hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         this.damage = 10;

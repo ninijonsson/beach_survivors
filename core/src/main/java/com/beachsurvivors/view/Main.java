@@ -2,22 +2,26 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
 
     private MainMenuScreen menuScreen;
     private GameScreen gameScreen;
+    private LoadingScreen loadingScreen;
 
     @Override
     public void create() {
-
         menuScreen = new MainMenuScreen(this);
+        setScreen(loadingScreen);
         setScreen(menuScreen);
+    }
 
+    public void startGame() {
+        gameScreen = new GameScreen(this);
+        setScreen(gameScreen);
     }
 
     public void switchScreen() {
-        if(this.getScreen() == menuScreen) {
+        if (this.getScreen() == menuScreen) {
             if (gameScreen == null) gameScreen = new GameScreen(this);
             setScreen(gameScreen);
         } else {
@@ -28,13 +32,13 @@ public class Main extends Game {
     public void goToMainMenu() {
         menuScreen.mainTheme.play();
         menuScreen.playSound.stop();
-        gameScreen.dispose();
+        if (gameScreen != null) gameScreen.dispose();
         gameScreen = null;
         setScreen(menuScreen);
     }
 
     public void restart() {
-        menuScreen.playSound.stop();    //Vi kanske skulle flytta playSound till gamescreen?
+        menuScreen.playSound.stop();
         gameScreen = new GameScreen(this);
         setScreen(gameScreen);
         menuScreen.startGameMusic();

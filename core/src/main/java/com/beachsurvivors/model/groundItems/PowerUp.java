@@ -1,8 +1,11 @@
 package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 
 public abstract class PowerUp implements PickUpAble {
@@ -14,17 +17,16 @@ public abstract class PowerUp implements PickUpAble {
     private int duration;
     private float x;
     private float y;
+    private ParticleEffectPool.PooledEffect lootBeamEffect;
 
     // VARIABLER FÖR ATT KONTROLLERA "FLOATING POWER UP"
     private float floatAmplitude = 10.0f;
     private float floatFrequency = 2.0f;
     private float time = 0.0f;
 
-    public PowerUp(String texturePath, int duration, float x, float y) {
+    public PowerUp(Texture texture, int duration, float x, float y ,ParticleEffectPoolManager ppm) {
         this.duration = duration;
-
-        createTexture(texturePath);
-
+        this.texture=texture;
         sprite = new Sprite(texture);
         sprite.setSize(64, 64);
         sprite.setPosition(x, y);
@@ -35,17 +37,18 @@ public abstract class PowerUp implements PickUpAble {
 
         this.x = x;
         this.y = y;
+
+
+        this.lootBeamEffect = ppm.obtain("assets/entities/particles/lootPile.p");
+
+        if(lootBeamEffect!=null){
+            lootBeamEffect.setPosition(x + 32, y + 32);
+        }
+
     }
 
     protected abstract void applyAffect(Player player);
 
-    public void createTexture(String texturePath) {
-        if (texturePath.isEmpty()) {
-            texture = new Texture("placeholder.png");
-        } else {
-            texture = new Texture(texturePath);
-        }
-    }
 
     public int getDuration() {
         return duration;
@@ -64,7 +67,12 @@ public abstract class PowerUp implements PickUpAble {
     }
 
     public void dispose() {
-        texture.dispose();
+        sprite = null;
+        if (lootBeamEffect != null) {
+            lootBeamEffect.free();
+            lootBeamEffect = null;
+        }
+
     }
 
     public void update(float deltaTime) {
@@ -73,8 +81,19 @@ public abstract class PowerUp implements PickUpAble {
         sprite.setPosition(x, newY);
         hitbox.setPosition(x, newY);
 
+        if (lootBeamEffect != null) {
+            lootBeamEffect.setPosition(sprite.getX() + 32, sprite.getY() + 32);
+            lootBeamEffect.update(deltaTime);
+        }
     }
+
+    public void drawParticles(SpriteBatch batch) {
+        if (lootBeamEffect != null) {
+            lootBeamEffect.draw(batch);
+        }
+    }
+
     public void printInfo(){
-        
+
     }
 }

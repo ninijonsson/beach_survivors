@@ -21,11 +21,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.abilities.Boomerang;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
+import com.beachsurvivors.model.abilities.WaterWave;
 import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.Berserk;
 import com.beachsurvivors.model.groundItems.GroundItem;
@@ -41,6 +43,7 @@ public class GameScreen extends Game implements Screen {
     private float growthRate = 1.5f;
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
+    ParticleEffectPoolManager poolManager;
 
     private final int SCREEN_WIDTH = 1920;
     private final int SCREEN_HEIGHT = 1080;
@@ -65,15 +68,20 @@ public class GameScreen extends Game implements Screen {
     private float bulletTimer = 0f;
     private int sharksKilled;
     private int totalEnemiesKilled;
+    private Ability wave;
     private double totalPlayerDamageDealt;
     private double totalPlayerDamageTaken;
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
     private Random randomizeDirection = new Random();
+    private float waveCooldown = 1.5f;
+    private float waveTimer = 0f;
+
 
     private Array<GroundItem> groundItems = new Array<>();  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
-    private Queue<Integer> miniBossSchedule = new Queue<>(10); ////array med intervaller på när miniboss ska spawna
+    private Queue<Integer> miniBossSchedule = new Queue<>(10);
+    /// /array med intervaller på när miniboss ska spawna
 
     private Array<Enemy> enemies = new Array<>();
     private Array<Ability> enemyAbilities = new Array<>();
@@ -115,6 +123,7 @@ public class GameScreen extends Game implements Screen {
         Map map = new Map(tiledMap);
         stage = new Stage(gameViewport);
         stage.clear();
+
         player = new Player(map, spriteBatch);
         playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
@@ -131,6 +140,14 @@ public class GameScreen extends Game implements Screen {
         player.setPlayerX(map.getStartingX());
         player.setPlayerY(map.getStartingY());
 
+        poolManager = new ParticleEffectPoolManager();
+        poolManager.register("assets/entities/particles/blueFlame.p", 5, 20);
+        poolManager.register("assets/entities/particles/lootBeam.p", 5, 20);
+        poolManager.register("assets/entities/particles/lootPile.p", 5, 20);
+        Vector2 startPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        WaterWave wave = new WaterWave("WaterWave", 15, 1.2, 32, 32, startPos, poolManager);
+        abilities.add(wave);
+
         createMiniBossSchedule();
     }
 
@@ -144,6 +161,7 @@ public class GameScreen extends Game implements Screen {
      * by the rendering thread. This is the most important method in LibGdx.
      * It calls input(), logic() and draw() which handles all the logics and visuals
      * for the game.
+     *
      * @param delta
      */
     @Override
@@ -250,6 +268,7 @@ public class GameScreen extends Game implements Screen {
     /**
      * This method is used to control enemy moving behaviour. Each enemy is given a radius in which other enemies tries
      * to avoid. This method prevents cluttering of enemies and having several enemies on the same game square.
+     *
      * @param enemies
      */
     private void resolveEnemyCollisions(Array<Enemy> enemies) {
@@ -267,7 +286,7 @@ public class GameScreen extends Game implements Screen {
                     float dx = c2.x - c1.x;
                     float dy = c2.y - c1.y;
                     // dist is how far apart their centers are.
-                    float dist = (float)Math.sqrt(dx * dx + dy * dy);
+                    float dist = (float) Math.sqrt(dx * dx + dy * dy);
                     float minDist = c1.radius + c2.radius;
 
                     if (dist == 0) dist = 0.01f; // avoid divide by zero
@@ -432,6 +451,7 @@ public class GameScreen extends Game implements Screen {
     /**
      * Method for generating a random position outside of the visible screen, this position could then be used to summon
      * enemies outside of the game screen.
+     *
      * @param margin
      * @return a vector for the enemy to move.
      */
@@ -524,7 +544,7 @@ public class GameScreen extends Game implements Screen {
      * var i is for seconds
      */
     private void createMiniBossSchedule() {
-        for (int i = 10; i <= 100; i+=20) {
+        for (int i = 10; i <= 100; i += 20) {
             miniBossSchedule.addLast(i);
         }
     }
@@ -540,6 +560,7 @@ public class GameScreen extends Game implements Screen {
 
     /**
      * Updates the position of an enemy
+     *
      * @param enemy - the enemy that's updated
      */
     private void updateEnemyMovement(Enemy enemy) {
@@ -566,9 +587,8 @@ public class GameScreen extends Game implements Screen {
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
             totalEnemiesKilled++;
-            enemy.dropItems(droppedItems);
-
             // Om fienden är en miniboss ska den droppa en kista
+            enemy.dropItems(droppedItems, poolManager);
             if (enemy instanceof MiniBoss) {
                 ((MiniBoss) enemy).dropChest(groundItems);
             }
@@ -623,7 +643,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void checkEnemyAbilitiesDamagePlayer() {
-        for (int i = enemyAbilities.size -1; i >= 0; i--) {
+        for (int i = enemyAbilities.size - 1; i >= 0; i--) {
             if (enemyAbilities.get(i).getHitBox().overlaps(player.getHitBox())) {
                 damagePlayer(enemyAbilities.get(i).getDamage());
                 enemyAbilities.get(i).dispose();
@@ -685,7 +705,8 @@ public class GameScreen extends Game implements Screen {
     private void drawPowerUps() {
         for (PowerUp powerUp : droppedItems) {
             powerUp.update(Gdx.graphics.getDeltaTime());
-            powerUp.getSprite().draw(spriteBatch);
+            powerUp.drawParticles(spriteBatch); // RITA EFFEKT FÖRST
+            powerUp.getSprite().draw(spriteBatch); // RITA SPRITE OVANPÅ
         }
     }
 
@@ -729,7 +750,7 @@ public class GameScreen extends Game implements Screen {
     private void checkLevelUp() {
         if (sharksKilled >= 10 * player.getLevel()) {
             player.setLevel(player.getLevel() + 1);
-            gameUI.updateInfoTable("Congratulations, you are now level "+ player.getLevel());
+            gameUI.updateInfoTable("Congratulations, you are now level " + player.getLevel());
             setPaused(true);
             main.levelUp();
             sharksKilled = 0;

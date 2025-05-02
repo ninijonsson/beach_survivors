@@ -1,6 +1,7 @@
 package com.beachsurvivors.model.enemies;
 
 import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.Chest;
 import com.beachsurvivors.model.groundItems.GroundItem;
@@ -8,8 +9,8 @@ import com.beachsurvivors.model.groundItems.GroundItem;
 public class MiniBoss extends Enemy {
 
     public MiniBoss() {
-        super("entities/enemies/crocodile2.png", 128*3, 128*3, 500);
-        createAnimation("entities/enemies/crocodile2.png", 1, 1);
+        super(128*3, 128*3, 500);
+        createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/crocodile2.png"), 1, 1);
         setMovementSpeed(200f);
         setDamage(20);
 
