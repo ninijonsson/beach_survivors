@@ -30,7 +30,7 @@ public class AssetLoader {
     }
 
     private void addSounds() {
-        manager.load("assets/sounds/Shark_Damage2.wav", Sound.class);
+        manager.load("assets/sounds/shark_damage_2.wav", Sound.class);
         manager.load("assets/sounds/Seal_Damage.wav", Sound.class);
         manager.load("assets/main_menu/sound/play_sound.wav", Sound.class);
         manager.load("assets/main_menu/sound/Holiday.wav", Sound.class);
@@ -45,11 +45,11 @@ public class AssetLoader {
         manager.load("assets/entities/chest.png", Texture.class);
         manager.load("assets/entities/coconut.png", Texture.class);
         manager.load("assets/entities/death.png", Texture.class);
-        manager.load("assets/entities/howToPlay.png", Texture.class);
+        manager.load("assets/entities/how_to_play.png", Texture.class);
         manager.load("assets/main_menu/logo_skiss_1.png", Texture.class);
         manager.load("assets/main_menu/menu_background.jpeg", Texture.class);
-        manager.load("assets/entities/abilities/xpBar.png", Texture.class);
-        manager.load("assets/entities/abilities/abilityBar.png", Texture.class);
+        manager.load("assets/entities/abilities/exp_bar.png", Texture.class);
+        manager.load("assets/entities/abilities/ability_bar.png", Texture.class);
         manager.load("assets/entities/abilities/bullet.png", Texture.class);
         manager.load("assets/entities/abilities/boomerangmc.png", Texture.class);
         manager.load("assets/entities/abilities/fireball.png", Texture.class);
@@ -84,7 +84,7 @@ public class AssetLoader {
     }
 
     private void addSkins() {
-        manager.load("SkinComposer/healthbutton.json", Skin.class);
+        manager.load("skin_composer/healthbutton.json", Skin.class);
     }
 
     public Texture getTexture(String path) {
