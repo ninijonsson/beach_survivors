@@ -60,6 +60,7 @@ public class AssetLoader {
         manager.load("assets/entities/abilities/bullet.png", Texture.class);
         manager.load("assets/entities/abilities/boomerangmc.png", Texture.class);
         manager.load("assets/entities/abilities/fireball.png", Texture.class);
+        manager.load("assets/entities/abilities/bubble2.png", Texture.class);
         manager.load("assets/entities/smoke.png", Texture.class);
         manager.load("assets/entities/enemies/shark.png", Texture.class);
         manager.load("assets/entities/enemies/shark_sheet.png", Texture.class);
