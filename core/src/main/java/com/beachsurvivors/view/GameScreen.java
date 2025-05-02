@@ -94,8 +94,8 @@ public class GameScreen extends Game implements Screen {
 
     //Boolean variables to toggle when testing the game with/without
     //some elements. Set all to true for testing everything.
-    private boolean playerAbilitiesTestMode = false; //Toggles if player use abilities
-    private boolean spawnEnemiesTestMode = false; //Toggles if enemies spawn
+    private boolean playerAbilitiesTestMode = true; //Toggles if player use abilities
+    private boolean spawnEnemiesTestMode = true; //Toggles if enemies spawn
     private boolean spawnMinibossesTestMode = true; //Toggles if minibosses spawn
 
     public GameScreen(Main main) {
