@@ -74,7 +74,7 @@ public class GameScreen extends Game implements Screen {
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
-    private Random randomizeDirection = new Random();
+    private Random random = new Random();
     private float waveCooldown = 1.5f;
     private float waveTimer = 0f;
 
@@ -85,6 +85,8 @@ public class GameScreen extends Game implements Screen {
 
     private Array<Enemy> enemies = new Array<>();
     private Array<Ability> enemyAbilities = new Array<>();
+    private Array<PowerUp> powerUpsToRemove = new Array<>();
+    private Array<GroundItem> groundItemsToRemove = new Array<>();
     private Vector2 playerPos;
 
     private boolean isPaused = false;
@@ -92,8 +94,8 @@ public class GameScreen extends Game implements Screen {
 
     //Boolean variables to toggle when testing the game with/without
     //some elements. Set all to true for testing everything.
-    private boolean playerAbilitiesTestMode = true; //Toggles if player use abilities
-    private boolean spawnEnemiesTestMode = true; //Toggles if enemies spawn
+    private boolean playerAbilitiesTestMode = false; //Toggles if player use abilities
+    private boolean spawnEnemiesTestMode = false; //Toggles if enemies spawn
     private boolean spawnMinibossesTestMode = true; //Toggles if minibosses spawn
 
     public GameScreen(Main main) {
@@ -172,25 +174,31 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void render(float delta) {
+
         input();
 
         if (!isPaused) {
             logic();
             draw();
 
-            gameUI.getStage().act(delta);
-            gameUI.update(Gdx.graphics.getDeltaTime());
-            gameUI.draw();
+//            gameUI.getStage().act(delta);
+//            gameUI.update(Gdx.graphics.getDeltaTime());
+//            gameUI.draw();
         } else {
             spriteBatch.begin();
 
-            gameUI.getStage().act(delta);
-            gameUI.update(Gdx.graphics.getDeltaTime());
-            gameUI.draw();
             main.pause();
 
             spriteBatch.end();
         }
+            gameUI.getStage().act(delta);
+            gameUI.update(Gdx.graphics.getDeltaTime());
+            gameUI.draw();
+
+        System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
+        System.out.println("Java heap: " + Gdx.app.getJavaHeap() / 1024 / 1024 + " MB");
+        System.out.println("Native heap: " + Gdx.app.getNativeHeap() / 1024 / 1024 + " MB");
+
     }
 
     /**
@@ -328,8 +336,6 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void pickUpPowerUp() {
-        Array<PowerUp> powerUpsToRemove = new Array<>();
-
         for (PowerUp powerUp : droppedItems) {
 
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
@@ -347,11 +353,10 @@ public class GameScreen extends Game implements Screen {
         }
         gameUI.setHealthBarValue(player.getHealthPoints());
         droppedItems.removeAll(powerUpsToRemove, true);
+        powerUpsToRemove.clear();
     }
 
     private void pickUpGroundItem() {
-        Array<GroundItem> groundItemsToRemove = new Array<>();
-
         for (GroundItem groundItem : groundItems) {
 
             if (player.getHitBox().overlaps(groundItem.getHitbox())) {
@@ -361,6 +366,7 @@ public class GameScreen extends Game implements Screen {
             }
         }
         groundItems.removeAll(groundItemsToRemove, true);
+        groundItemsToRemove.clear();
     }
 
 
@@ -408,7 +414,7 @@ public class GameScreen extends Game implements Screen {
     private Enemy getNearestEnemy() {
         Enemy nearest = null;
         float minDistance = 1000;
-        Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        playerPos.set(player.getPlayerX(), player.getPlayerY());
 
         for (Enemy enemy : enemies) {
             float distance = playerPos.dst(enemy.getSprite().getX(), enemy.getSprite().getY());
@@ -508,7 +514,7 @@ public class GameScreen extends Game implements Screen {
         if (!(enemies.size < maxEnemies)) {
             return;
         }
-        Random random = new Random();
+
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
 
@@ -628,8 +634,8 @@ public class GameScreen extends Game implements Screen {
                 if (enemy.hit(damage)) {
                     totalPlayerDamageDealt += damage;
                     damageTexts.add(new DamageText(String.valueOf((int) damage),
-                        enemy.getSprite().getX() + randomizeDirection.nextInt(50),
-                        enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + randomizeDirection.nextInt(50),
+                        enemy.getSprite().getX() + random.nextInt(50),
+                        enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50),
                         1.0f,
                         isCritical));
                 }

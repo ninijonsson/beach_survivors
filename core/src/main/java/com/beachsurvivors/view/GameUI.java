@@ -207,10 +207,8 @@ public class GameUI {
 
 
         levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
-        Label.LabelStyle style = new Label.LabelStyle(levelFont, Color.WHITE);
         levelFont.setColor(Color.WHITE);
         Label.LabelStyle labelStyle = new Label.LabelStyle(levelFont, Color.WHITE);
-
 
         currentLevel = new Label("Level: " +getPlayerLevel(), labelStyle);
         nextLevel = new Label(getPlayerLevel(), labelStyle);
@@ -231,9 +229,6 @@ public class GameUI {
     }
 
     private void updateLevelLabels() {
-        levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
-        Label.LabelStyle style = new Label.LabelStyle(levelFont, Color.WHITE);
-        currentLevel = new Label("Level: " + getPlayerLevel(), style);
         nextLevel.setText(String.valueOf(game.getPlayer().getLevel() + 1));
     }
 

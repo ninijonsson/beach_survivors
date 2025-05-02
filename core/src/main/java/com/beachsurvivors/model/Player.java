@@ -48,7 +48,7 @@ public class Player extends Actor {
 
     private float stateTime;
 
-    private Random random;
+    private Random random = new Random();
     private SpriteBatch spriteBatch;
     private Map map;
 
@@ -72,7 +72,6 @@ public class Player extends Actor {
     }
 
     private void createAnimation() {
-        random = new Random();
         int choice = random.nextInt(1,3);
         switch (choice) {
             case 1:
