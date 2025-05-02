@@ -6,21 +6,21 @@ filter: Linear, Linear
 repeat: none
 checkbox
   rotate: false
-  xy: 1514, 1689
+  xy: 1851, 1849
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
 checkbox-on
   rotate: false
-  xy: 1719, 1749
+  xy: 1203, 1382
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 452, 734
+  xy: 452, 754
   size: 4, 7
   split: 1, 1, 2, 2
   pad: 0, 0, 0, 0
@@ -29,49 +29,49 @@ cursor
   index: -1
 exit_button_hover_scaled-300
   rotate: false
-  xy: 1461, 1709
+  xy: 1461, 1795
   size: 256, 72
   orig: 256, 72
   offset: 0, 0
   index: -1
 exit_button_scaled-300
   rotate: false
-  xy: 1, 402
+  xy: 1, 488
   size: 256, 72
   orig: 256, 72
   offset: 0, 0
   index: -1
 font-export
   rotate: false
-  xy: 264, 598
+  xy: 264, 684
   size: 142, 143
   orig: 142, 143
   offset: 0, 0
   index: -1
 font-title-export
   rotate: false
-  xy: 1, 542
+  xy: 1, 628
   size: 261, 265
   orig: 261, 265
   offset: 0, 0
   index: -1
 help_button_hover_scaled-300
   rotate: false
-  xy: 1203, 1717
+  xy: 1203, 1803
   size: 256, 64
   orig: 256, 64
   offset: 0, 0
   index: -1
 help_button_scaled-300
   rotate: false
-  xy: 1, 476
+  xy: 1, 562
   size: 256, 64
   orig: 256, 64
   offset: 0, 0
   index: -1
 horizontal-split-pane
   rotate: false
-  xy: 408, 686
+  xy: 67, 382
   size: 5, 11
   split: 2, 2, 2, 2
   orig: 5, 11
@@ -79,7 +79,7 @@ horizontal-split-pane
   index: -1
 list
   rotate: false
-  xy: 1719, 1769
+  xy: 1406, 1723
   size: 51, 12
   split: 2, 2, 2, 2
   pad: 5, 5, 5, 5
@@ -88,28 +88,28 @@ list
   index: -1
 minus
   rotate: false
-  xy: 1406, 1592
+  xy: 1461, 1738
   size: 12, 13
   orig: 12, 13
   offset: 0, 0
   index: -1
 pause_menu_scaled-600
   rotate: false
-  xy: 1, 809
+  xy: 1, 895
   size: 1200, 972
   orig: 1200, 972
   offset: 0, 0
   index: -1
 plus
   rotate: false
-  xy: 308, 583
+  xy: 1514, 1780
   size: 12, 13
   orig: 12, 13
   offset: 0, 0
   index: -1
 progress-bar
   rotate: false
-  xy: 1203, 1400
+  xy: 264, 636
   size: 46, 46
   split: 10, 10, 10, 10
   pad: 6, 6, 6, 6
@@ -118,49 +118,49 @@ progress-bar
   index: -1
 progress-bar-fill
   rotate: false
-  xy: 259, 506
+  xy: 259, 592
   size: 1, 34
   orig: 1, 34
   offset: 0, 0
   index: -1
 progress-bar-fill-vert
   rotate: false
-  xy: 1, 306
+  xy: 1719, 1800
   size: 34, 1
   orig: 34, 1
   offset: 0, 0
   index: -1
 radio
   rotate: false
-  xy: 1203, 1382
+  xy: 1269, 1450
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 radio-on
   rotate: false
-  xy: 1251, 1430
+  xy: 1335, 1516
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 resume_button_hover_scaled-300
   rotate: false
-  xy: 264, 743
+  xy: 264, 829
   size: 256, 64
   orig: 256, 64
   offset: 0, 0
   index: -1
 resume_button_scaled-300
   rotate: false
-  xy: 1203, 1651
+  xy: 1203, 1737
   size: 256, 64
   orig: 256, 64
   offset: 0, 0
   index: -1
 round-gray
   rotate: false
-  xy: 1406, 1607
+  xy: 408, 719
   size: 42, 42
   split: 13, 13, 13, 13
   pad: 9, 9, 5, 5
@@ -169,7 +169,7 @@ round-gray
   index: -1
 round-white
   rotate: false
-  xy: 264, 554
+  xy: 474, 785
   size: 42, 42
   split: 13, 13, 13, 13
   pad: 9, 9, 5, 5
@@ -178,16 +178,79 @@ round-white
   index: -1
 round-white-small
   rotate: false
-  xy: 588, 783
+  xy: 140, 462
   size: 24, 24
   split: 10, 10, 10, 10
   pad: 10, 10, 2, 2
   orig: 24, 24
   offset: 0, 0
   index: -1
+round_restart_hover_scaled-200
+  rotate: false
+  xy: 1719, 1803
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+round_restart_pressed_scaled-200
+  rotate: false
+  xy: 1203, 1468
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+round_restart_scaled-200
+  rotate: false
+  xy: 408, 763
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+round_sound-off_hover_scaled-200
+  rotate: false
+  xy: 1, 329
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+round_sound-off_pressed_scaled-200
+  rotate: false
+  xy: 74, 422
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+round_sound-off_scaled-200
+  rotate: false
+  xy: 588, 829
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+round_sound-on_hover_scaled-200
+  rotate: false
+  xy: 1785, 1803
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+round_sound-on_pressed_scaled-200
+  rotate: false
+  xy: 1203, 1402
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+round_sound-on_scaled-200
+  rotate: false
+  xy: 1269, 1468
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 selectbox
   rotate: false
-  xy: 1461, 1667
+  xy: 1461, 1753
   size: 51, 40
   split: 2, 31, 2, 27
   pad: 2, 35, 2, 2
@@ -196,7 +259,7 @@ selectbox
   index: -1
 selection
   rotate: false
-  xy: 264, 543
+  xy: 408, 708
   size: 9, 9
   split: 2, 1, 2, 1
   pad: 4, 3, 4, 3
@@ -205,7 +268,7 @@ selection
   index: -1
 slider-horizontal
   rotate: false
-  xy: 1461, 1655
+  xy: 654, 883
   size: 20, 10
   split: 4, 4, 4, 4
   pad: 1, 2, 2, 2
@@ -214,14 +277,14 @@ slider-horizontal
   index: -1
 slider-knob
   rotate: false
-  xy: 74, 376
+  xy: 74, 396
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 slider-vertical
   rotate: false
-  xy: 1450, 1629
+  xy: 312, 662
   size: 9, 20
   split: 4, 3, 3, 3
   pad: 3, 3, 2, 2
@@ -230,7 +293,7 @@ slider-vertical
   index: -1
 textfield
   rotate: false
-  xy: 408, 699
+  xy: 1, 285
   size: 42, 42
   split: 8, 8, 8, 8
   orig: 42, 42
@@ -238,21 +301,21 @@ textfield
   index: -1
 touchpad
   rotate: false
-  xy: 1203, 1448
+  xy: 1203, 1534
   size: 201, 201
   orig: 201, 201
   offset: 0, 0
   index: -1
 touchpad-knob
   rotate: false
-  xy: 522, 743
+  xy: 522, 829
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 vertical-split-pane
   rotate: false
-  xy: 1772, 1776
+  xy: 1406, 1716
   size: 11, 5
   split: 2, 2, 1, 1
   pad: 1, 1, 1, 1
@@ -261,14 +324,14 @@ vertical-split-pane
   index: -1
 white
   rotate: false
-  xy: 1, 303
+  xy: 264, 633
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 window
   rotate: false
-  xy: 1, 309
+  xy: 1, 395
   size: 71, 91
   split: 15, 15, 35, 15
   pad: 9, 10, 37, 5
