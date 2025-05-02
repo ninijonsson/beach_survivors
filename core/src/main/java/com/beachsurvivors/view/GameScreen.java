@@ -605,6 +605,7 @@ public class GameScreen extends Game implements Screen {
             enemies.removeIndex(i); // Ta bort från fiende-arrayen
             enemy.dispose(); // Ta även bort själva bilden på fienden
 
+            // I denna metoden kontrollerar vi även om vi ska levela eller inte
             player.gainExp(enemy.getExp());
 
             // Uppdatera progress bar (exp)
@@ -753,17 +754,6 @@ public class GameScreen extends Game implements Screen {
 
     public void setPaused(boolean paused) {
         isPaused = paused;
-    }
-
-    // TODO: Fixa ett riktigt EXP-system
-    private void checkLevelUp() {
-        if (sharksKilled >= 10 * player.getLevel()) {
-            //player.getLevelSystem().onLevelUp(player.getLevel() + 1);
-            gameUI.updateInfoTable("Congratulations, you are now level " + player.getLevel());
-            setPaused(true);
-            main.levelUp();
-            sharksKilled = 0;
-        }
     }
 
     public void addBoomerang() {
