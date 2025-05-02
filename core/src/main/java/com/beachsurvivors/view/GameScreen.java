@@ -169,6 +169,11 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    /**
+     * Method for keeping the correct width and height while resizing the game window.
+     * @param width
+     * @param height
+     */
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height, true);
@@ -225,19 +230,20 @@ public class GameScreen extends Game implements Screen {
 
         updateDamageText();
 
-        if (spawnEnemiesTestMode) {
+        //UPDATES EVERYTHING RELATED TO ENEMIES.
+        if (spawnEnemiesTestMode) { //DOES NOT SPAWN IF THIS IS NOT TRUE, TOGGLES ENEMIES IN GAME.
             spawnEnemies();
 
-            for (int i = enemies.size - 1; i >= 0; i--) {
+            for (int i = enemies.size - 1; i >= 0; i--) { //LOOP THROUGH ALL ENEMIES AND UPDATE RELATED POSITIONS.
                 Enemy enemy = enemies.get(i);
-                updateEnemyMovement(enemy);
-                handleEnemyDeaths(enemy, i);
-                checkPlayerAbilityHits(enemy);
-                checkDamageAgainstPlayer(enemy);
+                updateEnemyMovement(enemy); //MOVE TOWARDS PLAYER
+                handleEnemyDeaths(enemy, i); //IF THEY ARE DEAD
+                checkPlayerAbilityHits(enemy); //IF THEY ARE HIT BY THE PLAYER
+                checkDamageAgainstPlayer(enemy); //IF THEY DAMAGE THE PLAYER
             }
             checkEnemyAbilitiesDamagePlayer();
         }
-        resolveEnemyCollisions(enemies);
+        resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
     }
 
