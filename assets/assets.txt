@@ -56,7 +56,6 @@ game_over_screen/gameover_skin.atlas
 game_over_screen/gameover_skin.json
 game_over_screen/you died screen.png
 game_screen/Cool_beach_guy.png
-gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas

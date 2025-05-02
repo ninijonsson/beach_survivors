@@ -151,8 +151,14 @@ public class GameScreen extends Game implements Screen {
         createMiniBossSchedule();
     }
 
+    /**
+     * Override från Screen
+     * Show kallas när en Screen blir "current screen"
+     */
     @Override
-    public void show() {}
+    public void show() {
+        Gdx.input.setInputProcessor(stage); //Uppdaterar vilken stage inputProcessorn ska lyssna på
+    }
 
 
     /**
