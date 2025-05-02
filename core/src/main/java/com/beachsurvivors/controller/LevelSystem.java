@@ -22,14 +22,11 @@ public class LevelSystem {
     public void gainExp(int exp) {
         currentExp += exp;
 
+        // Kontrollera ifall vi ska levela
         while (currentExp >= expToNextLevel) {
             currentExp -= expToNextLevel;
             currentLevel++;
             expToNextLevel = calculateExpForLevelUp(currentLevel);
-
-            System.out.println("Level: " + currentLevel);
-            System.out.println("Exp to next level: " + expToNextLevel);
-            System.out.println("Exp left: " + (expToNextLevel-currentExp));
 
             onLevelUp();
         }
@@ -43,8 +40,7 @@ public class LevelSystem {
     private void onLevelUp() {
         System.out.println("Level up!");
         ui.updateInfoTable("Congratulations, you are now level " + currentLevel);
-        main.levelUp();
-        // TODO: Välja abilities/stats
+        main.levelUp(); // Välja abilities/stats
     }
 
     public int getCurrentLevel() {
