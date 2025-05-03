@@ -17,7 +17,7 @@ public class DeathScreen implements Screen {
     private Stage stage;
     private Skin skin;
     private GameScreen gameScreen;
-    private Table table;
+    private Table rightTable;
     private Table leftTable;
 
     private TextButton retryButton;
@@ -53,31 +53,35 @@ public class DeathScreen implements Screen {
     }
 
     public void createActors() {
-        table = new Table();
+        rightTable = new Table();
+
 
         Texture backgroundTexture = AssetLoader.get().manager.get("assets/game_over_screen/you died screen.png");
         Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
 
         Stack stack = new Stack();
-        stack.setFillParent(true);
+        stack.setSize(1200,972);
+        stack.setPosition(gameScreen.getScreenWidth()/2f-stack.getWidth()/2,
+            gameScreen.getScreenHeight()/2f-stack.getHeight()/2 );
         stack.add(background);
-        stack.add(table);
+        stack.add(rightTable);
         stage.addActor(stack);
 
         leftTable = new Table();
 
+        int fontscale = 2;
         enemiesKilledText = new Label("Enemies killed: " + enemiesKilled , skin);
-        enemiesKilledText.setFontScale(3);
+        enemiesKilledText.setFontScale(fontscale);
 
         timeSurvivedText = new Label("Time survived: " + timeStamp, skin);
-        timeSurvivedText.setFontScale(3);
+        timeSurvivedText.setFontScale(fontscale);
         totalDamageDone = new Label("Total damage done: " + totalDamage, skin);
-        totalDamageDone.setFontScale(3);
+        totalDamageDone.setFontScale(fontscale);
 
-        skin.getFont("font-over").getData().setScale(3f);
+        skin.getFont("font-over").getData().setScale(fontscale);
 
         retryButton = new TextButton("Retry", skin, "wooden_sign");
-        mainMenuButton = new TextButton("Back to main menu" , skin, "wooden_sign");
+        mainMenuButton = new TextButton("Main menu" , skin, "wooden_sign");
         exitButton = new TextButton("Quit game" , skin, "wooden_sign");
 
         addActorsRightTable();
@@ -86,16 +90,16 @@ public class DeathScreen implements Screen {
     }
 
     private void addActorsRightTable() {
-        table.add(textLabel).padBottom(30);
-        table.row();
-        table.add(retryButton).padBottom(20);
-        table.row();
-        table.add(mainMenuButton).width(600).height(150).padBottom(20);
-        table.row();
-        table.add(exitButton).width(600).height(150);
+        rightTable.add(textLabel).padBottom(30);
+        rightTable.row();
+        rightTable.add(retryButton).padBottom(20);
+        rightTable.row();
+        rightTable.add(mainMenuButton).padBottom(20);
+        rightTable.row();
+        rightTable.add(exitButton);
 
-        table.setPosition(gameScreen.getScreenWidth()*0.7f, gameScreen.getScreenHeight()/2.5f);
-        stage.addActor(table);
+        rightTable.setPosition(gameScreen.getScreenWidth()*0.65f, gameScreen.getScreenHeight()/2.5f);
+        stage.addActor(rightTable);
 
     }
 
@@ -106,7 +110,7 @@ public class DeathScreen implements Screen {
         leftTable.row();
         leftTable.add(totalDamageDone).left();
 
-        leftTable.setPosition(gameScreen.getScreenWidth()-1300, gameScreen.getScreenHeight()/2f);
+        leftTable.setPosition(gameScreen.getScreenWidth()-1150, gameScreen.getScreenHeight()/2f);
         stage.addActor(leftTable);
     }
 
