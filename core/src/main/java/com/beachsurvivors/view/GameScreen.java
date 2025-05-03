@@ -402,8 +402,8 @@ public class GameScreen extends Game implements Screen {
             ).nor();
 
             BaseAttack bullet = new BaseAttack();
-            bullet.updatePosition(player.getPlayerX(), player.getPlayerY());
             bullet.setDirection(direction);
+            bullet.updatePosition(player.getPlayerX(), player.getPlayerY());
 
             abilities.add(bullet);
         }
@@ -516,8 +516,19 @@ public class GameScreen extends Game implements Screen {
             return;
         }
 
+        Enemy enemy = selectRandomEnemy();
+
+        Vector2 randomPos = getRandomOffscreenPosition(150);
+        enemy.getSprite().setPosition(randomPos.x, randomPos.y);
+        enemy.getHitbox().setX(randomPos.x);
+        enemy.getHitbox().setY(randomPos.y);
+        enemies.add(enemy);
+    }
+
+    private Enemy selectRandomEnemy() {
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
+        enemyChoice = 1;
 
         // TODO: Lägg in krabba
         switch (enemyChoice) {
@@ -531,12 +542,7 @@ public class GameScreen extends Game implements Screen {
                 enemy = new Crocodile();
                 break;
         }
-
-        Vector2 randomPos = getRandomOffscreenPosition(150);
-        enemy.getSprite().setPosition(randomPos.x, randomPos.y);
-        enemy.getHitbox().setX(randomPos.x);
-        enemy.getHitbox().setY(randomPos.y);
-        enemies.add(enemy);
+        return enemy;
     }
 
     private void spawnMiniBoss(float gameTimeSeconds) {
