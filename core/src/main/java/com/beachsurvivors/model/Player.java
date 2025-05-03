@@ -114,6 +114,7 @@ public class Player extends Actor {
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
 
+
     }
 
     public void playerInput() {

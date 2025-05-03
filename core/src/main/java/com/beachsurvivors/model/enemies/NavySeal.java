@@ -26,6 +26,15 @@ public class NavySeal extends Enemy {
     public void move() {
     }
 
+    @Override
+    public void dropItems() {
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+
     public void attack(Player player, Array<Ability> enemyAbilities) {
         float bulletCooldown = 3f; // Gör om cooldown till float
 
@@ -48,7 +57,5 @@ public class NavySeal extends Enemy {
         }
     }
 
-    @Override
-    public void dropItems() {
-    }
+
 }

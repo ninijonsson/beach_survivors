@@ -190,6 +190,8 @@ public class GameScreen extends Game implements Screen {
         gameUI.update(Gdx.graphics.getDeltaTime());
         gameUI.draw();
 
+        System.out.println("Java Heap " + Gdx.app.getJavaHeap() / 1024 / 1024 +" MB");
+
     }
 
     /**
@@ -354,7 +356,6 @@ public class GameScreen extends Game implements Screen {
             if (player.getHitBox().overlaps(groundItem.getHitbox())) {
                 groundItem.onPickup(player);
                 groundItemsToRemove.add(groundItem);
-                groundItem.dispose();
             }
         }
         groundItems.removeAll(groundItemsToRemove, true);
@@ -450,15 +451,12 @@ public class GameScreen extends Game implements Screen {
 
     @Override
     public void dispose() {
-        spriteBatch.dispose();
-        mapRenderer.dispose();
-        tiledMap.dispose();
-        player.dispose();
-        boomerang.dispose();
-        font.dispose();
-        for (Ability ability : abilities) {
-            ability.dispose();
-        }
+//        spriteBatch.dispose();
+//        mapRenderer.dispose();
+//        tiledMap.dispose();
+//        player.dispose();
+//        boomerang.dispose();
+//        font.dispose();
     }
 
     /**
@@ -647,7 +645,7 @@ public class GameScreen extends Game implements Screen {
                         isCritical));
                 }
 
-                if (!(ability instanceof Boomerang)) {
+                if (!ability.isPersistent()) {
                     ability.dispose();
                     abilities.removeIndex(j);
                 }
@@ -679,7 +677,7 @@ public class GameScreen extends Game implements Screen {
         shield.damageShield(damage);
 
         if (remainingDamage >= 0) {
-            player.takeDamage(damage - shield.getCurrentShieldStrength());
+            player.takeDamage(remainingDamage);
             gameUI.setHealthBarValue(player.getHealthPoints());
             System.out.println("player HP : " + player.getHealthPoints());
         }
@@ -751,13 +749,14 @@ public class GameScreen extends Game implements Screen {
     private void drawPlayerAbilities() {
         for (Ability a : abilities) {
             if (a instanceof Shield) {
+                a.updatePosition(player.getPlayerX()-a.getSprite().getWidth()/2, player.getPlayerY()-a.getSprite().getHeight()/2);
+
                 if (!shield.getIsDepleted()) {
                     a.getSprite().draw(spriteBatch);
-                    a.updatePosition(player.getPlayerX(), player.getPlayerY());
+                    a.getSprite().setColor(1f,1f,1f,0.5f);
                 }
             } else {
                 a.getSprite().draw(spriteBatch);
-
             }
         }
     }

@@ -24,6 +24,7 @@ public class Boomerang extends Ability {
         sprite.setSize(32, 32);
         hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         this.damage = 10;
+        setPersistent(true);
     }
 
     @Override

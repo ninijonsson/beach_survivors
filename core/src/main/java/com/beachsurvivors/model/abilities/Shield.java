@@ -1,6 +1,10 @@
 package com.beachsurvivors.model.abilities;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Timer;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class Shield extends Ability {
@@ -10,16 +14,28 @@ public class Shield extends Ability {
     private boolean isRegening;
 
     public Shield() {
-        super("Shield" , "assets/entities/abilities/bubble2.png", AbilityType.SHIELD, 0, 20, 130, 130);
+        super("Shield" , "assets/entities/abilities/bubble2.png", AbilityType.SHIELD, 0, 20, 150, 150);
         this.currentShieldStrength = INITIAL_SHIELD_STRENGTH;
         isRegening = false;
         getSprite().setColor(1f,1f,1f, 0.5f);
+        setPersistent(true);
     }
 
 
     @Override
     public void use() {
 
+    }
+
+    @Override
+    public void use(Player player) {
+
+    }
+
+    @Override
+    public void dispose() {
+        setSprite(null);
+        setHitBox(null);
     }
 
     public void damageShield(double damage) {
@@ -29,33 +45,29 @@ public class Shield extends Ability {
         } else {
             currentShieldStrength -= damage;
         }
-        System.out.println("Shield was damaged, current shield is: " + currentShieldStrength);
     }
 
     public void regenShield() {
         if (!isRegening) {
-            System.out.println("Shield is regening");
             isRegening = true;
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    System.out.println("Timer task started");
                     resetShield();
-                    isRegening = false;
                 }
             }, (float) getCooldown()*10);
         }
-        System.out.println("already regening");
-    }
-
-    @Override
-    public void use(Player player) {
-
     }
 
     public void resetShield() {
         currentShieldStrength = INITIAL_SHIELD_STRENGTH;
-        System.out.println("Shield regened, current shield is: " + getCurrentShieldStrength());
+        isRegening = false;
+
+        if (getSprite() == null) {
+            setSprite(new Sprite(AssetLoader.get().getTexture("assets/entities/abilities/bubble2.png")));
+        }
+        getSprite().setColor(1f, 1f, 1f, 1f);
+        getSprite().setAlpha(1f);
 
     }
 
@@ -69,4 +81,6 @@ public class Shield extends Ability {
     public boolean getIsDepleted() {
         return currentShieldStrength <= 0;
     }
+
+
 }

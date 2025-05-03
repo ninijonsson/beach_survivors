@@ -213,14 +213,12 @@ public abstract class Enemy implements Disposable {
                 tint = Color.RED;
                 isImmune = true;
 
-
                 Timer.schedule(new Task() {
                     @Override
                     public void run() {
                         Gdx.app.postRunnable(() -> {
                             tint = Color.WHITE;
                             isImmune = false;
-
 
                         });
                     }
@@ -290,15 +288,12 @@ public abstract class Enemy implements Disposable {
 
     @Override
     public void dispose() {
-        if (texture != null) {
-            texture.dispose();
-        }
+
     }
 
     public Vector2 moveTowardsPlayer(float delta, Vector2 playerPosition, Vector2 enemyPosition) {
         Vector2 direction = new Vector2(playerPosition.x - enemyPosition.x, playerPosition.y - enemyPosition.y);
         direction.nor();
-
         return direction;
     }
 
