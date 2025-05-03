@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -20,9 +21,14 @@ public class DeathScreen implements Screen {
     private Table rightTable;
     private Table leftTable;
 
-    private TextButton retryButton;
-    private TextButton exitButton;
-    private TextButton mainMenuButton;
+//    private TextButton retryButton;
+//    private TextButton exitButton;
+//    private TextButton mainMenuButton;
+
+    private ImageButton retryButton;
+    private ImageButton exitButton;
+    private ImageButton mainMenuButton;
+
     private Label textLabel;
     private Label enemiesKilledText;
     private int enemiesKilled;
@@ -42,7 +48,7 @@ public class DeathScreen implements Screen {
         stage = new Stage(new FitViewport(gameScreen.getScreenWidth(), gameScreen.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
 
-        skin = AssetLoader.get().manager.get("assets/game_over_screen/gameover_skin.json");
+        skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
 
         int minutes = (int)(timeSurvived / 60f);
         int seconds = (int)(timeSurvived % 60f);
@@ -54,7 +60,6 @@ public class DeathScreen implements Screen {
 
     public void createActors() {
         rightTable = new Table();
-
 
         Texture backgroundTexture = AssetLoader.get().manager.get("assets/game_over_screen/you died screen.png");
         Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
@@ -69,7 +74,7 @@ public class DeathScreen implements Screen {
 
         leftTable = new Table();
 
-        int fontscale = 2;
+        float fontscale = 1.2f;
         enemiesKilledText = new Label("Enemies killed: " + enemiesKilled , skin);
         enemiesKilledText.setFontScale(fontscale);
 
@@ -78,11 +83,16 @@ public class DeathScreen implements Screen {
         totalDamageDone = new Label("Total damage done: " + totalDamage, skin);
         totalDamageDone.setFontScale(fontscale);
 
-        skin.getFont("font-over").getData().setScale(fontscale);
+        skin.getFont("Silkscreen-Regular").getData().setScale(fontscale);
 
-        retryButton = new TextButton("Retry", skin, "wooden_sign");
-        mainMenuButton = new TextButton("Main menu" , skin, "wooden_sign");
-        exitButton = new TextButton("Quit game" , skin, "wooden_sign");
+        retryButton = new ImageButton(skin, "retry");
+        exitButton = new ImageButton(skin, "exit");
+        mainMenuButton = new ImageButton(skin, "menu");
+
+        //Grow() för att bilden ska fylla ut knapparna
+        retryButton.getImageCell().grow();
+        mainMenuButton.getImageCell().grow();
+        exitButton.getImageCell().grow();
 
         addActorsRightTable();
         addActorsLeftTable();
@@ -90,13 +100,16 @@ public class DeathScreen implements Screen {
     }
 
     private void addActorsRightTable() {
+        int width = 333;
+        int height = 83;
+
         rightTable.add(textLabel).padBottom(30);
         rightTable.row();
-        rightTable.add(retryButton).padBottom(20);
+        rightTable.add(retryButton).width(width).height(height).padBottom(20);
         rightTable.row();
-        rightTable.add(mainMenuButton).padBottom(20);
+        rightTable.add(mainMenuButton).width(width).height(height).padBottom(20);
         rightTable.row();
-        rightTable.add(exitButton);
+        rightTable.add(exitButton).width(width).height(height);
 
         rightTable.setPosition(gameScreen.getScreenWidth()*0.65f, gameScreen.getScreenHeight()/2.5f);
         stage.addActor(rightTable);

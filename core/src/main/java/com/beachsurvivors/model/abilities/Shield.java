@@ -1,5 +1,6 @@
 package com.beachsurvivors.model.abilities;
 
+import com.badlogic.gdx.ai.btree.Task;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -14,10 +15,10 @@ public class Shield extends Ability {
     private boolean isRegening;
 
     public Shield() {
-        super("Shield" , "assets/entities/abilities/bubble2.png", AbilityType.SHIELD, 0, 20, 150, 150);
+        super("Shield" , "assets/entities/abilities/bubble_3.png", AbilityType.SHIELD, 0, 20, 150, 150);
         this.currentShieldStrength = INITIAL_SHIELD_STRENGTH;
         isRegening = false;
-        getSprite().setColor(1f,1f,1f, 0.5f);
+        getSprite().setColor(1f,1f,1f, 0.75f);
         setPersistent(true);
     }
 
@@ -66,8 +67,6 @@ public class Shield extends Ability {
         if (getSprite() == null) {
             setSprite(new Sprite(AssetLoader.get().getTexture("assets/entities/abilities/bubble2.png")));
         }
-        getSprite().setColor(1f, 1f, 1f, 1f);
-        getSprite().setAlpha(1f);
 
     }
 

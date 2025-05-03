@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -190,8 +191,6 @@ public class GameScreen extends Game implements Screen {
         gameUI.update(Gdx.graphics.getDeltaTime());
         gameUI.draw();
 
-        System.out.println("Java Heap " + Gdx.app.getJavaHeap() / 1024 / 1024 +" MB");
-
     }
 
     /**
@@ -322,7 +321,7 @@ public class GameScreen extends Game implements Screen {
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            isPaused = !isPaused;
+            pause();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds());
@@ -439,10 +438,13 @@ public class GameScreen extends Game implements Screen {
     public void resume() {
         setPaused(false);
         main.setScreen(this);
+        Timer.instance().start();
     }
 
     @Override
     public void pause() {
+        isPaused = !isPaused;
+        Timer.instance().stop();
     }
 
     @Override
@@ -451,12 +453,12 @@ public class GameScreen extends Game implements Screen {
 
     @Override
     public void dispose() {
-//        spriteBatch.dispose();
-//        mapRenderer.dispose();
-//        tiledMap.dispose();
-//        player.dispose();
+        spriteBatch.dispose();
+        mapRenderer.dispose();
+        tiledMap.dispose();
+//        player.dispose();  //dessa borde inte disposas
 //        boomerang.dispose();
-//        font.dispose();
+        font.dispose();
     }
 
     /**
@@ -665,7 +667,6 @@ public class GameScreen extends Game implements Screen {
                 damagePlayer(enemyAbilities.get(i).getDamage());
                 enemyAbilities.get(i).dispose();
                 enemyAbilities.removeIndex(i);
-
             }
         }
     }
@@ -753,7 +754,6 @@ public class GameScreen extends Game implements Screen {
 
                 if (!shield.getIsDepleted()) {
                     a.getSprite().draw(spriteBatch);
-                    a.getSprite().setColor(1f,1f,1f,0.5f);
                 }
             } else {
                 a.getSprite().draw(spriteBatch);

@@ -10,6 +10,7 @@ entities/abilities/ability_bar.png
 entities/abilities/boomerangmc.png
 entities/abilities/bubble.png
 entities/abilities/bubble2.png
+entities/abilities/bubble_3.png
 entities/abilities/bullet.png
 entities/abilities/exp_bar.png
 entities/abilities/fireball.png
@@ -50,6 +51,11 @@ fonts/level.fnt
 fonts/level.png
 fonts/timer.fnt
 fonts/timer.png
+game_over_screen/AniMeMatrix-MB_EN.fnt
+game_over_screen/Silkscreen-Regular.fnt
+game_over_screen/deathscreen_skin.atlas
+game_over_screen/deathscreen_skin.json
+game_over_screen/deathscreen_skin.png
 game_over_screen/font-export.fnt
 game_over_screen/font-over-export.fnt
 game_over_screen/font-pressed-export.fnt
