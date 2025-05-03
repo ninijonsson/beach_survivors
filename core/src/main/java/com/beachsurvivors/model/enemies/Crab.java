@@ -5,11 +5,12 @@ import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class Crab extends Enemy {
-    public Crab(String texturePath, int width, int height) {
-
-        super( width, height, 20, 20);
-        //TODO crab_sheet finns inte. när den skapad kan linjen under användas.
-        //createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/crab_sheet.png"), 4, 1);
+    public Crab() {
+        super(128, 128, 20, 15);
+        createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/crab_sheet.png"), 3, 1);
+        setHealthPoints(15);
+        setMovementSpeed(250f);
+        setDamage(5);
     }
 
     @Override
