@@ -510,10 +510,10 @@ public class GameScreen extends Game implements Screen {
             return;
         }
 
-        int enemyChoice = random.nextInt(0, 3);
+        //int enemyChoice = random.nextInt(0, 3);
+        int enemyChoice = 3; // Debugging testa krabba :)
         Enemy enemy = null;
 
-        // TODO: Lägg in krabba
         switch (enemyChoice) {
             case 0:
                 enemy = new Shark();
@@ -523,6 +523,9 @@ public class GameScreen extends Game implements Screen {
                 break;
             case 2:
                 enemy = new Crocodile();
+                break;
+            case 3:
+                enemy = new Crab();
                 break;
         }
 

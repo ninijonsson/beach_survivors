@@ -13,6 +13,7 @@ entities/burger.png
 entities/chest.png
 entities/coconut.png
 entities/death.png
+entities/enemies/crab_sheet.png
 entities/enemies/crocodile1.png
 entities/enemies/crocodile1_sheet.png
 entities/enemies/crocodile2.png
