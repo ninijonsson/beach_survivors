@@ -210,7 +210,7 @@ public class GameUI {
         levelFont.setColor(Color.WHITE);
         Label.LabelStyle labelStyle = new Label.LabelStyle(levelFont, Color.WHITE);
 
-        currentLevel = new Label("Level: " +getPlayerLevel(), labelStyle);
+        currentLevel = new Label("Level: " + getPlayerLevel(), labelStyle);
         nextLevel = new Label(getPlayerLevel(), labelStyle);
 
         progressBarTable.add(currentLevel).padRight(50);
@@ -223,13 +223,18 @@ public class GameUI {
 
     private String getPlayerLevel() {
         if (game.getPlayer() == null) {
-            return "0";
-        } else return String.valueOf(game.getPlayer().getLevel());
-
+            return "1";
+        } else {
+            return String.valueOf(game.getPlayer().getLevelSystem().getCurrentLevel());
+        }
     }
 
     private void updateLevelLabels() {
-        nextLevel.setText(String.valueOf(game.getPlayer().getLevel() + 1));
+        currentLevel.setText("Level: " + String.valueOf(
+            game.getPlayer().getLevelSystem().getCurrentLevel()));
+
+        nextLevel.setText(String.valueOf(
+            game.getPlayer().getLevelSystem().getCurrentLevel() + 1));
     }
 
     public void update(float deltaTime) {

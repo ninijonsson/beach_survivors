@@ -68,6 +68,7 @@ public class AssetLoader {
         manager.load("assets/entities/enemies/crocodile1_sheet.png", Texture.class);
         manager.load("assets/entities/enemies/navy_seal_sheet.png", Texture.class);
         manager.load("assets/entities/enemies/crocodile2.png", Texture.class);
+        manager.load("assets/entities/enemies/crab_sheet.png", Texture.class);
         manager.load("assets/entities/beach_girl_sheet.png", Texture.class);
         manager.load("assets/entities/beach_guy_sheet.png", Texture.class);
         manager.load("assets/entities/power_ups/freeze.png", Texture.class);

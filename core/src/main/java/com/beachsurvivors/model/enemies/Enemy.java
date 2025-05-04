@@ -60,9 +60,11 @@ public abstract class Enemy implements Disposable {
     private Timer.Task hideHealthBarTask;
     private Stage stage;
 
-    public Enemy(int width, int height, int healthPoints) {
+    public Enemy(int width, int height, int healthPoints, int expOnDeath) {
         this.width = width;
         this.height = height;
+        this.healthPoints = healthPoints;
+        this.expOnDeath = expOnDeath;
 
         this.texture = AssetLoader.get().getTexture("assets/placeholder.png");
         this.sprite = new Sprite(texture);
@@ -72,7 +74,6 @@ public abstract class Enemy implements Disposable {
         this.radius = width /4;
 
         this.hitbox = new Rectangle(0, 0, width, height);
-        this.healthPoints = healthPoints;
         isImmune=false;
         isAlive = true;
         createHealthBar(healthPoints);
@@ -340,5 +341,9 @@ public abstract class Enemy implements Disposable {
 
     public void setY(float y) {
         sprite.setY(y);
+    }
+
+    public int getExp() {
+        return expOnDeath;
     }
 }

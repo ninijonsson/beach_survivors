@@ -9,12 +9,10 @@ import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 
 public class NavySeal extends Enemy {
-
     float bulletTimer = 0f;
 
-
     public NavySeal() {
-        super( 100, 100, 20);
+        super( 100, 100, 20, 25);
         createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/navy_seal_sheet.png"), 4, 1);
         setHealthPoints(30);
         setHitSound(AssetLoader.get().getSound("assets/sounds/Seal_Damage.wav"));
