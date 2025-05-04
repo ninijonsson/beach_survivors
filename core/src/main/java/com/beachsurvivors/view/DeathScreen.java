@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -21,29 +20,27 @@ public class DeathScreen implements Screen {
     private Table rightTable;
     private Table leftTable;
 
-//    private TextButton retryButton;
-//    private TextButton exitButton;
-//    private TextButton mainMenuButton;
-
     private ImageButton retryButton;
     private ImageButton exitButton;
     private ImageButton mainMenuButton;
 
-    private Label textLabel;
-    private Label enemiesKilledText;
+
     private int enemiesKilled;
-    private Label timeSurvivedText;
-    private float timeSurvived;
-    private Label totalDamageDone;
-    private double totalDamage;
+    private double damageDone;
+    private double damageTaken;
+    private double healingReceived;
+    private double damagePrevented;
     private String timeStamp;
 
 
-    public DeathScreen(GameScreen gameScreen, int enemiesKilled, double totalDamage, float timeSurvived) {
+    public DeathScreen(GameScreen gameScreen, int enemiesKilled, double damageDone,
+                       float timeSurvived, double damageTaken, double healingReceived, double damagePrevented) {
         this.gameScreen = gameScreen;
         this.enemiesKilled = enemiesKilled;
-        this.totalDamage = totalDamage;
-        this.timeSurvived = timeSurvived;
+        this.damageDone = damageDone;
+        this.damageTaken = damageTaken;
+        this.healingReceived = healingReceived;
+        this.damagePrevented = damagePrevented;
 
         stage = new Stage(new FitViewport(gameScreen.getScreenWidth(), gameScreen.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
@@ -60,30 +57,28 @@ public class DeathScreen implements Screen {
 
     public void createActors() {
         rightTable = new Table();
+        leftTable = new Table();
 
         Texture backgroundTexture = AssetLoader.get().manager.get("assets/game_over_screen/you died screen.png");
         Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
 
+        //Stackar actors, background underst, tables ovanpå
         Stack stack = new Stack();
         stack.setSize(1200,972);
         stack.setPosition(gameScreen.getScreenWidth()/2f-stack.getWidth()/2,
             gameScreen.getScreenHeight()/2f-stack.getHeight()/2 );
         stack.add(background);
         stack.add(rightTable);
+        stack.add(leftTable);
         stage.addActor(stack);
 
-        leftTable = new Table();
 
-        float fontscale = 1.2f;
-        enemiesKilledText = new Label("Enemies killed: " + enemiesKilled , skin);
-        enemiesKilledText.setFontScale(fontscale);
+        createActorsLeftTable();
+        createActorsRightTable();
+        addListeners();
+    }
 
-        timeSurvivedText = new Label("Time survived: " + timeStamp, skin);
-        timeSurvivedText.setFontScale(fontscale);
-        totalDamageDone = new Label("Total damage done: " + totalDamage, skin);
-        totalDamageDone.setFontScale(fontscale);
-
-        skin.getFont("Silkscreen-Regular").getData().setScale(fontscale);
+    private void createActorsRightTable() {
 
         retryButton = new ImageButton(skin, "retry");
         exitButton = new ImageButton(skin, "exit");
@@ -95,16 +90,12 @@ public class DeathScreen implements Screen {
         exitButton.getImageCell().grow();
 
         addActorsRightTable();
-        addActorsLeftTable();
-        addListeners();
     }
 
     private void addActorsRightTable() {
         int width = 333;
         int height = 83;
 
-        rightTable.add(textLabel).padBottom(30);
-        rightTable.row();
         rightTable.add(retryButton).width(width).height(height).padBottom(20);
         rightTable.row();
         rightTable.add(mainMenuButton).width(width).height(height).padBottom(20);
@@ -116,14 +107,41 @@ public class DeathScreen implements Screen {
 
     }
 
-    private void addActorsLeftTable() {
-        leftTable.add(enemiesKilledText).padBottom(10).left();
-        leftTable.row();
-        leftTable.add(timeSurvivedText).padBottom(10).left();
-        leftTable.row();
-        leftTable.add(totalDamageDone).left();
+    private void createActorsLeftTable() {
 
-        leftTable.setPosition(gameScreen.getScreenWidth()-1150, gameScreen.getScreenHeight()/2f);
+        float fontscale = 1.15f;
+        int bottomPadding = 10;
+
+        Label enemiesKilledText = new Label("Enemies killed: " + enemiesKilled , skin);
+        enemiesKilledText.setFontScale(fontscale);
+        leftTable.add(enemiesKilledText).padBottom(bottomPadding).left();
+        leftTable.row();
+
+        Label timeSurvivedText = new Label("Time survived: " + timeStamp, skin);
+        timeSurvivedText.setFontScale(fontscale);
+        leftTable.add(timeSurvivedText).padBottom(bottomPadding).left();
+        leftTable.row();
+
+        Label totalDamageDone = new Label("Total damage done: " + damageDone, skin);
+        totalDamageDone.setFontScale(fontscale);
+        leftTable.add(totalDamageDone).padBottom(bottomPadding).left();
+        leftTable.row();
+
+        Label totalDamageTaken = new Label("Total damage taken: " + damageTaken, skin);
+        totalDamageTaken.setFontScale(fontscale);
+        leftTable.add(totalDamageTaken).padBottom(bottomPadding).left();
+        leftTable.row();
+
+        Label totalHealing = new Label("Healing received: " + healingReceived, skin);
+        totalHealing.setFontScale(fontscale);
+        leftTable.add(totalHealing).padBottom(bottomPadding).left();
+        leftTable.row();
+
+        Label damageShielded = new Label("Damage absorbed: " + damagePrevented, skin);
+        damageShielded.setFontScale(fontscale);
+        leftTable.add(damageShielded).padBottom(bottomPadding).left();
+
+        leftTable.setPosition(gameScreen.getScreenWidth()-1100, gameScreen.getScreenHeight()/2.4f);
         stage.addActor(leftTable);
     }
 

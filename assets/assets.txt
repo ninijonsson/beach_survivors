@@ -8,12 +8,10 @@ Maps/BeachSurvivorMap.tiled-session
 Thud.mp3
 entities/abilities/ability_bar.png
 entities/abilities/boomerangmc.png
-entities/abilities/bubble.png
-entities/abilities/bubble2.png
-entities/abilities/bubble_3.png
 entities/abilities/bullet.png
 entities/abilities/exp_bar.png
 entities/abilities/fireball.png
+entities/abilities/shield_bubble.png
 entities/abilities/test_ability_bar.png
 entities/abilities/xp_orb.png
 entities/beach_girl_sheet.png

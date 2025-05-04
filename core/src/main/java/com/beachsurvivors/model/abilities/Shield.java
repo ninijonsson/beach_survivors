@@ -13,9 +13,10 @@ public class Shield extends Ability {
     private final int INITIAL_SHIELD_STRENGTH = 20;
     private int currentShieldStrength;  //Hur mycket HP skölden skyddar (ifall vi ska ha en vanlig HP-sköld)
     private boolean isRegening;
+    private double totalDamagePrevented;
 
     public Shield() {
-        super("Shield" , "assets/entities/abilities/bubble_3.png", AbilityType.SHIELD, 0, 20, 150, 150);
+        super("Shield" , "assets/entities/abilities/shield_bubble.png", AbilityType.SHIELD, 0, 20, 150, 150);
         this.currentShieldStrength = INITIAL_SHIELD_STRENGTH;
         isRegening = false;
         getSprite().setColor(1f,1f,1f, 0.75f);
@@ -41,10 +42,12 @@ public class Shield extends Ability {
 
     public void damageShield(double damage) {
         if (currentShieldStrength - damage <= 0) {
+            totalDamagePrevented += currentShieldStrength;
             currentShieldStrength = 0;
             regenShield();
         } else {
             currentShieldStrength -= damage;
+            totalDamagePrevented += damage;
         }
     }
 
@@ -81,5 +84,7 @@ public class Shield extends Ability {
         return currentShieldStrength <= 0;
     }
 
-
+    public double getTotalDamagePrevented() {
+        return totalDamagePrevented;
+    }
 }

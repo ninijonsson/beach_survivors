@@ -69,7 +69,6 @@ public class GameScreen extends Game implements Screen {
     private int totalEnemiesKilled;
     private Ability wave;
     private double totalPlayerDamageDealt;
-    private double totalPlayerDamageTaken;
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
@@ -324,7 +323,8 @@ public class GameScreen extends Game implements Screen {
             pause();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds());
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
+                player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
     }
 
@@ -528,7 +528,6 @@ public class GameScreen extends Game implements Screen {
     private Enemy selectRandomEnemy() {
         int enemyChoice = random.nextInt(0, 3);
         Enemy enemy = null;
-        enemyChoice = 1;
 
         // TODO: Lägg in krabba
         switch (enemyChoice) {
@@ -685,7 +684,8 @@ public class GameScreen extends Game implements Screen {
 
         if (!player.isAlive()) {
             System.out.println("You died");
-            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds());
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
+                player.getHealingReceived(), player.getDamageTaken(), shield.getTotalDamagePrevented());
         }
     }
 

@@ -260,7 +260,6 @@ public abstract class Enemy implements Disposable {
         Random random = new Random();
         int chance = random.nextInt(0,100);
 
-
         // Drop items koordinater
         float x = getSprite().getWidth()/2 + getSprite().getX();
         float y = getSprite().getHeight()/2 + getSprite().getY();
