@@ -510,7 +510,7 @@ public class GameScreen extends Game implements Screen {
             return;
         }
 
-        int enemyChoice = random.nextInt(0, 3);
+        int enemyChoice = random.nextInt(0, 4);
         Enemy enemy = null;
 
         switch (enemyChoice) {

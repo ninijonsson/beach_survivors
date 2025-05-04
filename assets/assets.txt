@@ -1,4 +1,11 @@
 .gitkeep
+Map2/map2.tmx
+Map2/tf_beach_tileA1.png
+Map2/tf_beach_tileA1.tsx
+Map2/tf_beach_tileB.png
+Map2/tf_beach_tileB.tsx
+Maps/BeachSurvivorMap.tiled-session
+Thud.mp3
 entities/abilities/ability_bar.png
 entities/abilities/boomerangmc.png
 entities/abilities/bullet.png
@@ -49,7 +56,7 @@ game_over_screen/game_over_skin.png
 game_over_screen/gameover_skin.atlas
 game_over_screen/gameover_skin.json
 game_over_screen/you died screen.png
-game_screen/cool_beach_guy.png
+game_screen/Cool_beach_guy.png
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas
@@ -68,14 +75,8 @@ main_menu/buttons/play_button_scaled.png
 main_menu/logo.png
 main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
-main_menu/sound/holiday.wav
+main_menu/sound/Holiday.wav
 main_menu/sound/play_sound.wav
-map2/map2.tmx
-map2/tf_beach_tileA1.png
-map2/tf_beach_tileA1.tsx
-map2/tf_beach_tileB.png
-map2/tf_beach_tileB.tsx
-maps/BeachSurvivorMap.tiled-session
 placeholder.png
 shark_death.wav
 skin_composer/font-export.fnt
@@ -91,8 +92,7 @@ skin_composer/pause_menu/pause_menu.png
 skin_composer/testbuttons.atlas
 skin_composer/testbuttons.json
 skin_composer/testbuttons.png
+sounds/Seal_Damage.wav
+sounds/Shark_Damage.wav
 sounds/beach.mp3
-sounds/seal_damage.wav
-sounds/shark_damage.wav
 sounds/shark_damage_2.wav
-thud.mp3
