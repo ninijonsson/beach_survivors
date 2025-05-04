@@ -46,8 +46,9 @@ public class Main extends Game {
         menuScreen.startGameMusic();
     }
 
-    public void gameOver(int enemiesKilled, double damageDone, float gameTime) {
-        setScreen(new DeathScreen(gameScreen, enemiesKilled, damageDone, gameTime));
+    public void gameOver(int enemiesKilled, double damageDone, float gameTime,
+                         double healingReceived, double damageTaken, double damagePrevented) {
+        setScreen(new DeathScreen(gameScreen, enemiesKilled, damageDone, gameTime, healingReceived, damageTaken, damagePrevented));
     }
 
     public void levelUp() {

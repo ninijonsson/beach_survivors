@@ -17,17 +17,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
-import com.beachsurvivors.model.abilities.Boomerang;
+import com.beachsurvivors.model.abilities.*;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
-import com.beachsurvivors.model.abilities.Ability;
-import com.beachsurvivors.model.abilities.BaseAttack;
-import com.beachsurvivors.model.abilities.WaterWave;
 import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.Berserk;
 import com.beachsurvivors.model.groundItems.GroundItem;
@@ -65,12 +63,12 @@ public class GameScreen extends Game implements Screen {
     private Array<Ability> abilities;
     private Boomerang boomerang;
     private BaseAttack bullet;
+    private Shield shield;
     private float bulletTimer = 0f;
     private int sharksKilled;
     private int totalEnemiesKilled;
     private Ability wave;
     private double totalPlayerDamageDealt;
-    private double totalPlayerDamageTaken;
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
@@ -131,8 +129,10 @@ public class GameScreen extends Game implements Screen {
 
         boomerang = new Boomerang();
         bullet = new BaseAttack();
+        shield = new Shield();
         abilities.add(boomerang);
         abilities.add(bullet);
+        abilities.add(shield);
 
 
         font = new BitmapFont();
@@ -181,19 +181,15 @@ public class GameScreen extends Game implements Screen {
             logic();
             draw();
 
-//            gameUI.getStage().act(delta);
-//            gameUI.update(Gdx.graphics.getDeltaTime());
-//            gameUI.draw();
         } else {
             spriteBatch.begin();
-
             main.pause();
-
             spriteBatch.end();
         }
-            gameUI.getStage().act(delta);
-            gameUI.update(Gdx.graphics.getDeltaTime());
-            gameUI.draw();
+        gameUI.getStage().act(delta);
+        gameUI.update(Gdx.graphics.getDeltaTime());
+        gameUI.draw();
+
     }
 
     /**
@@ -247,6 +243,7 @@ public class GameScreen extends Game implements Screen {
     private void logic() {
         pickUpPowerUp();
         pickUpGroundItem();
+        updateShieldPos();
 
         enemyAttacks();
 
@@ -323,10 +320,11 @@ public class GameScreen extends Game implements Screen {
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            isPaused = !isPaused;
+            pause();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds());
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
+                player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
     }
 
@@ -357,7 +355,6 @@ public class GameScreen extends Game implements Screen {
             if (player.getHitBox().overlaps(groundItem.getHitbox())) {
                 groundItem.onPickup(player);
                 groundItemsToRemove.add(groundItem);
-                groundItem.dispose();
             }
         }
         groundItems.removeAll(groundItemsToRemove, true);
@@ -388,6 +385,12 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    private void updateShieldPos() {
+        if (!shield.getIsDepleted() && shield.getSprite() != null) {
+            shield.updatePosition(player.getPlayerX()-shield.getSprite().getWidth()/2, player.getPlayerY()-shield.getSprite().getHeight()/2);
+        }
+    }
+
 
     private void shootAtNearestEnemy() {
         Enemy target = getNearestEnemy();
@@ -399,8 +402,8 @@ public class GameScreen extends Game implements Screen {
             ).nor();
 
             BaseAttack bullet = new BaseAttack();
-            bullet.updatePosition(player.getPlayerX(), player.getPlayerY());
             bullet.setDirection(direction);
+            bullet.updatePosition(player.getPlayerX(), player.getPlayerY());
 
             abilities.add(bullet);
         }
@@ -435,10 +438,13 @@ public class GameScreen extends Game implements Screen {
     public void resume() {
         setPaused(false);
         main.setScreen(this);
+        Timer.instance().start();
     }
 
     @Override
     public void pause() {
+        isPaused = !isPaused;
+        Timer.instance().stop();
     }
 
     @Override
@@ -450,8 +456,8 @@ public class GameScreen extends Game implements Screen {
         spriteBatch.dispose();
         mapRenderer.dispose();
         tiledMap.dispose();
-        player.dispose();
-        boomerang.dispose();
+//        player.dispose();  //dessa borde inte disposas
+//        boomerang.dispose();
         font.dispose();
     }
 
@@ -510,6 +516,16 @@ public class GameScreen extends Game implements Screen {
             return;
         }
 
+        Enemy enemy = selectRandomEnemy();
+
+        Vector2 randomPos = getRandomOffscreenPosition(150);
+        enemy.getSprite().setPosition(randomPos.x, randomPos.y);
+        enemy.getHitbox().setX(randomPos.x);
+        enemy.getHitbox().setY(randomPos.y);
+        enemies.add(enemy);
+    }
+
+    private Enemy selectRandomEnemy() {
         int enemyChoice = random.nextInt(0, 4);
         Enemy enemy = null;
 
@@ -527,12 +543,7 @@ public class GameScreen extends Game implements Screen {
                 enemy = new Crab();
                 break;
         }
-
-        Vector2 randomPos = getRandomOffscreenPosition(150);
-        enemy.getSprite().setPosition(randomPos.x, randomPos.y);
-        enemy.getHitbox().setX(randomPos.x);
-        enemy.getHitbox().setY(randomPos.y);
-        enemies.add(enemy);
+        return enemy;
     }
 
     private void spawnMiniBoss(float gameTimeSeconds) {
@@ -640,7 +651,7 @@ public class GameScreen extends Game implements Screen {
                         isCritical));
                 }
 
-                if (!(ability instanceof Boomerang)) {
+                if (!ability.isPersistent()) {
                     ability.dispose();
                     abilities.removeIndex(j);
                 }
@@ -660,19 +671,26 @@ public class GameScreen extends Game implements Screen {
                 damagePlayer(enemyAbilities.get(i).getDamage());
                 enemyAbilities.get(i).dispose();
                 enemyAbilities.removeIndex(i);
-
             }
         }
     }
 
     private void damagePlayer(double damage) {
-        player.takeDamage(damage);
-        gameUI.setHealthBarValue(player.getHealthPoints());
-        System.out.println("player HP : " + player.getHealthPoints());
+        int shieldStrength = shield.getCurrentShieldStrength();
+        double remainingDamage = damage - shieldStrength;
+
+        shield.damageShield(damage);
+
+        if (remainingDamage >= 0) {
+            player.takeDamage(remainingDamage);
+            gameUI.setHealthBarValue(player.getHealthPoints());
+            System.out.println("player HP : " + player.getHealthPoints());
+        }
 
         if (!player.isAlive()) {
             System.out.println("You died");
-            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds());
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
+                player.getHealingReceived(), player.getDamageTaken(), shield.getTotalDamagePrevented());
         }
     }
 
@@ -680,13 +698,13 @@ public class GameScreen extends Game implements Screen {
      * Decluttering method for keeping the draw-method simple.
      */
     private void drawStuff() {
-        drawPlayerAbilities();
         drawGroundItems();
         drawPowerUps();
         drawEnemies();
         drawEnemyAbilities();
         drawDamageText();
         player.drawAnimation();
+        drawPlayerAbilities();
 
     }
 
@@ -736,7 +754,15 @@ public class GameScreen extends Game implements Screen {
 
     private void drawPlayerAbilities() {
         for (Ability a : abilities) {
-            a.getSprite().draw(spriteBatch);
+            if (a instanceof Shield) {
+                a.updatePosition(player.getPlayerX()-a.getSprite().getWidth()/2, player.getPlayerY()-a.getSprite().getHeight()/2);
+
+                if (!shield.getIsDepleted()) {
+                    a.getSprite().draw(spriteBatch);
+                }
+            } else {
+                a.getSprite().draw(spriteBatch);
+            }
         }
     }
 

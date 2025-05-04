@@ -16,6 +16,7 @@ public abstract class Ability implements Disposable {
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitBox;
+    private boolean isPersistent = false; //Om abilityn ska vara "permanent" (sköld) eller försvinna, t.ex (BaseAttack)
 
     public Ability(String name, String texturePath, AbilityType type, double damage, double cooldown, int width, int height) {
         this.texture = AssetLoader.get().getTexture(texturePath);
@@ -96,6 +97,14 @@ public abstract class Ability implements Disposable {
         return name;
     }
 
+    public void setPersistent(boolean isPersistent) {
+        this.isPersistent = isPersistent;
+    }
+
+    public boolean isPersistent() {
+        return isPersistent;
+    }
+
     public void updatePosition(float delta, float playerX, float playerY) {}
 
     @Override
@@ -107,8 +116,6 @@ public abstract class Ability implements Disposable {
 
     @Override
     public void dispose() {
-        if (texture != null) {
-            sprite=null;
-        }
+
     }
 }

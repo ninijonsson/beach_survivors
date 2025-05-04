@@ -16,6 +16,7 @@ entities/abilities/xp_orb.png
 entities/beach_girl_sheet.png
 entities/beach_guy_sheet.png
 entities/beer.png
+entities/boomerangmc.png
 entities/burger.png
 entities/chest.png
 entities/coconut.png
@@ -38,6 +39,7 @@ entities/particles/particle-ball2.png
 entities/particles/particle-ball3.png
 entities/particles/particle-ball4.png
 entities/particles/particle.png
+entities/how_to_play.png
 entities/power_ups/beer.png
 entities/power_ups/freeze.png
 entities/power_ups/health_boost.png
@@ -49,6 +51,11 @@ fonts/level.fnt
 fonts/level.png
 fonts/timer.fnt
 fonts/timer.png
+game_over_screen/AniMeMatrix-MB_EN.fnt
+game_over_screen/Silkscreen-Regular.fnt
+game_over_screen/deathscreen_skin.atlas
+game_over_screen/deathscreen_skin.json
+game_over_screen/deathscreen_skin.png
 game_over_screen/font-export.fnt
 game_over_screen/font-over-export.fnt
 game_over_screen/font-pressed-export.fnt
@@ -75,8 +82,14 @@ main_menu/buttons/play_button_scaled.png
 main_menu/logo.png
 main_menu/logo_skiss_1.png
 main_menu/menu_background.jpeg
-main_menu/sound/Holiday.wav
+main_menu/sound/holiday.wav
 main_menu/sound/play_sound.wav
+map2/map2.tmx
+map2/tf_beach_tileA1.png
+map2/tf_beach_tileA1.tsx
+map2/tf_beach_tileB.png
+map2/tf_beach_tileB.tsx
+maps/BeachSurvivorMap.tiled-session
 placeholder.png
 shark_death.wav
 skin_composer/font-export.fnt
@@ -95,4 +108,10 @@ skin_composer/testbuttons.png
 sounds/Seal_Damage.wav
 sounds/Shark_Damage.wav
 sounds/beach.mp3
+sounds/seal_damage.wav
+sounds/shark_damage.wav
 sounds/shark_damage_2.wav
+thud.mp3
+sounds/seal_damage.wav
+sounds/shark_damage.wav
+thud.mp3

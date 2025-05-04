@@ -1,0 +1,72 @@
+{
+"com.badlogic.gdx.graphics.g2d.BitmapFont": {
+	"anime_matrix": {
+		"file": "AniMeMatrix-MB_EN.fnt",
+		"scaledSize": -1,
+		"markupEnabled": false,
+		"flip": false
+	},
+	"Silkscreen-Regular": {
+		"file": "Silkscreen-Regular.fnt",
+		"scaledSize": -1,
+		"markupEnabled": false,
+		"flip": false
+	}
+},
+"com.badlogic.gdx.graphics.Color": {
+	"RGBA_0_255_103_255": {
+		"r": 0,
+		"g": 1,
+		"b": 0.40392157,
+		"a": 1
+	},
+	"RGBA_250_255_0_255": {
+		"r": 0.98039216,
+		"g": 1,
+		"b": 0,
+		"a": 1
+	},
+	"RGBA_47_49_3_255": {
+		"r": 0.13333334,
+		"g": 0.13725491,
+		"b": 0.007843138,
+		"a": 1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
+	"menu": {
+		"imageUp": "main-menu_button_scaled-300",
+		"imageDown": "main-menu_button_pressed_scaled-300",
+		"imageOver": "main-menu_button_hover_scaled-300"
+	},
+	"retry": {
+		"imageUp": "retry_button_scaled-300",
+		"imageDown": "retry_button_pressed_scaled-300",
+		"imageOver": "retry_button_hover_scaled-300"
+	},
+	"exit": {
+		"imageUp": "exit_button_2_scaled",
+		"imageDown": "exit_button_2_pressed_scaled",
+		"imageOver": "exit_button_2_hover_scaled"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+	"default": {
+		"font": "Silkscreen-Regular",
+		"fontColor": "RGBA_250_255_0_255"
+	},
+	"cool": {
+		"font": "anime_matrix",
+		"fontColor": "RGBA_250_255_0_255"
+	},
+	"pixel": {
+		"font": "Silkscreen-Regular",
+		"fontColor": "RGBA_250_255_0_255"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+	"default": {
+		"label": "default"
+	}
+}
+}

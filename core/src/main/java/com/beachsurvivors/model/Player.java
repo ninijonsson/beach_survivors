@@ -34,6 +34,10 @@ public class Player extends Actor {
     private LevelSystem levelSystem;
     private GameScreen gameScreen;
 
+    private double damageDone;
+    private double damageTaken;
+    private double healingReceived;
+
     private Rectangle beachGuyHitBox;
     private float playerX;
     private float playerY;
@@ -210,6 +214,7 @@ public class Player extends Actor {
     public void takeDamage(double damage){
         if (!isImmune) {
             healthPoints -= damage;
+            damageTaken += damage;
             if (healthPoints <= 0) {
                 setAlive(false);
                 return;
@@ -297,6 +302,7 @@ public class Player extends Actor {
 
     public void increaseHealthPoints(int increasedHealthPoints) {
         healthPoints += increasedHealthPoints;
+        healingReceived += increasedHealthPoints;
 
         if (healthPoints > 100) {
             healthPoints = 100;
@@ -317,6 +323,16 @@ public class Player extends Actor {
     public double getCriticalHitDamage() {
         return criticalHitDamage;
     }
+
+
+    public double getDamageTaken() {
+        return damageTaken;
+    }
+
+    public double getHealingReceived() {
+        return healingReceived;
+    }
+
 
     public LevelSystem getLevelSystem() {
         return levelSystem;

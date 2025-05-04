@@ -60,6 +60,7 @@ public class AssetLoader {
         manager.load("assets/entities/abilities/bullet.png", Texture.class);
         manager.load("assets/entities/abilities/boomerangmc.png", Texture.class);
         manager.load("assets/entities/abilities/fireball.png", Texture.class);
+        manager.load("assets/entities/abilities/shield_bubble.png", Texture.class);
         manager.load("assets/entities/smoke.png", Texture.class);
         manager.load("assets/entities/enemies/shark.png", Texture.class);
         manager.load("assets/entities/enemies/shark_sheet.png", Texture.class);
@@ -96,7 +97,9 @@ public class AssetLoader {
         manager.load("skin_composer/healthbutton.json", Skin.class);
         manager.load("level_up_screen/uiskin.json", Skin.class);
         manager.load("skin_composer/pause_menu/pause_menu.json", Skin.class);
+        manager.load("game_over_screen/deathscreen_skin.json", Skin.class);
     }
+
 
     public Texture getTexture(String path) {
         return manager.get(path, Texture.class);
