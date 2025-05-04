@@ -34,8 +34,7 @@ public class Player extends Actor {
     private LevelSystem levelSystem;
     private GameScreen gameScreen;
 
-    private double damageDone;
-    private double damageTaken;
+    private double damageTaken = 0;
     private double healingReceived;
 
     private Rectangle beachGuyHitBox;

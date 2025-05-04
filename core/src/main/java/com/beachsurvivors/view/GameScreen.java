@@ -65,7 +65,6 @@ public class GameScreen extends Game implements Screen {
     private BaseAttack bullet;
     private Shield shield;
     private float bulletTimer = 0f;
-    private int sharksKilled;
     private int totalEnemiesKilled;
     private Ability wave;
     private double totalPlayerDamageDealt;
@@ -104,7 +103,6 @@ public class GameScreen extends Game implements Screen {
 
         droppedItems = new Array<>();
         abilities = new Array<>();
-        sharksKilled = 0;
         totalEnemiesKilled = 0;
         create();
     }
@@ -690,7 +688,7 @@ public class GameScreen extends Game implements Screen {
         if (!player.isAlive()) {
             System.out.println("You died");
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
-                player.getHealingReceived(), player.getDamageTaken(), shield.getTotalDamagePrevented());
+                player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
     }
 
