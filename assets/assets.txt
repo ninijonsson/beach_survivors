@@ -61,7 +61,9 @@ game_over_screen/font-pressed-export.fnt
 game_over_screen/game_over_skin.png
 game_over_screen/gameover_skin.atlas
 game_over_screen/gameover_skin.json
+game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
+game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
 level_up_screen/default.fnt
 level_up_screen/default.png

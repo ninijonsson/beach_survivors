@@ -20,7 +20,7 @@ public class HealthHeart extends PowerUp implements PickUpAble {
 
     @Override
     public void applyAffect(Player player) {
-        player.increaseHealthPoints(healthAmount);
+        player.restoreHealthPoints(healthAmount);
 
     }
 }

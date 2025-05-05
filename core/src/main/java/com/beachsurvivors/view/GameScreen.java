@@ -105,6 +105,8 @@ public class GameScreen extends Game implements Screen {
         abilities = new Array<>();
         totalEnemiesKilled = 0;
         create();
+
+        gameUI.updateStats(player);
     }
 
     /**
@@ -242,6 +244,7 @@ public class GameScreen extends Game implements Screen {
         pickUpPowerUp();
         pickUpGroundItem();
         updateShieldPos();
+        gameUI.updateStats(player);
 
         enemyAttacks();
 
@@ -342,7 +345,7 @@ public class GameScreen extends Game implements Screen {
                 powerUp.dispose();
             }
         }
-        gameUI.setHealthBarValue(player.getHealthPoints());
+        gameUI.setHealthBarValue(player.getCurrentHealthPoints());
         droppedItems.removeAll(powerUpsToRemove, true);
         powerUpsToRemove.clear();
     }
@@ -681,8 +684,8 @@ public class GameScreen extends Game implements Screen {
 
         if (remainingDamage >= 0) {
             player.takeDamage(remainingDamage);
-            gameUI.setHealthBarValue(player.getHealthPoints());
-            System.out.println("player HP : " + player.getHealthPoints());
+            gameUI.setHealthBarValue(player.getCurrentHealthPoints());
+            System.out.println("player HP : " + player.getCurrentHealthPoints());
         }
 
         if (!player.isAlive()) {

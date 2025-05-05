@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 
 public class GameUI {
@@ -50,7 +52,7 @@ public class GameUI {
         createPlayerHealthBar();
         createTimerLabel();
         createInfoTable();
-
+        creatPlayerStats();
 
         addActors();
     }
@@ -227,6 +229,57 @@ public class GameUI {
         } else {
             return String.valueOf(game.getPlayer().getLevelSystem().getCurrentLevel());
         }
+    }
+
+    private Label healthPoints;
+    private Label damage;
+    private Label critChance;
+    private Label critDamage;
+    private Label cooldownReduction;
+    private Label movementSpeed;
+
+    private void creatPlayerStats() {
+        float fontScale = 1.2f;
+        Skin skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
+        Table statsBox = new Table();
+        statsBox.setSize(600,400);
+
+        healthPoints = new Label("HealthPoints" , skin, "stats");
+        statsBox.add(healthPoints).left().row();
+        healthPoints.setFontScale(fontScale);
+
+        damage = new Label("Base Damage" , skin, "stats");
+        statsBox.add(damage).left().row();
+        damage.setFontScale(fontScale);
+
+        critChance = new Label("Critical Chance" ,skin, "stats");
+        statsBox.add(critChance).left().row();
+        critChance.setFontScale(fontScale);
+
+        critDamage = new Label("Critical Damage" , skin, "stats");
+        statsBox.add(critDamage).left().row();
+        critDamage.setFontScale(fontScale);
+
+        cooldownReduction = new Label("Cooldown Reduction" , skin, "stats");
+        statsBox.add(cooldownReduction).left().row();
+        cooldownReduction.setFontScale(fontScale);
+
+        movementSpeed = new Label("Movement Speed" , skin, "stats");
+        statsBox.add(movementSpeed).left().row();
+        movementSpeed.setFontScale(fontScale);
+
+        statsBox.setPosition(-80, game.getScreenHeight()/2f);
+        stage.addActor(statsBox);
+
+    }
+
+    public void updateStats(Player player) {
+        healthPoints.setText("Health Points " +player.getCurrentHealthPoints() + "/"+player.getMaxHealthPoints());
+        damage.setText("Base Damage: " + player.getBaseDamage());
+        critChance.setText("CritHit Chance: " + String.format("%.0f", player.getCriticalHitChance()*100) + "%");
+        critDamage.setText("CritHit Damage: " + String.format("%.0f", player.getCriticalHitDamage()*100) + "%");
+        cooldownReduction.setText("Cooldown Reduction: " + player.getCooldown() + "%");
+        movementSpeed.setText("Movement Speed: " + player.getSpeed());
     }
 
     private void updateLevelLabels() {

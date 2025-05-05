@@ -17,15 +17,18 @@ import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.controller.LevelSystem;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.view.GameScreen;
-import com.beachsurvivors.view.GameUI;
 
 import java.util.Random;
 
 public class Player extends Actor {
 
-    private int healthPoints;
+    private final int STARTING_HEALTH_POINTS = 100;
+    private int maxHealthPoints;
+    private int currentHealthPoints;
     private int experiencePoints;
     private float speed = 500f;
+    private double baseDamage;
+    private double cooldown;
     private float criticalHitChance = 0.15f;
     private double criticalHitDamage = 2;
     //private int level = 1;
@@ -35,7 +38,7 @@ public class Player extends Actor {
     private GameScreen gameScreen;
 
     private double damageTaken = 0;
-    private double healingReceived;
+    private double healingReceived = 0;
 
     private Rectangle beachGuyHitBox;
     private float playerX;
@@ -78,7 +81,8 @@ public class Player extends Actor {
         playerY = map.getStartingY();
         beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
 
-        healthPoints = 100;
+        currentHealthPoints = STARTING_HEALTH_POINTS;
+        maxHealthPoints = STARTING_HEALTH_POINTS;
 
         createAnimation();
     }
@@ -212,9 +216,9 @@ public class Player extends Actor {
 
     public void takeDamage(double damage){
         if (!isImmune) {
-            healthPoints -= damage;
+            currentHealthPoints -= damage;
             damageTaken += damage;
-            if (healthPoints <= 0) {
+            if (currentHealthPoints <= 0) {
                 setAlive(false);
                 return;
             }
@@ -253,6 +257,23 @@ public class Player extends Actor {
         }
     }
 
+    public void restoreHealthPoints(int increasedHealthPoints) {
+        currentHealthPoints += increasedHealthPoints;
+        healingReceived += increasedHealthPoints;
+
+        if (currentHealthPoints > maxHealthPoints) {
+            currentHealthPoints = maxHealthPoints;
+        }
+    }
+
+    public void increaseMaximumHealthPoints(int newMaxHealthPoints) {
+        this.maxHealthPoints = newMaxHealthPoints;
+        restoreHealthPoints(newMaxHealthPoints);
+    }
+
+    public void increaseDamage(double increasedDamage) {
+    }
+
     public boolean isCriticalHit() {
         return random.nextFloat() < criticalHitChance;
     }
@@ -283,12 +304,28 @@ public class Player extends Actor {
         beachGuyHitBox.setY(playerY - playerHeight / 2);
     }
 
+    public double getBaseDamage() {
+        return baseDamage;
+    }
+
     public float getCriticalHitChance() {
         return criticalHitChance;
     }
 
-    public int getHealthPoints() {
-        return healthPoints;
+    public double getCriticalHitDamage() {
+        return criticalHitDamage;
+    }
+
+    public int getCurrentHealthPoints() {
+        return currentHealthPoints;
+    }
+
+    public int getMaxHealthPoints() {
+        return maxHealthPoints;
+    }
+
+    public double getCooldown() {
+        return cooldown;
     }
 
     public boolean isAlive() {
@@ -299,18 +336,6 @@ public class Player extends Actor {
         this.isAlive = isAlive;
     }
 
-    public void increaseHealthPoints(int increasedHealthPoints) {
-        healthPoints += increasedHealthPoints;
-        healingReceived += increasedHealthPoints;
-
-        if (healthPoints > 100) {
-            healthPoints = 100;
-        }
-    }
-
-    public void increaseDamage(double increasedDamage) {
-    }
-
     public float getSpeed() {
         return speed;
     }
@@ -319,9 +344,6 @@ public class Player extends Actor {
         return levelSystem.getCurrentLevel();
     }
 
-    public double getCriticalHitDamage() {
-        return criticalHitDamage;
-    }
 
 
     public double getDamageTaken() {
@@ -332,9 +354,9 @@ public class Player extends Actor {
         return healingReceived;
     }
 
-
     public LevelSystem getLevelSystem() {
         return levelSystem;
     }
+
 }
 

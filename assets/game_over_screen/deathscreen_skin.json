@@ -6,6 +6,12 @@
 		"markupEnabled": false,
 		"flip": false
 	},
+	"roboto_flex": {
+		"file": "roboto_flex.fnt",
+		"scaledSize": -1,
+		"markupEnabled": false,
+		"flip": false
+	},
 	"Silkscreen-Regular": {
 		"file": "Silkscreen-Regular.fnt",
 		"scaledSize": -1,
@@ -30,6 +36,12 @@
 		"r": 0.13333334,
 		"g": 0.13725491,
 		"b": 0.007843138,
+		"a": 1
+	},
+	"RGBA_80_21_181_255": {
+		"r": 0.31460676,
+		"g": 0.08235294,
+		"b": 0.70980394,
 		"a": 1
 	}
 },
@@ -62,6 +74,9 @@
 	"pixel": {
 		"font": "Silkscreen-Regular",
 		"fontColor": "RGBA_250_255_0_255"
+	},
+	"stats": {
+		"font": "roboto_flex"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
