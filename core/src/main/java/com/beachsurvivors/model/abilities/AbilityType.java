@@ -8,5 +8,6 @@ public enum AbilityType {
     SHIELD,
     HEALING,
     AoE,
-    DoT
+    DoT,
+    MOVEMENT
 }

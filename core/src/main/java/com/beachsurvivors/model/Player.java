@@ -40,6 +40,7 @@ public class Player extends Actor {
     private Rectangle beachGuyHitBox;
     private float playerX;
     private float playerY;
+    private Vector2 direction;
 
     private float playerHeight;
     private float playerWidth;
@@ -67,6 +68,7 @@ public class Player extends Actor {
 
         playerHeight = 128;
         playerWidth = 128;
+        direction = new Vector2(0, 0);
 
         levelSystem = new LevelSystem(this.gameScreen.getGameUI(), this.gameScreen.getMain());
 
@@ -139,7 +141,7 @@ public class Player extends Actor {
 
     private void movementKeys() {
         float delta = Math.min(Gdx.graphics.getDeltaTime(), 1/30f);
-        Vector2 direction = new Vector2(0, 0);
+        direction.set(0, 0);
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
             direction.x -= 1;
@@ -158,16 +160,15 @@ public class Player extends Actor {
             direction.y += 1;
         }
 
+        System.out.println("Player X: " + playerX + " Player Y: " + playerY);
+
         if (direction.len() > 0) {
             direction.nor();
         }
-        if (!direction.isZero()) {
-            isMoving = true;
-        } else {
-            isMoving = false;
-        }
+        //isMoving är false om direction är 0
+        isMoving = !direction.isZero();
 
-        Vector2 newPlayerPosition = new Vector2(playerX, playerY).add(direction.scl(speed * delta));
+        Vector2 newPlayerPosition = new Vector2(playerX, playerY).add(new Vector2(direction).scl(speed * delta));
 
         // LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
         Polygon tempHitBox = new Polygon(new float[]{
@@ -188,6 +189,30 @@ public class Player extends Actor {
         }
     }
 
+    public boolean checkNewPositionValid(float speed, float delta) {
+        Vector2 newPlayerPosition = new Vector2(playerX, playerY).add(new Vector2(direction).scl(speed*delta));
+
+        // LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
+        Polygon tempHitBox = new Polygon(new float[]{
+            0, 0,
+            beachGuyHitBox.width, 0,
+            beachGuyHitBox.width, beachGuyHitBox.height,
+            0, beachGuyHitBox.height
+        });
+        tempHitBox.setPosition(newPlayerPosition.x - playerWidth / 2, newPlayerPosition.y - playerHeight / 2);
+
+        // CHECKA OM DET GÅR ATT GÖRA MOVET
+        if (map.isInsidePolygon(newPlayerPosition.x, newPlayerPosition.y) &&
+            map.isValidMove(tempHitBox) &&
+            !map.collidesWithObject(tempHitBox.getBoundingRectangle())) {
+            playerX = newPlayerPosition.x;
+            playerY = newPlayerPosition.y;
+            beachGuyHitBox.setPosition(playerX - playerWidth / 2, playerY - playerHeight / 2);
+            return true;
+        }
+        return false;
+    }
+
     public void setMovingLeftRight(boolean movingLeft, boolean movingRight) {
         this.movingLeft = movingLeft;
         this.movingRight = movingRight;
@@ -204,6 +229,10 @@ public class Player extends Actor {
         playerWidth = size;
         playerHeight = size;
         beachGuyHitBox.setSize(size, size);
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     public void dispose() {
@@ -261,8 +290,9 @@ public class Player extends Actor {
         criticalHitChance = critChanceIncrease;
     }
 
-    public Rectangle getHitBox() {
-        return beachGuyHitBox;
+    public void updatePlayerXY(float playerX, float playerY) {
+        setPlayerX(playerX);
+        setPlayerY(playerY);
     }
 
     public float getPlayerX() {
@@ -323,7 +353,6 @@ public class Player extends Actor {
         return criticalHitDamage;
     }
 
-
     public double getDamageTaken() {
         return damageTaken;
     }
@@ -332,9 +361,15 @@ public class Player extends Actor {
         return healingReceived;
     }
 
-
     public LevelSystem getLevelSystem() {
         return levelSystem;
     }
+    public Vector2 getDirection() {
+        return direction;
+    }
+    public Rectangle getHitBox() {
+        return beachGuyHitBox;
+    }
+
 }
 

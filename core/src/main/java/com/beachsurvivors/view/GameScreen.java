@@ -64,6 +64,7 @@ public class GameScreen extends Game implements Screen {
     private Boomerang boomerang;
     private BaseAttack bullet;
     private Shield shield;
+    private Dash dash;
     private float bulletTimer = 0f;
     private int totalEnemiesKilled;
     private Ability wave;
@@ -128,6 +129,7 @@ public class GameScreen extends Game implements Screen {
         boomerang = new Boomerang();
         bullet = new BaseAttack();
         shield = new Shield();
+        dash = new Dash();
         abilities.add(boomerang);
         abilities.add(bullet);
         abilities.add(shield);
@@ -231,6 +233,7 @@ public class GameScreen extends Game implements Screen {
     private void input() {
         if (!isPaused) {
             player.playerInput();
+            System.out.println(player.getDirection());
         }
         keyBinds();
     }
@@ -323,6 +326,9 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
                 player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            dash.use(player);
         }
     }
 
@@ -703,6 +709,7 @@ public class GameScreen extends Game implements Screen {
         drawDamageText();
         player.drawAnimation();
         drawPlayerAbilities();
+       // drawPlayerHitbox();
 
     }
 
