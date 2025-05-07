@@ -1,5 +1,8 @@
 .gitkeep
+Map2/map2..tmx
 Map2/map2.tmx
+Map2/testTile.png
+Map2/testTile.tsx
 Map2/tf_beach_tileA1.png
 Map2/tf_beach_tileA1.tsx
 Map2/tf_beach_tileB.png
@@ -39,6 +42,7 @@ entities/particles/particle-ball2.png
 entities/particles/particle-ball3.png
 entities/particles/particle-ball4.png
 entities/particles/particle.png
+entities/particles/shieldEffect.p
 entities/power_ups/beer.png
 entities/power_ups/freeze.png
 entities/power_ups/health_boost.png
@@ -63,6 +67,7 @@ game_over_screen/gameover_skin.atlas
 game_over_screen/gameover_skin.json
 game_over_screen/you died screen.png
 game_screen/Cool_beach_guy.png
+gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas
