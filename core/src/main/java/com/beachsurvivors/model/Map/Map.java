@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -23,7 +24,8 @@ public class Map {
     private float gameScale;
     private float startingX;
     private float startingY;
-    private List<Rectangle> collisionObjects = new ArrayList<>();
+    private List<Polygon> collisionObjects = new ArrayList<>();
+
 
     public Map(TiledMap map) {
         this.map = map;
@@ -58,13 +60,11 @@ public class Map {
         MapLayer objectsLayer = map.getLayers().get("collisionObjects");
         if (objectsLayer == null) return;
         for (MapObject object : objectsLayer.getObjects()) {
-            if (object instanceof RectangleMapObject) {
-                Rectangle rect = ((RectangleMapObject) object).getRectangle();
-                rect.set(rect.x * gameScale, rect.y * gameScale, rect.width * gameScale, rect.height * gameScale);
-                collisionObjects.add(rect);
-
+            if (object instanceof PolygonMapObject) {
+                Polygon polygon = ((PolygonMapObject) object).getPolygon();
+                collisionObjects.add(scalePolygon(polygon));
             }
-        }System.out.println(collisionObjects.size());
+        }
     }
 
     /**
@@ -151,9 +151,9 @@ public class Map {
         return mapBoundary;
     }
 
-    public boolean collidesWithObject(Rectangle playerHitBox) {
-        for (Rectangle object : collisionObjects) {
-            if (playerHitBox.overlaps(object)) {
+    public boolean collidesWithObject(Polygon playerHitBox) {
+        for (Polygon object : collisionObjects) {
+            if (Intersector.overlapConvexPolygons(playerHitBox, object)) {
                 return true;
             }
         }
