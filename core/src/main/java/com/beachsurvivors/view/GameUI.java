@@ -230,11 +230,13 @@ public class GameUI {
     }
 
     private void updateLevelLabels() {
+        if(game.getPlayer()!=null){
         currentLevel.setText("Level: " + String.valueOf(
+
             game.getPlayer().getLevelSystem().getCurrentLevel()));
 
         nextLevel.setText(String.valueOf(
-            game.getPlayer().getLevelSystem().getCurrentLevel() + 1));
+            game.getPlayer().getLevelSystem().getCurrentLevel() + 1));}
     }
 
     public void update(float deltaTime) {

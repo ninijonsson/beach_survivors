@@ -9,6 +9,7 @@ Map2/tf_beach_tileB.png
 Map2/tf_beach_tileB.tsx
 Maps/BeachSurvivorMap.tiled-session
 Thud.mp3
+entities/abilities/ability_bar.png
 entities/abilities/boomerangmc.png
 entities/abilities/bullet.png
 entities/abilities/exp_bar.png
@@ -33,10 +34,16 @@ entities/enemies/navy_seal_sheet.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
 entities/how_to_play.png
+entities/icons/ability_icon.png
+entities/icons/blank.png
+entities/icons/chest_open.png
+entities/icons/chest_open_asperite.aseprite
+entities/icons/coin.png
 entities/particles/blueFlame.p
 entities/particles/bullet.png
 entities/particles/chestClosed.p
 entities/particles/chestOpen.p
+entities/particles/coin.png
 entities/particles/confetti.png
 entities/particles/lootBeam.p
 entities/particles/lootBeam2.p
