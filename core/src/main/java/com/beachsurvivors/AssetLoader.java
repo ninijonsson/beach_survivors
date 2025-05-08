@@ -43,6 +43,8 @@ public class AssetLoader {
         manager.load("assets/entities/beer.png", Texture.class);
         manager.load("assets/entities/burger.png", Texture.class);
         manager.load("assets/entities/chest.png", Texture.class);
+        manager.load("assets/entities/icons/ability_icon.png", Texture.class);
+        manager.load("assets/entities/icons/chest_open.png", Texture.class);
         manager.load("assets/entities/coconut.png", Texture.class);
         manager.load("assets/entities/death.png", Texture.class);
         manager.load("assets/entities/how_to_play.png", Texture.class);
@@ -78,6 +80,9 @@ public class AssetLoader {
         manager.load("assets/entities/power_ups/health_heart.png", Texture.class);
         manager.load("assets/entities/power_ups/lucky_clover.png", Texture.class);
         manager.load("assets/entities/power_ups/speed_boost.png", Texture.class);
+        manager.load("assets/entities/icons/blank.png", Texture.class);
+        manager.load("assets/entities/icons/coin.png", Texture.class);
+
     }
 
     private void addParticles() {
@@ -86,20 +91,19 @@ public class AssetLoader {
         manager.load("assets/entities/particles/blueFlame.p", ParticleEffect.class, blueFlame);
 
         ParticleEffectLoader.ParticleEffectParameter lootBeam = new ParticleEffectLoader.ParticleEffectParameter();
-
         manager.load("assets/entities/particles/lootBeam.p", ParticleEffect.class, lootBeam);
 
         ParticleEffectLoader.ParticleEffectParameter lootPile = new ParticleEffectLoader.ParticleEffectParameter();
-
         manager.load("assets/entities/particles/lootPile.p", ParticleEffect.class, lootPile);
 
         ParticleEffectLoader.ParticleEffectParameter xpOrb = new ParticleEffectLoader.ParticleEffectParameter();
-        xpOrb.imagesDir = Gdx.files.internal("assets/entities/particles");
         manager.load("assets/entities/particles/xp_orb.p", ParticleEffect.class, xpOrb);
 
         ParticleEffectLoader.ParticleEffectParameter chestEffect = new ParticleEffectLoader.ParticleEffectParameter();
-
         manager.load("assets/entities/particles/chestClosed.p", ParticleEffect.class, chestEffect);
+
+        ParticleEffectLoader.ParticleEffectParameter chestOpen = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("assets/entities/particles/chestOpen.p", ParticleEffect.class, chestEffect);
     }
 
     private void addSkins() {

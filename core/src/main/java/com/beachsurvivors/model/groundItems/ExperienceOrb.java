@@ -13,7 +13,7 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
     ParticleEffectPool.PooledEffect xpEffect;
 
     public ExperienceOrb(float x, float y, int experience, ParticleEffectPoolManager poolManager) {
-        super(AssetLoader.get().getTexture("assets/entities/abilities/xp_orb.png"), x,y);
+        super(AssetLoader.get().getTexture("assets/entities/abilities/xp_orb.png"), x,y, null);
         this.experience=experience;
         setParticleEffect(poolManager.obtain("assets/entities/particles/xp_orb.p"));
 

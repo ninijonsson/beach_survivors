@@ -7,7 +7,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -41,7 +40,7 @@ public class GameScreen extends Game implements Screen {
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
     ParticleEffectPoolManager poolManager;
-
+    private ChestOverlay chestOverlay;
     private final int SCREEN_WIDTH = 1920;
     private final int SCREEN_HEIGHT = 1080;
 
@@ -50,6 +49,7 @@ public class GameScreen extends Game implements Screen {
     private final FitViewport gameViewport;
     private Stage stage;
     private final GameUI gameUI;
+    private boolean isOverlayActive = false;
 
     private ShapeRenderer shapeRenderer;
 
@@ -142,12 +142,13 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("assets/entities/particles/lootPile.p", 5, 20);
         poolManager.register("assets/entities/particles/xp_orb.p", 5, 20);
         poolManager.register("assets/entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("assets/entities/particles/chestOpen.p", 5, 20);
 
         //TESTAR OLIKA DROPS
         ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);
-        groundItems.add(orb);
+        //groundItems.add(orb);
 
-        Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager);
+        Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
         groundItems.add(chest);
 
         Vector2 startPos = new Vector2(player.getPlayerX(), player.getPlayerY());
@@ -194,6 +195,16 @@ public class GameScreen extends Game implements Screen {
         gameUI.update(Gdx.graphics.getDeltaTime());
         gameUI.draw();
 
+        if (chestOverlay != null) {
+            chestOverlay.update(delta);
+            chestOverlay.draw();
+
+            if (chestOverlay.isClosed()) {
+                chestOverlay.dispose();
+                chestOverlay = null;
+                isOverlayActive = false;
+            }
+        }
     }
 
     /**
@@ -554,7 +565,7 @@ public class GameScreen extends Game implements Screen {
     private void spawnMiniBoss(float gameTimeSeconds) {
 
         if (!(miniBossSchedule.isEmpty()) && miniBossSchedule.first() <= gameTimeSeconds) {
-            Enemy miniBoss = new MiniBoss(poolManager);
+            Enemy miniBoss = new MiniBoss(poolManager, this);
             Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
             miniBoss.setEnemyPos(randomPos);
             miniBoss.setX(randomPos.x);
@@ -764,6 +775,13 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    public void showChestOverlay() {
+        if (chestOverlay == null) {
+            chestOverlay = new ChestOverlay(this);
+            isOverlayActive = true;
+        }
+    }
+
     private void drawPlayerAbilities() {
         for (Ability a : abilities) {
             if (a instanceof Shield) {
@@ -821,4 +839,5 @@ public class GameScreen extends Game implements Screen {
     public GameUI getGameUI() {
         return gameUI;
     }
+
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.beachsurvivors.view.GameScreen;
 
 public abstract class GroundItem implements PickUpAble {
 
@@ -21,7 +22,7 @@ public abstract class GroundItem implements PickUpAble {
 
     private Vector2 position;
 
-    public GroundItem(Texture texturePath, float x, float y) {
+    public GroundItem(Texture texturePath, float x, float y, GameScreen gameScreen) {
 
         this.texture=texturePath;
 
