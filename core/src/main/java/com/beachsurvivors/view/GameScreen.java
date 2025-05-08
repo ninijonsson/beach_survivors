@@ -327,6 +327,9 @@ public class GameScreen extends Game implements Screen {
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
                 player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V )) {
+            gameUI.showStatsTable();
+        }
     }
 
     private void pickUpPowerUp() {

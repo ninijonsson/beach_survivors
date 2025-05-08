@@ -32,6 +32,14 @@ public class GameUI {
     private Table healthTable;
     private Table xpTable;
 
+    private Table statsTable;
+    private Label healthPoints;
+    private Label damage;
+    private Label critChance;
+    private Label critDamage;
+    private Label cooldownReduction;
+    private Label movementSpeed;
+
     private Label timerLabel;
     private float gameTime = 0f;
 
@@ -231,45 +239,41 @@ public class GameUI {
         }
     }
 
-    private Label healthPoints;
-    private Label damage;
-    private Label critChance;
-    private Label critDamage;
-    private Label cooldownReduction;
-    private Label movementSpeed;
+
 
     private void creatPlayerStats() {
         float fontScale = 1.2f;
         Skin skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
-        Table statsBox = new Table();
-        statsBox.setSize(600,400);
+        statsTable = new Table();
+        statsTable.setSize(600,400);
 
         healthPoints = new Label("HealthPoints" , skin, "stats");
-        statsBox.add(healthPoints).left().row();
+        statsTable.add(healthPoints).left().row();
         healthPoints.setFontScale(fontScale);
 
         damage = new Label("Base Damage" , skin, "stats");
-        statsBox.add(damage).left().row();
+        statsTable.add(damage).left().row();
         damage.setFontScale(fontScale);
 
         critChance = new Label("Critical Chance" ,skin, "stats");
-        statsBox.add(critChance).left().row();
+        statsTable.add(critChance).left().row();
         critChance.setFontScale(fontScale);
 
         critDamage = new Label("Critical Damage" , skin, "stats");
-        statsBox.add(critDamage).left().row();
+        statsTable.add(critDamage).left().row();
         critDamage.setFontScale(fontScale);
 
         cooldownReduction = new Label("Cooldown Reduction" , skin, "stats");
-        statsBox.add(cooldownReduction).left().row();
+        statsTable.add(cooldownReduction).left().row();
         cooldownReduction.setFontScale(fontScale);
 
         movementSpeed = new Label("Movement Speed" , skin, "stats");
-        statsBox.add(movementSpeed).left().row();
+        statsTable.add(movementSpeed).left().row();
         movementSpeed.setFontScale(fontScale);
 
-        statsBox.setPosition(-80, game.getScreenHeight()/2f);
-        stage.addActor(statsBox);
+        statsTable.setPosition(-80, game.getScreenHeight()/2f);
+        stage.addActor(statsTable);
+        statsTable.setVisible(false);
 
     }
 
@@ -281,6 +285,11 @@ public class GameUI {
         cooldownReduction.setText("Cooldown Reduction: " + player.getCooldown() + "%");
         movementSpeed.setText("Movement Speed: " + player.getSpeed());
     }
+
+    public void showStatsTable() {
+        statsTable.setVisible(!statsTable.isVisible());
+    }
+
 
     private void updateLevelLabels() {
         currentLevel.setText("Level: " + String.valueOf(
