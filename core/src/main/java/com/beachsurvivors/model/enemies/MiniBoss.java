@@ -2,13 +2,16 @@ package com.beachsurvivors.model.enemies;
 
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.Chest;
 import com.beachsurvivors.model.groundItems.GroundItem;
 
 public class MiniBoss extends Enemy {
-    public MiniBoss() {
+    private ParticleEffectPoolManager poolManager;
+    public MiniBoss(ParticleEffectPoolManager poolManager) {
         super(128*3, 128*3, 500, 100);
+        this.poolManager=poolManager;
         createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/crocodile2.png"), 1, 1);
         setMovementSpeed(200f);
         setDamage(20);
@@ -28,11 +31,12 @@ public class MiniBoss extends Enemy {
     @Override
     public void dropItems() {
 
+
     }
 
     public void dropChest(Array<GroundItem> groundItems) {
 
-        Chest chest = new Chest(getX()+getWidth()/2, getY()+getHeight()/2);
+        Chest chest = new Chest(getX()+getWidth()/2, getY()+getHeight()/2, poolManager);
         groundItems.add(chest);
     }
 }
