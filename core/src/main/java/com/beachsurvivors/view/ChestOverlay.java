@@ -114,9 +114,7 @@ public class ChestOverlay {
             Gdx.files.internal("assets/entities/particles/chestOpen.p"),
             Gdx.files.internal("assets/entities/particles")
         );
-        float centerX = stage.getViewport().getWorldWidth() / 2f;
-        float centerY = stage.getViewport().getWorldHeight() / 2f; // flytta nedåt
-        chestEffect.setPosition(centerX, centerY);
+        chestEffect.setPosition(chestImage.getX(), chestImage.getY());
 
         chestEffect.start();
     }
