@@ -9,13 +9,13 @@ public class ScreenChanger {
     private GameUI ui;
     private Main main;
     private Game game;
-    private LevelSystem levelSystem;
+    private LevelController levelController;
     private ChestOverlay chestScreen;
     private LevelUpScreen levelUpScreen;
 
     //TODO tror att en sådan här hade löst många problem.
     public ScreenChanger(GameScreen gameScreen, GameUI ui, Main main, Game game, Player player){
-        levelSystem = new LevelSystem(ui, main);
+        levelController = new LevelController(ui, main);
         //chestScreen = new ChestScreen(gameScreen);
     }
 

@@ -3,14 +3,14 @@ package com.beachsurvivors.controller;
 import com.beachsurvivors.view.GameUI;
 import com.beachsurvivors.view.Main;
 
-public class LevelSystem {
+public class LevelController {
     private int currentLevel;
     private int currentExp;
     private int expToNextLevel;
     private GameUI ui;
     private Main main;
 
-    public LevelSystem(GameUI ui, Main main) {
+    public LevelController(GameUI ui, Main main) {
         this.currentLevel = 1;
         this.currentExp = 0;
         this.expToNextLevel = calculateExpForLevelUp(currentLevel);

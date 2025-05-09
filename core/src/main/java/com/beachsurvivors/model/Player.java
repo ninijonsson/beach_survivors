@@ -14,10 +14,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beachsurvivors.AssetLoader;
-import com.beachsurvivors.controller.LevelSystem;
+import com.beachsurvivors.controller.LevelController;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.view.GameScreen;
-import com.beachsurvivors.view.GameUI;
 
 import java.util.Random;
 
@@ -31,7 +30,7 @@ public class Player extends Actor {
     //private int level = 1;
     private boolean isImmune;
     private boolean isAlive;
-    private LevelSystem levelSystem;
+    private LevelController levelController;
     private GameScreen gameScreen;
 
     private double damageTaken = 0;
@@ -68,7 +67,7 @@ public class Player extends Actor {
         playerHeight = 128;
         playerWidth = 128;
 
-        levelSystem = new LevelSystem(this.gameScreen.getGameUI(), this.gameScreen.getMain());
+        levelController = new LevelController(this.gameScreen.getGameUI(), this.gameScreen.getMain());
 
         isMoving = false;
         isAlive = true;
@@ -129,7 +128,7 @@ public class Player extends Actor {
     }
 
     public void gainExp(int exp) {
-        levelSystem.gainExp(exp);
+        levelController.gainExp(exp);
     }
 
     public void playerInput() {
@@ -316,7 +315,7 @@ public class Player extends Actor {
     }
 
     public int getLevel() {
-        return levelSystem.getCurrentLevel();
+        return levelController.getCurrentLevel();
     }
 
     public double getCriticalHitDamage() {
@@ -333,8 +332,8 @@ public class Player extends Actor {
     }
 
 
-    public LevelSystem getLevelSystem() {
-        return levelSystem;
+    public LevelController getLevelSystem() {
+        return levelController;
     }
 }
 
