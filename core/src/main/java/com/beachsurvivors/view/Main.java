@@ -79,4 +79,6 @@ public class Main extends Game {
     public void setSoundOn(boolean isSoundOn) {
         this.isSoundOn = isSoundOn;
     }
+
+    public GameScreen getGameScreen() { return gameScreen; }
 }

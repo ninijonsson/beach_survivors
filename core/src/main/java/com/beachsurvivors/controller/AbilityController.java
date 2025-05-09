@@ -2,6 +2,7 @@ package com.beachsurvivors.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.*;
 
 public class AbilityController {
@@ -9,16 +10,19 @@ public class AbilityController {
     private Boomerang boomerang;
     private BaseAttack bullet;
     private Shield shield;
-    private PlayerController player;
     private float bulletTimer;
+    private Controller controller;
+    private Player player;
 
-    public AbilityController(PlayerController player) {
+    public AbilityController(Controller controller) {
         this.abilities = new Array<>();
         // Ska dessa flyttas till en create()-metod istället?
         this.boomerang = new Boomerang();
         this.bullet = new BaseAttack();
         this.shield = new Shield();
-        this.player = player;
+
+        this.controller = controller;
+        this.player = controller.getPlayerController().getPlayer();
     }
 
     public void addAbility(Ability ability) {
@@ -29,7 +33,7 @@ public class AbilityController {
         float delta = Gdx.graphics.getDeltaTime();
 
         for (Ability ability : abilities) {
-            // (ability.updatePosition(delta, player.getPlayerX(), player.getPlayerY());
+            ability.updatePosition(delta, player.getPlayerX(), player.getPlayerY());
         }
     }
 }

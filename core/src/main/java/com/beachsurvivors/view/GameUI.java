@@ -225,7 +225,7 @@ public class GameUI {
         if (game.getPlayer() == null) {
             return "1";
         } else {
-            return String.valueOf(game.getPlayer().getLevelSystem().getCurrentLevel());
+            return String.valueOf(game.getPlayer().getLevelController().getCurrentLevel());
         }
     }
 
@@ -233,10 +233,10 @@ public class GameUI {
         if(game.getPlayer()!=null){
         currentLevel.setText("Level: " + String.valueOf(
 
-            game.getPlayer().getLevelSystem().getCurrentLevel()));
+            game.getPlayer().getLevelController().getCurrentLevel()));
 
         nextLevel.setText(String.valueOf(
-            game.getPlayer().getLevelSystem().getCurrentLevel() + 1));}
+            game.getPlayer().getLevelController().getCurrentLevel() + 1));}
     }
 
     public void update(float deltaTime) {

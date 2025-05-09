@@ -15,7 +15,7 @@ public class ScreenChanger {
 
     //TODO tror att en sådan här hade löst många problem.
     public ScreenChanger(GameScreen gameScreen, GameUI ui, Main main, Game game, Player player){
-        levelController = new LevelController(ui, main);
+        //levelController = new LevelController(ui, main);
         //chestScreen = new ChestScreen(gameScreen);
     }
 

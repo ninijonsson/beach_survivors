@@ -1,7 +1,5 @@
 package com.beachsurvivors.model.groundItems;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
@@ -22,10 +20,10 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
 
     @Override
     public void onPickup(Player player) {
-        System.out.println("current xp: "+player.getLevelSystem().getCurrentExp());
+        System.out.println("current xp: "+player.getLevelController().getCurrentExp());
         player.gainExp(experience);
         System.out.println("gained xp");
-        System.out.println("current xp: "+player.getLevelSystem().getCurrentExp());
+        System.out.println("current xp: "+player.getLevelController().getCurrentExp());
     }
 
     @Override

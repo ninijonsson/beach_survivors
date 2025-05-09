@@ -9,14 +9,16 @@ public class LevelController {
     private int expToNextLevel;
     private GameUI ui;
     private Main main;
+    private Controller controller;
 
-    public LevelController(GameUI ui, Main main) {
+    public LevelController(GameUI ui, Main main, Controller controller) {
         this.currentLevel = 1;
         this.currentExp = 0;
         this.expToNextLevel = calculateExpForLevelUp(currentLevel);
 
         this.ui = ui;
         this.main = main;
+        this.controller = controller;
     }
 
     public void gainExp(int exp) {

@@ -59,15 +59,15 @@ public class Player extends Actor {
     private SpriteBatch spriteBatch;
     private Map map;
 
-    public Player(Map map, SpriteBatch spriteBatch, GameScreen gameScreen) {
+    public Player(Map map, SpriteBatch spriteBatch) {
         this.map = map;
         this.spriteBatch = spriteBatch;
-        this.gameScreen = gameScreen;
+        //this.gameScreen = gameScreen;
 
         playerHeight = 128;
         playerWidth = 128;
 
-        levelController = new LevelController(this.gameScreen.getGameUI(), this.gameScreen.getMain());
+        //levelController = new LevelController(this.gameScreen.getGameUI(), this.gameScreen.getMain());
 
         isMoving = false;
         isAlive = true;
@@ -124,7 +124,6 @@ public class Player extends Actor {
         // Rita animationen centrerad kring playerX och playerY
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
-
     }
 
     public void gainExp(int exp) {
@@ -332,7 +331,7 @@ public class Player extends Actor {
     }
 
 
-    public LevelController getLevelSystem() {
+    public LevelController getLevelController() {
         return levelController;
     }
 }

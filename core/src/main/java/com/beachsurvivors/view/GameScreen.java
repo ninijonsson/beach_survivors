@@ -118,7 +118,7 @@ public class GameScreen extends Game implements Screen {
         stage = new Stage(gameViewport);
         stage.clear();
 
-        player = new Player(map, spriteBatch, this);
+        player = new Player(map, spriteBatch);
         playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         boomerang = new Boomerang();
@@ -640,7 +640,7 @@ public class GameScreen extends Game implements Screen {
             player.gainExp(enemy.getExp());
 
             // Uppdatera progress bar (exp)
-            gameUI.setProgressBarValue(player.getLevelSystem().getCurrentExp());
+            gameUI.setProgressBarValue(player.getLevelController().getCurrentExp());
         }
     }
 
@@ -840,4 +840,7 @@ public class GameScreen extends Game implements Screen {
         return gameUI;
     }
 
+    public ParticleEffectPoolManager getPoolManager() { return poolManager; }
+
+    public FitViewport getGameViewport() { return gameViewport; }
 }
