@@ -51,6 +51,9 @@ fonts/level.png
 fonts/timer.fnt
 fonts/timer.png
 game_over_screen/AniMeMatrix-MB_EN.fnt
+game_over_screen/Silkscreen-Regular(2).fnt
+game_over_screen/Silkscreen-Regular(3).fnt
+game_over_screen/Silkscreen-Regular(4).fnt
 game_over_screen/Silkscreen-Regular.fnt
 game_over_screen/deathscreen_skin.atlas
 game_over_screen/deathscreen_skin.json

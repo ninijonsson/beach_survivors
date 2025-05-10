@@ -17,6 +17,24 @@
 		"scaledSize": -1,
 		"markupEnabled": false,
 		"flip": false
+	},
+	"Silkscreen-Regular2": {
+		"file": "Silkscreen-Regular(2).fnt",
+		"scaledSize": -1,
+		"markupEnabled": false,
+		"flip": false
+	},
+	"Silkscreen-Regular3": {
+		"file": "Silkscreen-Regular(3).fnt",
+		"scaledSize": -1,
+		"markupEnabled": false,
+		"flip": false
+	},
+	"Silkscreen-Regular4": {
+		"file": "Silkscreen-Regular(4).fnt",
+		"scaledSize": -1,
+		"markupEnabled": false,
+		"flip": false
 	}
 },
 "com.badlogic.gdx.graphics.Color": {
@@ -26,10 +44,28 @@
 		"b": 0.40392157,
 		"a": 1
 	},
+	"RGBA_249_245_174_255": {
+		"r": 0.9764706,
+		"g": 0.9607843,
+		"b": 0.68235296,
+		"a": 1
+	},
 	"RGBA_250_255_0_255": {
 		"r": 0.98039216,
 		"g": 1,
 		"b": 0,
+		"a": 1
+	},
+	"RGBA_255_0_0_255": {
+		"r": 1,
+		"g": 0,
+		"b": 0,
+		"a": 1
+	},
+	"RGBA_255_255_255_255": {
+		"r": 1,
+		"g": 1,
+		"b": 1,
 		"a": 1
 	},
 	"RGBA_47_49_3_255": {
@@ -43,6 +79,12 @@
 		"g": 0.08235294,
 		"b": 0.70980394,
 		"a": 1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
+	"default": {
+		"up": "levelup_placeholder_hover",
+		"over": "levelup_placeholder"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
@@ -60,6 +102,24 @@
 		"imageUp": "exit_button_2_scaled",
 		"imageDown": "exit_button_2_pressed_scaled",
 		"imageOver": "exit_button_2_hover_scaled"
+	},
+	"skip": {
+		"imageUp": "skip_button-3"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {
+	"default": {
+		"imageUp": "level_up_pick_ability-stat",
+		"imageDown": "level_up_pick_ability-stat",
+		"imageOver": "level_up_pick_ability-stat",
+		"font": "anime_matrix",
+		"overFontColor": "RGBA_0_255_103_255"
+	},
+	"levelup": {
+		"imageUp": "levelup_placeholder",
+		"imageDown": "levelup_placeholder_hover",
+		"imageOver": "levelup_placeholder_hover",
+		"font": "roboto_flex"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -77,6 +137,36 @@
 	},
 	"stats": {
 		"font": "roboto_flex"
+	},
+	"pixel2": {
+		"font": "Silkscreen-Regular2"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
+	"default": {
+		"font": "anime_matrix",
+		"fontColor": "RGBA_250_255_0_255",
+		"downFontColor": "RGBA_0_255_103_255",
+		"overFontColor": "RGBA_0_255_103_255",
+		"up": "levelup_placeholder",
+		"down": "levelup_placeholder_hover",
+		"over": "levelup_placeholder_hover"
+	},
+	"levelup": {
+		"font": "anime_matrix",
+		"fontColor": "RGBA_250_255_0_255",
+		"downFontColor": "RGBA_0_255_103_255",
+		"overFontColor": "RGBA_0_255_103_255",
+		"up": "levelup_placeholder",
+		"down": "levelup_placeholder_hover",
+		"over": "levelup_placeholder_hover"
+	},
+	"levelup2": {
+		"font": "Silkscreen-Regular4",
+		"fontColor": "RGBA_250_255_0_255",
+		"overFontColor": "RGBA_255_255_255_255",
+		"up": "level_up_pick_ability-stat_HD",
+		"over": "level_up_pick_ability-stat_hover-HD"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {

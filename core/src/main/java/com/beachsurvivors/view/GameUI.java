@@ -60,7 +60,7 @@ public class GameUI {
         createPlayerHealthBar();
         createTimerLabel();
         createInfoTable();
-        creatPlayerStats();
+        createPlayerStats();
 
         addActors();
     }
@@ -196,8 +196,9 @@ public class GameUI {
         progressBar.setValue(value);
     }
 
-    public void setHealthBarValue(float value) {
+    public void setHealthBarValue(float value, float playerMaxHp) {
         healthBar.setValue(value);
+        healthBar.setRange(0, playerMaxHp);
         percentageLabel.setText(getHealthPercentage() + "%");
     }
 
@@ -210,11 +211,9 @@ public class GameUI {
         progressBarTable = new Table();
         Skin skin = new Skin(Gdx.files.internal("skin_composer/testbuttons.json"));
 
-
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
         progressBar.setSize(700, 70);
-
 
         levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
         levelFont.setColor(Color.WHITE);
@@ -241,7 +240,7 @@ public class GameUI {
 
 
 
-    private void creatPlayerStats() {
+    private void createPlayerStats() {
         float fontScale = 1.2f;
         Skin skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
         statsTable = new Table();

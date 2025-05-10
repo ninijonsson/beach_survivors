@@ -87,6 +87,7 @@ public class GameScreen extends Game implements Screen {
     private Vector2 playerPos;
 
     private boolean isPaused = false;
+    private boolean wasPaused = false;
 
 
     //Boolean variables to toggle when testing the game with/without
@@ -178,17 +179,26 @@ public class GameScreen extends Game implements Screen {
         input();
 
         if (!isPaused) {
+
             logic();
             draw();
+            gameUI.getStage().act(delta);
+            gameUI.update(Gdx.graphics.getDeltaTime());
+            gameUI.draw();
+
 
         } else {
-            spriteBatch.begin();
-            main.pause();
-            spriteBatch.end();
+
+//            spriteBatch.begin();
+//            main.pause();
+//            spriteBatch.end();
+
+            gameUI.getStage().act(0);
+            gameUI.update(0);
+            gameUI.draw();
+
         }
-        gameUI.getStage().act(delta);
-        gameUI.update(Gdx.graphics.getDeltaTime());
-        gameUI.draw();
+
 
     }
 
@@ -321,6 +331,7 @@ public class GameScreen extends Game implements Screen {
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            main.pause();
             pause();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
@@ -348,7 +359,7 @@ public class GameScreen extends Game implements Screen {
                 powerUp.dispose();
             }
         }
-        gameUI.setHealthBarValue(player.getCurrentHealthPoints());
+        gameUI.setHealthBarValue(player.getCurrentHealthPoints(), player.getMaxHealthPoints());
         droppedItems.removeAll(powerUpsToRemove, true);
         powerUpsToRemove.clear();
     }
@@ -530,20 +541,27 @@ public class GameScreen extends Game implements Screen {
     }
 
     private Enemy selectRandomEnemy() {
-        int enemyChoice = random.nextInt(0, 4);
+        int enemyChoice = random.nextInt(0, 11);
         Enemy enemy = null;
 
         switch (enemyChoice) {
             case 0:
-                enemy = new Shark();
-                break;
-            case 1:
                 enemy = new NavySeal();
                 break;
+            case 1:
             case 2:
+            case 3:
+            case 4:
+                enemy = new Shark();
+                break;
+            case 5:
+            case 6:
+            case 7:
                 enemy = new Crocodile();
                 break;
-            case 3:
+            case 8:
+            case 9:
+            case 10:
                 enemy = new Crab();
                 break;
         }
@@ -687,7 +705,7 @@ public class GameScreen extends Game implements Screen {
 
         if (remainingDamage >= 0) {
             player.takeDamage(remainingDamage);
-            gameUI.setHealthBarValue(player.getCurrentHealthPoints());
+            gameUI.setHealthBarValue(player.getCurrentHealthPoints(), player.getMaxHealthPoints());
             System.out.println("player HP : " + player.getCurrentHealthPoints());
         }
 

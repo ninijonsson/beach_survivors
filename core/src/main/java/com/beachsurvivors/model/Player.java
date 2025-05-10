@@ -29,7 +29,7 @@ public class Player extends Actor {
     private float speed = 500f;
     private double baseDamage;
     private double cooldown;
-    private float criticalHitChance = 0.15f;
+    private float criticalHitChance = 0.10f;
     private double criticalHitDamage = 2;
     //private int level = 1;
     private boolean isImmune;
@@ -266,20 +266,26 @@ public class Player extends Actor {
         }
     }
 
-    public void increaseMaximumHealthPoints(int newMaxHealthPoints) {
-        this.maxHealthPoints = newMaxHealthPoints;
-        restoreHealthPoints(newMaxHealthPoints);
+    public void increaseMaximumHealthPoints(int maxHPincrease) {
+        this.maxHealthPoints += maxHPincrease;
+        restoreHealthPoints(maxHPincrease);
     }
 
     public void increaseDamage(double increasedDamage) {
+        baseDamage += increasedDamage;
+    }
+
+
+    public void increaseCritChance(float critChanceIncrease) {
+        criticalHitChance += critChanceIncrease;
+    }
+
+    public void increaseCritDamage(float critDamageIncrease) {
+        criticalHitDamage += critDamageIncrease;
     }
 
     public boolean isCriticalHit() {
         return random.nextFloat() < criticalHitChance;
-    }
-
-    public void increaseCritChance(float critChanceIncrease) {
-        criticalHitChance = critChanceIncrease;
     }
 
     public Rectangle getHitBox() {
@@ -343,8 +349,6 @@ public class Player extends Actor {
     public int getLevel() {
         return levelSystem.getCurrentLevel();
     }
-
-
 
     public double getDamageTaken() {
         return damageTaken;

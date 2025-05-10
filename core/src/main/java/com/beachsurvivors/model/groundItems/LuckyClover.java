@@ -24,7 +24,7 @@ public class LuckyClover extends PowerUp implements PickUpAble {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                player.increaseCritChance(0.5f); // Återgår till 0.5f (standard)
+                player.increaseCritChance(-critChanceIncrease); // Återgår till 0.5f (standard)
             }
         }, getDuration());
     }
