@@ -27,9 +27,7 @@ import com.beachsurvivors.model.abilities.*;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.*;
-import com.beachsurvivors.model.groundItems.Berserk;
-import com.beachsurvivors.model.groundItems.GroundItem;
-import com.beachsurvivors.model.groundItems.PowerUp;
+import com.beachsurvivors.model.groundItems.*;
 
 import java.util.Random;
 
@@ -42,7 +40,7 @@ public class GameScreen extends Game implements Screen {
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
     ParticleEffectPoolManager poolManager;
-
+    private ChestOverlay chestOverlay;
     private final int SCREEN_WIDTH = 1920;
     private final int SCREEN_HEIGHT = 1080;
 
@@ -51,6 +49,7 @@ public class GameScreen extends Game implements Screen {
     private final FitViewport gameViewport;
     private Stage stage;
     private final GameUI gameUI;
+    private boolean isOverlayActive = false;
 
     private ShapeRenderer shapeRenderer;
 
@@ -66,14 +65,11 @@ public class GameScreen extends Game implements Screen {
     private Shield shield;
     private float bulletTimer = 0f;
     private int totalEnemiesKilled;
-    private Ability wave;
     private double totalPlayerDamageDealt;
 
     private BitmapFont font;
     private Array<DamageText> damageTexts = new Array<>();
     private Random random = new Random();
-    private float waveCooldown = 1.5f;
-    private float waveTimer = 0f;
 
 
     private Array<GroundItem> groundItems = new Array<>();  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
@@ -99,7 +95,7 @@ public class GameScreen extends Game implements Screen {
     public GameScreen(Main main) {
         this.main = main;
 
-        gameViewport = new FitViewport(SCREEN_WIDTH *1.5f, SCREEN_HEIGHT *1.5f);
+        gameViewport = new FitViewport(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f);
         gameUI = new GameUI(new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT), this);
 
         droppedItems = new Array<>();
@@ -147,6 +143,17 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("assets/entities/particles/blueFlame.p", 5, 20);
         poolManager.register("assets/entities/particles/lootBeam.p", 5, 20);
         poolManager.register("assets/entities/particles/lootPile.p", 5, 20);
+        poolManager.register("assets/entities/particles/xp_orb.p", 5, 20);
+        poolManager.register("assets/entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("assets/entities/particles/chestOpen.p", 5, 20);
+
+        //TESTAR OLIKA DROPS
+        ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);
+        //groundItems.add(orb);
+
+        Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
+        groundItems.add(chest);
+
         Vector2 startPos = new Vector2(player.getPlayerX(), player.getPlayerY());
         WaterWave wave = new WaterWave("WaterWave", 15, 1.2, 32, 32, startPos, poolManager);
         abilities.add(wave);
@@ -200,10 +207,21 @@ public class GameScreen extends Game implements Screen {
         }
 
 
+        if (chestOverlay != null) {
+            chestOverlay.update(delta);
+            chestOverlay.draw();
+
+            if (chestOverlay.isClosed()) {
+                chestOverlay.dispose();
+                chestOverlay = null;
+                isOverlayActive = false;
+            }
+        }
     }
 
     /**
      * Method for keeping the correct width and height while resizing the game window.
+     *
      * @param width
      * @param height
      */
@@ -402,7 +420,7 @@ public class GameScreen extends Game implements Screen {
 
     private void updateShieldPos() {
         if (!shield.getIsDepleted() && shield.getSprite() != null) {
-            shield.updatePosition(player.getPlayerX()-shield.getSprite().getWidth()/2, player.getPlayerY()-shield.getSprite().getHeight()/2);
+            shield.updatePosition(player.getPlayerX() - shield.getSprite().getWidth() / 2, player.getPlayerY() - shield.getSprite().getHeight() / 2);
         }
     }
 
@@ -571,7 +589,7 @@ public class GameScreen extends Game implements Screen {
     private void spawnMiniBoss(float gameTimeSeconds) {
 
         if (!(miniBossSchedule.isEmpty()) && miniBossSchedule.first() <= gameTimeSeconds) {
-            Enemy miniBoss = new MiniBoss();
+            Enemy miniBoss = new MiniBoss(poolManager, this);
             Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
             miniBoss.setEnemyPos(randomPos);
             miniBoss.setX(randomPos.x);
@@ -623,8 +641,9 @@ public class GameScreen extends Game implements Screen {
 
     /**
      * What happens when an enemy dies
+     *
      * @param enemy - the enemy that is handled
-     * @param i - index for removing the correct enemy in the array
+     * @param i     - index for removing the correct enemy in the array
      */
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
@@ -633,6 +652,7 @@ public class GameScreen extends Game implements Screen {
 
             // Om fienden är en miniboss ska den droppa en kista
             enemy.dropItems(droppedItems, poolManager);
+            groundItems.add(new ExperienceOrb(enemy.getX(), enemy.getY(), enemy.getExp(), poolManager));
             if (enemy instanceof MiniBoss) {
                 ((MiniBoss) enemy).dropChest(groundItems);
             }
@@ -651,6 +671,7 @@ public class GameScreen extends Game implements Screen {
     /**
      * Checks if the player's abilities hitboxes overlaps with any of the enemies
      * hitboxes
+     *
      * @param enemy
      */
     private void checkPlayerAbilityHits(Enemy enemy) {
@@ -760,11 +781,15 @@ public class GameScreen extends Game implements Screen {
             powerUp.drawParticles(spriteBatch); // RITA EFFEKT FÖRST
             powerUp.getSprite().draw(spriteBatch); // RITA SPRITE OVANPÅ
         }
+
     }
 
     private void drawGroundItems() {
         for (GroundItem groundItem : groundItems) {
-            groundItem.getSprite().draw(spriteBatch);
+            groundItem.getSprite().draw(spriteBatch); // RITA SPRITE OVANPÅ
+            groundItem.update(Gdx.graphics.getDeltaTime());
+            groundItem.drawParticles(spriteBatch); // RITA EFFEKT FÖRST
+
         }
     }
 
@@ -774,10 +799,17 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    public void showChestOverlay() {
+        if (chestOverlay == null) {
+            chestOverlay = new ChestOverlay(this);
+            isOverlayActive = true;
+        }
+    }
+
     private void drawPlayerAbilities() {
         for (Ability a : abilities) {
             if (a instanceof Shield) {
-                a.updatePosition(player.getPlayerX()-a.getSprite().getWidth()/2, player.getPlayerY()-a.getSprite().getHeight()/2);
+                a.updatePosition(player.getPlayerX() - a.getSprite().getWidth() / 2, player.getPlayerY() - a.getSprite().getHeight() / 2);
 
                 if (!shield.getIsDepleted()) {
                     a.getSprite().draw(spriteBatch);
@@ -831,4 +863,5 @@ public class GameScreen extends Game implements Screen {
     public GameUI getGameUI() {
         return gameUI;
     }
+
 }

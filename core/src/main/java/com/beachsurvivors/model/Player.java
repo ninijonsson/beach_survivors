@@ -185,7 +185,7 @@ public class Player extends Actor {
         // CHECKA OM DET GÅR ATT GÖRA MOVET
         if (map.isInsidePolygon(newPlayerPosition.x, newPlayerPosition.y) &&
             map.isValidMove(tempHitBox) &&
-            !map.collidesWithObject(tempHitBox.getBoundingRectangle())) {
+            !map.collidesWithObject(tempHitBox)) {
             playerX = newPlayerPosition.x;
             playerY = newPlayerPosition.y;
             beachGuyHitBox.setPosition(playerX - playerWidth / 2, playerY - playerHeight / 2);

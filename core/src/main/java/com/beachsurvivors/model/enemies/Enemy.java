@@ -59,13 +59,14 @@ public abstract class Enemy implements Disposable {
     private boolean healthBarAddedToStage = false;
     private Timer.Task hideHealthBarTask;
     private Stage stage;
+    private Texture xpOrb;
 
     public Enemy(int width, int height, int healthPoints, int expOnDeath) {
         this.width = width;
         this.height = height;
         this.healthPoints = healthPoints;
         this.expOnDeath = expOnDeath;
-
+        this.xpOrb = AssetLoader.get().getTexture("assets/entities/abilities/xp_orb.png");
         this.texture = AssetLoader.get().getTexture("assets/placeholder.png");
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
