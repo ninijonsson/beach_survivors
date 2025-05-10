@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 
 public class GameUI {
@@ -30,6 +32,14 @@ public class GameUI {
     private Table healthTable;
     private Table xpTable;
 
+    private Table statsTable;
+    private Label healthPoints;
+    private Label damage;
+    private Label critChance;
+    private Label critDamage;
+    private Label cooldownReduction;
+    private Label movementSpeed;
+
     private Label timerLabel;
     private float gameTime = 0f;
 
@@ -50,7 +60,7 @@ public class GameUI {
         createPlayerHealthBar();
         createTimerLabel();
         createInfoTable();
-
+        createPlayerStats();
 
         addActors();
     }
@@ -186,8 +196,9 @@ public class GameUI {
         progressBar.setValue(value);
     }
 
-    public void setHealthBarValue(float value) {
+    public void setHealthBarValue(float value, float playerMaxHp) {
         healthBar.setValue(value);
+        healthBar.setRange(0, playerMaxHp);
         percentageLabel.setText(getHealthPercentage() + "%");
     }
 
@@ -200,11 +211,9 @@ public class GameUI {
         progressBarTable = new Table();
         Skin skin = new Skin(Gdx.files.internal("skin_composer/testbuttons.json"));
 
-
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
         progressBar.setSize(700, 70);
-
 
         levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
         levelFont.setColor(Color.WHITE);
@@ -228,6 +237,58 @@ public class GameUI {
             return String.valueOf(game.getPlayer().getLevelSystem().getCurrentLevel());
         }
     }
+
+
+
+    private void createPlayerStats() {
+        float fontScale = 1.2f;
+        Skin skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
+        statsTable = new Table();
+        statsTable.setSize(600,400);
+
+        healthPoints = new Label("HealthPoints" , skin, "stats");
+        statsTable.add(healthPoints).left().row();
+        healthPoints.setFontScale(fontScale);
+
+        damage = new Label("Base Damage" , skin, "stats");
+        statsTable.add(damage).left().row();
+        damage.setFontScale(fontScale);
+
+        critChance = new Label("Critical Chance" ,skin, "stats");
+        statsTable.add(critChance).left().row();
+        critChance.setFontScale(fontScale);
+
+        critDamage = new Label("Critical Damage" , skin, "stats");
+        statsTable.add(critDamage).left().row();
+        critDamage.setFontScale(fontScale);
+
+        cooldownReduction = new Label("Cooldown Reduction" , skin, "stats");
+        statsTable.add(cooldownReduction).left().row();
+        cooldownReduction.setFontScale(fontScale);
+
+        movementSpeed = new Label("Movement Speed" , skin, "stats");
+        statsTable.add(movementSpeed).left().row();
+        movementSpeed.setFontScale(fontScale);
+
+        statsTable.setPosition(-80, game.getScreenHeight()/2f);
+        stage.addActor(statsTable);
+        statsTable.setVisible(false);
+
+    }
+
+    public void updateStats(Player player) {
+        healthPoints.setText("Health Points " +player.getCurrentHealthPoints() + "/"+player.getMaxHealthPoints());
+        damage.setText("Base Damage: " + player.getBaseDamage());
+        critChance.setText("CritHit Chance: " + String.format("%.0f", player.getCriticalHitChance()*100) + "%");
+        critDamage.setText("CritHit Damage: " + String.format("%.0f", player.getCriticalHitDamage()*100) + "%");
+        cooldownReduction.setText("Cooldown Reduction: " + player.getCooldown() + "%");
+        movementSpeed.setText("Movement Speed: " + player.getSpeed());
+    }
+
+    public void showStatsTable() {
+        statsTable.setVisible(!statsTable.isVisible());
+    }
+
 
     private void updateLevelLabels() {
         if(game.getPlayer()!=null){

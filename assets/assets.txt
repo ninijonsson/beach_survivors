@@ -68,6 +68,9 @@ fonts/level.png
 fonts/timer.fnt
 fonts/timer.png
 game_over_screen/AniMeMatrix-MB_EN.fnt
+game_over_screen/Silkscreen-Regular(2).fnt
+game_over_screen/Silkscreen-Regular(3).fnt
+game_over_screen/Silkscreen-Regular(4).fnt
 game_over_screen/Silkscreen-Regular.fnt
 game_over_screen/deathscreen_skin.atlas
 game_over_screen/deathscreen_skin.json
@@ -78,7 +81,9 @@ game_over_screen/font-pressed-export.fnt
 game_over_screen/game_over_skin.png
 game_over_screen/gameover_skin.atlas
 game_over_screen/gameover_skin.json
+game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
+game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
 gdx-particle-editor.jar
 level_up_screen/default.fnt

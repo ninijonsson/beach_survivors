@@ -59,7 +59,7 @@ public class DeathScreen implements Screen {
         rightTable = new Table();
         leftTable = new Table();
 
-        Texture backgroundTexture = AssetLoader.get().manager.get("assets/game_over_screen/you died screen.png");
+        Texture backgroundTexture = AssetLoader.get().manager.get("assets/game_over_screen/you_died.png");
         Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
 
         //Stackar actors, background underst, tables ovanpå

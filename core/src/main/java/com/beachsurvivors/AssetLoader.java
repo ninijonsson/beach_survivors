@@ -48,7 +48,10 @@ public class AssetLoader {
         manager.load("assets/entities/coconut.png", Texture.class);
         manager.load("assets/entities/death.png", Texture.class);
         manager.load("assets/entities/how_to_play.png", Texture.class);
+
         manager.load("assets/game_over_screen/you died screen.png", Texture.class);
+        manager.load("assets/game_over_screen/you_died.png", Texture.class);
+
         manager.load("assets/main_menu/logo_skiss_1.png", Texture.class);
         manager.load("assets/main_menu/menu_background.jpeg", Texture.class);
         manager.load("assets/main_menu/buttons/play_button_2_scaled.png", Texture.class);
@@ -57,6 +60,7 @@ public class AssetLoader {
         manager.load("assets/main_menu/buttons/exit_button_2_scaled.png", Texture.class);
         manager.load("assets/main_menu/buttons/exit_button_2_hover_scaled.png", Texture.class);
         manager.load("assets/main_menu/buttons/exit_button_2_pressed_scaled.png", Texture.class);
+
         manager.load("assets/entities/abilities/exp_bar.png", Texture.class);
         manager.load("assets/entities/abilities/xp_orb.png", Texture.class);
 
@@ -65,7 +69,9 @@ public class AssetLoader {
         manager.load("assets/entities/abilities/boomerangmc.png", Texture.class);
         manager.load("assets/entities/abilities/fireball.png", Texture.class);
         manager.load("assets/entities/abilities/shield_bubble.png", Texture.class);
+
         manager.load("assets/entities/smoke.png", Texture.class);
+
         manager.load("assets/entities/enemies/shark.png", Texture.class);
         manager.load("assets/entities/enemies/shark_sheet.png", Texture.class);
         manager.load("assets/entities/enemies/crocodile1.png", Texture.class);
@@ -73,8 +79,10 @@ public class AssetLoader {
         manager.load("assets/entities/enemies/navy_seal_sheet.png", Texture.class);
         manager.load("assets/entities/enemies/crocodile2.png", Texture.class);
         manager.load("assets/entities/enemies/crab_sheet.png", Texture.class);
+
         manager.load("assets/entities/beach_girl_sheet.png", Texture.class);
         manager.load("assets/entities/beach_guy_sheet.png", Texture.class);
+
         manager.load("assets/entities/power_ups/freeze.png", Texture.class);
         manager.load("assets/entities/power_ups/health_boost.png", Texture.class);
         manager.load("assets/entities/power_ups/health_heart.png", Texture.class);
