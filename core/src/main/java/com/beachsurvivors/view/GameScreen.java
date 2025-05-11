@@ -740,7 +740,7 @@ public class GameScreen extends Game implements Screen {
         drawEnemies();
         drawEnemyAbilities();
         drawDamageText();
-        // player.drawAnimation();
+        controller.getPlayerController().drawAnimation();
         drawPlayerAbilities();
 
     }

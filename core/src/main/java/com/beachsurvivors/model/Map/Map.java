@@ -81,6 +81,7 @@ public class Map {
                 return; // Stoppa loopen efter första träffen
             }
         }
+        System.out.println("Starting position: " + startingX + ", " + startingY);
     }
 
     /**

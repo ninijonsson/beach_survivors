@@ -82,7 +82,6 @@ public class Controller extends Game implements Screen {
     }
 
     public void logic() {
-        System.out.println("controller.logic();");
         player.updateCameraPosition();
 
         player.shoot();

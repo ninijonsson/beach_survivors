@@ -41,7 +41,6 @@ public class GameManager extends Game implements Screen {
 
     @Override
     public void create() {
-        createMap();
     }
 
     @Override
@@ -68,6 +67,7 @@ public class GameManager extends Game implements Screen {
     }
 
     public Map createMap() {
+        System.out.println("Skapar en map...");
         tiledMap = new TmxMapLoader().load("map2/map2.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
         assert tiledMap != null;

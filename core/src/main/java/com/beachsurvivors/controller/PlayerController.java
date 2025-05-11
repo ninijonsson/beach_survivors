@@ -65,6 +65,10 @@ public class PlayerController extends Game implements Screen {
         }
     }
 
+    public void drawAnimation() {
+        player.drawAnimation();
+    }
+
     public void shoot() {}
 
     public void shootAtNearestEnemy() {}

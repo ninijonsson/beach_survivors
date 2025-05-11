@@ -79,6 +79,9 @@ public class Player extends Actor {
 
         playerX = map.getStartingX();
         playerY = map.getStartingY();
+
+        System.out.println("Konstruktor, X: " + playerX + " Y: " + playerY);
+
         beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
 
         healthPoints = 100;
@@ -127,8 +130,11 @@ public class Player extends Actor {
             currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
         }
         // Rita animationen centrerad kring playerX och playerY
+        spriteBatch.begin();
         spriteBatch.setColor(tint);
-        spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
+        spriteBatch.draw(currentFrame, playerX - playerWidth / 2,
+            playerY - playerHeight / 2, playerWidth, playerHeight);
+        spriteBatch.end();
     }
 
     public void gainExp(int exp) {
