@@ -14,7 +14,7 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
     }*/
 
     public SpeedBoost(float x, float y, ParticleEffectPoolManager ppm) {
-        super(AssetLoader.get().getTexture("assets/entities/power_ups/speed_boost.png"), 10, x, y, ppm);
+        super(AssetLoader.get().getTexture("entities/power_ups/speed_boost.png"), 10, x, y, ppm);
     }
 
     @Override

@@ -19,8 +19,8 @@ public class Boomerang extends Ability {
     private float orbitRadius = 300;
 
     public Boomerang() {
-        super("Boomerang", "assets/entities/abilities/boomerangmc.png", AbilityType.AoE, 10, 0, 32,32);
-        sprite = new Sprite(AssetLoader.get().getTexture("assets/entities/abilities/boomerangmc.png"));
+        super("Boomerang", "entities/abilities/boomerangmc.png", AbilityType.AoE, 10, 0, 32,32);
+        sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/boomerangmc.png"));
         sprite.setSize(32, 32);
         hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         this.damage = 10;
