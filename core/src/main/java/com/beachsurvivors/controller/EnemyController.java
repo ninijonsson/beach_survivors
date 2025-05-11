@@ -35,7 +35,7 @@ public class EnemyController {
         this.enemies = new Array<>();
         this.controller = controller;
         this.playerController = controller.getPlayerController();
-        this.gameManager = controller.getGameManagerController();
+        this.gameManager = controller.getGameManager();
         this.player = controller.getPlayerController().getPlayer();
         this.gameUI = controller.getGameScreen().getGameUI();
         this.random = new Random();

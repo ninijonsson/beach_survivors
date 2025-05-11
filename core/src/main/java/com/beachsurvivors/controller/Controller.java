@@ -3,7 +3,7 @@ package com.beachsurvivors.controller;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.model.Map.Map;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.enemies.Enemy;
 import com.beachsurvivors.view.GameScreen;
@@ -19,26 +19,31 @@ public class Controller extends Game implements Screen {
     private Main main;
     private ParticleEffectPoolManager poolManager;
     private GameScreen gameScreen;
+    private GameUI gameUI;
+    private FitViewport gameViewport;
     private Array<Enemy> enemies;
 
-    public Controller(Main main) {
-        this.main = main;
+    public Controller(GameScreen gameScreen, GameUI gameUI) {
+        this.gameScreen = gameScreen;
+        this.gameViewport = gameScreen.getGameViewport();
+        this.gameUI = gameUI;
 
-        this.enemy = new EnemyController(this);
+        this.gameManager = new GameManager(this);
         this.level = new LevelController(this);
         this.player = new PlayerController(this);
         this.ability = new AbilityController(this);
-        this.gameManager = new GameManager(this);
-        this.gameScreen = main.getGameScreen();
+        this.enemy = new EnemyController(this);
 
         this.enemies = enemy.getEnemies();
-
-        render();
+        this.main = gameScreen.getMain();
     }
 
     @Override
     public void create() {
+        System.out.println("Kommer till controller.create();");
 
+        player.create();
+        gameManager.create();
     }
 
     @Override
@@ -48,7 +53,7 @@ public class Controller extends Game implements Screen {
 
     @Override
     public void render(float delta) {
-        logic();
+        // logic();
     }
 
     @Override
@@ -77,6 +82,9 @@ public class Controller extends Game implements Screen {
     }
 
     public void logic() {
+        System.out.println("controller.logic();");
+        player.updateCameraPosition();
+
         player.shoot();
         ability.updatePosition();
         enemy.spawn();
@@ -105,7 +113,7 @@ public class Controller extends Game implements Screen {
         return player;
     }
 
-    public GameManager getGameManagerController() {
+    public GameManager getGameManager() {
         return gameManager;
     }
 
@@ -116,4 +124,6 @@ public class Controller extends Game implements Screen {
     public GameScreen getGameScreen() {
         return gameScreen;
     }
+
+    public FitViewport getGameViewport() { return gameViewport; }
 }

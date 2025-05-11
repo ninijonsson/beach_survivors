@@ -20,7 +20,6 @@ public class Main extends Game {
 
     public void startGame() {
         gameScreen = new GameScreen(this);
-        controller = new Controller(this);
         setScreen(gameScreen);
     }
 

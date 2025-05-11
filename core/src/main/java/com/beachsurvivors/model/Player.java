@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.controller.LevelController;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.view.GameScreen;
@@ -32,6 +33,7 @@ public class Player extends Actor {
     private boolean isAlive;
     private LevelController levelController;
     private GameScreen gameScreen;
+    private Controller controller;
 
     private double damageTaken = 0;
     private double healingReceived;
@@ -59,9 +61,10 @@ public class Player extends Actor {
     private SpriteBatch spriteBatch;
     private Map map;
 
-    public Player(SpriteBatch spriteBatch) {
+    public Player(SpriteBatch spriteBatch, Controller controller) {
+        this.controller = controller;
         // TODO: Få tillgång till Map-klassen via GameManager istället?
-        //this.map = map;
+        this.map = controller.getGameManager().createMap();
         this.spriteBatch = spriteBatch;
         //this.gameScreen = gameScreen;
 
@@ -84,6 +87,7 @@ public class Player extends Actor {
     }
 
     private void createAnimation() {
+        System.out.println("Creating animation for player...");
         int choice = random.nextInt(1,3);
         switch (choice) {
             case 1:
@@ -322,7 +326,6 @@ public class Player extends Actor {
         return criticalHitDamage;
     }
 
-
     public double getDamageTaken() {
         return damageTaken;
     }
@@ -330,7 +333,6 @@ public class Player extends Actor {
     public double getHealingReceived() {
         return healingReceived;
     }
-
 
     public LevelController getLevelController() {
         return levelController;

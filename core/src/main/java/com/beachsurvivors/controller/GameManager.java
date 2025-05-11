@@ -1,11 +1,20 @@
 package com.beachsurvivors.controller;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.Timer;
+import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.groundItems.*;
 
-public class GameManager {
+public class GameManager extends Game implements Screen {
     private Array<GroundItem> groundItems;
     private Array<PowerUp> powerUps;
     private int totalEnemiesKilled;
@@ -13,14 +22,58 @@ public class GameManager {
     private int secondsBetweenGrowthRate;
     private Controller controller;
     private ParticleEffectPoolManager poolManager;
+    private boolean isPaused;
+
+    // Map
+    private TiledMap tiledMap;
+    private OrthogonalTiledMapRenderer tiledMapRenderer;
+    private Map map;
 
     public GameManager(Controller controller) {
         totalEnemiesKilled = 0;
         growthRateOfSpawningEnemies = 1.5f;
         secondsBetweenGrowthRate = 10;
+        isPaused = false;
 
         this.controller = controller;
         this.poolManager = controller.getGameScreen().getPoolManager();
+    }
+
+    @Override
+    public void create() {
+        createMap();
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float v) {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void pause() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            isPaused = !isPaused;
+            Timer.instance().stop();
+        }
+    }
+
+    public Map createMap() {
+        tiledMap = new TmxMapLoader().load("map2/map2.tmx");
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
+        assert tiledMap != null;
+        map = new Map(tiledMap);
+
+        return map;
     }
 
     // Getters & setters
@@ -65,5 +118,13 @@ public class GameManager {
 
     public ParticleEffectPoolManager getPoolManager() {
         return poolManager;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public OrthogonalTiledMapRenderer getTiledMapRenderer() {
+        return tiledMapRenderer;
     }
 }

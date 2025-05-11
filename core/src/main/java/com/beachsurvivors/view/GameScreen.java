@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.abilities.*;
 import com.beachsurvivors.model.Map.Map;
@@ -48,7 +49,7 @@ public class GameScreen extends Game implements Screen {
     private SpriteBatch spriteBatch;
     private final FitViewport gameViewport;
     private Stage stage;
-    private final GameUI gameUI;
+    private GameUI gameUI;
     private boolean isOverlayActive = false;
 
     private ShapeRenderer shapeRenderer;
@@ -71,7 +72,7 @@ public class GameScreen extends Game implements Screen {
     private Array<DamageText> damageTexts = new Array<>();
     private Random random = new Random();
 
-
+    private Controller controller;
     private Array<GroundItem> groundItems = new Array<>();  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
     private Queue<Integer> miniBossSchedule = new Queue<>(10);
     /// /array med intervaller på när miniboss ska spawna
@@ -92,10 +93,12 @@ public class GameScreen extends Game implements Screen {
     private boolean spawnMinibossesTestMode = true; //Toggles if minibosses spawn
 
     public GameScreen(Main main) {
+        gameUI = new GameUI(new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT), this);
+
         this.main = main;
+        this.controller = new Controller(this, gameUI);
 
         gameViewport = new FitViewport(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f);
-        gameUI = new GameUI(new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT), this);
 
         droppedItems = new Array<>();
         abilities = new Array<>();
@@ -111,10 +114,12 @@ public class GameScreen extends Game implements Screen {
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
 
-        tiledMap = new TmxMapLoader().load("map2/map2.tmx");
+        // TODO: GameManager
+        /*tiledMap = new TmxMapLoader().load("map2/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
         assert tiledMap != null;
-        Map map = new Map(tiledMap);
+        Map map = new Map(tiledMap);*/
+
         stage = new Stage(gameViewport);
         stage.clear();
 
@@ -145,6 +150,8 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("assets/entities/particles/xp_orb.p", 5, 20);
         poolManager.register("assets/entities/particles/chestClosed.p", 5, 20);
         poolManager.register("assets/entities/particles/chestOpen.p", 5, 20);
+
+        controller.create();
 
         // TODO: Flyttas till EnemyController
         // ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);
@@ -185,10 +192,11 @@ public class GameScreen extends Game implements Screen {
     @Override
     public void render(float delta) {
 
-        input();
+        // input();
+        controller.logic();
 
         if (!isPaused) {
-            logic();
+            // logic(); -> flyttad till Controller
             draw();
 
         } else {
@@ -229,13 +237,17 @@ public class GameScreen extends Game implements Screen {
      * single game tick and is used to update the visuals of the game.
      */
     private void draw() {
-        gameViewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
+        /*gameViewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
         gameViewport.getCamera().update();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        gameViewport.apply();
+        gameViewport.apply();*/
 
-        mapRenderer.setView((OrthographicCamera) gameViewport.getCamera());
-        mapRenderer.render();
+        controller.getPlayerController().updateCameraPosition();
+
+        controller.getGameManager().getTiledMapRenderer()
+            .setView((OrthographicCamera) gameViewport.getCamera());
+        controller.getGameManager().getTiledMapRenderer()
+            .render();
 
         spriteBatch.setProjectionMatrix(gameViewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(gameViewport.getCamera().combined);
@@ -339,6 +351,7 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    // TODO: GameManager
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             pause();
@@ -727,7 +740,7 @@ public class GameScreen extends Game implements Screen {
         drawEnemies();
         drawEnemyAbilities();
         drawDamageText();
-        player.drawAnimation();
+        // player.drawAnimation();
         drawPlayerAbilities();
 
     }
