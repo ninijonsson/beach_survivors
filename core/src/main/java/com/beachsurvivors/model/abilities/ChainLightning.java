@@ -1,9 +1,13 @@
 package com.beachsurvivors.model.abilities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
 
@@ -19,26 +23,48 @@ public class ChainLightning extends Ability {
 
     private boolean showLightning;
     private float lightningVisibleTime;
-    private float chainLightningTimer;
+    private double chainLightningTimer;
 
 
     public ChainLightning(Array<Enemy> enemies) {
-        super("ChainLightning", "assets/placeholder.png", AbilityType.ATTACK, 10, 7, 32, 32);
+        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 10, 7, 32, 32);
         maxJumps = 5;
         jumpRadius = 500;
         this.enemies = enemies;
+        chainLightningTimer = getCooldown();
+        lightningVisibleTime = 0.5f;
 
     }
 
-    public void cast(Enemy enemy) {
-        Set<Enemy> alreadyHitEnemies = new HashSet<>();
-        Enemy current = enemy;
+    public void cast(Enemy enemy, float delta) {
+        chainLightningTimer += delta;  //Timer går upp med tiden
 
-        for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
-            current.hit(getDamage());
-            alreadyHitEnemies.add(current);
-            hitPositions.add(current.getEnemyPos());
-            current = getNextTarget(current, alreadyHitEnemies);
+        if (chainLightningTimer >= getCooldown()) { //När timer är högre än cooldown, casta chain lightning
+            chainLightningTimer = 0;
+            showLightning = true;
+            lightningVisibleTime = 0.5f;
+
+            hitPositions.clear();
+
+            Enemy current = enemy;
+            Set<Enemy> alreadyHitEnemies = new HashSet<>();
+
+            for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
+                current.hit(getDamage());
+                alreadyHitEnemies.add(current);
+                hitPositions.add(current.getEnemyPos());
+                current = getNextTarget(current, alreadyHitEnemies);
+            }
+        }
+    }
+
+    public void update(float delta) {
+        if (showLightning) {
+            lightningVisibleTime -= delta;
+            if (lightningVisibleTime <= 0) {
+                showLightning = false;
+                hitPositions.clear();
+            }
         }
     }
 
@@ -62,15 +88,13 @@ public class ChainLightning extends Ability {
     }
 
     public void draw(ShapeRenderer shapeRenderer, Vector2 playerPos) {
+        if (!showLightning || hitPositions.size == 0) return;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.BLUE);
 
-        if (hitPositions.size > 0 ) {
-            shapeRenderer.line(playerPos, hitPositions.get(0));
-
-        }
-        for (int i = 0; i < hitPositions.size-1; i++) {
+        shapeRenderer.line(playerPos, hitPositions.get(0)); //Dra linje från spelare till första enemy
+        for (int i = 0; i < hitPositions.size-1; i++) { //Dra linje mellan enemies
             Vector2 from = hitPositions.get(i);
             Vector2 to = hitPositions.get(i+1);
             shapeRenderer.line(from, to);
@@ -78,6 +102,40 @@ public class ChainLightning extends Ability {
         shapeRenderer.end();
     }
 
+    public void drawLightning(SpriteBatch spriteBatch, Vector2 playerPos) {
+
+        if (!showLightning || hitPositions.size == 0) return;
+
+        float deltaX = hitPositions.get(0).x - playerPos.x;
+        float deltaY = hitPositions.get(0).y - playerPos.y;
+        float length = playerPos.dst(hitPositions.get(0));
+        float angle = MathUtils.atan2(deltaY, deltaX) * MathUtils.radiansToDegrees;
+
+        spriteBatch.draw(getTexture(), playerPos.x, playerPos.y,
+            0,0,
+            length, getTexture().getHeight(),
+            1f,1f,
+            angle,
+            0,0,
+            getTexture().getWidth(), getTexture().getHeight(),
+            false, false);
+
+        for (int i = 0; i < hitPositions.size-1; i++) {
+            deltaX = hitPositions.get(i+1).x - hitPositions.get(i).x;
+            deltaY = hitPositions.get(i+1).y - hitPositions.get(i).y;
+            length = hitPositions.get(i).dst(hitPositions.get(i+1));
+            angle = MathUtils.atan2(deltaY, deltaX) * MathUtils.radiansToDegrees;
+
+            spriteBatch.draw(getTexture(), hitPositions.get(i).x, hitPositions.get(i).y,
+                0,0,
+                length, getTexture().getHeight(),
+                1f,1f,
+                angle,
+                0,0,
+                getTexture().getWidth(), getTexture().getHeight(),
+                false, false);
+        }
+    }
 
     @Override
     public void use() {
@@ -90,12 +148,5 @@ public class ChainLightning extends Ability {
     }
 
 
-    public Array<Vector2> getHitPositions() {
-        return hitPositions;
-    }
-
-    public void clearArray() {
-        hitPositions.clear();
-    }
 
 }

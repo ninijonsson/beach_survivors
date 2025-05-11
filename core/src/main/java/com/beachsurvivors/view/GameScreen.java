@@ -300,6 +300,7 @@ public class GameScreen extends Game implements Screen {
         }
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
+        chainLightning.update(Gdx.graphics.getDeltaTime());
         castChainLightning();
 
     }
@@ -471,22 +472,8 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-
-        float chainLightningTimer = 0;
     private void castChainLightning() {
-
-        chainLightningTimer += Gdx.graphics.getDeltaTime();
-        if (chainLightningTimer >= chainLightning.getCooldown()) {
-            chainLightningTimer = 0;
-            chainLightning.cast(getNearestEnemy());
-
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    chainLightning.clearArray();
-                }
-            }, 0.5f);
-        }
+        chainLightning.cast(getNearestEnemy(), Gdx.graphics.getDeltaTime());
     }
 
     @Override
@@ -850,7 +837,8 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void drawChainLightning() {
-        chainLightning.draw(shapeRenderer, playerPos);
+        //chainLightning.draw(shapeRenderer, playerPos);
+        chainLightning.drawLightning(spriteBatch, playerPos);
     }
 
     public int getScreenWidth() {

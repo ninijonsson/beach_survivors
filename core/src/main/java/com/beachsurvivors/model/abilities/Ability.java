@@ -85,6 +85,10 @@ public abstract class Ability implements Disposable {
         this.texture = texture;
     }
 
+    public Texture getTexture() {
+        return texture;
+    }
+
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
     }
