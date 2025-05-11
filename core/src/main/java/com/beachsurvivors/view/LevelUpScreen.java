@@ -1,6 +1,7 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -182,6 +183,7 @@ public class LevelUpScreen implements Screen {
     public void render(float delta) {
         stage.act(delta);
         stage.draw();
+        keyBinds();
     }
 
     @Override
@@ -207,5 +209,23 @@ public class LevelUpScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public void keyBinds() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+            applyUpgrade(upgrade1.getType());
+            game.printLog("Upgrade chosen: " + upgrade1.getType());
+            resumeGame();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+            applyUpgrade(upgrade2.getType());
+            game.printLog("Upgrade chosen: " + upgrade2.getType());
+            resumeGame();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+            applyUpgrade(upgrade3.getType());
+            game.printLog("Upgrade chosen: " + upgrade3.getType());
+            resumeGame();
+        }
     }
 }

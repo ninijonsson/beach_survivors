@@ -38,6 +38,7 @@ entities/icons/ability_icon.png
 entities/icons/blank.png
 entities/icons/chest_open.png
 entities/icons/chest_open_asperite.aseprite
+entities/icons/coin.aseprite
 entities/icons/coin.png
 entities/particles/blueFlame.p
 entities/particles/bullet.png
@@ -85,7 +86,6 @@ game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
 game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
-gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas
