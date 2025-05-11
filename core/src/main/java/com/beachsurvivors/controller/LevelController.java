@@ -7,17 +7,14 @@ public class LevelController {
     private int currentLevel;
     private int currentExp;
     private int expToNextLevel;
-    private GameUI ui;
     private Main main;
     private Controller controller;
 
-    public LevelController(GameUI ui, Main main, Controller controller) {
+    public LevelController(Controller controller) {
         this.currentLevel = 1;
         this.currentExp = 0;
         this.expToNextLevel = calculateExpForLevelUp(currentLevel);
 
-        this.ui = ui;
-        this.main = main;
         this.controller = controller;
     }
 
@@ -41,8 +38,9 @@ public class LevelController {
 
     private void onLevelUp() {
         System.out.println("Level up!");
-        ui.updateInfoTable("Congratulations, you are now level " + currentLevel);
-        main.levelUp(); // Välja abilities/stats
+        //ui.updateInfoTable("Congratulations, you are now level " + currentLevel);
+        // För att levela, gå via Controller istället
+        //main.levelUp(); // Välja abilities/stats
     }
 
     public int getCurrentLevel() {

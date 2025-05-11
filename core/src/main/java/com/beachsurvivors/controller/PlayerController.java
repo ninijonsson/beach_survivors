@@ -1,21 +1,28 @@
 package com.beachsurvivors.controller;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
 
-public class PlayerController {
+public class PlayerController extends Game {
     private Player player;
     private Vector2 position;
     private Controller controller;
 
-    public PlayerController(Map map, Controller controller) {
-        this.player = new Player(map, new SpriteBatch());
-        this.position = new Vector2(player.getX(), player.getY());
-
+    public PlayerController(Controller controller) {
         this.controller = controller;
+
+        create();
+    }
+
+    @Override
+    public void create() {
+        this.player = new Player(new SpriteBatch());
+        this.position = new Vector2(player.getX(), player.getY());
+        player.setPosition(position.x, position.y);
     }
 
     public void logic() {}

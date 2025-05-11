@@ -16,24 +16,24 @@ public class Controller extends Game implements Screen {
     private LevelController level;
     private PlayerController player;
     private GameManager gameManager;
-    private GameUI gameUI;
     private Main main;
     private ParticleEffectPoolManager poolManager;
     private GameScreen gameScreen;
     private Array<Enemy> enemies;
 
-    public Controller(GameUI gameUI, Main main, Map map) {
-        this.gameUI = gameUI;
+    public Controller(Main main) {
         this.main = main;
 
-        enemy = new EnemyController(this);
-        level = new LevelController(gameUI, main, this);
-        player = new PlayerController(map, this);
-        ability = new AbilityController(this);
-        gameManager = new GameManager(this);
-        gameScreen = main.getGameScreen();
+        this.enemy = new EnemyController(this);
+        this.level = new LevelController(this);
+        this.player = new PlayerController(this);
+        this.ability = new AbilityController(this);
+        this.gameManager = new GameManager(this);
+        this.gameScreen = main.getGameScreen();
 
         this.enemies = enemy.getEnemies();
+
+        render();
     }
 
     @Override
@@ -111,10 +111,6 @@ public class Controller extends Game implements Screen {
 
     public Main getMain() {
         return main;
-    }
-
-    public GameUI getGameUI() {
-        return gameUI;
     }
 
     public GameScreen getGameScreen() {

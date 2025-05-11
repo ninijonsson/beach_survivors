@@ -118,24 +118,26 @@ public class GameScreen extends Game implements Screen {
         stage = new Stage(gameViewport);
         stage.clear();
 
-        player = new Player(map, spriteBatch);
-        playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        // TODO: Flyttas till Controller eller GameManager
+        // player = new Player(spriteBatch);
+        // playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
-        boomerang = new Boomerang();
+        // TODO: Flyttas till AbilityController
+        /* boomerang = new Boomerang();
         bullet = new BaseAttack();
         shield = new Shield();
         abilities.add(boomerang);
         abilities.add(bullet);
-        abilities.add(shield);
-
+        abilities.add(shield); */
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
 
-        player.setPlayerX(map.getStartingX());
-        player.setPlayerY(map.getStartingY());
+        // player.setPlayerX(map.getStartingX());
+        // player.setPlayerY(map.getStartingY());
 
+        // TODO: Gör om till metod
         poolManager = new ParticleEffectPoolManager();
         poolManager.register("assets/entities/particles/blueFlame.p", 5, 20);
         poolManager.register("assets/entities/particles/lootBeam.p", 5, 20);
@@ -144,18 +146,21 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("assets/entities/particles/chestClosed.p", 5, 20);
         poolManager.register("assets/entities/particles/chestOpen.p", 5, 20);
 
-        //TESTAR OLIKA DROPS
-        ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);
+        // TODO: Flyttas till EnemyController
+        // ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);
         //groundItems.add(orb);
 
-        Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
-        groundItems.add(chest);
+        // TODO: Flyttas till GameManager
+        // Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
+        // groundItems.add(chest);
 
-        Vector2 startPos = new Vector2(player.getPlayerX(), player.getPlayerY());
-        WaterWave wave = new WaterWave("WaterWave", 15, 1.2, 32, 32, startPos, poolManager);
-        abilities.add(wave);
+        // Vector2 startPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        // TODO: Flyttas till AbilityController
+        //WaterWave wave = new WaterWave("WaterWave", 15, 1.2, 32, 32, startPos, poolManager);
+        //abilities.add(wave);
 
-        createMiniBossSchedule();
+        // TODO: Flyttas till EnemyController
+        // createMiniBossSchedule();
     }
 
     /**

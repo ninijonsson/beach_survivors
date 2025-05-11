@@ -1,10 +1,11 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
+import com.beachsurvivors.controller.Controller;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
-
+    private Controller controller;
     private MainMenuScreen menuScreen;
     private GameScreen gameScreen;
     private LoadingScreen loadingScreen;
@@ -19,6 +20,7 @@ public class Main extends Game {
 
     public void startGame() {
         gameScreen = new GameScreen(this);
+        controller = new Controller(this);
         setScreen(gameScreen);
     }
 
