@@ -7,7 +7,7 @@ import com.beachsurvivors.model.Player;
 public class BaseAttack extends Ability {
     private Vector2 direction;
     private Rectangle hitBox;
-
+    private float bulletTimer = 0f;
 
     //Constructor för default baseattack (spelarens)
     public BaseAttack() {
@@ -44,4 +44,10 @@ public class BaseAttack extends Ability {
     public void use(Player player) {
 
     }
+
+    public float getBulletTimer() { return bulletTimer; }
+
+    public void addBulletTimer(float delta) { this.bulletTimer += bulletTimer; }
+
+    public void setBulletTimer(float bulletTimer) { this.bulletTimer = bulletTimer; }
 }

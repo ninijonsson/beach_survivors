@@ -72,16 +72,18 @@ public class Map {
      */
     private void getStartPos() {
         MapLayer startLayer = map.getLayers().get("startPos");
+
         if (startLayer == null) return;
         for (MapObject object : startLayer.getObjects()) {
             if (object instanceof RectangleMapObject) {
                 Rectangle start = ((RectangleMapObject) object).getRectangle();
                 startingX = start.x * gameScale;
                 startingY = start.y * gameScale;
+                System.out.println("Starting position: " + startingX + ", " + startingY);
+
                 return; // Stoppa loopen efter första träffen
             }
         }
-        System.out.println("Starting position: " + startingX + ", " + startingY);
     }
 
     /**

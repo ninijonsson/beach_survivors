@@ -20,6 +20,9 @@ public class AbilityController {
         this.boomerang = new Boomerang();
         this.bullet = new BaseAttack();
         this.shield = new Shield();
+        abilities.add(boomerang);
+        abilities.add(bullet);
+        abilities.add(shield);
 
         this.controller = controller;
         this.player = controller.getPlayerController().getPlayer();
@@ -36,4 +39,17 @@ public class AbilityController {
             ability.updatePosition(delta, player.getPlayerX(), player.getPlayerY());
         }
     }
+
+    public void updateShieldPosition() {
+        if (!shield.getIsDepleted() && shield.getSprite() != null) {
+            shield.updatePosition(player.getPlayerX() - shield.getSprite().getWidth() / 2,
+                player.getPlayerY() - shield.getSprite().getHeight() / 2);
+        }
+    }
+
+    public Shield getShield() { return shield; }
+
+    public BaseAttack getBullet() { return bullet; }
+
+    public Array<Ability> getAbilities() { return abilities; }
 }

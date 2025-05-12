@@ -87,6 +87,7 @@ public class Controller extends Game implements Screen {
 
         player.shoot();
         ability.updatePosition();
+
         enemy.spawn();
         enemy.updatePosition();
         enemy.attack();
@@ -94,6 +95,9 @@ public class Controller extends Game implements Screen {
         // Kontrollerar om spelaren plockar upp ett objekt/powerup
         player.pickUpPowerUp();
         player.pickUpGroundItem();
+
+        // Abilities
+        ability.updateShieldPosition();
     }
 
     public void input() {
@@ -136,4 +140,6 @@ public class Controller extends Game implements Screen {
         System.out.println(gameManager.getTiledMapRenderer());
         return gameManager.getTiledMapRenderer();
     }
+
+    public GameUI getGameUI() { return gameUI; }
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
+import com.beachsurvivors.model.abilities.Shield;
 import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.Chest;
 import com.beachsurvivors.model.groundItems.ExperienceOrb;
@@ -33,6 +34,7 @@ public class EnemyController {
 
     public EnemyController(Controller controller) {
         this.enemies = new Array<>();
+        this.enemyAbilities = new Array<>();
         this.controller = controller;
         this.playerController = controller.getPlayerController();
         this.gameManager = controller.getGameManager();
@@ -44,13 +46,48 @@ public class EnemyController {
     public void logic() {}
 
     public void attack() {
+        for (Enemy enemy : enemies) {
+            enemy.attack(player, enemyAbilities);
+        }
 
+        for (Ability ability : enemyAbilities) {
+            ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+        }
     }
 
     // Skillnad på attack och damagePlayer?
-    public void damagePlayer() {}
+    public void damagePlayer(double damage) {
+        Shield shield = controller.getAbilityController().getShield();
 
-    public void checkEnemyAbilitiesDamageOnPlayer() {}
+        int shieldStrength = shield.getCurrentShieldStrength();
+        double remainingDamage = damage - shieldStrength;
+
+        shield.damageShield(damage);
+
+        if (remainingDamage >= 0) {
+            player.takeDamage(remainingDamage);
+            gameUI.setHealthBarValue(player.getHealthPoints());
+            System.out.println("player HP : " + player.getHealthPoints());
+        }
+
+        if (!player.isAlive()) {
+            System.out.println("You died");
+            controller.getMain().gameOver(controller.getGameManager().getTotalEnemiesKilled(), 1 /*controller.getGameManager().getTotalPlayerDamageDealt()*/,
+                    gameUI.getGameTimeSeconds(),
+                    player.getDamageTaken(), player.getHealingReceived(),
+                    shield.getTotalDamagePrevented());
+        }
+    }
+
+    public void checkEnemyAbilitiesDamageOnPlayer() {
+        for (int i = enemyAbilities.size - 1; i >= 0; i--) {
+            if (enemyAbilities.get(i).getHitBox().overlaps(player.getHitBox())) {
+                damagePlayer(enemyAbilities.get(i).getDamage());
+                enemyAbilities.get(i).dispose();
+                enemyAbilities.removeIndex(i);
+            }
+        }
+    }
 
     public void spawn() {
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
@@ -71,6 +108,7 @@ public class EnemyController {
         enemy.getHitbox().setX(randomPos.x);
         enemy.getHitbox().setY(randomPos.y);
 
+        System.out.println("Enemy added: " + enemy);
         enemies.add(enemy);
     }
 

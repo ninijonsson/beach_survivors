@@ -2,6 +2,7 @@ package com.beachsurvivors.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.graphics.Color;
@@ -17,6 +18,7 @@ import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.controller.LevelController;
 import com.beachsurvivors.model.Map.Map;
+import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.view.GameScreen;
 
 import java.util.Random;
@@ -61,6 +63,8 @@ public class Player extends Actor {
     private SpriteBatch spriteBatch;
     private Map map;
 
+    private Array<Ability> equippedAbilities;
+
     public Player(SpriteBatch spriteBatch, Controller controller) {
         this.controller = controller;
         // TODO: Få tillgång till Map-klassen via GameManager istället?
@@ -68,10 +72,12 @@ public class Player extends Actor {
         this.spriteBatch = spriteBatch;
         //this.gameScreen = gameScreen;
 
+        equippedAbilities = new Array<>();
+
         playerHeight = 128;
         playerWidth = 128;
 
-        //levelController = new LevelController(this.gameScreen.getGameUI(), this.gameScreen.getMain());
+        levelController = controller.getLevelController();
 
         isMoving = false;
         isAlive = true;
@@ -130,11 +136,9 @@ public class Player extends Actor {
             currentFrame = walkAnimation.getKeyFrame(0);  //Om man står still visas bara första framen i spritesheet
         }
         // Rita animationen centrerad kring playerX och playerY
-        spriteBatch.begin();
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, playerX - playerWidth / 2,
             playerY - playerHeight / 2, playerWidth, playerHeight);
-        spriteBatch.end();
     }
 
     public void gainExp(int exp) {

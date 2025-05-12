@@ -129,7 +129,7 @@ public class GameScreen extends Game implements Screen {
         stage.clear();
 
         // TODO: Flyttas till Controller eller GameManager
-        // player = new Player(spriteBatch);
+        player = controller.getPlayerController().getPlayer();
         // playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         // TODO: Flyttas till AbilityController
@@ -160,7 +160,7 @@ public class GameScreen extends Game implements Screen {
 
         // TODO: Flyttas till EnemyController
         // ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);
-        //groundItems.add(orb);
+        // groundItems.add(orb);
 
         // TODO: Flyttas till GameManager
         // Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
@@ -305,6 +305,8 @@ public class GameScreen extends Game implements Screen {
         if (spawnEnemiesTestMode) { //DOES NOT SPAWN IF THIS IS NOT TRUE, TOGGLES ENEMIES IN GAME.
             spawnEnemies();
 
+            enemies = controller.getEnemyController().getEnemies();
+
             for (int i = enemies.size - 1; i >= 0; i--) { //LOOP THROUGH ALL ENEMIES AND UPDATE RELATED POSITIONS.
                 Enemy enemy = enemies.get(i);
                 updateEnemyMovement(enemy); //MOVE TOWARDS PLAYER
@@ -312,7 +314,7 @@ public class GameScreen extends Game implements Screen {
                 checkPlayerAbilityHits(enemy); //IF THEY ARE HIT BY THE PLAYER
                 checkDamageAgainstPlayer(enemy); //IF THEY DAMAGE THE PLAYER
             }
-            checkEnemyAbilitiesDamagePlayer();
+            //checkEnemyAbilitiesDamagePlayer();
         }
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
@@ -434,8 +436,12 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void updateShieldPos() {
+        shield = controller.getAbilityController().getShield();
+        player = controller.getPlayerController().getPlayer();
+
         if (!shield.getIsDepleted() && shield.getSprite() != null) {
-            shield.updatePosition(player.getPlayerX() - shield.getSprite().getWidth() / 2, player.getPlayerY() - shield.getSprite().getHeight() / 2);
+            shield.updatePosition(player.getPlayerX() - shield.getSprite().getWidth() / 2,
+                player.getPlayerY() - shield.getSprite().getHeight() / 2);
         }
     }
 
@@ -474,6 +480,8 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void enemyAttacks() {
+        enemies = controller.getEnemyController().getEnemies();
+
         for (Enemy enemy : enemies) {
             enemy.attack(player, enemyAbilities);
         }
@@ -602,7 +610,7 @@ public class GameScreen extends Game implements Screen {
             miniBoss.setEnemyPos(randomPos);
             miniBoss.setX(randomPos.x);
             miniBoss.setY(randomPos.y);
-            enemies.add(miniBoss);
+            enemies.add(miniBoss); // TODO: via Controller
             miniBossSchedule.removeFirst();
         }
     }
@@ -621,8 +629,10 @@ public class GameScreen extends Game implements Screen {
      * Updates position of all abilities that enemies use
      */
     private void updateAbilityMovement() {
-        for (Ability a : abilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+        for (Ability a : controller.getAbilityController().getAbilities()) {
+            a.updatePosition(Gdx.graphics.getDeltaTime(),
+                controller.getPlayerController().getPlayer().getPlayerX(),
+                controller.getPlayerController().getPlayer().getPlayerY());
         }
     }
 
@@ -635,8 +645,10 @@ public class GameScreen extends Game implements Screen {
         enemy.updateHealthBarPosition();
         enemy.addHealthBar(stage);
         float delta = Gdx.graphics.getDeltaTime();
-        playerPos.set(player.getPlayerX(), player.getPlayerY());
-        Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
+        controller.getPlayerController().getPosition().set(
+            controller.getPlayerController().getPlayer().getPlayerX(),
+            controller.getPlayerController().getPlayer().getPlayerY());
+        Vector2 vector = enemy.moveTowardsPlayer(delta, controller.getPlayerController().getPosition(), enemy.getEnemyPos());
         enemy.setMovingLeftRight(vector.x);
 
         //Uppdaterar Spritens X och Y position baserat på riktningen på fiendens vector2 * speed * tid.
@@ -774,6 +786,8 @@ public class GameScreen extends Game implements Screen {
      * Draws living enemies every game tic
      */
     private void drawEnemies() {
+        enemies = controller.getEnemyController().getEnemies();
+
         for (Enemy enemy : enemies) {
             if (enemy.isAlive()) {
                 enemy.drawAnimation(spriteBatch);
@@ -815,11 +829,13 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void drawPlayerAbilities() {
-        for (Ability a : abilities) {
+        player = controller.getPlayerController().getPlayer();
+
+        for (Ability a : controller.getAbilityController().getAbilities()) {
             if (a instanceof Shield) {
                 a.updatePosition(player.getPlayerX() - a.getSprite().getWidth() / 2, player.getPlayerY() - a.getSprite().getHeight() / 2);
 
-                if (!shield.getIsDepleted()) {
+                if (!controller.getAbilityController().getShield().getIsDepleted()) {
                     a.getSprite().draw(spriteBatch);
                 }
             } else {
@@ -829,7 +845,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void drawEnemyAbilities() {
-        for (Ability a : enemyAbilities) {
+        for (Ability a : controller.getAbilityController().getAbilities()) {
             a.getSprite().draw(spriteBatch);
         }
     }
@@ -875,4 +891,6 @@ public class GameScreen extends Game implements Screen {
     public ParticleEffectPoolManager getPoolManager() { return poolManager; }
 
     public FitViewport getGameViewport() { return gameViewport; }
+
+    public SpriteBatch getSpriteBatch() { return spriteBatch; }
 }
