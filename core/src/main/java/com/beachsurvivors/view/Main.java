@@ -12,13 +12,13 @@ public class Main extends Game {
 
     @Override
     public void create() {
+        gameScreen = new GameScreen(this);
         menuScreen = new MainMenuScreen(this);
         setScreen(loadingScreen);
         setScreen(menuScreen);
     }
 
     public void startGame() {
-        gameScreen = new GameScreen(this);
         setScreen(gameScreen);
     }
 
@@ -78,5 +78,8 @@ public class Main extends Game {
 
     public void setSoundOn(boolean isSoundOn) {
         this.isSoundOn = isSoundOn;
+    }
+    public GameScreen getGameScreen() {
+        return gameScreen;
     }
 }

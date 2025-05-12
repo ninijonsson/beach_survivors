@@ -63,6 +63,7 @@ public class GameScreen extends Game implements Screen {
     private Boomerang boomerang;
     private BaseAttack bullet;
     private Shield shield;
+    private ChainLightning chainLightning;
     private float bulletTimer = 0f;
     private int totalEnemiesKilled;
     private double totalPlayerDamageDealt;
@@ -130,6 +131,7 @@ public class GameScreen extends Game implements Screen {
         abilities.add(boomerang);
         abilities.add(bullet);
         abilities.add(shield);
+        chainLightning = new ChainLightning(enemies);
 
 
         font = new BitmapFont();
@@ -298,6 +300,8 @@ public class GameScreen extends Game implements Screen {
         }
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
+        castChainLightning();
+
     }
 
     /**
@@ -465,6 +469,11 @@ public class GameScreen extends Game implements Screen {
         for (Ability a : enemyAbilities) {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
         }
+    }
+
+    private void castChainLightning() {
+        chainLightning.update(Gdx.graphics.getDeltaTime());
+        chainLightning.cast(getNearestEnemy(), Gdx.graphics.getDeltaTime());
     }
 
     @Override
@@ -748,6 +757,7 @@ public class GameScreen extends Game implements Screen {
         drawDamageText();
         player.drawAnimation();
         drawPlayerAbilities();
+        drawChainLightning();
 
     }
 
@@ -824,6 +834,11 @@ public class GameScreen extends Game implements Screen {
         for (Ability a : enemyAbilities) {
             a.getSprite().draw(spriteBatch);
         }
+    }
+
+    private void drawChainLightning() {
+        //chainLightning.draw(shapeRenderer, playerPos);
+        chainLightning.drawLightning(spriteBatch, playerPos);
     }
 
     public int getScreenWidth() {

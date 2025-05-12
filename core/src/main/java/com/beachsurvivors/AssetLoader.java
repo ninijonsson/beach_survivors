@@ -34,6 +34,7 @@ public class AssetLoader {
         manager.load("sounds/Seal_Damage.wav", Sound.class);
         manager.load("main_menu/sound/play_sound.wav", Sound.class);
         manager.load("main_menu/sound/holiday.wav", Sound.class);
+        manager.load("assets/sounds/chain_lightning.wav", Sound.class);
     }
 
     private void addTextures() {
@@ -69,6 +70,7 @@ public class AssetLoader {
         manager.load("entities/abilities/boomerangmc.png", Texture.class);
         manager.load("entities/abilities/fireball.png", Texture.class);
         manager.load("entities/abilities/shield_bubble.png", Texture.class);
+        manager.load("entities/abilities/lightning.png", Texture.class);
 
         manager.load("entities/smoke.png", Texture.class);
 
