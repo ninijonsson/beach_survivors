@@ -34,6 +34,7 @@ public class AssetLoader {
         manager.load("assets/sounds/Seal_Damage.wav", Sound.class);
         manager.load("assets/main_menu/sound/play_sound.wav", Sound.class);
         manager.load("assets/main_menu/sound/holiday.wav", Sound.class);
+        manager.load("assets/sounds/chain_lightning.wav", Sound.class);
     }
 
     private void addTextures() {

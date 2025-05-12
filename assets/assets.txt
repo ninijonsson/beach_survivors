@@ -125,4 +125,5 @@ skin_composer/testbuttons.png
 sounds/Seal_Damage.wav
 sounds/Shark_Damage.wav
 sounds/beach.mp3
+sounds/chain_lightning.wav
 sounds/shark_damage_2.wav

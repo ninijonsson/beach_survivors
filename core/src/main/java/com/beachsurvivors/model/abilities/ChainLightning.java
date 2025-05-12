@@ -1,6 +1,7 @@
 package com.beachsurvivors.model.abilities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -27,7 +28,7 @@ public class ChainLightning extends Ability {
 
 
     public ChainLightning(Array<Enemy> enemies) {
-        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 10, 7, 32, 32);
+        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 10, 3, 32, 32);
         maxJumps = 5;
         jumpRadius = 500;
         this.enemies = enemies;
@@ -47,10 +48,15 @@ public class ChainLightning extends Ability {
             hitPositions.clear();
 
             Enemy current = enemy;
+            if (current != null) {
+                playSoundEffect();
+
+            }
             Set<Enemy> alreadyHitEnemies = new HashSet<>();
 
             for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
                 current.hit(getDamage());
+
                 alreadyHitEnemies.add(current);
                 hitPositions.add(current.getEnemyPos());
                 current = getNextTarget(current, alreadyHitEnemies);
@@ -58,6 +64,7 @@ public class ChainLightning extends Ability {
         }
     }
 
+    //Uppdateras varje render ifall lightning effekten ska synas eller inte
     public void update(float delta) {
         if (showLightning) {
             lightningVisibleTime -= delta;
@@ -85,21 +92,6 @@ public class ChainLightning extends Ability {
         }
 
         return closest;
-    }
-
-    public void draw(ShapeRenderer shapeRenderer, Vector2 playerPos) {
-        if (!showLightning || hitPositions.size == 0) return;
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.BLUE);
-
-        shapeRenderer.line(playerPos, hitPositions.get(0)); //Dra linje från spelare till första enemy
-        for (int i = 0; i < hitPositions.size-1; i++) { //Dra linje mellan enemies
-            Vector2 from = hitPositions.get(i);
-            Vector2 to = hitPositions.get(i+1);
-            shapeRenderer.line(from, to);
-        }
-        shapeRenderer.end();
     }
 
     public void drawLightning(SpriteBatch spriteBatch, Vector2 playerPos) {
@@ -137,6 +129,12 @@ public class ChainLightning extends Ability {
         }
     }
 
+    private void playSoundEffect() {
+        Sound sound = AssetLoader.get().getSound("assets/sounds/chain_lightning.wav");
+        long soundId = sound.play();
+        sound.setVolume(soundId, 0.3f);
+    }
+
     @Override
     public void use() {
 
@@ -146,7 +144,5 @@ public class ChainLightning extends Ability {
     public void use(Player player) {
 
     }
-
-
 
 }

@@ -32,7 +32,7 @@ public class Shark extends Enemy {
 
     @Override
     public void dispose() {
-        System.out.println("Shark dispose called");
+
     }
 
 

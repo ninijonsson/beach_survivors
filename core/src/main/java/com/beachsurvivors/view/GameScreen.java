@@ -300,7 +300,6 @@ public class GameScreen extends Game implements Screen {
         }
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
-        chainLightning.update(Gdx.graphics.getDeltaTime());
         castChainLightning();
 
     }
@@ -473,6 +472,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void castChainLightning() {
+        chainLightning.update(Gdx.graphics.getDeltaTime());
         chainLightning.cast(getNearestEnemy(), Gdx.graphics.getDeltaTime());
     }
 
