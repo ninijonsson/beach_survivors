@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -47,15 +48,15 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(Main main) {
         this.main = main;
 
-        playSound = AssetLoader.get().manager.get("assets/main_menu/sound/holiday.wav");
-        mainTheme = AssetLoader.get().manager.get("assets/sounds/beach.mp3");
+        playSound = AssetLoader.get().manager.get("main_menu/sound/holiday.wav");
+        mainTheme = AssetLoader.get().manager.get("sounds/beach.mp3");
         mainTheme.play();
         mainTheme.setVolume(0.5f);
         mainTheme.setLooping(true);
 
-        backgroundTexture = AssetLoader.get().manager.get("assets/main_menu/menu_background.jpeg");
+        backgroundTexture = AssetLoader.get().manager.get("main_menu/menu_background.jpeg");
         Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
-        logoTexture = AssetLoader.get().manager.get("assets/main_menu/logo_skiss_1.png");
+        logoTexture = AssetLoader.get().manager.get("main_menu/logo_skiss_1.png");
         Image logo = new Image(new TextureRegionDrawable(new TextureRegion(logoTexture)));
         logo.setScaling(Scaling.fit);
 
