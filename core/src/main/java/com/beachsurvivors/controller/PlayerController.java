@@ -10,7 +10,7 @@ import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
 
-public class PlayerController extends Game implements Screen {
+public class PlayerController implements Screen {
     private Player player;
     private Vector2 position;
     private Controller controller;
@@ -23,7 +23,6 @@ public class PlayerController extends Game implements Screen {
         create();
     }
 
-    @Override
     public void create() {
         this.player = new Player(new SpriteBatch(), controller);
         this.position = new Vector2(player.getPlayerX(), player.getPlayerY());
@@ -40,11 +39,31 @@ public class PlayerController extends Game implements Screen {
 
     @Override
     public void render(float delta) {
-        input();
+        // input();
+    }
+
+    @Override
+    public void resize(int i, int i1) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
     }
 
     @Override
     public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
 
     }
 
@@ -66,6 +85,7 @@ public class PlayerController extends Game implements Screen {
     }
 
     public void drawAnimation() {
+        System.out.println("Ritar spelare");
         player.drawAnimation();
     }
 

@@ -56,6 +56,7 @@ public class GameScreen extends Game implements Screen {
 
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
+    private OrthographicCamera camera;
 
     private Player player;
     private Array<PowerUp> droppedItems;
@@ -114,11 +115,15 @@ public class GameScreen extends Game implements Screen {
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
 
-        // TODO: GameManager
-        /*tiledMap = new TmxMapLoader().load("map2/map2.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
-        assert tiledMap != null;
-        Map map = new Map(tiledMap);*/
+        this.mapRenderer = controller.getTiledMapRenderer();
+        camera = (OrthographicCamera) gameViewport.getCamera();
+        /*camera = new OrthographicCamera();
+        camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+        camera.update();*/
+
+        if (mapRenderer != null) {
+            mapRenderer.setView(camera);
+        }
 
         stage = new Stage(gameViewport);
         stage.clear();
@@ -139,8 +144,8 @@ public class GameScreen extends Game implements Screen {
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
 
-        // player.setPlayerX(map.getStartingX());
-        // player.setPlayerY(map.getStartingY());
+        controller.getPlayerController().getPlayer().setPlayerX(controller.getGameManager().getMap().getStartingX());
+        controller.getPlayerController().getPlayer().setPlayerY(controller.getGameManager().getMap().getStartingY());
 
         // TODO: Gör om till metod
         poolManager = new ParticleEffectPoolManager();
@@ -191,12 +196,20 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void render(float delta) {
+        ScreenUtils.clear(0, 0, 0, 1); // Tömmer skärmen
 
-        // input();
+        camera.update();
+
+        if (mapRenderer != null) {
+            mapRenderer.setView(camera);
+            mapRenderer.render();
+        }
+
+        controller.input();
         controller.logic();
 
         if (!isPaused) {
-            // logic(); -> flyttad till Controller
+            // logic(); -> flyttad till Controller^
             draw();
 
         } else {
@@ -237,15 +250,17 @@ public class GameScreen extends Game implements Screen {
      * single game tick and is used to update the visuals of the game.
      */
     private void draw() {
-        /*gameViewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
+        gameViewport.getCamera().position.set(controller.getPlayerController().getPlayer().getPlayerX(),
+            controller.getPlayerController().getPlayer().getPlayerY(), 0);
         gameViewport.getCamera().update();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        gameViewport.apply();*/
+        gameViewport.apply();
 
         controller.getPlayerController().updateCameraPosition();
 
         controller.getGameManager().getTiledMapRenderer()
-            .setView((OrthographicCamera) gameViewport.getCamera());
+            .setView(camera);
+
         controller.getGameManager().getTiledMapRenderer()
             .render();
 
@@ -257,7 +272,6 @@ public class GameScreen extends Game implements Screen {
         stage.draw();
         drawStuff();
         spriteBatch.end();
-
     }
 
     /**

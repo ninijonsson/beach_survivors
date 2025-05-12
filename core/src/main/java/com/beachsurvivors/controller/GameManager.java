@@ -37,10 +37,13 @@ public class GameManager extends Game implements Screen {
 
         this.controller = controller;
         this.poolManager = controller.getGameScreen().getPoolManager();
+
+        create();
     }
 
     @Override
     public void create() {
+        createMap();
     }
 
     @Override
@@ -71,7 +74,8 @@ public class GameManager extends Game implements Screen {
         tiledMap = new TmxMapLoader().load("map2/map2.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
         assert tiledMap != null;
-        map = new Map(tiledMap);
+        this.map = new Map(tiledMap);
+        System.out.println(map);
 
         return map;
     }

@@ -64,7 +64,7 @@ public class Player extends Actor {
     public Player(SpriteBatch spriteBatch, Controller controller) {
         this.controller = controller;
         // TODO: Få tillgång till Map-klassen via GameManager istället?
-        this.map = controller.getGameManager().createMap();
+        this.map = controller.getGameManager().getMap();
         this.spriteBatch = spriteBatch;
         //this.gameScreen = gameScreen;
 

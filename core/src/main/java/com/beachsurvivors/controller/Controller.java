@@ -2,6 +2,7 @@ package com.beachsurvivors.controller;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
@@ -42,8 +43,8 @@ public class Controller extends Game implements Screen {
     public void create() {
         System.out.println("Kommer till controller.create();");
 
-        player.create();
         gameManager.create();
+        player.create();
     }
 
     @Override
@@ -95,6 +96,10 @@ public class Controller extends Game implements Screen {
         player.pickUpGroundItem();
     }
 
+    public void input() {
+        player.input();
+    }
+
     // Getters & setters
     public AbilityController getAbilityController() {
         return ability;
@@ -125,4 +130,10 @@ public class Controller extends Game implements Screen {
     }
 
     public FitViewport getGameViewport() { return gameViewport; }
+
+    public OrthogonalTiledMapRenderer getTiledMapRenderer() {
+        System.out.println("Kommer till controller.getTiledMapRenderer();");
+        System.out.println(gameManager.getTiledMapRenderer());
+        return gameManager.getTiledMapRenderer();
+    }
 }
