@@ -135,6 +135,10 @@ public class ChainLightning extends Ability {
         sound.setVolume(soundId, 0.3f);
     }
 
+    public void increaseMaxJumps(int jumpIncrease) {
+        maxJumps += jumpIncrease;
+    }
+
     @Override
     public void use() {
 

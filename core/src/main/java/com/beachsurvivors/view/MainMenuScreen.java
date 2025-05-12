@@ -10,15 +10,13 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -36,91 +34,78 @@ public class MainMenuScreen implements Screen {
     Texture backgroundTexture;
     Texture logoTexture;
 
-    Texture playButtonTexture;
-    Texture playButtonHoverTexture;
-    Texture playButtonPressedTexture;
-
-    Texture exitButtonTexture;
-    Texture exitButtonHoverTexture;
-    Texture exitButtonPressedTexture;
-
     SpriteBatch spriteBatch;
+    
+    private Skin skin;
 
-    // TODO: Ändra via Skin Composer med knapparna
-    // PLAY-KNAPP
-    private TextureRegionDrawable playDrawable;
-    private TextureRegionDrawable playHoverDrawable;
-    private TextureRegionDrawable playPressedDrawable;
-
+    private Table table;
     private ImageButton playButton;
-    private ImageButton.ImageButtonStyle playButtonStyle;
-
-    // EXIT-KNAPP
-    private TextureRegionDrawable exitDrawable;
-    private TextureRegionDrawable exitHoverDrawable;
-    private TextureRegionDrawable exitPressedDrawable;
-
+    private ImageButton helpButton;
     private ImageButton exitButton;
-    private ImageButton.ImageButtonStyle exitButtonStyle;
 
     ScreenViewport viewport;
+    FitViewport fitViewport;
 
     public MainMenuScreen(Main main) {
         this.main = main;
-
-        backgroundTexture = AssetLoader.get().manager.get("assets/main_menu/menu_background.jpeg");
-        logoTexture = AssetLoader.get().manager.get("assets/main_menu/logo_skiss_1.png");
 
         playSound = AssetLoader.get().manager.get("assets/main_menu/sound/holiday.wav");
         mainTheme = AssetLoader.get().manager.get("assets/sounds/beach.mp3");
         mainTheme.play();
         mainTheme.setVolume(0.5f);
         mainTheme.setLooping(true);
-        // PLAY
-        playButtonTexture = AssetLoader.get().manager.get("assets/main_menu/buttons/play_button_2_scaled.png");
-        playButtonHoverTexture = AssetLoader.get().manager.get("assets/main_menu/buttons/play_button_2_hover_scaled.png");
-        playButtonPressedTexture = AssetLoader.get().manager.get("assets/main_menu/buttons/play_button_2_pressed_scaled.png");
 
-        playDrawable = new TextureRegionDrawable(playButtonTexture);
-        playHoverDrawable = new TextureRegionDrawable(playButtonHoverTexture);
-        playPressedDrawable = new TextureRegionDrawable(playButtonPressedTexture);
+        backgroundTexture = AssetLoader.get().manager.get("assets/main_menu/menu_background.jpeg");
+        Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
+        logoTexture = AssetLoader.get().manager.get("assets/main_menu/logo_skiss_1.png");
+        Image logo = new Image(new TextureRegionDrawable(new TextureRegion(logoTexture)));
+        logo.setScaling(Scaling.fit);
 
-        playButtonStyle = new ImageButton.ImageButtonStyle();
-        playButtonStyle.up = playDrawable; // Standard
-        playButtonStyle.over = playHoverDrawable; // Hover
+        skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
 
-        playButton = new ImageButton(playButtonStyle);
+        table = new Table();
+        table.setFillParent(true);
 
-        // EXIT
-        exitButtonTexture = new Texture("main_menu/buttons/exit_button_2_scaled.png");
-        exitButtonHoverTexture = new Texture("main_menu/buttons/exit_button_2_hover_scaled.png");
-        exitButtonPressedTexture = new Texture("main_menu/buttons/exit_button_2_pressed_scaled.png");
+        int width = 400;
+        int height = 120;
 
-        exitDrawable = new TextureRegionDrawable(exitButtonTexture);
-        exitHoverDrawable = new TextureRegionDrawable(exitButtonHoverTexture);
-        exitPressedDrawable = new TextureRegionDrawable(exitButtonPressedTexture);
+        playButton = new ImageButton(skin, "play");
+        playButton.getImageCell().size(width,height);
 
-        exitButtonStyle = new ImageButton.ImageButtonStyle();
-        exitButtonStyle.up = exitDrawable;
-        exitButtonStyle.over = exitHoverDrawable;
+        helpButton = new ImageButton(skin, "help");
+        helpButton.getImageCell().size(width,height);
 
-        exitButton = new ImageButton(exitButtonStyle);
+        exitButton = new ImageButton(skin, "exit");
+        exitButton.getImageCell().size(width,height);
 
         viewport = new ScreenViewport();
+        fitViewport = new FitViewport(main.getGameScreen().getScreenWidth(), main.getGameScreen().getScreenHeight());
 
         spriteBatch = new SpriteBatch();
-        stage = new Stage(viewport);
-        stage.addActor(playButton); // Lägg in knapparna i en array istället?
-        stage.addActor(exitButton);
+        stage = new Stage(fitViewport);
+
+        int bottomPad = 20;
+        table.add(logo).padBottom(60).padTop(100).height(400).width(800).row();
+        table.add(playButton).padBottom(bottomPad).row();
+        table.add(helpButton).padBottom(bottomPad).row();
+        table.add(exitButton).padBottom(bottomPad).row();
+
+        Stack stack = new Stack();
+        stack.setSize(1200,972);
+        stack.add(background);
+
+        stack.add(table);
+        stack.setPosition(0,0);
+        stack.setFillParent(true);
+        stage.addActor(stack);
 
         // EVENT LISTENERS
-        onPlayButtonPressed();
-        onExitButtonPressed();
+        addListeners();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
+        fitViewport.update(width, height, true);
     }
 
 
@@ -140,30 +125,7 @@ public class MainMenuScreen implements Screen {
     }
 
     public void draw(float delta) {
-        ScreenUtils.clear(Color.BLACK); // Good practice to always clear the screen every frame
-        viewport.apply();
-        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-        spriteBatch.begin();
-        // Add lines to draw here
-
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-        float logoWidth = logoTexture.getWidth()*4;
-        float logoHeight = logoTexture.getHeight()*4;
-
-        spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
-
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-
-        spriteBatch.draw(logoTexture, ((worldWidth/2)-(logoWidth/2)), (worldHeight/2), logoWidth, logoHeight); // TODO: ändra så att värdena inte är hårdkodade
-        spriteBatch.end();
-
         stage.act(delta);
-
-        playButton.setPosition((worldWidth/2)-(playButton.getWidth()/2), worldHeight/3);
-        exitButton.setPosition((worldWidth/2)-(exitButton.getWidth()/2), worldHeight/6);
-
         stage.draw();
     }
     @Override
@@ -181,38 +143,28 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    public void onPlayButtonPressed() {
-        playButton.addListener(new ClickListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                playButtonStyle.over = playPressedDrawable;
-                return true; // Viktigt! returnera true så att touchUp() aktiveras
-            }
+    public void addListeners() {
 
+        playButton.addListener(new ChangeListener() {
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                playButtonStyle.up = playDrawable;
+            public void changed(ChangeEvent changeEvent, Actor actor) {
                 mainTheme.stop();
-               // playSound.play(0.1f);
-
                 startGameMusic();
                 main.switchScreen();
             }
         });
-    }
 
-    public void onExitButtonPressed() {
-        exitButton.addListener(new ClickListener() {
+        helpButton.addListener(new ChangeListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                exitButtonStyle.over = exitPressedDrawable;
-                return true; // Viktigt! returnera true så att touchUp() aktiveras
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                mainTheme.stop();
+                main.goToHelpScreen();
             }
+        });
 
+        exitButton.addListener(new ChangeListener() {
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                exitButtonStyle.up = exitDrawable;
-                playSound.play(1f);
+            public void changed(ChangeEvent changeEvent, Actor actor) {
                 Gdx.app.exit();
             }
         });

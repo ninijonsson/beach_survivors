@@ -66,12 +66,11 @@ public class DeathScreen implements Screen {
         Stack stack = new Stack();
         stack.setSize(1200,972);
         stack.setPosition(gameScreen.getScreenWidth()/2f-stack.getWidth()/2,
-            gameScreen.getScreenHeight()/2f-stack.getHeight()/2 );
+            gameScreen.getScreenHeight()/2f-stack.getHeight()/2);
         stack.add(background);
         stack.add(rightTable);
         stack.add(leftTable);
         stage.addActor(stack);
-
 
         createActorsLeftTable();
         createActorsRightTable();

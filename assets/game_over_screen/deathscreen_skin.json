@@ -105,6 +105,14 @@
 	},
 	"skip": {
 		"imageUp": "skip_button-3"
+	},
+	"play": {
+		"imageUp": "play_button_2_scaled",
+		"imageDown": "play_button_2_pressed_scaled",
+		"imageOver": "play_button_2_hover_scaled"
+	},
+	"help": {
+		"imageUp": "help_button_scaled-300"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {
