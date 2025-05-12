@@ -34,8 +34,6 @@ public class MainMenuScreen implements Screen {
     Texture backgroundTexture;
     Texture logoTexture;
 
-    SpriteBatch spriteBatch;
-    
     private Skin skin;
 
     private Table table;
@@ -81,7 +79,6 @@ public class MainMenuScreen implements Screen {
         viewport = new ScreenViewport();
         fitViewport = new FitViewport(main.getGameScreen().getScreenWidth(), main.getGameScreen().getScreenHeight());
 
-        spriteBatch = new SpriteBatch();
         stage = new Stage(fitViewport);
 
         int bottomPad = 20;
@@ -93,13 +90,11 @@ public class MainMenuScreen implements Screen {
         Stack stack = new Stack();
         stack.setSize(1200,972);
         stack.add(background);
-
         stack.add(table);
         stack.setPosition(0,0);
         stack.setFillParent(true);
         stage.addActor(stack);
 
-        // EVENT LISTENERS
         addListeners();
     }
 
