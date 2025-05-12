@@ -140,12 +140,12 @@ public class GameScreen extends Game implements Screen {
         player.setPlayerY(map.getStartingY());
 
         poolManager = new ParticleEffectPoolManager();
-        poolManager.register("assets/entities/particles/blueFlame.p", 5, 20);
-        poolManager.register("assets/entities/particles/lootBeam.p", 5, 20);
-        poolManager.register("assets/entities/particles/lootPile.p", 5, 20);
-        poolManager.register("assets/entities/particles/xp_orb.p", 5, 20);
-        poolManager.register("assets/entities/particles/chestClosed.p", 5, 20);
-        poolManager.register("assets/entities/particles/chestOpen.p", 5, 20);
+        poolManager.register("entities/particles/blueFlame.p", 5, 20);
+        poolManager.register("entities/particles/lootBeam.p", 5, 20);
+        poolManager.register("entities/particles/lootPile.p", 5, 20);
+        poolManager.register("entities/particles/xp_orb.p", 5, 20);
+        poolManager.register("entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("entities/particles/chestOpen.p", 5, 20);
 
         //TESTAR OLIKA DROPS
         ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);

@@ -7,7 +7,7 @@ import com.beachsurvivors.model.Player;
 public class Shark extends Enemy {
     public Shark () {
         super( 100, 100, 20, 20);
-        createAnimation((AssetLoader.get().getTexture("assets/entities/enemies/shark_sheet.png")) , 4, 1);
+        createAnimation((AssetLoader.get().getTexture("entities/enemies/shark_sheet.png")) , 4, 1);
         setHealthPoints(20);
         setMovementSpeed(150f);
         setDamage(5);

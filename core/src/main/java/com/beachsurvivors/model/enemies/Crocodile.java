@@ -7,7 +7,7 @@ import com.beachsurvivors.model.Player;
 public class Crocodile extends Enemy {
     public Crocodile() {
         super( 200,100, 20, 30);
-        createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/crocodile1_sheet.png"), 2, 1);
+        createAnimation(AssetLoader.get().getTexture("entities/enemies/crocodile1_sheet.png"), 2, 1);
         setMovementSpeed(100f);
         setDamage(20);
     }
