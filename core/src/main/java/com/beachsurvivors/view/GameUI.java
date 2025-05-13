@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.model.abilities.Ability;
 
 public class GameUI {
@@ -25,6 +26,7 @@ public class GameUI {
     private Array<Label> infoLabels;
     private BitmapFont levelFont;
     private Label.LabelStyle abilityLabelStyle;
+    private Controller controller;
 
     private Table progressBarTable;
     private Table healthTable;
@@ -33,9 +35,10 @@ public class GameUI {
     private Label timerLabel;
     private float gameTime = 0f;
 
-    public GameUI(FitViewport viewport, GameScreen game) {
+    public GameUI(FitViewport viewport, GameScreen game, Controller controller) {
         this.viewport = viewport;
         this.game = game;
+        this.controller = controller;
         stage = new Stage(viewport);
 
         createTables();
@@ -100,10 +103,10 @@ public class GameUI {
     }
 
     private void updateAbilityBar() {
-            Array<Ability> abilities = game.getAbilities();
-            for(Ability a : abilities){
-                //a.getName()
-            }
+        Array<Ability> abilities = controller.getAbilities();
+        for(Ability a : abilities){
+            //a.getName()
+        }
     }
 
     private void createInfoTable() {
@@ -222,21 +225,21 @@ public class GameUI {
     }
 
     private String getPlayerLevel() {
-        if (game.getPlayer() == null) {
+        if (controller.getPlayer() == null) {
             return "1";
         } else {
-            return String.valueOf(game.getPlayer().getLevelController().getCurrentLevel());
+            return String.valueOf(controller.getCurrentLevel());
         }
     }
 
     private void updateLevelLabels() {
-        if(game.getPlayer()!=null){
+        if(controller.getPlayer()!=null){
         currentLevel.setText("Level: " + String.valueOf(
 
-            game.getPlayer().getLevelController().getCurrentLevel()));
+            controller.getCurrentLevel()));
 
         nextLevel.setText(String.valueOf(
-            game.getPlayer().getLevelController().getCurrentLevel() + 1));}
+            controller.getCurrentLevel() + 1));}
     }
 
     public void update(float deltaTime) {

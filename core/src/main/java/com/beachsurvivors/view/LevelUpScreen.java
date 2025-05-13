@@ -11,18 +11,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.abilities.Boomerang;
 
 public class LevelUpScreen implements Screen {
-
+    private Controller controller;
     private Stage stage;
     private GameScreen game;
     private Skin skin;
     private Player player;
 
-    public LevelUpScreen(GameScreen game, Player player) {
+    public LevelUpScreen(GameScreen game, Player player, Controller controller) {
         this.game = game;
         this.player = player;
+        this.controller = controller;
 
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
@@ -65,7 +68,7 @@ public class LevelUpScreen implements Screen {
         upgrade1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                applyUpgrade("boomerang");
+                applyUpgrade();
                 resumeGame();
             }
         });
@@ -94,9 +97,8 @@ public class LevelUpScreen implements Screen {
         });
     }
 
-    private void applyUpgrade(String type) {
-        game.addBoomerang();
-        game.printLog("Upgrade chosen: " + type);
+    private void applyUpgrade() {
+        controller.getAbilities().add(new Boomerang());
     }
 
     private void resumeGame() {

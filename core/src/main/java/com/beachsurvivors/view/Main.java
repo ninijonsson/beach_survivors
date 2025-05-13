@@ -53,7 +53,7 @@ public class Main extends Game {
     }
 
     public void levelUp() {
-        setScreen(new LevelUpScreen(gameScreen, gameScreen.getPlayer()));
+        setScreen(new LevelUpScreen(gameScreen, controller.getPlayer(), controller));
     }
 
     public void goToHelpScreen() {

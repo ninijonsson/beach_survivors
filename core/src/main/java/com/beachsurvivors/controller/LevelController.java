@@ -4,7 +4,7 @@ import com.beachsurvivors.view.GameUI;
 import com.beachsurvivors.view.Main;
 
 public class LevelController {
-    private int currentLevel;
+    /* int currentLevel;
     private int currentExp;
     private int expToNextLevel;
     private Main main;
@@ -53,5 +53,5 @@ public class LevelController {
 
     public int getExpToNextLevel() {
         return expToNextLevel;
-    }
+    }*/
 }

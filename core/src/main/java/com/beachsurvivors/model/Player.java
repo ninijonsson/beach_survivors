@@ -77,8 +77,6 @@ public class Player extends Actor {
         playerHeight = 128;
         playerWidth = 128;
 
-        levelController = controller.getLevelController();
-
         isMoving = false;
         isAlive = true;
         isImmune = false;
@@ -142,7 +140,7 @@ public class Player extends Actor {
     }
 
     public void gainExp(int exp) {
-        levelController.gainExp(exp);
+        controller.gainExp(exp);
     }
 
     public void playerInput() {
@@ -329,7 +327,7 @@ public class Player extends Actor {
     }
 
     public int getLevel() {
-        return levelController.getCurrentLevel();
+        return controller.getCurrentLevel();
     }
 
     public double getCriticalHitDamage() {

@@ -19,10 +19,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.model.Player;
 
 public class ChestOverlay {
     private GameScreen game;
+    private Controller controller;
     private Player player;
 
     private Stage stage;
@@ -31,9 +33,9 @@ public class ChestOverlay {
     private boolean isClosed = false;
     private Image chestImage;
 
-    public ChestOverlay(GameScreen game) {
+    public ChestOverlay(GameScreen game, Controller controller) {
         this.game = game;
-        this.player = game.getPlayer();
+        this.player = controller.getPlayer();
 
         this.spriteBatch = new SpriteBatch();
         this.stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
