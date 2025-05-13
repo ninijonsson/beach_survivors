@@ -20,9 +20,12 @@ import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.*;
 import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.*;
+import com.beachsurvivors.view.DamageText;
 import com.beachsurvivors.view.GameScreen;
 import com.beachsurvivors.view.GameUI;
 import com.beachsurvivors.view.Main;
+
+import static com.badlogic.gdx.math.MathUtils.random;
 
 public class Controller extends Game implements Screen {
     // Abilities
@@ -51,8 +54,11 @@ public class Controller extends Game implements Screen {
     private OrthogonalTiledMapRenderer tiledMapRenderer;
 
     private int totalEnemiesKilled;
+    private int totalPlayersKilled = 0; // Flytta till Player
+    private int totalPlayerDamageDealt = 0;
     private float growthRateOfSpawningEnemies = 1.5f;
     private int secondsBetweenGrowthRate = 10;
+    private float bulletTimer;
     private boolean isPaused;
 
     private int currentLevel;
@@ -117,12 +123,148 @@ public class Controller extends Game implements Screen {
 
     public void logic() {
         updateCameraPosition();
-        updateAbilities();
-        spawnEnemies();
-        updateEnemyPositions();
+        // gameUI.updateStats(player);
+
+        playerShoot();
         updateShieldPosition();
+        updateAbilities();
+        // updateDamageText();
+
+        spawnEnemies();
+        for (int i = enemies.size - 1; i >= 0; i--) { //LOOP THROUGH ALL ENEMIES AND UPDATE RELATED POSITIONS.
+            Enemy enemy = enemies.get(i);
+            updateEnemyMovement(enemy); //MOVE TOWARDS PLAYER
+            handleEnemyDeaths(enemy, i); //IF THEY ARE DEAD
+            checkPlayerAbilityHits(enemy); //IF THEY ARE HIT BY THE PLAYER
+            checkDamageAgainstPlayer(enemy); //IF THEY DAMAGE THE PLAYER
+        }
+        enemyAttacks();
+        updateEnemyPositions();
+
         pickUpPowerUp();
         pickUpGroundItem();
+
+        gameUI.updateDamageText();
+    }
+
+    /**
+     * Updates the position of an enemy
+     *
+     * @param enemy - the enemy that's updated
+     */
+    private void updateEnemyMovement(Enemy enemy) {
+        enemy.updateHealthBarPosition();
+        enemy.addHealthBar();
+
+        float delta = Gdx.graphics.getDeltaTime();
+        playerPos.set(player.getPlayerX(), player.getPlayerY());
+        Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
+        enemy.setMovingLeftRight(vector.x);
+
+        //Uppdaterar Spritens X och Y position baserat på riktningen på fiendens vector2 * speed * tid.
+        //vector.x/y är riktningen, movementSpeed är hastighet och delta är tid.
+        enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
+        enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
+        enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
+    }
+
+    /**
+     * What happens when an enemy dies
+     *
+     * @param enemy - the enemy that is handled
+     * @param i     - index for removing the correct enemy in the array
+     */
+    private void handleEnemyDeaths(Enemy enemy, int i) {
+        if (!enemy.isAlive()) {
+            totalEnemiesKilled++;
+            gameUI.updateInfoTable("You gained " + enemy.getExp() + " exp.");
+
+            // Om fienden är en miniboss ska den droppa en kista
+            enemy.dropItems(powerUps, poolManager);
+            groundItems.add(new ExperienceOrb(enemy.getX(), enemy.getY(), enemy.getExp(), poolManager, this));
+            if (enemy instanceof MiniBoss) {
+                ((MiniBoss) enemy).dropChest(groundItems);
+            }
+
+            enemies.removeIndex(i); // Ta bort från fiende-arrayen
+            enemy.dispose(); // Ta även bort själva bilden på fienden
+
+            // I denna metoden kontrollerar vi även om vi ska levela eller inte
+            player.gainExp(enemy.getExp());
+
+            // Uppdatera progress bar (exp)
+            gameUI.setProgressBarValue(getCurrentEXP());
+        }
+    }
+
+    /**
+     * Checks if the player's abilities hitboxes overlaps with any of the enemies
+     * hitboxes
+     *
+     * @param enemy
+     */
+    private void checkPlayerAbilityHits(Enemy enemy) {
+        for (int j = abilities.size - 1; j >= 0; j--) {
+            Ability ability = abilities.get(j);
+
+            if (ability.getHitBox().overlaps(enemy.getHitbox())) {
+                boolean isCritical = player.isCriticalHit();
+                double damage = ability.getBaseDamage();
+                if (isCritical) {
+                    damage *= player.getCriticalHitDamage();
+                }
+
+                if (enemy.hit(damage)) {
+                    totalPlayerDamageDealt += damage;
+                    gameUI.getDamageTexts().add(new DamageText(String.valueOf((int) damage),
+                        enemy.getSprite().getX() + random.nextInt(50),
+                        enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50),
+                        1.0f,
+                        isCritical));
+                }
+
+                if (!ability.isPersistent()) {
+                    ability.dispose();
+                    abilities.removeIndex(j);
+                }
+            }
+        }
+    }
+
+    private void checkDamageAgainstPlayer(Enemy enemy) {
+        if (enemy.getHitbox().overlaps(player.getHitBox())) {
+            damagePlayer(enemy.getDamage());
+        }
+    }
+
+    private void checkEnemyAbilitiesDamagePlayer() {
+        for (int i = enemyAbilities.size - 1; i >= 0; i--) {
+            if (enemyAbilities.get(i).getHitBox().overlaps(player.getHitBox())) {
+                damagePlayer(enemyAbilities.get(i).getDamage());
+                enemyAbilities.get(i).dispose();
+                enemyAbilities.removeIndex(i);
+            }
+        }
+    }
+
+
+    private void damagePlayer(double damage) {
+        int shieldStrength = shield.getCurrentShieldStrength();
+        double remainingDamage = damage - shieldStrength;
+
+        shield.damageShield(damage);
+
+        if (remainingDamage >= 0) {
+            player.takeDamage(remainingDamage);
+            gameUI.setHealthBarValue(player.getCurrentHealthPoints(), player.getMaxHealthPoints());
+            System.out.println("player HP : " + player.getCurrentHealthPoints());
+        }
+
+        if (!player.isAlive()) {
+            System.out.println("You died");
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
+                player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
+        }
     }
 
     public void input() {
@@ -152,7 +294,6 @@ public class Controller extends Game implements Screen {
     }
 
     private void updateAbilities() {
-        float delta = Gdx.graphics.getDeltaTime();
         for (Ability a : abilities) {
             a.updatePosition(player.getPlayerX(), player.getPlayerY());
         }
@@ -190,11 +331,11 @@ public class Controller extends Game implements Screen {
     }
 
     private Enemy selectRandomEnemy() {
-        switch (MathUtils.random(3)) {
-            case 0: return new Shark();
-            case 1: return new NavySeal();
-            case 2: return new Crocodile();
-            default: return new Crab();
+        switch (random(3)) {
+            case 0: return new Shark(this);
+            case 1: return new NavySeal(this);
+            case 2: return new Crocodile(this);
+            default: return new Crab(this);
         }
     }
 
@@ -203,13 +344,13 @@ public class Controller extends Game implements Screen {
         float h = gameViewport.getCamera().viewportHeight;
         float cx = gameViewport.getCamera().position.x;
         float cy = gameViewport.getCamera().position.y;
-        int edge = MathUtils.random(3);
+        int edge = random(3);
         float x, y;
         switch (edge) {
-            case 0: x = MathUtils.random(cx - w / 2, cx + w / 2); y = cy + h / 2 + margin; break;
-            case 1: x = MathUtils.random(cx - w / 2, cx + w / 2); y = cy - h / 2 - margin; break;
-            case 2: x = cx - w / 2 - margin; y = MathUtils.random(cy - h / 2, cy + h / 2); break;
-            case 3: x = cx + w / 2 + margin; y = MathUtils.random(cy - h / 2, cy + h / 2); break;
+            case 0: x = random(cx - w / 2, cx + w / 2); y = cy + h / 2 + margin; break;
+            case 1: x = random(cx - w / 2, cx + w / 2); y = cy - h / 2 - margin; break;
+            case 2: x = cx - w / 2 - margin; y = random(cy - h / 2, cy + h / 2); break;
+            case 3: x = cx + w / 2 + margin; y = random(cy - h / 2, cy + h / 2); break;
             default: x = cx; y = cy; break;
         }
         return new Vector2(x, y);
@@ -244,6 +385,58 @@ public class Controller extends Game implements Screen {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
         this.map = new Map(tiledMap);
         return map;
+    }
+
+    public void playerShoot() {
+        float bulletCooldown = (float) bullet.getCooldown();
+        bulletTimer += Gdx.graphics.getDeltaTime();
+
+        if (bulletTimer >= bulletCooldown) {
+            bulletTimer = 0f;
+            shootAtNearestEnemy();
+        }
+    }
+
+    public void shootAtNearestEnemy() {
+        Enemy target = getNearestEnemy();
+
+        if (target != null) {
+            Vector2 direction = new Vector2(
+                target.getSprite().getX() - player.getPlayerX(),
+                target.getSprite().getY() - player.getPlayerY()
+            ).nor();
+
+            BaseAttack bullet = new BaseAttack();
+            bullet.setDirection(direction);
+            bullet.updatePosition(player.getPlayerX(), player.getPlayerY());
+
+            abilities.add(bullet);
+        }
+    }
+
+    public Enemy getNearestEnemy() {
+        Enemy nearest = null;
+        float minDistance = 1000;
+        playerPos.set(player.getPlayerX(), player.getPlayerY());
+
+        for (Enemy enemy : enemies) {
+            float distance = playerPos.dst(enemy.getSprite().getX(), enemy.getSprite().getY());
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearest = enemy;
+            }
+        }
+        return nearest;
+    }
+
+    private void enemyAttacks() {
+        for (Enemy enemy : enemies) {
+            enemy.attack(player, enemyAbilities);
+        }
+        for (Ability a : enemyAbilities) {
+            a.updatePosition(player.getPlayerX(), player.getPlayerY());
+        }
     }
 
     @Override

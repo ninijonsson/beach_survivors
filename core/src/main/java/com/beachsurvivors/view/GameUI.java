@@ -27,6 +27,7 @@ public class GameUI {
     private BitmapFont levelFont;
     private Label.LabelStyle abilityLabelStyle;
     private Controller controller;
+    private Array<DamageText> damageTexts = new Array<>();
 
     private Table progressBarTable;
     private Table healthTable;
@@ -65,6 +66,19 @@ public class GameUI {
         stage.addActor(abilityTable);
         stage.addActor(xpTable);
         stage.addActor(progressBarTable);
+    }
+
+    /**
+     * Method for updating the position of damage text above enemies and then removing them after a certain amount of time.
+     */
+    public void updateDamageText() {
+        for (int i = damageTexts.size - 1; i >= 0; i--) {
+            DamageText dt = damageTexts.get(i);
+            dt.update(Gdx.graphics.getDeltaTime() * 2);
+            if (!dt.isActive()) {
+                damageTexts.removeIndex(i);
+            }
+        }
     }
 
     private void createAbilityTable() {
@@ -149,7 +163,6 @@ public class GameUI {
         }
     }
 
-
     private void createTimerLabel() {
         BitmapFont font = new BitmapFont();
         font.getData().setScale(2);
@@ -189,8 +202,9 @@ public class GameUI {
         progressBar.setValue(value);
     }
 
-    public void setHealthBarValue(float value) {
-        healthBar.setValue(value);
+    public void setHealthBarValue(float currentHealth, float maxHealth) {
+        healthBar.setValue(currentHealth);
+        healthBar.setRange(0, maxHealth);
         percentageLabel.setText(getHealthPercentage() + "%");
     }
 
@@ -264,4 +278,6 @@ public class GameUI {
     public float getGameTimeSeconds() {
         return gameTime;
     }
+
+    public Array<DamageText> getDamageTexts() { return damageTexts; }
 }

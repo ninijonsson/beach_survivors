@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
@@ -11,8 +12,8 @@ import com.beachsurvivors.model.abilities.BaseAttack;
 public class NavySeal extends Enemy {
     float bulletTimer = 0f;
 
-    public NavySeal() {
-        super( 100, 100, 20, 25);
+    public NavySeal(Controller controller) {
+        super( 100, 100, 20, 25, controller);
         createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/navy_seal_sheet.png"), 4, 1);
         setHealthPoints(30);
         setHitSound(AssetLoader.get().getSound("assets/sounds/shark_damage_2.wav"));

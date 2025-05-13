@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
@@ -38,6 +39,7 @@ public abstract class Enemy implements Disposable {
     private int height;
     private float x;
     private float y;
+    private Controller controller;
 
     private boolean movingRight = true;
     private boolean movingLeft = false;
@@ -61,7 +63,7 @@ public abstract class Enemy implements Disposable {
     private Stage stage;
     private Texture xpOrb;
 
-    public Enemy(int width, int height, int healthPoints, int expOnDeath) {
+    public Enemy(int width, int height, int healthPoints, int expOnDeath, Controller controller) {
         this.width = width;
         this.height = height;
         this.healthPoints = healthPoints;
@@ -71,7 +73,7 @@ public abstract class Enemy implements Disposable {
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
         this.hitSound = AssetLoader.get().getSound("assets/sounds/shark_damage_2.wav");
-
+        this.controller = controller;
         this.radius = width /4;
 
         this.hitbox = new Rectangle(0, 0, width, height);
@@ -94,10 +96,10 @@ public abstract class Enemy implements Disposable {
         healthBar.setScale(0.2f);
     }
 
-    public void addHealthBar(Stage stage) {
+    public void addHealthBar() {
         if (!healthBarAddedToStage) {
-            this.stage = stage;
-            stage.addActor(healthBar);
+            System.out.println("Stage is: " + controller.getGameUI().getStage());
+            controller.getGameUI().getStage().addActor(healthBar);
             healthBarAddedToStage = true;
         }
     }

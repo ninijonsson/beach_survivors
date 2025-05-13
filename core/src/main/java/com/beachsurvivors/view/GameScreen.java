@@ -107,6 +107,11 @@ public class GameScreen extends Game implements Screen {
             item.getSprite().draw(spriteBatch);
         }
 
+        // Draw damage text
+        for (DamageText dt : gameUI.getDamageTexts()) {
+            dt.draw(spriteBatch);
+        }
+
         spriteBatch.end();
     }
 

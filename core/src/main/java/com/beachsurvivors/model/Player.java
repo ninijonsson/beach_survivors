@@ -25,7 +25,9 @@ import java.util.Random;
 
 public class Player extends Actor {
 
-    private int healthPoints;
+    private final int STARTING_HEALTH_POINTS = 100;
+    private int maxHealthPoints;
+    private int currentHealthPoints;
     private int experiencePoints;
     private float speed = 500f;
     private float criticalHitChance = 0.15f;
@@ -88,7 +90,8 @@ public class Player extends Actor {
 
         beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
 
-        healthPoints = 100;
+        currentHealthPoints = STARTING_HEALTH_POINTS;
+        maxHealthPoints = STARTING_HEALTH_POINTS;
 
         createAnimation();
     }
@@ -223,9 +226,9 @@ public class Player extends Actor {
 
     public void takeDamage(double damage){
         if (!isImmune) {
-            healthPoints -= damage;
+            currentHealthPoints -= damage;
             damageTaken += damage;
-            if (healthPoints <= 0) {
+            if (currentHealthPoints <= 0) {
                 setAlive(false);
                 return;
             }
@@ -298,10 +301,6 @@ public class Player extends Actor {
         return criticalHitChance;
     }
 
-    public int getHealthPoints() {
-        return healthPoints;
-    }
-
     public boolean isAlive() {
         return isAlive;
     }
@@ -311,11 +310,11 @@ public class Player extends Actor {
     }
 
     public void increaseHealthPoints(int increasedHealthPoints) {
-        healthPoints += increasedHealthPoints;
+        currentHealthPoints += increasedHealthPoints;
         healingReceived += increasedHealthPoints;
 
-        if (healthPoints > 100) {
-            healthPoints = 100;
+        if (currentHealthPoints > 100) {
+            currentHealthPoints = 100;
         }
     }
 
@@ -332,6 +331,14 @@ public class Player extends Actor {
 
     public double getCriticalHitDamage() {
         return criticalHitDamage;
+    }
+
+    public int getCurrentHealthPoints() {
+        return currentHealthPoints;
+    }
+
+    public int getMaxHealthPoints() {
+        return maxHealthPoints;
     }
 
     public double getDamageTaken() {
