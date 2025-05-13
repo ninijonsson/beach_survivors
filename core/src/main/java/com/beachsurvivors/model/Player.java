@@ -2,6 +2,7 @@ package com.beachsurvivors.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.graphics.Color;
@@ -39,6 +40,11 @@ public class Player extends Actor {
 
     private double damageTaken = 0;
     private double healingReceived = 0;
+
+    private float vaccumRadius = 400;
+    private Circle vaccumHitbox;
+    // Movementspeed of the item while being sucked
+    private float vaccumStrength = 100;
 
     private Rectangle beachGuyHitBox;
     private float playerX;
@@ -79,7 +85,9 @@ public class Player extends Actor {
 
         playerX = map.getStartingX();
         playerY = map.getStartingY();
+
         beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
+        vaccumHitbox = new Circle(playerX, playerY, vaccumRadius);
 
         currentHealthPoints = STARTING_HEALTH_POINTS;
         maxHealthPoints = STARTING_HEALTH_POINTS;
@@ -360,6 +368,15 @@ public class Player extends Actor {
 
     public LevelSystem getLevelSystem() {
         return levelSystem;
+    }
+
+    public Circle getVaccumHitbox() {
+        vaccumHitbox.setPosition(playerX,playerY);
+        return vaccumHitbox;
+    }
+
+    public float getVaccumStrength() {
+        return vaccumStrength;
     }
 
 }

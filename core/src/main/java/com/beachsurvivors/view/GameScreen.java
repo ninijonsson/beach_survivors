@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
@@ -302,6 +299,7 @@ public class GameScreen extends Game implements Screen {
 
         castChainLightning();
 
+        vaccum();
     }
 
     /**
@@ -362,6 +360,28 @@ public class GameScreen extends Game implements Screen {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V )) {
             gameUI.showStatsTable();
+        }
+//        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+//            Vector3 screenCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+//            gameViewport.getCamera().unproject(screenCoords); // camera = your game's OrthographicCamera
+//
+//            Vector2 clickPos = new Vector2(screenCoords.x, screenCoords.y);
+//            groundItems.add(new ExperienceOrb(clickPos.x, clickPos.y, 0, poolManager));
+//        }
+
+    }
+
+    private void vaccum() {
+        for (GroundItem xporb : groundItems) {
+            if (xporb instanceof ExperienceOrb) {
+                if (((ExperienceOrb) xporb).isAttracted()) {
+                    ((ExperienceOrb) xporb).updateExperienceOrbMovement(player);
+                    continue;
+                }
+                if (((ExperienceOrb) xporb).overlaps(player.getVaccumHitbox())) {
+                    ((ExperienceOrb) xporb).updateExperienceOrbMovement(player);
+                }
+            }
         }
     }
 
@@ -647,7 +667,6 @@ public class GameScreen extends Game implements Screen {
         enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
     }
 
-
     /**
      * What happens when an enemy dies
      *
@@ -759,6 +778,14 @@ public class GameScreen extends Game implements Screen {
         drawPlayerAbilities();
         drawChainLightning();
 
+//        xpOrbDebug(player);
+    }
+
+    private void xpOrbDebug(Player player) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.circle(player.getVaccumHitbox().x, player.getVaccumHitbox().y, player.getVaccumHitbox().radius); // XP orb's range
+        shapeRenderer.rect(player.getHitBox().x, player.getHitBox().y, player.getHitBox().width, player.getHitBox().height); // Player's box
+        shapeRenderer.end();
     }
 
     /**

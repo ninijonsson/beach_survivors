@@ -13,9 +13,12 @@ public abstract class GroundItem implements PickUpAble {
 
     private Texture texture;
     private Sprite sprite;
-    private Rectangle hitbox;
     private ParticleEffectPool.PooledEffect particleEffect;
     private float time;
+
+    private float width = 64;
+    private float height = 64;
+    private Rectangle hitbox;
 
     private float x;
     private float y;
@@ -27,7 +30,7 @@ public abstract class GroundItem implements PickUpAble {
         this.texture=texturePath;
 
         sprite = new Sprite(texture);
-        sprite.setSize(64, 64);
+        sprite.setSize(width, height);
 
         if(this instanceof ExperienceOrb){
             sprite.setSize(32,32);
@@ -93,6 +96,19 @@ public abstract class GroundItem implements PickUpAble {
 
     public void setScale(float scale){
         sprite.setScale(scale);
+    }
+
+    public Vector2 getPosition() {
+        position = new Vector2(x,y);
+        return position;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
     }
 }
 
