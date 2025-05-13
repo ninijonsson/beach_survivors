@@ -34,8 +34,8 @@ public class PlayerController implements Screen {
         this.player = new Player(controller.getGameScreen().getSpriteBatch(), controller);
         this.position = new Vector2(player.getPlayerX(), player.getPlayerY());
 
-        player.setPlayerX(controller.getGameManager().getMap().getStartingX());
-        player.setPlayerY(controller.getGameManager().getMap().getStartingY());
+        player.setPlayerX(controller.getMap().getStartingX());
+        player.setPlayerY(controller.getMap().getStartingY());
         // player.setPosition(position.x, position.y);
     }
 
@@ -168,15 +168,15 @@ public class PlayerController implements Screen {
         }
     }
 
-    public void checkIfDamageAgainstPlayer(Enemy enemy) {}
+    public void checkIfDamageAgainstPlayer(Enemy enemy) {
+        if (enemy.getHitbox().overlaps(player.getHitBox())) {
+            controller.getEnemyController().damagePlayer(enemy.getDamage());
+        }
+    }
 
     public void gainExp(int exp) {
         player.gainExp(exp);
     }
-
-    public void pickUpPowerUp() {}
-
-    public void pickUpGroundItem() {}
 
     // Getters & setters
     public Player getPlayer() {
@@ -185,5 +185,5 @@ public class PlayerController implements Screen {
 
     public Vector2 getPosition() { return position; }
 
-    public void setPosition(Vector2 position) { this.position = position; }
+    public void setPosition(Vector2 position) { player.setPosition(position.x, position.y); }
 }

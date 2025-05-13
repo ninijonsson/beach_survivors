@@ -16,16 +16,20 @@ public class AbilityController {
 
     public AbilityController(Controller controller) {
         this.abilities = new Array<>();
-        // Ska dessa flyttas till en create()-metod istället?
-        this.boomerang = new Boomerang();
-        this.bullet = new BaseAttack();
-        this.shield = new Shield();
-        abilities.add(boomerang);
-        abilities.add(bullet);
-        abilities.add(shield);
+        create();
 
         this.controller = controller;
         this.player = controller.getPlayerController().getPlayer();
+    }
+
+    public void create() {
+        this.boomerang = new Boomerang();
+        this.bullet = new BaseAttack();
+        this.shield = new Shield();
+
+        abilities.add(boomerang);
+        abilities.add(bullet);
+        abilities.add(shield);
     }
 
     public void addAbility(Ability ability) {
@@ -36,7 +40,7 @@ public class AbilityController {
         float delta = Gdx.graphics.getDeltaTime();
 
         for (Ability ability : abilities) {
-            ability.updatePosition(delta, player.getPlayerX(), player.getPlayerY());
+            ability.updatePosition(player.getPlayerX(), player.getPlayerY());
         }
     }
 

@@ -28,7 +28,9 @@ public class Boomerang extends Ability {
     }
 
     @Override
-    public void updatePosition(float delta, float playerX, float playerY) {
+    public void updatePosition(float playerX, float playerY) {
+        float delta = Gdx.graphics.getDeltaTime();
+
         // Uppdatera vinkeln
         angle += spinSpeed * delta;
         angle %= 360;

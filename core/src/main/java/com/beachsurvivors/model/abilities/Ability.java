@@ -105,8 +105,6 @@ public abstract class Ability implements Disposable {
         return isPersistent;
     }
 
-    public void updatePosition(float delta, float playerX, float playerY) {}
-
     @Override
     public String toString() {
         return name + " | Type: " + type +

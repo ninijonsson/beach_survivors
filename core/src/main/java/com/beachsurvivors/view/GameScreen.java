@@ -144,8 +144,8 @@ public class GameScreen extends Game implements Screen {
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
 
-        controller.getPlayerController().getPlayer().setPlayerX(controller.getGameManager().getMap().getStartingX());
-        controller.getPlayerController().getPlayer().setPlayerY(controller.getGameManager().getMap().getStartingY());
+        controller.getPlayerController().getPlayer().setPlayerX(controller.getMap().getStartingX());
+        controller.getPlayerController().getPlayer().setPlayerY(controller.getMap().getStartingY());
 
         // TODO: Gör om till metod
         poolManager = new ParticleEffectPoolManager();
@@ -209,7 +209,6 @@ public class GameScreen extends Game implements Screen {
         controller.logic();
 
         if (!isPaused) {
-            // logic(); -> flyttad till Controller^
             draw();
 
         } else {
@@ -217,6 +216,7 @@ public class GameScreen extends Game implements Screen {
             main.pause();
             spriteBatch.end();
         }
+
         gameUI.getStage().act(delta);
         gameUI.update(Gdx.graphics.getDeltaTime());
         gameUI.draw();
@@ -258,10 +258,10 @@ public class GameScreen extends Game implements Screen {
 
         controller.getPlayerController().updateCameraPosition();
 
-        controller.getGameManager().getTiledMapRenderer()
+        controller.getTiledMapRenderer()
             .setView(camera);
 
-        controller.getGameManager().getTiledMapRenderer()
+        controller.getTiledMapRenderer()
             .render();
 
         spriteBatch.setProjectionMatrix(gameViewport.getCamera().combined);
@@ -486,7 +486,7 @@ public class GameScreen extends Game implements Screen {
             enemy.attack(player, enemyAbilities);
         }
         for (Ability a : enemyAbilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+            a.updatePosition(player.getPlayerX(), player.getPlayerY());
         }
     }
 
@@ -630,7 +630,7 @@ public class GameScreen extends Game implements Screen {
      */
     private void updateAbilityMovement() {
         for (Ability a : controller.getAbilityController().getAbilities()) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(),
+            a.updatePosition(
                 controller.getPlayerController().getPlayer().getPlayerX(),
                 controller.getPlayerController().getPlayer().getPlayerY());
         }
@@ -798,7 +798,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void drawPowerUps() {
-        for (PowerUp powerUp : droppedItems) {
+        for (PowerUp powerUp : controller.getPowerUps()) {
             powerUp.update(Gdx.graphics.getDeltaTime());
             powerUp.drawParticles(spriteBatch); // RITA EFFEKT FÖRST
             powerUp.getSprite().draw(spriteBatch); // RITA SPRITE OVANPÅ
@@ -807,7 +807,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void drawGroundItems() {
-        for (GroundItem groundItem : groundItems) {
+        for (GroundItem groundItem : controller.getGroundItems()) {
             groundItem.getSprite().draw(spriteBatch); // RITA SPRITE OVANPÅ
             groundItem.update(Gdx.graphics.getDeltaTime());
             groundItem.drawParticles(spriteBatch); // RITA EFFEKT FÖRST
@@ -833,7 +833,8 @@ public class GameScreen extends Game implements Screen {
 
         for (Ability a : controller.getAbilityController().getAbilities()) {
             if (a instanceof Shield) {
-                a.updatePosition(player.getPlayerX() - a.getSprite().getWidth() / 2, player.getPlayerY() - a.getSprite().getHeight() / 2);
+                a.updatePosition(player.getPlayerX() - a.getSprite().getWidth() / 2,
+                    player.getPlayerY() - a.getSprite().getHeight() / 2);
 
                 if (!controller.getAbilityController().getShield().getIsDepleted()) {
                     a.getSprite().draw(spriteBatch);
@@ -845,7 +846,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void drawEnemyAbilities() {
-        for (Ability a : controller.getAbilityController().getAbilities()) {
+        for (Ability a : controller.getEnemyController().getEnemyAbilities()) {
             a.getSprite().draw(spriteBatch);
         }
     }
@@ -893,4 +894,8 @@ public class GameScreen extends Game implements Screen {
     public FitViewport getGameViewport() { return gameViewport; }
 
     public SpriteBatch getSpriteBatch() { return spriteBatch; }
+
+    public Stage getStage() {
+        return stage;
+    }
 }

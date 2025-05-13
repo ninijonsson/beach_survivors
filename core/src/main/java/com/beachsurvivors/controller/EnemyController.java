@@ -51,7 +51,7 @@ public class EnemyController {
         }
 
         for (Ability ability : enemyAbilities) {
-            ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+            ability.updatePosition(player.getPlayerX(), player.getPlayerY());
         }
     }
 
@@ -72,7 +72,7 @@ public class EnemyController {
 
         if (!player.isAlive()) {
             System.out.println("You died");
-            controller.getMain().gameOver(controller.getGameManager().getTotalEnemiesKilled(), 1 /*controller.getGameManager().getTotalPlayerDamageDealt()*/,
+            controller.getMain().gameOver(controller.getTotalEnemiesKilled(), 1 /*controller.getGameManager().getTotalPlayerDamageDealt()*/,
                     gameUI.getGameTimeSeconds(),
                     player.getDamageTaken(), player.getHealingReceived(),
                     shield.getTotalDamagePrevented());
@@ -91,8 +91,8 @@ public class EnemyController {
 
     public void spawn() {
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
-        int interval = (int) (gameTimeSeconds / gameManager.getSecondsBetweenGrowthRate());
-        int maxEnemies = (int) (2 * Math.pow(gameManager.getGrowthRateOfSpawningEnemies(), interval));
+        int interval = (int) (gameTimeSeconds / controller.getSecondsBetweenGrowthRate());
+        int maxEnemies = (int) (2 * Math.pow(controller.getGrowthRateOfSpawningEnemies(), interval));
         // Vet ej vad baseEnemies är, ändra 2 till variabel senare
 
         spawnMiniBoss(gameTimeSeconds);
@@ -114,7 +114,7 @@ public class EnemyController {
 
     public void spawnMiniBoss(float gameTimeSeconds) {
         if (!(miniBossSchedule.isEmpty()) && miniBossSchedule.first() <= gameTimeSeconds) {
-            Enemy miniBoss = new MiniBoss(gameManager.getPoolManager(), controller.getGameScreen());
+            Enemy miniBoss = new MiniBoss(controller.getPoolManager(), controller.getGameScreen());
             Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
             miniBoss.setEnemyPos(randomPos);
             miniBoss.setX(randomPos.x);
@@ -127,7 +127,7 @@ public class EnemyController {
     public void updatePosition() {
         for (int i = enemies.size - 1; i >= 0; i--) { //LOOP THROUGH ALL ENEMIES AND UPDATE RELATED POSITIONS.
             Enemy enemy = enemies.get(i);
-            updateMovement(enemy); //MOVE TOWARDS PLAYER
+            updateMovement(enemy); // MOVE TOWARDS PLAYER
             handleEnemyDeath(enemy, player, i); //IF THEY ARE DEAD
             playerController.checkIfPlayerAbilityHits(enemy); //IF THEY ARE HIT BY THE PLAYER
             playerController.checkIfDamageAgainstPlayer(enemy); //IF THEY DAMAGE THE PLAYER
@@ -138,10 +138,11 @@ public class EnemyController {
 
     public void updateMovement(Enemy enemy) {
         enemy.updateHealthBarPosition();
-        //enemy.addHealthBar(stage);
+        enemy.addHealthBar(controller.getGameScreen().getStage());
+
         float delta = Gdx.graphics.getDeltaTime();
-        playerController.setPosition(new Vector2(player.getPlayerX(), player.getPlayerY()));
-        Vector2 vector = enemy.moveTowardsPlayer(delta, playerController.getPosition(), enemy.getEnemyPos());
+        Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
         enemy.setMovingLeftRight(vector.x);
 
         //Uppdaterar Spritens X och Y position baserat på riktningen på fiendens vector2 * speed * tid.
@@ -174,16 +175,15 @@ public class EnemyController {
 
     public void handleEnemyDeath(Enemy enemy, Player player, int index) {
         if (!enemy.isAlive()) {
-            int totalEnemiesKilled = gameManager.getTotalEnemiesKilled();
-            Array<GroundItem> groundItems = gameManager.getGroundItems();
-            ParticleEffectPoolManager poolManager = gameManager.getPoolManager();
+            Array<GroundItem> groundItems = controller.getGroundItems();
+            ParticleEffectPoolManager poolManager = controller.getPoolManager();
 
-            gameManager.setTotalEnemiesKilled(totalEnemiesKilled + 1);
+            controller.increaseEnemiesKilledCounter();
 
             gameUI.updateInfoTable("You gained " + enemy.getExp() + " exp.");
 
             // Om fienden är en miniboss ska den droppa en kista
-            enemy.dropItems(gameManager.getPowerUps(), poolManager);
+            enemy.dropItems(controller.getPowerUps(), poolManager);
             groundItems.add(new ExperienceOrb(enemy.getX(), enemy.getY(), enemy.getExp(), poolManager));
             if (enemy instanceof MiniBoss) {
                 ((MiniBoss) enemy).dropChest(groundItems);
@@ -281,5 +281,9 @@ public class EnemyController {
                 break;
         }
         return new Vector2(x, y);
+    }
+
+    public Array<Ability> getEnemyAbilities() {
+        return enemyAbilities;
     }
 }
