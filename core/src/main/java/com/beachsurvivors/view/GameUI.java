@@ -162,7 +162,6 @@ public class GameUI {
         buffIcons.setSize(200,90);
         buffIcons.align(Align.bottomLeft);
 
-
         buffStack.add(buffs);
         buffStack.add(buffIcons);
         buffStack.setPosition(((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 85);
@@ -174,19 +173,35 @@ public class GameUI {
         updateBuffIcons();
     }
 
-    public void removeBuff() {
-
+    public void removeBuff(PowerUp buff) {
+        currentPlayerBuffs.removeValue(buff, true);
+        updateBuffIcons();
     }
 
-    private void updateBuffIcons() {
+    public void updateBuffIcons() {
         int bottomPad = 10;
         int rightPad = 5;
         buffIcons.clear();
-        if (currentPlayerBuffs.get(0) != null) {
-            buffIcons.add(currentPlayerBuffs.get(0).getIcon()).padLeft(25).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
-            for (int i = 1; i < currentPlayerBuffs.size; i++) {
-                buffIcons.add(currentPlayerBuffs.get(i).getIcon()).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
-            }
+
+        Skin skin = AssetLoader.get().getSkin("game_over_screen/deathscreen_skin.json");
+
+        for (int i = 0; i < currentPlayerBuffs.size; i++) {
+            PowerUp buff = currentPlayerBuffs.get(i);
+
+            Image icon = buff.getIcon();
+            float remainingTime = Math.max(0, buff.getRemainingDuration());
+            Label timerLabel = new Label(String.format("%.1f", remainingTime), skin);
+            timerLabel.setFontScale(1.3f);
+            timerLabel.setAlignment(Align.center);
+
+            Stack iconStack = new Stack();
+            iconStack.add(icon);
+            iconStack.add(timerLabel);
+
+
+            Cell<Stack> cell = buffIcons.add(iconStack).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
+            if (i == 0) cell.padLeft(25);
+
         }
     }
 

@@ -16,6 +16,7 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
     public SpeedBoost(float x, float y, ParticleEffectPoolManager ppm) {
         super(AssetLoader.get().getTexture("entities/power_ups/speed_boost.png"), 10, x, y, ppm);
         createIcon("entities/power_ups/speed_boost.png");
+
     }
 
     @Override
@@ -27,12 +28,12 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
     @Override
     protected void applyAffect(Player player) {
         player.increaseSpeed(speedIncrease);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                player.increaseSpeed(-speedIncrease);
-            }
-        }, getDuration());
-
     }
+
+    @Override
+    public void removeEffect(Player player) {
+        player.increaseSpeed(-speedIncrease);
+    }
+
+
 }

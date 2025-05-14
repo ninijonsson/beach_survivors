@@ -57,6 +57,7 @@ public class GameScreen extends Game implements Screen {
     private Array<PowerUp> droppedItems;
 
     private Array<Ability> abilities;
+    private Array<PowerUp> currentPowerUps;
     private Boomerang boomerang;
     private BaseAttack bullet;
     private Shield shield;
@@ -96,6 +97,7 @@ public class GameScreen extends Game implements Screen {
 
         droppedItems = new Array<>();
         abilities = new Array<>();
+        currentPowerUps = new Array<>();
         totalEnemiesKilled = 0;
         create();
 
@@ -156,6 +158,11 @@ public class GameScreen extends Game implements Screen {
         abilities.add(wave);
 
         createMiniBossSchedule();
+
+        SpeedBoost sp = new SpeedBoost(playerPos.x+ 150, playerPos.y + 150, poolManager);
+        LuckyClover lc = new LuckyClover(playerPos.x- 150, playerPos.y + 150, poolManager);
+        droppedItems.add(sp);
+        droppedItems.add(lc);
     }
 
     /**
@@ -296,6 +303,7 @@ public class GameScreen extends Game implements Screen {
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
         castChainLightning();
+        updatePowerUps();
 
         vaccum();
     }
@@ -388,6 +396,7 @@ public class GameScreen extends Game implements Screen {
 
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
                 gameUI.addBuff(powerUp);
+                currentPowerUps.add(powerUp);
 
                 if (powerUp instanceof Berserk) {
                     powerUp.onPickup(player);
@@ -403,6 +412,17 @@ public class GameScreen extends Game implements Screen {
         gameUI.setHealthBarValue(player.getCurrentHealthPoints(), player.getMaxHealthPoints());
         droppedItems.removeAll(powerUpsToRemove, true);
         powerUpsToRemove.clear();
+    }
+
+    private void updatePowerUps() {
+        for (PowerUp powerUp : currentPowerUps) {
+            powerUp.updateDuration(Gdx.graphics.getDeltaTime(), player);
+            if (powerUp.getRemainingDuration() <= 0) {
+                currentPowerUps.removeValue(powerUp, true);
+                gameUI.removeBuff(powerUp);
+            }
+        }
+        gameUI.updateBuffIcons();
     }
 
     private void pickUpGroundItem() {
