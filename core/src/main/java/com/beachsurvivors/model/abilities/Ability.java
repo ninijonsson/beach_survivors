@@ -3,6 +3,7 @@ package com.beachsurvivors.model.abilities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
@@ -17,6 +18,7 @@ public abstract class Ability implements Disposable {
     private Sprite sprite;
     private Rectangle hitBox;
     private boolean isPersistent = false; //Om abilityn ska vara "permanent" (sköld) eller försvinna, t.ex (BaseAttack)
+    private Image icon;
 
     public Ability(String name, String texturePath, AbilityType type, double damage, double cooldown, int width, int height) {
         this.texture = AssetLoader.get().getTexture(texturePath);
@@ -83,6 +85,16 @@ public abstract class Ability implements Disposable {
 
     public void setTexture(Texture texture) {
         this.texture = texture;
+    }
+
+    public Image getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String iconImagePath) {
+        Texture texture = AssetLoader.get().getTexture(iconImagePath);
+        icon = new Image(texture);
+        icon.setSize(64,64);
     }
 
     public Texture getTexture() {

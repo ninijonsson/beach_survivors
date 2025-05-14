@@ -19,7 +19,7 @@ public class Shield extends Ability {
         super("Shield" , "entities/abilities/shield_bubble.png", AbilityType.SHIELD, 0, 20, 150, 150);
         this.currentShieldStrength = INITIAL_SHIELD_STRENGTH;
         isRegening = false;
-        getSprite().setColor(1f,1f,1f, 0.75f);
+        getSprite().setColor(1f,1f,1f, 0.4f);
         setPersistent(true);
     }
 
@@ -59,7 +59,7 @@ public class Shield extends Ability {
                 public void run() {
                     resetShield();
                 }
-            }, (float) getCooldown()*10);
+            }, (float) getCooldown());
         }
     }
 

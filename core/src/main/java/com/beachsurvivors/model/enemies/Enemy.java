@@ -207,6 +207,7 @@ public abstract class Enemy implements Disposable {
             healthPoints -= damage;
             playSound();
             showHealthBarTemporarily(2.0f);
+
             if (healthPoints <= 0) {
                 isAlive = false;
                 onDeath();

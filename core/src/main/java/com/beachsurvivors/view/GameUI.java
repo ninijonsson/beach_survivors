@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
-import com.beachsurvivors.model.abilities.Ability;
+import com.beachsurvivors.model.groundItems.PowerUp;
+import com.beachsurvivors.model.groundItems.SpeedBoost;
 
 public class GameUI {
     private final FitViewport viewport;
@@ -40,6 +42,16 @@ public class GameUI {
     private Label cooldownReduction;
     private Label movementSpeed;
 
+    private Array<Image> equippedAbilitiesIcons;
+    private Stack abilityBarStack;
+    private Table icons;
+    private final int ICON_SIZE = 64;
+
+    private Array<PowerUp> currentPlayerBuffs;
+    private Table buffs;
+    private Table buffIcons;
+    private Stack buffStack;
+
     private Label timerLabel;
     private float gameTime = 0f;
 
@@ -47,7 +59,12 @@ public class GameUI {
         this.viewport = viewport;
         this.game = game;
         stage = new Stage(viewport);
+        equippedAbilitiesIcons = new Array<>();
+        currentPlayerBuffs = new Array<>();
+        icons = new Table();
 
+
+        addAbilityIcon("entities/abilities/bullet.png");
         createTables();
     }
 
@@ -56,11 +73,13 @@ public class GameUI {
      */
     private void createTables() {
         createAbilityTable();
+        createExpTable();
         createProgressBar();
         createPlayerHealthBar();
         createTimerLabel();
         createInfoTable();
         createPlayerStats();
+        createBuffBar();
 
         addActors();
     }
@@ -69,32 +88,118 @@ public class GameUI {
         stage.addActor(healthTable);
 
         stage.addActor(timerLabel);
-        stage.addActor(abilityTable);
+        stage.addActor(abilityBarStack);
         stage.addActor(xpTable);
         stage.addActor(progressBarTable);
+        stage.addActor(buffStack);
     }
 
     private void createAbilityTable() {
-        abilityFont = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
-        abilityFont.getData().setScale(2);
-        abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
+        abilityBarStack = new Stack();
+        abilityTable = new Table();
 
-        this.abilityTable = new Table();
-        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test_ability_bar.png"));
+        Texture abilityBar = AssetLoader.get().getTexture("entities/ui/ability_bar.png");
 
-        Image abilityBackground = new Image(imageTexture);
-        abilityBackground.setSize(400, 70);
-        abilityBackground.setScale(1.5f);
+        Image abilityBackground = new Image(abilityBar);
         abilityTable.add(abilityBackground);
         abilityTable.bottom();
         abilityTable.center();
         abilityTable.pack();
 
-        abilityTable.setPosition(
-            ((viewport.getWorldWidth() - abilityTable.getWidth()*1.5f) / 2), 0
-        );
+        abilityTable.setPosition(((viewport.getWorldWidth()/2 - abilityTable.getWidth() / 2)), 0);
 
+        createAbilityIconsTable();
 
+    }
+
+    private void createAbilityIconsTable() {
+        icons.setSize(600,90);
+        icons.align(Align.bottomLeft);
+        icons.bottom();
+        icons.setPosition(abilityTable.getX(), abilityTable.getY());
+
+        int bottomPad = 5;
+        int rightPad = 5;
+        icons.add(equippedAbilitiesIcons.get(0)).padLeft(25).padBottom(bottomPad).padRight(rightPad);
+        updateAbilityBar();
+
+        abilityBarStack.add(abilityTable);
+        abilityBarStack.add(icons);
+        abilityBarStack.setSize(600,90);
+
+        abilityBarStack.setPosition(((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 0);
+    }
+
+    public void addAbilityIcon(String imagePath) {
+        Texture texture = AssetLoader.get().getTexture(imagePath);
+        Image icon = new Image(texture);
+        icon.setSize(64,64);
+        equippedAbilitiesIcons.add(icon);
+        updateAbilityBar();
+    }
+
+    private void updateAbilityBar() {
+        int bottomPad = 5;
+        int rightPad = 5;
+        icons.clear();
+        icons.add(equippedAbilitiesIcons.get(0)).padLeft(25).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
+        for (int i = 1; i < equippedAbilitiesIcons.size; i++) {
+            icons.add(equippedAbilitiesIcons.get(i)).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
+        }
+    }
+
+    private void createBuffBar() {
+        buffStack = new Stack();
+        buffStack.setSize(200, 90);
+        buffs = new Table();
+        buffs.setSize(200,90);
+        buffIcons = new Table();
+        buffIcons.setSize(200,90);
+        buffIcons.align(Align.bottomLeft);
+
+        buffStack.add(buffs);
+        buffStack.add(buffIcons);
+        buffStack.setPosition(((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 85);
+
+    }
+
+    public void addBuff(PowerUp buff) {
+        currentPlayerBuffs.add(buff);
+        updateBuffIcons();
+    }
+
+    public void removeBuff(PowerUp buff) {
+        currentPlayerBuffs.removeValue(buff, true);
+        updateBuffIcons();
+    }
+
+    public void updateBuffIcons() {
+        int bottomPad = 10;
+        int rightPad = 5;
+        buffIcons.clear();
+
+        Skin skin = AssetLoader.get().getSkin("game_over_screen/deathscreen_skin.json");
+
+        for (int i = 0; i < currentPlayerBuffs.size; i++) {
+            PowerUp buff = currentPlayerBuffs.get(i);
+
+            Image icon = buff.getIcon();
+            float remainingTime = Math.max(0, buff.getRemainingDuration());
+            Label timerLabel = new Label(String.format("%.1f", remainingTime), skin);
+            timerLabel.setFontScale(1.3f);
+            timerLabel.setAlignment(Align.center);
+
+            Stack iconStack = new Stack();
+            iconStack.add(icon);
+            iconStack.add(timerLabel);
+
+            Cell<Stack> cell = buffIcons.add(iconStack).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
+            if (i == 0) cell.padLeft(25);
+
+        }
+    }
+
+    private void createExpTable() {
         this.xpTable = new Table();
         Texture xpTexture = new Texture(Gdx.files.internal("entities/abilities/exp_bar.png"));
         Image xpBar = new Image(xpTexture);
@@ -109,12 +214,6 @@ public class GameUI {
         );
     }
 
-    private void updateAbilityBar() {
-            Array<Ability> abilities = game.getAbilities();
-            for(Ability a : abilities){
-                //a.getName()
-            }
-    }
 
     private void createInfoTable() {
         infoLog = new Array<>();

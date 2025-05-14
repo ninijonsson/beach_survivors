@@ -23,4 +23,9 @@ public class HealthHeart extends PowerUp implements PickUpAble {
         player.restoreHealthPoints(healthAmount);
 
     }
+
+    @Override
+    public void removeEffect(Player player) {
+
+    }
 }

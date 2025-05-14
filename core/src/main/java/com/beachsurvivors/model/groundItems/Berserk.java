@@ -14,6 +14,7 @@ public class Berserk extends PowerUp implements PickUpAble {
 
     public Berserk(float x, float y, ParticleEffectPoolManager ppm) {
         super(AssetLoader.get().getTexture("entities/beer.png"), 20, x, y, ppm);
+        createIcon("entities/beer.png");
     }
 
     @Override
@@ -24,13 +25,19 @@ public class Berserk extends PowerUp implements PickUpAble {
     @Override
     public void applyAffect(Player player) {
         player.increaseSpeed(movementSpeedIncrease);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                player.increaseSpeed(-movementSpeedIncrease);
-            }
-        }, getDuration());
+//        Timer.schedule(new Timer.Task() {
+//            @Override
+//            public void run() {
+//                player.increaseSpeed(-movementSpeedIncrease);
+//            }
+//        }, getDuration());
     }
+
+    @Override
+    public void removeEffect(Player player) {
+        player.increaseSpeed(-movementSpeedIncrease);
+    }
+
 
     public void onPickupBullet(BaseAttack bullet) {
         applyAffectBullet(bullet);
