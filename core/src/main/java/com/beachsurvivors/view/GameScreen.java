@@ -412,6 +412,10 @@ public class GameScreen extends Game implements Screen {
             if (player.getHitBox().overlaps(groundItem.getHitbox())) {
                 groundItem.onPickup(player);
                 groundItemsToRemove.add(groundItem);
+                if (groundItem instanceof ExperienceOrb) {
+                    gameUI.setProgressBarValue(player.getLevelSystem().getCurrentExp());
+                    gameUI.updateInfoTable("You gained " + ((ExperienceOrb) groundItem).getExp() + " exp.");
+                }
             }
         }
         groundItems.removeAll(groundItemsToRemove, true);
@@ -676,7 +680,6 @@ public class GameScreen extends Game implements Screen {
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
             totalEnemiesKilled++;
-            gameUI.updateInfoTable("You gained " + enemy.getExp() + " exp.");
 
             // Om fienden är en miniboss ska den droppa en kista
             enemy.dropItems(droppedItems, poolManager);
@@ -688,11 +691,9 @@ public class GameScreen extends Game implements Screen {
             enemies.removeIndex(i); // Ta bort från fiende-arrayen
             enemy.dispose(); // Ta även bort själva bilden på fienden
 
-            // I denna metoden kontrollerar vi även om vi ska levela eller inte
-            player.gainExp(enemy.getExp());
-
+            //TODO DETTA SKA CHECKAS NÄR MAN TAR UPP EN ORB INTE NÄR MAN DÖDAR EN ENEMY
             // Uppdatera progress bar (exp)
-            gameUI.setProgressBarValue(player.getLevelSystem().getCurrentExp());
+//            gameUI.setProgressBarValue(player.getLevelSystem().getCurrentExp());
         }
     }
 
