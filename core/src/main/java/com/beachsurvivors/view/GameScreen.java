@@ -69,15 +69,15 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void renderGameObjects() {
-        // Render map
+        // Rendera mappen
         controller.getTiledMapRenderer().setView(camera);
         controller.getTiledMapRenderer().render();
 
-        // Set up batch and camera
+        // Setta sprite batch och kameran
         spriteBatch.setProjectionMatrix(gameViewport.getCamera().combined);
         spriteBatch.begin();
 
-        // Draw player
+        // Ritar spelaren
         controller.getPlayer().drawAnimation();
 
         // Draw player abilities
@@ -161,4 +161,5 @@ public class GameScreen extends Game implements Screen {
     public void setPaused(boolean paused) { isPaused = paused; }
     public int getScreenWidth() { return SCREEN_WIDTH; }
     public int getScreenHeight() { return SCREEN_HEIGHT; }
+    public Controller getController() { return controller; }
 }

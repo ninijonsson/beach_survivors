@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -98,6 +99,13 @@ public class Controller extends Game implements Screen {
         create();
     }
 
+    @Override
+    public void resume() {
+        setPaused(false);
+        main.setScreen(gameScreen);
+        Timer.instance().start();
+    }
+
     private int calculateExpForLevelUp(int level) {
         return 100 * level;
     }
@@ -105,6 +113,7 @@ public class Controller extends Game implements Screen {
     private void onLevelUp() {
         System.out.println("Level up!");
         gameUI.updateInfoTable("Congratulations, you are now level " + currentLevel);
+        main.levelUp();
     }
 
     public void gainExp(int exp) {
@@ -128,7 +137,6 @@ public class Controller extends Game implements Screen {
         playerShoot();
         updateShieldPosition();
         updateAbilities();
-        // updateDamageText();
 
         spawnEnemies();
         for (int i = enemies.size - 1; i >= 0; i--) { //LOOP THROUGH ALL ENEMIES AND UPDATE RELATED POSITIONS.
@@ -138,6 +146,8 @@ public class Controller extends Game implements Screen {
             checkPlayerAbilityHits(enemy); //IF THEY ARE HIT BY THE PLAYER
             checkDamageAgainstPlayer(enemy); //IF THEY DAMAGE THE PLAYER
         }
+        checkEnemyAbilitiesDamagePlayer();
+
         enemyAttacks();
         updateEnemyPositions();
 
@@ -301,8 +311,16 @@ public class Controller extends Game implements Screen {
 
     private void updateShieldPosition() {
         if (!shield.getIsDepleted() && shield.getSprite() != null) {
-            shield.updatePosition(player.getPlayerX() - shield.getSprite().getWidth() / 2,
-                player.getPlayerY() - shield.getSprite().getHeight() / 2);
+            float playerCenterX = player.getPlayerX();
+            float playerCenterY = player.getPlayerY();
+
+            float shieldWidth = shield.getSprite().getWidth();
+            float shieldHeight = shield.getSprite().getHeight();
+
+            shield.updatePosition(
+                playerCenterX - shieldWidth / 2f,
+                playerCenterY - shieldHeight / 2f
+            );
         }
     }
 
@@ -408,6 +426,9 @@ public class Controller extends Game implements Screen {
 
             BaseAttack bullet = new BaseAttack();
             bullet.setDirection(direction);
+            bullet.getSprite().setPosition(player.getPlayerX(), player.getPlayerY());
+            bullet.getHitBox().setPosition(player.getPlayerX(), player.getPlayerY());
+
             bullet.updatePosition(player.getPlayerX(), player.getPlayerY());
 
             abilities.add(bullet);
@@ -509,4 +530,8 @@ public class Controller extends Game implements Screen {
     public void setGameUI(GameUI gameUI) { this.gameUI = gameUI; }
 
     public OrthogonalTiledMapRenderer getTiledMapRenderer() { return tiledMapRenderer; }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
+    }
 }

@@ -12,7 +12,7 @@ public abstract class Ability implements Disposable {
     private String name;
     private AbilityType type;
     private double damage;
-    private static double cooldown;
+    private double cooldown;
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitBox;
@@ -28,7 +28,7 @@ public abstract class Ability implements Disposable {
         this.name = name;
         this.type = type;
         this.damage = damage;
-        Ability.cooldown = cooldown;
+        this.cooldown = cooldown;
     }
 
     public void updatePosition(float x, float y) {
@@ -66,7 +66,7 @@ public abstract class Ability implements Disposable {
     }
 
     public void decreaseCooldown(double attackSpeed) {
-        Ability.cooldown -= attackSpeed;
+        cooldown -= attackSpeed;
     }
 
     public void setType(AbilityType type) {

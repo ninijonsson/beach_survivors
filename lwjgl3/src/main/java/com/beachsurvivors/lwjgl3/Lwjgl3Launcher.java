@@ -2,6 +2,7 @@ package com.beachsurvivors.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.beachsurvivors.controller.Controller;
 import com.beachsurvivors.view.Main;
 
 /** Launches the desktop (LWJGL3) application. */

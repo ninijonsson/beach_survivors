@@ -5,7 +5,6 @@ import com.beachsurvivors.controller.Controller;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
-    private Controller controller;
     private MainMenuScreen menuScreen;
     private GameScreen gameScreen;
     private LoadingScreen loadingScreen;
@@ -53,6 +52,7 @@ public class Main extends Game {
     }
 
     public void levelUp() {
+        Controller controller = gameScreen.getController();
         setScreen(new LevelUpScreen(gameScreen, controller.getPlayer(), controller));
     }
 
@@ -61,7 +61,8 @@ public class Main extends Game {
     }
 
     public void pause() {
-        setScreen(new PauseScreen(gameScreen, this));
+        Controller controller = gameScreen.getController();
+        setScreen(new PauseScreen(gameScreen, this, controller));
     }
 
     public void turnOffInGameMusic() {

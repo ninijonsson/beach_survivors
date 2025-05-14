@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.controller.Controller;
 
 import javax.swing.event.ChangeEvent;
 
@@ -30,10 +31,12 @@ public class PauseScreen implements Screen {
     private Skin skin;
     private boolean isSoundOn;
     private Image dimBackground;
+    private Controller controller;
 
-    public PauseScreen(GameScreen game, Main main) {
+    public PauseScreen(GameScreen game, Main main, Controller controller) {
         this.game = game;
         this.main = main;
+        this.controller = controller;
         isSoundOn = main.isSoundOn();
 
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
@@ -109,7 +112,7 @@ public class PauseScreen implements Screen {
         resumeButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.resume();
+                controller.resume();
             }
         });
 

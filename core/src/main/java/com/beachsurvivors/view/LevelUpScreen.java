@@ -102,7 +102,7 @@ public class LevelUpScreen implements Screen {
     }
 
     private void resumeGame() {
-        game.resume();
+        controller.resume();
     }
 
     @Override
