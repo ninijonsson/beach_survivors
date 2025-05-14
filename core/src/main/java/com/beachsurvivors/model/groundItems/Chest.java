@@ -15,9 +15,9 @@ public class Chest extends GroundItem implements PickUpAble {
     private GameScreen gameScreen;
 
     public Chest(float x, float y, ParticleEffectPoolManager poolManager, GameScreen gameScreen) {
-        super(AssetLoader.get().getTexture("assets/entities/chest.png"), x, y, gameScreen);
+        super(AssetLoader.get().getTexture("entities/chest.png"), x, y, gameScreen);
         this.gameScreen = gameScreen;
-        setParticleEffect(poolManager.obtain("assets/entities/particles/chestClosed.p"));
+        setParticleEffect(poolManager.obtain("entities/particles/chestClosed.p"));
     }
 
     @Override

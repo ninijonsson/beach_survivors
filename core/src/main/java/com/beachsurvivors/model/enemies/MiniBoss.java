@@ -17,7 +17,7 @@ public class MiniBoss extends Enemy {
         super(128 * 3, 128 * 3, 500, 100, controller);
         this.poolManager = poolManager;
         this.gameScreen = gameScreen;
-        createAnimation(AssetLoader.get().getTexture("assets/entities/enemies/crocodile2.png"), 1, 1);
+        createAnimation(AssetLoader.get().getTexture("entities/enemies/crocodile2.png"), 1, 1);
         setMovementSpeed(200f);
         setDamage(20);
 

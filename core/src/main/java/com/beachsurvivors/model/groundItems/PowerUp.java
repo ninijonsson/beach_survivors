@@ -39,7 +39,7 @@ public abstract class PowerUp implements PickUpAble {
         this.y = y;
 
 
-        this.lootBeamEffect = ppm.obtain("assets/entities/particles/lootPile.p");
+        this.lootBeamEffect = ppm.obtain("entities/particles/lootPile.p");
 
         if(lootBeamEffect!=null){
             lootBeamEffect.setPosition(x + 32, y + 32);

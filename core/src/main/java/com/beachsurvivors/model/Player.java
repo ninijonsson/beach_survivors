@@ -101,10 +101,10 @@ public class Player extends Actor {
         int choice = random.nextInt(1,3);
         switch (choice) {
             case 1:
-                walkSheet = AssetLoader.get().manager.get("assets/entities/beach_girl_sheet.png");
+                walkSheet = AssetLoader.get().manager.get("entities/beach_girl_sheet.png");
                 break;
             case 2:
-                walkSheet = AssetLoader.get().manager.get("assets/entities/beach_guy_sheet.png");
+                walkSheet = AssetLoader.get().manager.get("entities/beach_guy_sheet.png");
                 break;
         }
 

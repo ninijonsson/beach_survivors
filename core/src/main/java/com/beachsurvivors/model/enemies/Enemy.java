@@ -68,11 +68,11 @@ public abstract class Enemy implements Disposable {
         this.height = height;
         this.healthPoints = healthPoints;
         this.expOnDeath = expOnDeath;
-        this.xpOrb = AssetLoader.get().getTexture("assets/entities/abilities/xp_orb.png");
-        this.texture = AssetLoader.get().getTexture("assets/placeholder.png");
+        this.xpOrb = AssetLoader.get().getTexture("entities/abilities/xp_orb.png");
+        this.texture = AssetLoader.get().getTexture("placeholder.png");
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
-        this.hitSound = AssetLoader.get().getSound("assets/sounds/shark_damage_2.wav");
+        this.hitSound = AssetLoader.get().getSound("sounds/shark_damage_2.wav");
         this.controller = controller;
         this.radius = width /4;
 

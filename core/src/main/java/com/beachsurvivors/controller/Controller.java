@@ -84,12 +84,12 @@ public class Controller extends Game implements Screen {
         abilities.add(shield);
 
         this.poolManager = new ParticleEffectPoolManager();
-        this.poolManager.register("assets/entities/particles/blueFlame.p", 5, 20);
-        this.poolManager.register("assets/entities/particles/lootBeam.p", 5, 20);
-        this.poolManager.register("assets/entities/particles/lootPile.p", 5, 20);
-        this.poolManager.register("assets/entities/particles/xp_orb.p", 5, 20);
-        this.poolManager.register("assets/entities/particles/chestClosed.p", 5, 20);
-        this.poolManager.register("assets/entities/particles/chestOpen.p", 5, 20);
+        this.poolManager.register("entities/particles/blueFlame.p", 5, 20);
+        this.poolManager.register("entities/particles/lootBeam.p", 5, 20);
+        this.poolManager.register("entities/particles/lootPile.p", 5, 20);
+        this.poolManager.register("entities/particles/xp_orb.p", 5, 20);
+        this.poolManager.register("entities/particles/chestClosed.p", 5, 20);
+        this.poolManager.register("entities/particles/chestOpen.p", 5, 20);
 
         this.currentLevel = 1;
         this.currentEXP = 0;

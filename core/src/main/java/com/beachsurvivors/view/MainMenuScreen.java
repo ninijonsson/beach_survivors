@@ -67,18 +67,18 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(Main main) {
         this.main = main;
 
-        backgroundTexture = AssetLoader.get().manager.get("assets/main_menu/menu_background.jpeg");
-        logoTexture = AssetLoader.get().manager.get("assets/main_menu/logo_skiss_1.png");
+        backgroundTexture = AssetLoader.get().manager.get("main_menu/menu_background.jpeg");
+        logoTexture = AssetLoader.get().manager.get("main_menu/logo_skiss_1.png");
 
-        playSound = AssetLoader.get().manager.get("assets/main_menu/sound/holiday.wav");
-        mainTheme = AssetLoader.get().manager.get("assets/sounds/beach.mp3");
+        playSound = AssetLoader.get().manager.get("main_menu/sound/holiday.wav");
+        mainTheme = AssetLoader.get().manager.get("sounds/beach.mp3");
         mainTheme.play();
         mainTheme.setVolume(0.5f);
         mainTheme.setLooping(true);
         // PLAY
-        playButtonTexture = AssetLoader.get().manager.get("assets/main_menu/buttons/play_button_2_scaled.png");
-        playButtonHoverTexture = AssetLoader.get().manager.get("assets/main_menu/buttons/play_button_2_hover_scaled.png");
-        playButtonPressedTexture = AssetLoader.get().manager.get("assets/main_menu/buttons/play_button_2_pressed_scaled.png");
+        playButtonTexture = AssetLoader.get().manager.get("main_menu/buttons/play_button_2_scaled.png");
+        playButtonHoverTexture = AssetLoader.get().manager.get("main_menu/buttons/play_button_2_hover_scaled.png");
+        playButtonPressedTexture = AssetLoader.get().manager.get("main_menu/buttons/play_button_2_pressed_scaled.png");
 
         playDrawable = new TextureRegionDrawable(playButtonTexture);
         playHoverDrawable = new TextureRegionDrawable(playButtonHoverTexture);
