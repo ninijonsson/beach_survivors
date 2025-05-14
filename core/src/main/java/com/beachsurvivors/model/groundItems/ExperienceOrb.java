@@ -116,4 +116,8 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
     public boolean isAttracted() {
         return attracted;
     }
+
+    public int getExp() {
+        return experience;
+    }
 }
