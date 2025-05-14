@@ -33,7 +33,12 @@ public class BaseAttack extends Ability {
         float newY = getSprite().getY() + direction.y * speed * delta;
         getSprite().setPosition(newX, newY);
         getHitBox().setPosition(newX, newY);
+
+        getSprite().setOriginCenter();
+        getSprite().setRotation(direction.angleDeg() + 90);
     }
+
+
 
     @Override
     public void use() {
