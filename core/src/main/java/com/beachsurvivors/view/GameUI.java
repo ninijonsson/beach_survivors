@@ -98,11 +98,6 @@ public class GameUI {
         abilityBarStack = new Stack();
         abilityTable = new Table();
 
-        //Behövs detta?
-//        abilityFont = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
-//        abilityFont.getData().setScale(2);
-//        abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
-
         Texture abilityBar = AssetLoader.get().getTexture("entities/ui/ability_bar.png");
 
         Image abilityBackground = new Image(abilityBar);
@@ -197,7 +192,6 @@ public class GameUI {
             Stack iconStack = new Stack();
             iconStack.add(icon);
             iconStack.add(timerLabel);
-
 
             Cell<Stack> cell = buffIcons.add(iconStack).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
             if (i == 0) cell.padLeft(25);
