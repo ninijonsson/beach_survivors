@@ -20,11 +20,12 @@ public class Boomerang extends Ability {
 
     public Boomerang() {
         super("Boomerang", "entities/abilities/boomerangmc.png", AbilityType.AoE, 10, 0, 32,32);
-        sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/boomerangmc.png"));
-        sprite.setSize(32, 32);
-        hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+        //sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/boomerangmc.png"));
+        //sprite.setSize(32, 32);
+        //hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         this.damage = 10;
         setPersistent(true);
+        setIcon("entities/abilities/boomerangmc.png");
     }
 
     @Override
@@ -36,12 +37,12 @@ public class Boomerang extends Ability {
         // Beräkna boomerangens position baserat på vinkeln
         float radian = (float) Math.toRadians(angle);
 
-        float coconutX = playerX + MathUtils.cos(radian) * orbitRadius - sprite.getWidth() / 2;  //Jag la till +64 temporärt för att boomerangerna snurrade off-center.
-        float coconutY = playerY + MathUtils.sin(radian) * orbitRadius - sprite.getHeight() / 2; //Tror att vi kan fixa det på något annat sätt men ska sova nu godnatt
+        float coconutX = playerX + MathUtils.cos(radian) * orbitRadius - getSprite().getWidth() / 2;  //Jag la till +64 temporärt för att boomerangerna snurrade off-center.
+        float coconutY = playerY + MathUtils.sin(radian) * orbitRadius - getSprite().getHeight() / 2; //Tror att vi kan fixa det på något annat sätt men ska sova nu godnatt
 
         // Uppdatera boomerangens position
-        sprite.setPosition(coconutX, coconutY);
-        hitBox.setPosition(coconutX, coconutY);
+        getSprite().setPosition(coconutX, coconutY);
+        getHitBox().setPosition(coconutX, coconutY);
     }
 
     @Override
@@ -56,14 +57,14 @@ public class Boomerang extends Ability {
 
 
 
-    public Sprite getSprite() {
-        return sprite;
-    }
+//    public Sprite getSprite() {
+//        return sprite;
+//    }
 
-    @Override
-    public Rectangle getHitBox() {
-        return hitBox;
-    }
+//    @Override
+//    public Rectangle getHitBox() {
+//        return hitBox;
+//    }
 
     @Override
     public void dispose() {

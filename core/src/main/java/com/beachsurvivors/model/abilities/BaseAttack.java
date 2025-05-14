@@ -6,9 +6,7 @@ import com.beachsurvivors.model.Player;
 
 public class BaseAttack extends Ability {
     private Vector2 direction;
-    private Rectangle hitBox;
-
-
+    
     //Constructor för default baseattack (spelarens)
     public BaseAttack() {
         super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 5.0, 1, 32, 32);

@@ -45,6 +45,7 @@ public class GameUI {
     private Array<Image> equippedAbilitiesIcons;
     private Stack stack;
     private Table icons;
+    private final int ICON_SIZE = 64;
 
     private Label timerLabel;
     private float gameTime = 0f;
@@ -88,13 +89,12 @@ public class GameUI {
 
     private void createAbilityTable() {
         stack = new Stack();
-
+        abilityTable = new Table();
 
         abilityFont = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
         abilityFont.getData().setScale(2);
         abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
-        this.abilityTable = new Table();
         Texture abilityBar = AssetLoader.get().getTexture("entities/ui/ability_bar.png");
 
         Image abilityBackground = new Image(abilityBar);
@@ -103,9 +103,7 @@ public class GameUI {
         abilityTable.center();
         abilityTable.pack();
 
-        abilityTable.setPosition(
-            ((viewport.getWorldWidth()/2 - abilityTable.getWidth() / 2)), 0
-        );
+        abilityTable.setPosition(((viewport.getWorldWidth()/2 - abilityTable.getWidth() / 2)), 0);
 
         createAbilityIconsTable();
     }
@@ -125,9 +123,7 @@ public class GameUI {
         stack.add(icons);
         stack.setSize(600,90);
 
-        stack.setPosition(
-            ((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 0
-        );
+        stack.setPosition(((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 0);
     }
 
     public void addAbilityIcon(String imagePath) {
@@ -141,8 +137,10 @@ public class GameUI {
     private void updateAbilityBar() {
         int bottomPad = 5;
         int rightPad = 5;
-        for (Image i : equippedAbilitiesIcons) {
-            icons.add(i).padBottom(bottomPad).padRight(rightPad).size(64,64);
+        icons.clear();
+        icons.add(equippedAbilitiesIcons.get(0)).padLeft(25).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
+        for (int i = 1; i < equippedAbilitiesIcons.size; i++) {
+            icons.add(equippedAbilitiesIcons.get(i)).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
         }
     }
 

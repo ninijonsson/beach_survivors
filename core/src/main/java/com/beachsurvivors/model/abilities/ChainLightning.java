@@ -24,8 +24,8 @@ public class ChainLightning extends Ability {
     private Array<Vector2> hitPositions = new Array<>();
 
     private boolean showLightning;
-    private float lightningVisibleTime;
-    private double chainLightningTimer;
+    private float lightningVisibleTime; //Hur länge lightning texturen visas efter den gjort damage
+    private double chainLightningTimer; //I stället för att använda TimerTask
 
 
     public ChainLightning(Array<Enemy> enemies) {
@@ -35,6 +35,7 @@ public class ChainLightning extends Ability {
         this.enemies = enemies;
         chainLightningTimer = getCooldown();
         lightningVisibleTime = 0.5f;
+        setIcon("entities/abilities/lightning.png");
 
     }
 
