@@ -12,7 +12,7 @@ public class BaseAttack extends Ability {
 
     //Constructor för default baseattack (spelarens)
     public BaseAttack() {
-        super("bullet", "assets/entities/abilities/bullet.png", AbilityType.ATTACK, 5.0, 1, 32, 32);
+        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 5.0, 1, 32, 32);
         this.direction = new Vector2(0, 0);
     }
 

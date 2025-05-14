@@ -21,10 +21,10 @@ public class WaterWave extends Ability {
 
     public WaterWave(String name, double damage, double cooldown, int width, int height,
                      Vector2 startPosition, ParticleEffectPoolManager poolManager) {
-        super(name, "assets/entities/particles/bullet.png", AbilityType.ATTACK, damage, cooldown, width, height);
+        super(name, "entities/particles/bullet.png", AbilityType.ATTACK, damage, cooldown, width, height);
         this.position = new Vector2(startPosition);
         this.startPosition = new Vector2(startPosition);
-        this.effect = poolManager.obtain("assets/entities/particles/blueFlame.p", position.x, position.y);
+        this.effect = poolManager.obtain("entities/particles/blueFlame.p", position.x, position.y);
         effect.scaleEffect(1.0f);
     }
 

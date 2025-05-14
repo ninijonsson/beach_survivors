@@ -56,7 +56,7 @@ public class ChestOverlay {
         table.add(title).padBottom(400).colspan(3).center();
         table.row();
 
-        Texture chestTexture = AssetLoader.get().getTexture("assets/entities/icons/chest_open.png");
+        Texture chestTexture = AssetLoader.get().getTexture("entities/icons/chest_open.png");
         Image chestImage = new Image(new TextureRegionDrawable(new TextureRegion(chestTexture)));
         chestImage.setScale(10);
         table.add(chestImage).padBottom(40);
@@ -65,7 +65,7 @@ public class ChestOverlay {
 
 
         for (int i = 0; i < 3; i++) {
-            Texture icon = new Texture(Gdx.files.internal("assets/entities/icons/ability_icon.png"));
+            Texture icon = new Texture(Gdx.files.internal("entities/icons/ability_icon.png"));
             TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(icon));
             ImageButton button = new ImageButton(drawable);
             button.getImage().setSize(50, 50);
@@ -113,8 +113,8 @@ public class ChestOverlay {
     private void createEffect() {
         chestEffect = new ParticleEffect();
         chestEffect.load(
-            Gdx.files.internal("assets/entities/particles/chestOpen.p"),
-            Gdx.files.internal("assets/entities/particles")
+            Gdx.files.internal("entities/particles/chestOpen.p"),
+            Gdx.files.internal("entities/particles")
         );
         chestEffect.setPosition(chestImage.getX(), chestImage.getY());
 
@@ -139,7 +139,7 @@ public class ChestOverlay {
         spriteBatch.begin();
         spriteBatch.setColor(0, 0, 0, 0.4f);
         spriteBatch.draw(
-            AssetLoader.get().getTexture("assets/entities/icons/blank.png"),
+            AssetLoader.get().getTexture("entities/icons/blank.png"),
             0, 0,
             stage.getViewport().getWorldWidth(),
             stage.getViewport().getWorldHeight()

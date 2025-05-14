@@ -14,9 +14,9 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
 
     public ExperienceOrb(float x, float y, int experience,
                          ParticleEffectPoolManager poolManager, Controller controller) {
-        super(AssetLoader.get().getTexture("assets/entities/abilities/xp_orb.png"), x,y, null);
+        super(AssetLoader.get().getTexture("entities/abilities/xp_orb.png"), x,y, null);
         this.experience=experience;
-        setParticleEffect(poolManager.obtain("assets/entities/particles/xp_orb.p"));
+        setParticleEffect(poolManager.obtain("entities/particles/xp_orb.p"));
         this.controller = controller;
     }
 
