@@ -882,6 +882,7 @@ public class GameScreen extends Game implements Screen {
 
     public void addBoomerang() {
         abilities.add(new Boomerang());
+        gameUI.addAbilityIcon("entities/abilities/boomerangmc.png");
     }
 
     public Player getPlayer() {

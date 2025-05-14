@@ -65,6 +65,9 @@ entities/power_ups/health_heart.png
 entities/power_ups/lucky_clover.png
 entities/power_ups/speed_boost.png
 entities/smoke.png
+entities/ui/ability_bar.png
+entities/ui/ability_bar_placeholder.png
+entities/ui/ability_slot_placeholder.png
 fonts/level.fnt
 fonts/level.png
 fonts/timer.fnt

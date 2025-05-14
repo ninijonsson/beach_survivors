@@ -23,5 +23,6 @@ public class Chest extends GroundItem implements PickUpAble {
     @Override
     public void onPickup(Player player) {
         gameScreen.showChestOverlay();
+        gameScreen.addBoomerang();
     }
 }

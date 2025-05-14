@@ -93,6 +93,9 @@ public class AssetLoader {
         manager.load("entities/icons/blank.png", Texture.class);
         manager.load("entities/icons/coin.png", Texture.class);
 
+        manager.load("entities/ui/ability_bar_placeholder.png", Texture.class);
+        manager.load("entities/ui/ability_slot_placeholder.png", Texture.class);
+        manager.load("entities/ui/ability_bar.png", Texture.class);
     }
 
     private void addParticles() {

@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
+import com.beachsurvivors.model.groundItems.PowerUp;
 
 public class GameUI {
     private final FitViewport viewport;
@@ -40,6 +42,10 @@ public class GameUI {
     private Label cooldownReduction;
     private Label movementSpeed;
 
+    private Array<Image> equippedAbilitiesIcons;
+    private Stack stack;
+    private Table icons;
+
     private Label timerLabel;
     private float gameTime = 0f;
 
@@ -47,7 +53,11 @@ public class GameUI {
         this.viewport = viewport;
         this.game = game;
         stage = new Stage(viewport);
+        equippedAbilitiesIcons = new Array<>();
+        icons = new Table();
 
+
+        addAbilityIcon("entities/abilities/bullet.png");
         createTables();
     }
 
@@ -56,6 +66,7 @@ public class GameUI {
      */
     private void createTables() {
         createAbilityTable();
+        createExpTable();
         createProgressBar();
         createPlayerHealthBar();
         createTimerLabel();
@@ -69,32 +80,74 @@ public class GameUI {
         stage.addActor(healthTable);
 
         stage.addActor(timerLabel);
-        stage.addActor(abilityTable);
+        //stage.addActor(abilityTable);
+        stage.addActor(stack);
         stage.addActor(xpTable);
         stage.addActor(progressBarTable);
     }
 
     private void createAbilityTable() {
+        stack = new Stack();
+
+
         abilityFont = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
         abilityFont.getData().setScale(2);
         abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
         this.abilityTable = new Table();
-        Texture imageTexture = new Texture(Gdx.files.internal("entities/abilities/test_ability_bar.png"));
+        Texture abilityBar = AssetLoader.get().getTexture("entities/ui/ability_bar.png");
 
-        Image abilityBackground = new Image(imageTexture);
-        abilityBackground.setSize(400, 70);
-        abilityBackground.setScale(1.5f);
+        Image abilityBackground = new Image(abilityBar);
         abilityTable.add(abilityBackground);
         abilityTable.bottom();
         abilityTable.center();
         abilityTable.pack();
 
         abilityTable.setPosition(
-            ((viewport.getWorldWidth() - abilityTable.getWidth()*1.5f) / 2), 0
+            ((viewport.getWorldWidth()/2 - abilityTable.getWidth() / 2)), 0
         );
 
+        createAbilityIconsTable();
+    }
 
+    private void createAbilityIconsTable() {
+        icons.setSize(600,90);
+        icons.align(Align.bottomLeft);
+        icons.bottom();
+        icons.setPosition(abilityTable.getX(), abilityTable.getY());
+
+        int bottomPad = 5;
+        int rightPad = 5;
+        icons.add(equippedAbilitiesIcons.get(0)).padLeft(25).padBottom(bottomPad).padRight(rightPad);
+        updateAbilityBar();
+
+        stack.add(abilityTable);
+        stack.add(icons);
+        stack.setSize(600,90);
+
+        stack.setPosition(
+            ((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 0
+        );
+    }
+
+    public void addAbilityIcon(String imagePath) {
+        Texture texture = AssetLoader.get().getTexture(imagePath);
+        Image icon = new Image(texture);
+        icon.setSize(64,64);
+        equippedAbilitiesIcons.add(icon);
+        updateAbilityBar();
+    }
+
+    private void updateAbilityBar() {
+        int bottomPad = 5;
+        int rightPad = 5;
+        for (Image i : equippedAbilitiesIcons) {
+            icons.add(i).padBottom(bottomPad).padRight(rightPad).size(64,64);
+        }
+    }
+
+
+    private void createExpTable() {
         this.xpTable = new Table();
         Texture xpTexture = new Texture(Gdx.files.internal("entities/abilities/exp_bar.png"));
         Image xpBar = new Image(xpTexture);
@@ -109,12 +162,6 @@ public class GameUI {
         );
     }
 
-    private void updateAbilityBar() {
-            Array<Ability> abilities = game.getAbilities();
-            for(Ability a : abilities){
-                //a.getName()
-            }
-    }
 
     private void createInfoTable() {
         infoLog = new Array<>();
