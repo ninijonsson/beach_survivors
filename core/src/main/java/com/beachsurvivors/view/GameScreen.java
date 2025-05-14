@@ -81,8 +81,6 @@ public class GameScreen extends Game implements Screen {
     private Vector2 playerPos;
 
     private boolean isPaused = false;
-    private boolean wasPaused = false;
-
 
     //Boolean variables to toggle when testing the game with/without
     //some elements. Set all to true for testing everything.
@@ -389,6 +387,7 @@ public class GameScreen extends Game implements Screen {
         for (PowerUp powerUp : droppedItems) {
 
             if (player.getHitBox().overlaps(powerUp.getHitbox())) {
+                gameUI.addBuff(powerUp);
 
                 if (powerUp instanceof Berserk) {
                     powerUp.onPickup(player);
@@ -836,13 +835,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    public void showChestOverlay() {
-        if (chestOverlay == null) {
-            chestOverlay = new ChestOverlay(this);
-            isOverlayActive = true;
-        }
-    }
-
     private void drawPlayerAbilities() {
         for (Ability a : abilities) {
             if (a instanceof Shield) {
@@ -879,6 +871,15 @@ public class GameScreen extends Game implements Screen {
     public void setPaused(boolean paused) {
         isPaused = paused;
     }
+
+
+    public void showChestOverlay() {
+        if (chestOverlay == null) {
+            chestOverlay = new ChestOverlay(this);
+            isOverlayActive = true;
+        }
+    }
+
 
     public void addBoomerang() {
         abilities.add(new Boomerang());

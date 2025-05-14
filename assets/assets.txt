@@ -68,6 +68,7 @@ entities/smoke.png
 entities/ui/ability_bar.png
 entities/ui/ability_bar_placeholder.png
 entities/ui/ability_slot_placeholder.png
+entities/ui/buff_bar.png
 fonts/level.fnt
 fonts/level.png
 fonts/timer.fnt

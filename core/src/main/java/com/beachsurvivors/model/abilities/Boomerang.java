@@ -11,19 +11,12 @@ import com.beachsurvivors.model.Player;
 
 public class Boomerang extends Ability {
 
-    private Sprite sprite;
-    private Rectangle hitBox;
-    private double damage;
     private float spinSpeed = 360;
     private float angle;
     private float orbitRadius = 300;
 
     public Boomerang() {
         super("Boomerang", "entities/abilities/boomerangmc.png", AbilityType.AoE, 10, 0, 32,32);
-        //sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/boomerangmc.png"));
-        //sprite.setSize(32, 32);
-        //hitBox = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        this.damage = 10;
         setPersistent(true);
         setIcon("entities/abilities/boomerangmc.png");
     }
@@ -68,7 +61,7 @@ public class Boomerang extends Ability {
 
     @Override
     public void dispose() {
-        sprite.getTexture().dispose();
+        getSprite().getTexture().dispose();
     }
 
 

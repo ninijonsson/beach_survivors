@@ -14,6 +14,7 @@ public class Berserk extends PowerUp implements PickUpAble {
 
     public Berserk(float x, float y, ParticleEffectPoolManager ppm) {
         super(AssetLoader.get().getTexture("entities/beer.png"), 20, x, y, ppm);
+        createIcon("entities/beer.png");
     }
 
     @Override

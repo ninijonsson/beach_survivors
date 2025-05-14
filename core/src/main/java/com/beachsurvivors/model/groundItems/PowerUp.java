@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 
@@ -13,6 +15,7 @@ public abstract class PowerUp implements PickUpAble {
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitbox;
+    private Image icon;
 
     private int duration;
     private float x;
@@ -93,7 +96,13 @@ public abstract class PowerUp implements PickUpAble {
         }
     }
 
-    public void printInfo(){
+    public void createIcon(String imagePath) {
+        Texture texture = AssetLoader.get().getTexture(imagePath);
+        this.icon = new Image(texture);
+        icon.setSize(64,64);
+    }
 
+    public Image getIcon() {
+        return icon;
     }
 }

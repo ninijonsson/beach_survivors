@@ -11,6 +11,7 @@ public class LuckyClover extends PowerUp implements PickUpAble {
 
     public LuckyClover(float x, float y, ParticleEffectPoolManager ppm) {
         super(AssetLoader.get().getTexture("entities/power_ups/lucky_clover.png"),  20, x, y, ppm);
+        createIcon("entities/power_ups/lucky_clover.png");
     }
 
     @Override

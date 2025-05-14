@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
-import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.groundItems.PowerUp;
+import com.beachsurvivors.model.groundItems.SpeedBoost;
 
 public class GameUI {
     private final FitViewport viewport;
@@ -43,9 +43,14 @@ public class GameUI {
     private Label movementSpeed;
 
     private Array<Image> equippedAbilitiesIcons;
-    private Stack stack;
+    private Stack abilityBarStack;
     private Table icons;
     private final int ICON_SIZE = 64;
+
+    private Array<PowerUp> currentPlayerBuffs;
+    private Table buffs;
+    private Table buffIcons;
+    private Stack buffStack;
 
     private Label timerLabel;
     private float gameTime = 0f;
@@ -55,6 +60,7 @@ public class GameUI {
         this.game = game;
         stage = new Stage(viewport);
         equippedAbilitiesIcons = new Array<>();
+        currentPlayerBuffs = new Array<>();
         icons = new Table();
 
 
@@ -73,6 +79,7 @@ public class GameUI {
         createTimerLabel();
         createInfoTable();
         createPlayerStats();
+        createBuffBar();
 
         addActors();
     }
@@ -81,19 +88,20 @@ public class GameUI {
         stage.addActor(healthTable);
 
         stage.addActor(timerLabel);
-        //stage.addActor(abilityTable);
-        stage.addActor(stack);
+        stage.addActor(abilityBarStack);
         stage.addActor(xpTable);
         stage.addActor(progressBarTable);
+        stage.addActor(buffStack);
     }
 
     private void createAbilityTable() {
-        stack = new Stack();
+        abilityBarStack = new Stack();
         abilityTable = new Table();
 
-        abilityFont = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
-        abilityFont.getData().setScale(2);
-        abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
+        //Behövs detta?
+//        abilityFont = new BitmapFont(Gdx.files.internal("fonts/timer.fnt"));
+//        abilityFont.getData().setScale(2);
+//        abilityLabelStyle = new Label.LabelStyle(abilityFont, Color.WHITE);
 
         Texture abilityBar = AssetLoader.get().getTexture("entities/ui/ability_bar.png");
 
@@ -106,6 +114,7 @@ public class GameUI {
         abilityTable.setPosition(((viewport.getWorldWidth()/2 - abilityTable.getWidth() / 2)), 0);
 
         createAbilityIconsTable();
+
     }
 
     private void createAbilityIconsTable() {
@@ -119,11 +128,11 @@ public class GameUI {
         icons.add(equippedAbilitiesIcons.get(0)).padLeft(25).padBottom(bottomPad).padRight(rightPad);
         updateAbilityBar();
 
-        stack.add(abilityTable);
-        stack.add(icons);
-        stack.setSize(600,90);
+        abilityBarStack.add(abilityTable);
+        abilityBarStack.add(icons);
+        abilityBarStack.setSize(600,90);
 
-        stack.setPosition(((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 0);
+        abilityBarStack.setPosition(((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 0);
     }
 
     public void addAbilityIcon(String imagePath) {
@@ -144,6 +153,42 @@ public class GameUI {
         }
     }
 
+    private void createBuffBar() {
+        buffStack = new Stack();
+        buffStack.setSize(200, 90);
+        buffs = new Table();
+        buffs.setSize(200,90);
+        buffIcons = new Table();
+        buffIcons.setSize(200,90);
+        buffIcons.align(Align.bottomLeft);
+
+
+        buffStack.add(buffs);
+        buffStack.add(buffIcons);
+        buffStack.setPosition(((viewport.getWorldWidth()/2) - abilityTable.getWidth()/2), 85);
+
+    }
+
+    public void addBuff(PowerUp buff) {
+        currentPlayerBuffs.add(buff);
+        updateBuffIcons();
+    }
+
+    public void removeBuff() {
+
+    }
+
+    private void updateBuffIcons() {
+        int bottomPad = 10;
+        int rightPad = 5;
+        buffIcons.clear();
+        if (currentPlayerBuffs.get(0) != null) {
+            buffIcons.add(currentPlayerBuffs.get(0).getIcon()).padLeft(25).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
+            for (int i = 1; i < currentPlayerBuffs.size; i++) {
+                buffIcons.add(currentPlayerBuffs.get(i).getIcon()).padBottom(bottomPad).padRight(rightPad).size(ICON_SIZE);
+            }
+        }
+    }
 
     private void createExpTable() {
         this.xpTable = new Table();
