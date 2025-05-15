@@ -60,7 +60,7 @@ public abstract class PowerUp implements PickUpAble {
     public abstract void removeEffect(Player player);
 
     public void dispose() {
-        pickUpSound.play();
+        pickUpSound.setVolume(pickUpSound.play(), 0.2f);
         sprite = null;
         if (lootBeamEffect != null) {
             lootBeamEffect.free();

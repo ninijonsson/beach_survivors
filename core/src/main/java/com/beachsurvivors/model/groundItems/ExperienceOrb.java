@@ -105,7 +105,8 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
     public void onPickup(Player player) {
         player.gainExp(experience);
 
-        pickUpSound.play();
+        pickUpSound.setVolume(pickUpSound.play(), 0.2f);
+
     }
 
     @Override
