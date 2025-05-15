@@ -27,6 +27,9 @@ public class AssetLoader {
 
     private void addMusic() {
         manager.load("sounds/beach.mp3", Music.class);
+        manager.load("entities/abilities/bomb_explosion.mp3", Sound.class);
+        manager.load("entities/abilities/bomb_fall.wav", Sound.class);
+
     }
 
     private void addSounds() {
@@ -49,7 +52,10 @@ public class AssetLoader {
         manager.load("entities/coconut.png", Texture.class);
         manager.load("entities/death.png", Texture.class);
         manager.load("entities/how_to_play.png", Texture.class);
+        manager.load("entities/abilities/bomb_shadow.png", Texture.class);
 
+        manager.load("entities/abilities/bomb_ring.png", Texture.class);
+        manager.load("entities/abilities/bomb.png", Texture.class);
         manager.load("game_over_screen/you died screen.png", Texture.class);
         manager.load("game_over_screen/you_died.png", Texture.class);
 
@@ -118,7 +124,13 @@ public class AssetLoader {
         manager.load("entities/particles/chestClosed.p", ParticleEffect.class, chestEffect);
 
         ParticleEffectLoader.ParticleEffectParameter chestOpen = new ParticleEffectLoader.ParticleEffectParameter();
-        manager.load("entities/particles/chestOpen.p", ParticleEffect.class, chestEffect);
+        manager.load("entities/particles/chestOpen.p", ParticleEffect.class, chestOpen);
+
+        ParticleEffectLoader.ParticleEffectParameter bombExplosion = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/bomb_explosion.p", ParticleEffect.class, bombExplosion);
+
+        ParticleEffectLoader.ParticleEffectParameter impactZone = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/impact_zone.p", ParticleEffect.class, impactZone);
     }
 
     private void addSkins() {

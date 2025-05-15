@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gdx-particle-editor">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/assets/gdx-particle-editor.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

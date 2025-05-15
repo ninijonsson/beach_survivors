@@ -38,7 +38,6 @@ public class LevelSystem {
     }
 
     private void onLevelUp() {
-        System.out.println("Level up!");
         ui.updateInfoTable("Congratulations, you are now level " + currentLevel);
         main.levelUp(); // Välja abilities/stats
     }

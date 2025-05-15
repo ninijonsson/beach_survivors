@@ -29,6 +29,7 @@ import com.beachsurvivors.model.groundItems.*;
 import java.util.Random;
 
 public class GameScreen extends Game implements Screen {
+    private Array<BombAttack> activeBombs = new Array<>();
 
     private int baseEnemies = 2;
 
@@ -264,6 +265,15 @@ public class GameScreen extends Game implements Screen {
      */
     private void input() {
         if (!isPaused) {
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                Vector2 position = new Vector2(
+                    player.getPlayerX(),
+                    player.getPlayerY()
+                );
+                activeBombs.add(new BombAttack(position, gameViewport.getCamera()));
+                System.out.println(position);
+            }
+
             player.playerInput();
         }
         keyBinds();
@@ -279,6 +289,7 @@ public class GameScreen extends Game implements Screen {
         gameUI.updateStats(player);
 
         enemyAttacks();
+
 
         if (playerAbilitiesTestMode) {
             playerShoot();
@@ -306,6 +317,14 @@ public class GameScreen extends Game implements Screen {
         updatePowerUps();
 
         vaccum();
+        for (int i = activeBombs.size - 1; i >= 0; i--) {
+            BombAttack bomb = activeBombs.get(i);
+            bomb.update(Gdx.graphics.getDeltaTime());
+            if (bomb.isFinished()) {
+                bomb.dispose();
+                activeBombs.removeIndex(i);
+            }
+        }
     }
 
     /**
@@ -690,6 +709,7 @@ public class GameScreen extends Game implements Screen {
         enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
     }
 
+
     /**
      * What happens when an enemy dies
      *
@@ -699,6 +719,7 @@ public class GameScreen extends Game implements Screen {
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
             totalEnemiesKilled++;
+            gameUI.updateInfoTable("You gained " + enemy.getExp() + " exp.");
 
             // Om fienden är en miniboss ska den droppa en kista
             enemy.dropItems(droppedItems, poolManager);
@@ -789,6 +810,8 @@ public class GameScreen extends Game implements Screen {
      * Decluttering method for keeping the draw-method simple.
      */
     private void drawStuff() {
+
+
         drawGroundItems();
         drawPowerUps();
         drawEnemies();
@@ -858,6 +881,7 @@ public class GameScreen extends Game implements Screen {
 
     private void drawPlayerAbilities() {
         for (Ability a : abilities) {
+
             if (a instanceof Shield) {
                 a.updatePosition(player.getPlayerX() - a.getSprite().getWidth() / 2, player.getPlayerY() - a.getSprite().getHeight() / 2);
 
@@ -867,6 +891,10 @@ public class GameScreen extends Game implements Screen {
             } else {
                 a.getSprite().draw(spriteBatch);
             }
+        }
+
+        for (BombAttack bomb : activeBombs) {
+            bomb.draw(spriteBatch);
         }
     }
 

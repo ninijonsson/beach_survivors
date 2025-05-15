@@ -11,15 +11,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.Upgrade;
 
 public class ChestOverlay {
     private GameScreen game;
@@ -30,6 +28,13 @@ public class ChestOverlay {
     private ParticleEffect chestEffect;
     private boolean isClosed = false;
     private Image chestImage;
+    private Skin skin;
+    private Upgrade upgrade1;
+    private Upgrade upgrade2;
+    private Upgrade upgrade3;
+    private TextButton upgradeButton1;
+    private TextButton upgradeButton2;
+    private TextButton upgradeButton3;
 
     public ChestOverlay(GameScreen game) {
         this.game = game;
@@ -44,6 +49,7 @@ public class ChestOverlay {
     }
 
     private void createTable() {
+        skin = AssetLoader.get().getSkin("game_over_screen/deathscreen_skin.json");
         Table table = new Table();
         table.setFillParent(true);
         //table.setDebug(true);
@@ -60,26 +66,15 @@ public class ChestOverlay {
         table.add(chestImage).padBottom(40);
         table.row();
         this.chestImage = chestImage; // 👈 Spara referensen i ett fält
+        upgradeButton1 = new TextButton("", skin, "levelup2");
+        upgradeButton2 = new TextButton("", skin, "levelup2");
+        upgradeButton3 = new TextButton("", skin, "levelup2");
 
 
-        for (int i = 0; i < 3; i++) {
-            Texture icon = new Texture(Gdx.files.internal("entities/icons/ability_icon.png"));
-            TextureRegionDrawable drawable = new TextureRegionDrawable(new TextureRegion(icon));
-            ImageButton button = new ImageButton(drawable);
-            button.getImage().setSize(50, 50);
+            table.add(upgradeButton1).size(60).pad(10);
+        table.add(upgradeButton2).size(60).pad(10);table.add(upgradeButton3).size(60).pad(10);
 
-            final int index = i;
-            button.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    game.getGameUI().updateInfoTable("Du valde ability: " + index);
-                    isClosed = true;
-                    Gdx.input.setInputProcessor(game.getGameUI().getStage()); // Återställ input till spelet
-                }
-            });
 
-            table.add(button).size(60).pad(10);
-        }
 
         stage.addActor(table);
         stage.addListener(new InputListener() {
