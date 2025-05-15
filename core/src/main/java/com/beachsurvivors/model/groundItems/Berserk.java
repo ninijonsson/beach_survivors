@@ -10,7 +10,7 @@ public class Berserk extends PowerUp implements PickUpAble {
 
     private final double damageIncrease = 10;
     private final int movementSpeedIncrease = 200;
-    private double attackSpeedIncrease = 2.5;
+    private double attackSpeedIncrease = 0;
 
     public Berserk(float x, float y, ParticleEffectPoolManager ppm) {
         super(AssetLoader.get().getTexture("entities/beer.png"), 20, x, y, ppm);
