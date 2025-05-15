@@ -2,6 +2,7 @@ package com.beachsurvivors.model;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -68,6 +69,11 @@ public class Player extends Actor {
     private Random random = new Random();
     private SpriteBatch spriteBatch;
     private Map map;
+    private Sound footstepSound;
+    private float footstepTimer = 0;
+    private float footstepInterval = 0.4f; // hur ofta ljudet får spelas (i sekunder)
+
+
 
     public Player(Map map, SpriteBatch spriteBatch, GameScreen gameScreen) {
         this.map = map;
@@ -93,6 +99,8 @@ public class Player extends Actor {
         maxHealthPoints = STARTING_HEALTH_POINTS;
 
         createAnimation();
+        footstepSound = AssetLoader.get().manager.get("sounds/footstep.wav", Sound.class);
+
     }
 
     private void createAnimation() {
@@ -175,6 +183,16 @@ public class Player extends Actor {
         }
         if (!direction.isZero()) {
             isMoving = true;
+            if (isMoving) {
+                footstepTimer += delta;
+                if (footstepTimer >= footstepInterval) {
+                    footstepSound.play(0.2f); // volym mellan 0.0 och 1.0
+                    footstepTimer = 0;
+                }
+            } else {
+                footstepTimer = footstepInterval; // så att det spelas direkt när man börjar gå igen
+            }
+
         } else {
             isMoving = false;
         }
