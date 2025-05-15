@@ -153,4 +153,5 @@ sounds/chain_lightning.wav
 sounds/crab_rave.mp3
 sounds/footstep.mp3
 sounds/item_pickup.wav
+sounds/level_up.mp3
 sounds/shark_damage_2.wav
