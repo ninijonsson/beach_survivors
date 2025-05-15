@@ -15,8 +15,7 @@ public class BaseAttack extends Ability {
         super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 5.0, 1, 64, 64);
         this.direction = new Vector2(0, 0);
         this.fireSound= AssetLoader.get().getSound("entities/abilities/water_gun_fire.wav");
-        System.out.println("sadasd");
-        fireSound.play();
+        fireSound.setVolume(fireSound.play(), 0.5f);
     }
 
 

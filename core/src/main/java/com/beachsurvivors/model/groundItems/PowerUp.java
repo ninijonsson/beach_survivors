@@ -1,5 +1,6 @@
 package com.beachsurvivors.model.groundItems;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,6 +17,7 @@ public abstract class PowerUp implements PickUpAble {
     private Sprite sprite;
     private Rectangle hitbox;
     private Image icon;
+    private Sound pickUpSound;
 
     private int duration;
     private float remainingDuration;
@@ -47,7 +49,7 @@ public abstract class PowerUp implements PickUpAble {
 
 
         this.lootBeamEffect = ppm.obtain("entities/particles/lootPile.p");
-
+        this.pickUpSound = AssetLoader.get().getSound("sounds/item_pickup.wav");
         if(lootBeamEffect!=null){
             lootBeamEffect.setPosition(x + 32, y + 32);
         }
@@ -58,6 +60,7 @@ public abstract class PowerUp implements PickUpAble {
     public abstract void removeEffect(Player player);
 
     public void dispose() {
+        pickUpSound.play();
         sprite = null;
         if (lootBeamEffect != null) {
             lootBeamEffect.free();

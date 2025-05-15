@@ -46,7 +46,7 @@ public class ChestOverlay {
         this.stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
         crabRave = AssetLoader.get().getSound("sounds/crab_rave.mp3");
-        crabRave.setVolume(crabRave.play(), 0.2f);
+        crabRave.setVolume(crabRave.play(), 0.05f);
         createTable();
         createEffect();
     }

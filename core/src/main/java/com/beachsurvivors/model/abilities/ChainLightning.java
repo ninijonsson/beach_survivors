@@ -134,7 +134,7 @@ public class ChainLightning extends Ability {
     private void playSoundEffect() {
         Sound sound = AssetLoader.get().getSound("sounds/chain_lightning.wav");
         long soundId = sound.play();
-        sound.setVolume(soundId, 0.3f);
+        sound.setVolume(soundId, 0.1f);
     }
 
     public void increaseMaxJumps(int jumpIncrease) {
