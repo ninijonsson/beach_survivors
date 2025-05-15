@@ -151,5 +151,6 @@ sounds/Shark_Damage.wav
 sounds/beach.mp3
 sounds/chain_lightning.wav
 sounds/crab_rave.mp3
+sounds/footstep.mp3
 sounds/item_pickup.wav
 sounds/shark_damage_2.wav

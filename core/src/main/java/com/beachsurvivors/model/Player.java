@@ -99,7 +99,7 @@ public class Player extends Actor {
         maxHealthPoints = STARTING_HEALTH_POINTS;
 
         createAnimation();
-        footstepSound = AssetLoader.get().manager.get("sounds/footstep.wav", Sound.class);
+        footstepSound = AssetLoader.get().manager.get("sounds/footstep.mp3", Sound.class);
 
     }
 
@@ -186,7 +186,9 @@ public class Player extends Actor {
             if (isMoving) {
                 footstepTimer += delta;
                 if (footstepTimer >= footstepInterval) {
-                    footstepSound.play(0.2f); // volym mellan 0.0 och 1.0
+                    int randomPitch= random.nextInt(5);
+                    footstepSound.setPitch(footstepSound.play(0.01f), randomPitch);
+
                     footstepTimer = 0;
                 }
             } else {
