@@ -187,6 +187,7 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void render(float delta) {
+        if (isPaused) return;
 
         input();
 
