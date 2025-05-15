@@ -1,16 +1,22 @@
 package com.beachsurvivors.model.abilities;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class BaseAttack extends Ability {
     private Vector2 direction;
-    
+    private Sound fireSound;
+
     //Constructor för default baseattack (spelarens)
     public BaseAttack() {
-        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 5.0, 1, 32, 32);
+        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 5.0, 1, 64, 64);
         this.direction = new Vector2(0, 0);
+        this.fireSound= AssetLoader.get().getSound("entities/abilities/water_gun_fire.wav");
+        System.out.println("sadasd");
+        fireSound.play();
     }
 
 

@@ -22,12 +22,13 @@ entities/abilities/boomerangmc.png
 entities/abilities/bullet.png
 entities/abilities/exp_bar.png
 entities/abilities/fireball.png
-entities/abilities/lightning.png
 entities/abilities/impact_zone.png
+entities/abilities/lightning.png
 entities/abilities/shield_bubble.png
 entities/abilities/test_ability_bar.png
 entities/abilities/test_ability_bar1.png
 entities/abilities/test_ability_bar2.png
+entities/abilities/water_gun_fire.wav
 entities/abilities/xp_orb.png
 entities/beach_girl_sheet.png
 entities/beach_guy_sheet.png
@@ -150,4 +151,5 @@ sounds/Shark_Damage.wav
 sounds/beach.mp3
 sounds/chain_lightning.wav
 sounds/crab_rave.mp3
+sounds/item_pickup.wav
 sounds/shark_damage_2.wav

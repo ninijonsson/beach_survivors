@@ -2,6 +2,7 @@ package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.math.Circle;
@@ -17,6 +18,7 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
     private float height = 32;
     // used for xpOrb acceleration
     private float speed = 1;
+    private Sound pickUpSound;
 
     private boolean attracted = false;
     private boolean bounced = false;
@@ -32,6 +34,7 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
         setParticleEffect(poolManager.obtain("entities/particles/xp_orb.p"));
         getSprite().setSize(width, height);
         horizontalJitter = MathUtils.random(-100f, 100f); // side shake
+        this.pickUpSound = AssetLoader.get().getSound("sounds/item_pickup.wav");
     }
 
     public void updateExperienceOrbMovement(Player player) {
@@ -100,10 +103,9 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
 
     @Override
     public void onPickup(Player player) {
-        System.out.println("current xp: "+player.getLevelSystem().getCurrentExp());
         player.gainExp(experience);
-        System.out.println("gained xp");
-        System.out.println("current xp: "+player.getLevelSystem().getCurrentExp());
+
+        pickUpSound.play();
     }
 
     @Override

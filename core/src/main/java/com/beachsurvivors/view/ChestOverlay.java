@@ -2,6 +2,7 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -35,6 +36,7 @@ public class ChestOverlay {
     private TextButton upgradeButton1;
     private TextButton upgradeButton2;
     private TextButton upgradeButton3;
+    private Sound crabRave;
 
     public ChestOverlay(GameScreen game) {
         this.game = game;
@@ -43,7 +45,8 @@ public class ChestOverlay {
         this.spriteBatch = new SpriteBatch();
         this.stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
-
+        crabRave = AssetLoader.get().getSound("sounds/crab_rave.mp3");
+        crabRave.play();
         createTable();
         createEffect();
     }
@@ -153,6 +156,7 @@ public class ChestOverlay {
     }
 
     public void dispose() {
+        crabRave.stop();
         chestEffect.dispose();
         spriteBatch.dispose();
         stage.dispose();

@@ -29,6 +29,9 @@ public class AssetLoader {
         manager.load("sounds/beach.mp3", Music.class);
         manager.load("entities/abilities/bomb_explosion.mp3", Sound.class);
         manager.load("entities/abilities/bomb_fall.wav", Sound.class);
+        manager.load("entities/abilities/water_gun_fire.wav", Sound.class);
+        manager.load("sounds/item_pickup.wav", Sound.class);
+        manager.load("sounds/crab_rave.mp3", Sound.class);
 
     }
 
