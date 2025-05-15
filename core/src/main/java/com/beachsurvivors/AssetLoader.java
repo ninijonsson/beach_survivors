@@ -33,6 +33,7 @@ public class AssetLoader {
         manager.load("sounds/item_pickup.wav", Sound.class);
         manager.load("sounds/crab_rave.mp3", Sound.class);
         manager.load("sounds/footstep.mp3", Sound.class);
+        manager.load("sounds/level_up.mp3", Sound.class);
 
 
     }

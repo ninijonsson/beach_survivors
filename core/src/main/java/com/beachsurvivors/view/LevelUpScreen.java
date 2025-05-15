@@ -3,6 +3,7 @@ package com.beachsurvivors.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -35,6 +36,8 @@ public class LevelUpScreen implements Screen {
     private Upgrade upgrade2;
     private Upgrade upgrade3;
 
+    private Sound levelUpSound;
+
     public LevelUpScreen(GameScreen game, Player player) {
         this.game = game;
         this.player = player;
@@ -44,7 +47,8 @@ public class LevelUpScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         skin = AssetLoader.get().getSkin("game_over_screen/deathscreen_skin.json");
-
+        this.levelUpSound = AssetLoader.get().getSound("sounds/level_up.mp3");
+        levelUpSound.setVolume(levelUpSound.play(),0.1f);
         buildUI();
     }
 
