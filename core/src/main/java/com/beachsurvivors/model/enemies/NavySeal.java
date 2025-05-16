@@ -3,13 +3,14 @@ package com.beachsurvivors.model.enemies;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 
 public class NavySeal extends Enemy {
-    float bulletTimer = 0f;
+    private float attackTimer = 0f;
+    private float attackCooldown = 5f;
 
     public NavySeal() {
         super( 100, 100, 20, 25);
@@ -26,6 +27,7 @@ public class NavySeal extends Enemy {
 
     @Override
     public void dropItems() {
+
     }
 
     @Override
@@ -34,26 +36,28 @@ public class NavySeal extends Enemy {
     }
 
     public void attack(Player player, Array<Ability> enemyAbilities) {
-        float bulletCooldown = 6f; // Gör om cooldown till float
 
-        bulletTimer += Gdx.graphics.getDeltaTime();
+        attackTimer += Gdx.graphics.getDeltaTime();
 
-        if (bulletTimer >= bulletCooldown) {
-            bulletTimer = 0f;
+        if (attackTimer >= attackCooldown) {
+            attackTimer = 0f;
 
             Vector2 direction = new Vector2(
-                player.getPlayerX() - this.getSprite().getX(),
-                player.getPlayerY() - this.getSprite().getY())
+                player.getPosition().x - this.getSprite().getX(),
+                player.getPosition().y - this.getSprite().getY())
                 .nor();
 
-            BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png", getDamage());
-            bullet.updatePosition(this.getSprite().getX(), this.getSprite().getY());
+            BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png", getDamage(), 400f);
             bullet.setDirection(direction);
+            bullet.updatePosition(Gdx.graphics.getDeltaTime(), this.getPosition());
 
             enemyAbilities.add(bullet);
+            System.out.println("bullet added");
 
         }
     }
+
+
 
 
 }

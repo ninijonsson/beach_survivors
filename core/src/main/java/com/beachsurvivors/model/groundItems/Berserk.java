@@ -1,7 +1,7 @@
 package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.utils.Timer;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.BaseAttack;
@@ -44,12 +44,12 @@ public class Berserk extends PowerUp implements PickUpAble {
     }
 
     private void applyAffectBullet(BaseAttack bullet) {
-        bullet.increaseDamage(damageIncrease);
+       // bullet.increaseDamage(damageIncrease);
         bullet.decreaseCooldown(attackSpeedIncrease);
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                bullet.increaseDamage(-damageIncrease);
+              //  bullet.increaseDamage(-damageIncrease);
                 bullet.decreaseCooldown(+attackSpeedIncrease);
             }
         }, getDuration());

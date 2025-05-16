@@ -1,17 +1,13 @@
 package com.beachsurvivors.model.abilities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
-import com.beachsurvivors.view.DamageText;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +25,7 @@ public class ChainLightning extends Ability {
 
 
     public ChainLightning(Array<Enemy> enemies) {
-        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 30, 7, 32, 32);
+        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 7, 32, 32);
         maxJumps = 5;
         jumpRadius = 500;
         this.enemies = enemies;
@@ -57,13 +53,18 @@ public class ChainLightning extends Ability {
             Set<Enemy> alreadyHitEnemies = new HashSet<>();
 
             for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
-                current.hit(getDamage());
+                current.hit(getDamageMultiplier());
 
                 alreadyHitEnemies.add(current);
-                hitPositions.add(current.getEnemyPos());
+                hitPositions.add(current.getPosition());
                 current = getNextTarget(current, alreadyHitEnemies);
             }
         }
+    }
+
+    @Override
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+
     }
 
     //Uppdateras varje render ifall lightning effekten ska synas eller inte
@@ -86,7 +87,7 @@ public class ChainLightning extends Ability {
                 continue;
             }
 
-            float distance = enemies.get(i).getEnemyPos().dst(previous.getEnemyPos());
+            float distance = enemies.get(i).getPosition().dst(previous.getPosition());
             if (distance <= jumpRadius && distance < minDistance) { //om distance är innanför jump radius
                 minDistance = distance;  //och om distance < minDistance så blir den nya enemy närmre "closest"
                 closest = enemies.get(i);
@@ -141,14 +142,5 @@ public class ChainLightning extends Ability {
         maxJumps += jumpIncrease;
     }
 
-    @Override
-    public void use() {
-
-    }
-
-    @Override
-    public void use(Player player) {
-
-    }
 
 }

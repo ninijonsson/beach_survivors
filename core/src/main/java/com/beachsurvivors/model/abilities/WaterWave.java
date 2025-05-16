@@ -3,8 +3,10 @@ package com.beachsurvivors.model.abilities;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.enemies.Enemy;
 
 public class WaterWave extends Ability {
 
@@ -69,12 +71,7 @@ public class WaterWave extends Ability {
     }
 
     @Override
-    public void use() {
-
-    }
-
-    @Override
-    public void use(Player player) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
 
     }
 

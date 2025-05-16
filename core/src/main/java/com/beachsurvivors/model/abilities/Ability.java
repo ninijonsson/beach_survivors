@@ -3,24 +3,28 @@ package com.beachsurvivors.model.abilities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.enemies.Enemy;
 
 public abstract class Ability implements Disposable {
 
     private String name;
     private AbilityType type;
-    private double damage;
+    private double damageMultiplier;
     private double cooldown;
+    private float cooldownTimer;
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitBox;
     private boolean isPersistent = false; //Om abilityn ska vara "permanent" (sköld) eller försvinna, t.ex (BaseAttack)
     private Image icon;
 
-    public Ability(String name, String texturePath, AbilityType type, double damage, double cooldown, int width, int height) {
+    public Ability(String name, String texturePath, AbilityType type, double damageMultiplier, double cooldown, int width, int height) {
         this.texture = AssetLoader.get().getTexture(texturePath);
         this.sprite = new Sprite(texture);
         sprite.setSize(width, height);
@@ -29,30 +33,37 @@ public abstract class Ability implements Disposable {
 
         this.name = name;
         this.type = type;
-        this.damage = damage;
+        this.damageMultiplier = damageMultiplier;
         this.cooldown = cooldown;
     }
 
-    public void updatePosition(float x, float y) {
-        getSprite().setPosition(x, y);
-        getHitBox().setPosition(x, y);
+    public void updatePosition(float delta, Vector2 position) {
+        getSprite().setPosition(position.x - getSprite().getWidth()/2, position.y - getSprite().getHeight()/2);
+        getHitBox().setPosition(position.x, position.y);
     }
 
-    public abstract void use();
-    public abstract void use(Player player);
+    public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+        cooldownTimer += delta;
+        if (cooldownTimer >= getCooldown()) {
+            cooldownTimer = 0f;
+            use(delta, player, enemies, abilities);
+        }
+    }
+
+    public abstract void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities);
 
     public AbilityType getType() {
         return type;
     }
 
     public Double getBaseDamage() {
-        double min = damage;
-        double max = damage * 1.5;
+        double min = damageMultiplier;
+        double max = damageMultiplier * 1.5;
         return min + (int)(Math.random() * ((max - min) + 1));
     }
 
-    public double getDamage() {
-        return damage;
+    public double getDamageMultiplier() {
+        return damageMultiplier;
     }
 
     public Sprite getSprite() {
@@ -71,16 +82,8 @@ public abstract class Ability implements Disposable {
         cooldown -= attackSpeed;
     }
 
-    public void setType(AbilityType type) {
-        this.type = type;
-    }
-
-    public void setDamage(double damage) {
-        this.damage = damage;
-    }
-
-    public void increaseDamage(double damage) {
-        this.damage += damage;
+    public void setDamageMultiplier(double damageMultiplier) {
+        this.damageMultiplier = damageMultiplier;
     }
 
     public void setTexture(Texture texture) {
@@ -121,12 +124,10 @@ public abstract class Ability implements Disposable {
         return isPersistent;
     }
 
-    public void updatePosition(float delta, float playerX, float playerY) {}
-
     @Override
     public String toString() {
         return name + " | Type: " + type +
-            " | Base damage: " + damage +
+            " | Base damage: " + damageMultiplier +
             " | Cooldown " + cooldown + "s";
     }
 

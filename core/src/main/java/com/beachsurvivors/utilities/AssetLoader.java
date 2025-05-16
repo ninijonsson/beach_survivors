@@ -1,4 +1,4 @@
-package com.beachsurvivors;
+package com.beachsurvivors.utilities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;

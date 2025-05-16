@@ -1,10 +1,9 @@
 package com.beachsurvivors.model.groundItems;
 
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
-import com.beachsurvivors.view.ChestOverlay;
 import com.beachsurvivors.view.GameScreen;
 
 import java.util.List;

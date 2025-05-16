@@ -1,11 +1,10 @@
 package com.beachsurvivors.model.abilities;
 
-import com.badlogic.gdx.ai.btree.Task;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class Shield extends Ability {
@@ -23,14 +22,8 @@ public class Shield extends Ability {
         setPersistent(true);
     }
 
-
     @Override
-    public void use() {
-
-    }
-
-    @Override
-    public void use(Player player) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
 
     }
 
