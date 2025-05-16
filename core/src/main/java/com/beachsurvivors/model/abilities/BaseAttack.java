@@ -17,7 +17,7 @@ public class BaseAttack extends Ability {
 
     //Constructor för default baseattack (spelarens)
     public BaseAttack() {
-        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 1.0, 0.4, 64, 64);
+        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 1.0, 0.4f, 64, 64);
         this.position = new Vector2();
         this.direction = new Vector2();
         this.projectileSpeed = 600f;
@@ -43,6 +43,7 @@ public class BaseAttack extends Ability {
 
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+
         Enemy target = TargetingHelper.getNearestEnemy(player, enemies);
 
         if (target != null) {
@@ -53,11 +54,9 @@ public class BaseAttack extends Ability {
 
             BaseAttack bullet = new BaseAttack();
             bullet.setDirection(direction);
-            bullet.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
-
+            bullet.setPosition(player.getPosition().cpy());
             abilities.add(bullet);
-            System.out.println("Shooting");
-        }
+            }
 
     }
 

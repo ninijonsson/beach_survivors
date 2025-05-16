@@ -16,7 +16,7 @@ public abstract class Ability implements Disposable {
     private String name;
     private AbilityType type;
     private double damageMultiplier;
-    private double cooldown;
+    private float cooldown;
     private float cooldownTimer;
     private Texture texture;
     private Sprite sprite;
@@ -24,7 +24,7 @@ public abstract class Ability implements Disposable {
     private boolean isPersistent = false; //Om abilityn ska vara "permanent" (sköld) eller försvinna, t.ex (BaseAttack)
     private Image icon;
 
-    public Ability(String name, String texturePath, AbilityType type, double damageMultiplier, double cooldown, int width, int height) {
+    public Ability(String name, String texturePath, AbilityType type, double damageMultiplier, float cooldown, int width, int height) {
         this.texture = AssetLoader.get().getTexture(texturePath);
         this.sprite = new Sprite(texture);
         sprite.setSize(width, height);
@@ -44,9 +44,12 @@ public abstract class Ability implements Disposable {
 
     public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
         cooldownTimer += delta;
-        if (cooldownTimer >= getCooldown()) {
+        float cooldown = getCooldown() * player.getCooldownReduction();
+
+        if (cooldownTimer >= cooldown) {
             cooldownTimer = 0f;
             use(delta, player, enemies, abilities);
+            return;
         }
     }
 
@@ -74,8 +77,12 @@ public abstract class Ability implements Disposable {
         return hitBox;
     }
 
-    public double getCooldown() {
+    public float getCooldown() {
         return cooldown;
+    }
+
+    public float getCooldownTimer() {
+        return cooldownTimer;
     }
 
     public void decreaseCooldown(double attackSpeed) {

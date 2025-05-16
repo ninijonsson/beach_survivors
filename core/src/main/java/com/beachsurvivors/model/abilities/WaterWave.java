@@ -21,7 +21,7 @@ public class WaterWave extends Ability {
     private float waveFrequency = 10f;
     private float totalDistanceTraveled = 0f;
 
-    public WaterWave(String name, double damage, double cooldown, int width, int height,
+    public WaterWave(String name, double damage, float cooldown, int width, int height,
                      Vector2 startPosition, ParticleEffectPoolManager poolManager) {
         super(name, "entities/particles/bullet.png", AbilityType.ATTACK, damage, cooldown, width, height);
         this.position = new Vector2(startPosition);

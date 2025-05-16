@@ -43,13 +43,14 @@ public class NavySeal extends Enemy {
             attackTimer = 0f;
 
             Vector2 direction = new Vector2(
-                player.getPosition().x - this.getSprite().getX(),
-                player.getPosition().y - this.getSprite().getY())
+                player.getPosition().x - this.getPosition().x,
+                player.getPosition().y - this.getPosition().y)
                 .nor();
 
             BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png", getDamage(), 400f);
             bullet.setDirection(direction);
-            bullet.updatePosition(Gdx.graphics.getDeltaTime(), this.getPosition());
+            //bullet.updatePosition(Gdx.graphics.getDeltaTime(), this.getPosition());
+            bullet.setPosition(getPosition().cpy());
 
             enemyAbilities.add(bullet);
             System.out.println("bullet added");

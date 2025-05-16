@@ -32,7 +32,7 @@ public class Player extends Actor {
     private int experiencePoints;
     private float speed = 500f;
     private double damage = 10;
-    private double cooldown;
+    private float cooldownReduction = 1f;  //Lägre CDr = bättre, 1 = 100%, 0.9 = 90%, cooldown * cooldownReduction = cast time
     private float criticalHitChance = 0.10f;
     private double criticalHitDamage = 2;
     private float hpRegenPerSecond = 0.1f;
@@ -55,8 +55,6 @@ public class Player extends Actor {
     private float vaccumStrength = 100;
 
     private Rectangle beachGuyHitBox;
-//    private float playerX;
-//    private float playerY;
     private Vector2 position;
 
     private float playerHeight;
@@ -331,6 +329,11 @@ public class Player extends Actor {
         criticalHitDamage += critDamageIncrease;
     }
 
+    public void increaseCooldownReduction(double cooldownReduction) {
+        this.cooldownReduction -= cooldownReduction;
+    }
+
+
     public boolean isCriticalHit() {
         return random.nextFloat() < criticalHitChance;
     }
@@ -364,8 +367,8 @@ public class Player extends Actor {
         return maxHealthPoints;
     }
 
-    public double getCooldown() {
-        return cooldown;
+    public float getCooldownReduction() {
+        return cooldownReduction;
     }
 
     public boolean isAlive() {

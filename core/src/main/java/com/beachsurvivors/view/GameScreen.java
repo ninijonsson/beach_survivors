@@ -121,7 +121,6 @@ public class GameScreen extends Game implements Screen {
         stage.clear();
 
         player = new Player(map, spriteBatch, this);
-//        playerPos = new Vector2(player.getPlayerX(), player.getPlayerY()); /TODO ska tas bort
 
         boomerang = new Boomerang();
         bullet = new BaseAttack();
@@ -131,14 +130,9 @@ public class GameScreen extends Game implements Screen {
         abilities.add(shield);
         chainLightning = new ChainLightning(enemies);
 
-
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
-
-//        player.setPlayerX(map.getStartingX()); /TODO ska tas bort
-//        player.setPlayerY(map.getStartingY());
-
 
         poolManager = new ParticleEffectPoolManager();
         poolManager.register("entities/particles/blueFlame.p", 5, 20);
@@ -152,7 +146,7 @@ public class GameScreen extends Game implements Screen {
         groundItems.add(chest);
 
         Vector2 startPos = new Vector2(player.getPosition());
-        WaterWave wave = new WaterWave("WaterWave", 15, 1.2, 32, 32, startPos, poolManager);
+        WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
         abilities.add(wave);
 
         createMiniBossSchedule();
@@ -280,7 +274,7 @@ public class GameScreen extends Game implements Screen {
 
         if (playerAbilitiesTestMode) {
             //playerShoot();
-            updateAbilityMovement();
+            updateAbilities();
         }
 
         updateDamageText();
@@ -313,14 +307,8 @@ public class GameScreen extends Game implements Screen {
             }
         }
 
-        useAbilities();
     }
 
-    private void useAbilities() {
-        for (Ability ability : abilities) {
-            ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
-        }
-    }
 
     /**
      * This method is used to control enemy moving behaviour. Each enemy is given a radius in which other enemies tries
@@ -486,14 +474,6 @@ public class GameScreen extends Game implements Screen {
 //        }
 //    }
 
-    private void updateShieldPos() {
-        if (!shield.getIsDepleted() && shield.getSprite() != null) {
-            shield.updatePosition(0, player.getPosition());
-        }
-    }
-
-
-
 //    private void shootAtNearestEnemy() {
 //        Enemy target = getNearestEnemy();
 //
@@ -511,13 +491,17 @@ public class GameScreen extends Game implements Screen {
 //        }
 //    }
 
+    private void updateShieldPos() {
+        if (!shield.getIsDepleted() && shield.getSprite() != null) {
+            shield.updatePosition(0, player.getPosition());
+        }
+    }
+
     private Enemy getNearestEnemy() {
         Enemy nearest = null;
         float minDistance = 1000;
-        //playerPos.set(player.getPlayerX(), player.getPlayerY());
 
         for (Enemy enemy : enemies) {
-            //float distance = player.getPosition().dst(enemy.getSprite().getX(), enemy.getSprite().getY());
             float distance = player.getPosition().dst(enemy.getPosition());
 
 
@@ -682,13 +666,16 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+
     /**
      * Updates position of all abilities that enemies use
      */
-    private void updateAbilityMovement() {
-        for (Ability a : abilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
+    private void updateAbilities() {
+        for (Ability ability : abilities) {
+            ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition().cpy());
+            ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
         }
+        System.out.println("Abilities size " + abilities.size);
     }
 
     /**
@@ -945,7 +932,6 @@ public class GameScreen extends Game implements Screen {
             isOverlayActive = true;
         }
     }
-
 
     public void addBoomerang() {
         abilities.add(new Boomerang());
