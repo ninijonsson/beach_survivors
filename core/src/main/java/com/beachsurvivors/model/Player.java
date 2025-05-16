@@ -38,6 +38,8 @@ public class Player extends Actor {
     private float hpRegenPerSecond = 0.1f;
 
 
+    private float lifesteal = 0f;
+
     private boolean isImmune;
     private boolean isAlive;
     private LevelSystem levelSystem;
@@ -276,6 +278,15 @@ public class Player extends Actor {
             }, 0.1f);
         }
     }
+    public void onDamageDealt(double damageDealt) {
+        int healedAmount = Math.round((float) (damageDealt * lifesteal));
+        restoreHealthPoints(healedAmount);
+    }
+
+    public void increaseLifesteal(float amount) {
+        lifesteal += amount;
+    }
+
 
     public void onDeath() {
         dispose();
