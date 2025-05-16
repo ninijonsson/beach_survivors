@@ -132,6 +132,7 @@ public abstract class Ability implements Disposable {
 
     @Override
     public void dispose() {
-
+        sprite = null;
+        hitBox = null;
     }
 }

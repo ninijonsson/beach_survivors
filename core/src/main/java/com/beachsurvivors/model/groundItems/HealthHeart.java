@@ -16,11 +16,11 @@ public class HealthHeart extends PowerUp implements PickUpAble {
 
     @Override
     public void onPickup(Player player) {
-        applyAffect(player);
+        applyEffect(player);
     }
 
     @Override
-    public void applyAffect(Player player) {
+    public void applyEffect(Player player) {
         player.restoreHealthPoints(healthAmount);
 
     }

@@ -1,6 +1,5 @@
 package com.beachsurvivors.model.groundItems;
 
-import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
@@ -16,18 +15,13 @@ public class LuckyClover extends PowerUp implements PickUpAble {
 
     @Override
     public void onPickup(Player player) {
-        applyAffect(player);
+        applyEffect(player);
     }
 
     @Override
-    public void applyAffect(Player player) {
+    public void applyEffect(Player player) {
         player.increaseCritChance(critChanceIncrease);
-//        Timer.schedule(new Timer.Task() {
-//            @Override
-//            public void run() {
-//                player.increaseCritChance(-critChanceIncrease); // Återgår till 0.5f (standard)
-//            }
-//        }, getDuration());
+
     }
 
     @Override

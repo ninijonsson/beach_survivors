@@ -48,7 +48,8 @@ public class LevelUpScreen implements Screen {
 
         skin = AssetLoader.get().getSkin("game_over_screen/deathscreen_skin.json");
         this.levelUpSound = AssetLoader.get().getSound("sounds/level_up.mp3");
-        levelUpSound.setVolume(levelUpSound.play(),0.1f);
+        //levelUpSound.setVolume(levelUpSound.play(),0.1f);
+
         buildUI();
     }
 

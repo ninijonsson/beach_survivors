@@ -49,16 +49,6 @@ public class Boomerang extends Ability {
     }
 
 
-
-//    public Sprite getSprite() {
-//        return sprite;
-//    }
-
-//    @Override
-//    public Rectangle getHitBox() {
-//        return hitBox;
-//    }
-
     @Override
     public void dispose() {
         getSprite().getTexture().dispose();

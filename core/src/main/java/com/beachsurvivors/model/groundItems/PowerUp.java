@@ -56,7 +56,7 @@ public abstract class PowerUp implements PickUpAble {
 
     }
 
-    protected abstract void applyAffect(Player player);
+    protected abstract void applyEffect(Player player);
     public abstract void removeEffect(Player player);
 
     public void dispose() {
@@ -66,7 +66,6 @@ public abstract class PowerUp implements PickUpAble {
             lootBeamEffect.free();
             lootBeamEffect = null;
         }
-
     }
 
     public void updateDuration(float deltaTime, Player player) {
