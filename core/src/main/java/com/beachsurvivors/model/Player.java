@@ -33,6 +33,8 @@ public class Player extends Actor {
     private double cooldown;
     private float criticalHitChance = 0.10f;
     private double criticalHitDamage = 2;
+    private float lifesteal = 0f;
+
     //private int level = 1;
     private boolean isImmune;
     private boolean isAlive;
@@ -272,6 +274,15 @@ public class Player extends Actor {
             }, 0.1f);
         }
     }
+    public void onDamageDealt(double damageDealt) {
+        int healedAmount = Math.round((float) (damageDealt * lifesteal));
+        restoreHealthPoints(healedAmount);
+    }
+
+    public void increaseLifesteal(float amount) {
+        lifesteal += amount;
+    }
+
 
     public void onDeath() {
         dispose();

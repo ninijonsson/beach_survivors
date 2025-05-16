@@ -34,7 +34,7 @@ public class NavySeal extends Enemy {
     }
 
     public void attack(Player player, Array<Ability> enemyAbilities) {
-        float bulletCooldown = 3f; // Gör om cooldown till float
+        float bulletCooldown = 6f; // Gör om cooldown till float
 
         bulletTimer += Gdx.graphics.getDeltaTime();
 
