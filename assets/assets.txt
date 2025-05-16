@@ -155,3 +155,4 @@ sounds/footstep.mp3
 sounds/item_pickup.wav
 sounds/level_up.mp3
 sounds/shark_damage_2.wav
+sounds/water_gun_fire.wav
