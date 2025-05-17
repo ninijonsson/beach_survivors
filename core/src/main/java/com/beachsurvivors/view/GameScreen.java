@@ -465,10 +465,10 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void playerShoot() {  //Flytta alla player-shoot metoder till player i stället?
-        float bulletCooldown = bullet.getCooldown();
+        float cooldown = bullet.getCooldown() * player.getCooldownReduction();
         bulletTimer += Gdx.graphics.getDeltaTime();
 
-        if (bulletTimer >= bulletCooldown) {
+        if (bulletTimer >= cooldown) {
             bulletTimer = 0f;
             shootAtNearestEnemy();
         }
@@ -485,7 +485,8 @@ public class GameScreen extends Game implements Screen {
 
             BaseAttack bullet = new BaseAttack();
             bullet.setDirection(direction);
-            bullet.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
+            bullet.setPosition(player.getPosition().cpy());
+            //bullet.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
 
             abilities.add(bullet);
         }
@@ -524,7 +525,7 @@ public class GameScreen extends Game implements Screen {
 
     private void castChainLightning() {
         chainLightning.update(Gdx.graphics.getDeltaTime());
-        chainLightning.cast(getNearestEnemy(), Gdx.graphics.getDeltaTime());
+        chainLightning.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
     }
 
     @Override

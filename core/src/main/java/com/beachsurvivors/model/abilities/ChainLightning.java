@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.utilities.TargetingHelper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,22 +36,23 @@ public class ChainLightning extends Ability {
 
     }
 
-    public void cast(Enemy enemy, float delta) {
+    @Override
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
         chainLightningTimer += delta;  //Timer går upp med tiden
 
-        if (chainLightningTimer >= getCooldown()) { //När timer är högre än cooldown, casta chain lightning
+        float cooldown = getCooldown() * player.getCooldownReduction();
+        if (chainLightningTimer >= cooldown) { //När timer är högre än cooldown, casta chain lightning
             chainLightningTimer = 0;
             showLightning = true;
             lightningVisibleTime = 0.5f;
 
             hitPositions.clear();
 
-            Enemy current = enemy;
-            if (current != null) {
-                playSoundEffect();
+            Enemy current = TargetingHelper.getNearestEnemy(player, enemies);
+            if (current == null) return;
 
-            }
             Set<Enemy> alreadyHitEnemies = new HashSet<>();
+            playSoundEffect();
 
             for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
                 current.hit(getDamageMultiplier());
@@ -60,11 +62,6 @@ public class ChainLightning extends Ability {
                 current = getNextTarget(current, alreadyHitEnemies);
             }
         }
-    }
-
-    @Override
-    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
-
     }
 
     //Uppdateras varje render ifall lightning effekten ska synas eller inte
