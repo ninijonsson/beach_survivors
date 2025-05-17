@@ -28,7 +28,7 @@ public class ChainLightning extends Ability {
     public ChainLightning(Array<Enemy> enemies) {
         super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 7, 32, 32);
         maxJumps = 5;
-        jumpRadius = 500;
+        jumpRadius = 1000;
         this.enemies = enemies;
         chainLightningTimer = getCooldown();
         lightningVisibleTime = 0.5f;
@@ -55,7 +55,7 @@ public class ChainLightning extends Ability {
             playSoundEffect();
 
             for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
-                current.hit(getDamageMultiplier());
+                current.hit(getDamageMultiplier() * player.getDamage());
 
                 alreadyHitEnemies.add(current);
                 hitPositions.add(current.getPosition());
