@@ -147,8 +147,8 @@ public class LevelUpScreen implements Screen {
             case CriticalHitDamage:
                 player.increaseCritDamage(0.5f);
                 break;
-            case CooldownReduction: //TODO fixa cooldown
-                player.increaseCooldownReduction(0.1);
+            case CooldownReduction:
+                player.increaseCooldownReduction(10);
 
                 break;
         }

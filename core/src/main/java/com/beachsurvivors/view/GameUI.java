@@ -337,6 +337,9 @@ public class GameUI {
     }
 
 
+    private Label hpRegen;
+    private Label areaRadius;
+    private Label lifeSteal;
 
     private void createPlayerStats() {
         float fontScale = 1.2f;
@@ -347,6 +350,10 @@ public class GameUI {
         healthPoints = new Label("HealthPoints" , skin, "stats");
         statsTable.add(healthPoints).left().row();
         healthPoints.setFontScale(fontScale);
+
+        hpRegen = new Label("HP Regen" , skin, "stats");
+        statsTable.add(hpRegen).left().row();
+        hpRegen.setFontScale(fontScale);
 
         damage = new Label("Base Damage" , skin, "stats");
         statsTable.add(damage).left().row();
@@ -368,19 +375,31 @@ public class GameUI {
         statsTable.add(movementSpeed).left().row();
         movementSpeed.setFontScale(fontScale);
 
+        areaRadius = new Label("Area" , skin, "stats");
+        statsTable.add(areaRadius).left().row();
+        areaRadius.setFontScale(fontScale);
+
+        lifeSteal = new Label("Life Steal" , skin, "stats");
+        statsTable.add(lifeSteal).left().row();
+        lifeSteal.setFontScale(fontScale);
+
         statsTable.setPosition(-80, game.getScreenHeight()/2f);
         stage.addActor(statsTable);
         statsTable.setVisible(false);
 
     }
 
+
     public void updateStats(Player player) {
-        healthPoints.setText("Health Points " +player.getCurrentHealthPoints() + "/"+player.getMaxHealthPoints());
+        healthPoints.setText("Health Points " +String.format("%.1f",player.getCurrentHealthPoints()) + "/"+player.getMaxHealthPoints());
+        hpRegen.setText("HP / Second: " + player.getHpRegenPerSecond());
         damage.setText("Base Damage: " + player.getDamage());
         critChance.setText("CritHit Chance: " + String.format("%.0f", player.getCriticalHitChance()*100) + "%");
         critDamage.setText("CritHit Damage: " + String.format("%.0f", player.getCriticalHitDamage()*100) + "%");
-        cooldownReduction.setText("Cooldown Reduction: " + player.getCooldownReduction()*100 + "%");
+        cooldownReduction.setText("Cooldown Reduction: " + player.getCooldownReduction() + "%");
         movementSpeed.setText("Movement Speed: " + player.getSpeed());
+        areaRadius.setText("Area Increase: " + player.getAreaIncrease()*100 + "%");
+        lifeSteal.setText("Life Steal: " + player.getLifesteal());
     }
 
     public void showStatsTable() {

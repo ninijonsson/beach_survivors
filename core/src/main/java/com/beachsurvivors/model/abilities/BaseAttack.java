@@ -1,13 +1,12 @@
 package com.beachsurvivors.model.abilities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
-import com.beachsurvivors.utilities.TargetingHelper;
+import com.beachsurvivors.view.DamageText;
 
 public class BaseAttack extends Ability {
     private Vector2 position;
@@ -17,7 +16,7 @@ public class BaseAttack extends Ability {
 
     //Constructor för default baseattack (spelarens)
     public BaseAttack() {
-        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 1.0, 0.4f, 64, 64);
+        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 1.0, 0.7f, 64, 64);
         this.position = new Vector2();
         this.direction = new Vector2();
         this.projectileSpeed = 600f;
@@ -42,7 +41,7 @@ public class BaseAttack extends Ability {
     }
 
     @Override
-    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
 
     }
 

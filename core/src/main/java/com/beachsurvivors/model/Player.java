@@ -24,7 +24,6 @@ import java.util.Random;
 
 public class Player extends Actor {
 
-
     //Player stats
     private final int STARTING_HEALTH_POINTS = 100;
     private float maxHealthPoints;
@@ -32,13 +31,12 @@ public class Player extends Actor {
     private int experiencePoints;
     private float speed = 500f;
     private double damage = 10;
-    private float cooldownReduction = 1f;  //Lägre CDr = bättre, 1 = 100%, 0.9 = 90%, cooldown * cooldownReduction = cast time
+    private float cooldownReduction = 10f;  //CDr i procent, börjar med 10%, högre cdr = snabbare cast time
     private float criticalHitChance = 0.10f;
     private double criticalHitDamage = 2;
     private float hpRegenPerSecond = 0.1f;
-    private int areaRange;  //Hur stor AoE spelaren har, för Boomerange, Magnet/vacuum osv
-
-
+    private float regenTimer = 1f;
+    private float areaIncrease = 1f;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
     private float lifesteal = 0f;
 
     private boolean isImmune;
@@ -78,7 +76,6 @@ public class Player extends Actor {
     private Sound footstepSound;
     private float footstepTimer = 0;
     private float footstepInterval = 0.4f; // hur ofta ljudet får spelas (i sekunder)
-
 
 
     public Player(Map map, SpriteBatch spriteBatch, GameScreen gameScreen) {
@@ -302,7 +299,21 @@ public class Player extends Actor {
         }
     }
 
-    public void restoreHealthPoints(int increasedHealthPoints) {
+    public void update(float deltaTime) {
+        regenerateHp(deltaTime);
+    }
+
+    private void regenerateHp(float delta) {
+
+        regenTimer -= delta;
+        if (regenTimer <= 0) {
+            regenTimer = 1;
+            restoreHealthPoints(hpRegenPerSecond);
+            return;
+        }
+    }
+
+    public void restoreHealthPoints(float increasedHealthPoints) {
         currentHealthPoints += increasedHealthPoints;
         healingReceived += increasedHealthPoints;
 
@@ -330,7 +341,11 @@ public class Player extends Actor {
     }
 
     public void increaseCooldownReduction(double cooldownReduction) {
-        this.cooldownReduction -= cooldownReduction;
+        this.cooldownReduction += cooldownReduction;
+    }
+
+    public void increaseAreaRange(float areaIncrease) {
+        this.areaIncrease += areaIncrease;
     }
 
 
@@ -369,6 +384,18 @@ public class Player extends Actor {
 
     public float getCooldownReduction() {
         return cooldownReduction;
+    }
+
+    public float getHpRegenPerSecond() {
+        return hpRegenPerSecond;
+    }
+
+    public float getLifesteal() {
+        return lifesteal;
+    }
+
+    public float getAreaIncrease() {
+        return areaIncrease;
     }
 
     public boolean isAlive() {

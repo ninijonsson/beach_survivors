@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.view.DamageText;
 
 public class WaterWave extends Ability {
 
@@ -71,7 +72,7 @@ public class WaterWave extends Ability {
     }
 
     @Override
-    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
 
     }
 

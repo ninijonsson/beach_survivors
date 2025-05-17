@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.model.enemies.Enemy;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.view.DamageText;
 
 public class Shield extends Ability {
 
@@ -23,7 +24,7 @@ public class Shield extends Ability {
     }
 
     @Override
-    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
 
     }
 

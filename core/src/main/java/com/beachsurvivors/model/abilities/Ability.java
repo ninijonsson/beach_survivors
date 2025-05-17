@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.utilities.CombatHelper;
+import com.beachsurvivors.view.DamageText;
 
 public abstract class Ability implements Disposable {
 
@@ -44,14 +46,14 @@ public abstract class Ability implements Disposable {
 
     public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
         cooldownTimer += delta;
-        float cooldown = getCooldown() * player.getCooldownReduction();
+        float cooldown = CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
 
         if (cooldownTimer >= cooldown) {
             cooldownTimer = 0f;
         }
     }
 
-    public abstract void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities);
+    public abstract void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts);
 
     public AbilityType getType() {
         return type;

@@ -302,6 +302,11 @@ public abstract class Enemy implements Disposable {
         return position;
     }
 
+    public Vector2 getCenter() {
+        Vector2 center = new Vector2(position.x+width/2f, position.y + height/2f);
+        return center;
+    }
+
     public void setPosition(Vector2 position) {
         this.position.set(position);
         sprite.setPosition(position.x, position.y);

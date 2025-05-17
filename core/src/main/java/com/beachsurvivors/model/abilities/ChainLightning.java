@@ -8,7 +8,8 @@ import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
-import com.beachsurvivors.utilities.TargetingHelper;
+import com.beachsurvivors.utilities.CombatHelper;
+import com.beachsurvivors.view.DamageText;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class ChainLightning extends Ability {
 
 
     public ChainLightning(Array<Enemy> enemies) {
-        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 7, 32, 32);
+        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 6, 32, 32);
         maxJumps = 5;
         jumpRadius = 1000;
         this.enemies = enemies;
@@ -37,10 +38,10 @@ public class ChainLightning extends Ability {
     }
 
     @Override
-    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
         chainLightningTimer += delta;  //Timer går upp med tiden
 
-        float cooldown = getCooldown() * player.getCooldownReduction();
+        float cooldown = CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
         if (chainLightningTimer >= cooldown) { //När timer är högre än cooldown, casta chain lightning
             chainLightningTimer = 0;
             showLightning = true;
@@ -48,21 +49,27 @@ public class ChainLightning extends Ability {
 
             hitPositions.clear();
 
-            Enemy current = TargetingHelper.getNearestEnemy(player, enemies);
+            Enemy current = CombatHelper.getNearestEnemy(player, enemies);
             if (current == null) return;
 
             Set<Enemy> alreadyHitEnemies = new HashSet<>();
             playSoundEffect();
 
             for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
-                current.hit(getDamageMultiplier() * player.getDamage());
+                double damage = getDamageMultiplier() * player.getDamage();
+                current.hit(damage);
+                damageTexts.add(new DamageText((damage+""), current.getPosition().x+current.getWidth()/2f,
+                    current.getPosition().y+current.getHeight()+25, 1, player.isCriticalHit()));
 
                 alreadyHitEnemies.add(current);
-                hitPositions.add(current.getPosition());
+                Vector2 targetCenter = current.getCenter();
+                hitPositions.add(targetCenter);
                 current = getNextTarget(current, alreadyHitEnemies);
             }
         }
     }
+    //hitPositions.add(current.getPosition());
+
 
     //Uppdateras varje render ifall lightning effekten ska synas eller inte
     public void update(float delta) {

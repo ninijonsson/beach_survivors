@@ -131,7 +131,7 @@ public class DeathScreen implements Screen {
         leftTable.add(totalDamageTaken).padBottom(bottomPadding).left();
         leftTable.row();
 
-        Label totalHealing = new Label("Healing received: " + healingReceived, skin);
+        Label totalHealing = new Label("Healing received: " + String.format("%.0f", healingReceived), skin);
         totalHealing.setFontScale(fontscale);
         leftTable.add(totalHealing).padBottom(bottomPadding).left();
         leftTable.row();

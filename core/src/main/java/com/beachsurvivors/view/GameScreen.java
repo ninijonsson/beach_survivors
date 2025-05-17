@@ -25,6 +25,7 @@ import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.*;
+import com.beachsurvivors.utilities.CombatHelper;
 
 import java.util.Random;
 
@@ -268,6 +269,7 @@ public class GameScreen extends Game implements Screen {
         pickUpGroundItem();
         updateShieldPos();
         gameUI.updateStats(player);
+        player.update(Gdx.graphics.getDeltaTime());
 
         enemyAttacks();
 
@@ -465,7 +467,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void playerShoot() {  //Flytta alla player-shoot metoder till player i stället?
-        float cooldown = bullet.getCooldown() * player.getCooldownReduction();
+        float cooldown = CombatHelper.getActualCooldown(bullet.getCooldown(), player.getCooldownReduction());
         bulletTimer += Gdx.graphics.getDeltaTime();
 
         if (bulletTimer >= cooldown) {
@@ -478,15 +480,15 @@ public class GameScreen extends Game implements Screen {
         Enemy target = getNearestEnemy();
 
         if (target != null) {
+            Vector2 targetCenter = target.getCenter();
             Vector2 direction = new Vector2(
-                target.getSprite().getX() - player.getPosition().x,
-                target.getSprite().getY() - player.getPosition().y
+                targetCenter.x - player.getPosition().x,
+                targetCenter.y - player.getPosition().y
             ).nor();
 
             BaseAttack bullet = new BaseAttack();
             bullet.setDirection(direction);
             bullet.setPosition(player.getPosition().cpy());
-            //bullet.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
 
             abilities.add(bullet);
         }
@@ -525,7 +527,7 @@ public class GameScreen extends Game implements Screen {
 
     private void castChainLightning() {
         chainLightning.update(Gdx.graphics.getDeltaTime());
-        chainLightning.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
+        chainLightning.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
     }
 
     @Override

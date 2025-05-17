@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.view.DamageText;
 
 public class Boomerang extends Ability {
 
@@ -37,7 +38,7 @@ public class Boomerang extends Ability {
 
 
     @Override
-    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
 
     }
 

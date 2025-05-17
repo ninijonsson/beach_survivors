@@ -1,11 +1,10 @@
 package com.beachsurvivors.utilities;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
 
-public class TargetingHelper {
+public class CombatHelper {
 
     public static Enemy getNearestEnemy(Player player, Array<Enemy> enemies) {
 
@@ -21,5 +20,10 @@ public class TargetingHelper {
             }
         }
         return nearest;
+    }
+
+    public static float getActualCooldown(float cooldown, float cooldownReduction) {
+        float actualCooldown = cooldown * (100 - cooldownReduction) / 100;
+        return actualCooldown;
     }
 }
