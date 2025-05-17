@@ -168,7 +168,7 @@ public class Boss {
 
     public void drawBulletHitboxes(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED); // or any debug color
+        shapeRenderer.setColor(Color.RED); 
 
         for (Bullet bullet : bullets) {
             Circle hitbox = bullet.getHitbox();
