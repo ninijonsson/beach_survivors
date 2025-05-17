@@ -87,8 +87,11 @@ public class GameScreen extends Game implements Screen {
     //Boolean variables to toggle when testing the game with/without
     //some elements. Set all to true for testing everything.
     private boolean playerAbilitiesTestMode = true; //Toggles if player use abilities
-    private boolean spawnEnemiesTestMode = true; //Toggles if enemies spawn
-    private boolean spawnMinibossesTestMode = true; //Toggles if minibosses spawn
+    private boolean spawnEnemiesTestMode = false; //Toggles if enemies spawn
+    private boolean spawnMinibossesTestMode = false; //Toggles if minibosses spawn
+
+    private Boss boss;
+
 
     public GameScreen(Main main) {
         this.main = main;
@@ -122,6 +125,7 @@ public class GameScreen extends Game implements Screen {
 
         player = new Player(map, spriteBatch, this);
         playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        boss = new Boss(new Vector2(playerPos));
 
         boomerang = new Boomerang();
         bullet = new BaseAttack();
@@ -184,7 +188,7 @@ public class GameScreen extends Game implements Screen {
 
         if (!isPaused) {
 
-            logic();
+            logic(delta);
             draw();
             gameUI.getStage().act(delta);
             gameUI.update(Gdx.graphics.getDeltaTime());
@@ -248,6 +252,8 @@ public class GameScreen extends Game implements Screen {
         drawStuff();
         spriteBatch.end();
 
+        boss.drawBulletHitboxes(shapeRenderer);
+
     }
 
     /**
@@ -260,7 +266,7 @@ public class GameScreen extends Game implements Screen {
                     player.getPlayerX(),
                     player.getPlayerY()
                 );
-                activeBombs.add(new BombAttack(position, gameViewport.getCamera()));
+                activeBombs.add(new BombAttack(position));
                 System.out.println(position);
             }
 
@@ -272,7 +278,7 @@ public class GameScreen extends Game implements Screen {
     /**
      * As the name suggests, Logic is where the game's logic is put.
      */
-    private void logic() {
+    private void logic(float delta) {
         pickUpPowerUp();
         pickUpGroundItem();
         updateShieldPos();
@@ -280,6 +286,9 @@ public class GameScreen extends Game implements Screen {
 
         enemyAttacks();
 
+        if (boss.isAlive()) {
+            boss.update(delta, player);
+        }
 
         if (playerAbilitiesTestMode) {
             playerShoot();
@@ -804,11 +813,13 @@ public class GameScreen extends Game implements Screen {
         drawGroundItems();
         drawPowerUps();
         drawEnemies();
+        boss.draw(spriteBatch);
         drawEnemyAbilities();
         drawDamageText();
         player.drawAnimation();
         drawPlayerAbilities();
         drawChainLightning();
+        drawPlayerHitbox();
 
 //        xpOrbDebug(player);
     }

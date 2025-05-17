@@ -61,6 +61,9 @@ public abstract class Enemy implements Disposable {
     private Stage stage;
     private Texture xpOrb;
 
+    // used for boss
+    public Enemy() {}
+
     public Enemy(int width, int height, int healthPoints, int expOnDeath) {
         this.width = width;
         this.height = height;
@@ -347,5 +350,21 @@ public abstract class Enemy implements Disposable {
 
     public int getExp() {
         return expOnDeath;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
+
+    public void setHitbox(Rectangle hitbox) {
+        this.hitbox = hitbox;
     }
 }
