@@ -44,20 +44,6 @@ public class BaseAttack extends Ability {
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
 
-        Enemy target = TargetingHelper.getNearestEnemy(player, enemies);
-
-        if (target != null) {
-            Vector2 direction = new Vector2(
-                target.getSprite().getX() - player.getPosition().x,
-                target.getSprite().getY() - player.getPosition().y
-            ).nor();
-
-            BaseAttack bullet = new BaseAttack();
-            bullet.setDirection(direction);
-            bullet.setPosition(player.getPosition().cpy());
-            abilities.add(bullet);
-            }
-
     }
 
     @Override

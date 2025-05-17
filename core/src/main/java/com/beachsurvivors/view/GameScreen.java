@@ -273,7 +273,7 @@ public class GameScreen extends Game implements Screen {
 
 
         if (playerAbilitiesTestMode) {
-            //playerShoot();
+            playerShoot();
             updateAbilities();
         }
 
@@ -464,32 +464,32 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-//    private void playerShoot() {  //Flytta alla player-shoot metoder till player i stället?
-//        float bulletCooldown = (float) bullet.getCooldown();
-//        bulletTimer += Gdx.graphics.getDeltaTime();
-//
-//        if (bulletTimer >= bulletCooldown) {
-//            bulletTimer = 0f;
-//            shootAtNearestEnemy();
-//        }
-//    }
+    private void playerShoot() {  //Flytta alla player-shoot metoder till player i stället?
+        float bulletCooldown = bullet.getCooldown();
+        bulletTimer += Gdx.graphics.getDeltaTime();
 
-//    private void shootAtNearestEnemy() {
-//        Enemy target = getNearestEnemy();
-//
-//        if (target != null) {
-//            Vector2 direction = new Vector2(
-//                target.getSprite().getX() - player.getPosition().x,
-//                target.getSprite().getY() - player.getPosition().y
-//            ).nor();
-//
-//            BaseAttack bullet = new BaseAttack();
-//            bullet.setDirection(direction);
-//            bullet.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
-//
-//            abilities.add(bullet);
-//        }
-//    }
+        if (bulletTimer >= bulletCooldown) {
+            bulletTimer = 0f;
+            shootAtNearestEnemy();
+        }
+    }
+
+    private void shootAtNearestEnemy() {
+        Enemy target = getNearestEnemy();
+
+        if (target != null) {
+            Vector2 direction = new Vector2(
+                target.getSprite().getX() - player.getPosition().x,
+                target.getSprite().getY() - player.getPosition().y
+            ).nor();
+
+            BaseAttack bullet = new BaseAttack();
+            bullet.setDirection(direction);
+            bullet.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
+
+            abilities.add(bullet);
+        }
+    }
 
     private void updateShieldPos() {
         if (!shield.getIsDepleted() && shield.getSprite() != null) {

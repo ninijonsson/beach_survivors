@@ -48,8 +48,6 @@ public abstract class Ability implements Disposable {
 
         if (cooldownTimer >= cooldown) {
             cooldownTimer = 0f;
-            use(delta, player, enemies, abilities);
-            return;
         }
     }
 
