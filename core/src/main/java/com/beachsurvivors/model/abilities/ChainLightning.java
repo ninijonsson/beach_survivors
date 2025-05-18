@@ -28,8 +28,8 @@ public class ChainLightning extends Ability {
 
     public ChainLightning(Array<Enemy> enemies) {
         super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 6, 32, 32);
-        maxJumps = 5;
-        jumpRadius = 1000;
+        maxJumps = 30;
+        jumpRadius = 800;
         this.enemies = enemies;
         chainLightningTimer = getCooldown();
         lightningVisibleTime = 0.5f;
@@ -39,11 +39,13 @@ public class ChainLightning extends Ability {
 
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
+
         chainLightningTimer += delta;  //Timer går upp med tiden
 
         float cooldown = CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
         if (chainLightningTimer >= cooldown) { //När timer är högre än cooldown, casta chain lightning
             chainLightningTimer = 0;
+
             showLightning = true;
             lightningVisibleTime = 0.5f;
 
@@ -68,11 +70,11 @@ public class ChainLightning extends Ability {
             }
         }
     }
-    //hitPositions.add(current.getPosition());
 
 
     //Uppdateras varje render ifall lightning effekten ska synas eller inte
     public void update(float delta) {
+
         if (showLightning) {
             lightningVisibleTime -= delta;
             if (lightningVisibleTime <= 0) {

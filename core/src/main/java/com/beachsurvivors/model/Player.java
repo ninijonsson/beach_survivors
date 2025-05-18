@@ -36,7 +36,7 @@ public class Player extends Actor {
     private double criticalHitDamage = 2;
     private float hpRegenPerSecond = 0.1f;
     private float regenTimer = 1f;
-    private float areaIncrease = 1f;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
+    private float areaIncrease = 0f;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
     private float lifesteal = 0f;
 
     private boolean isImmune;
@@ -292,10 +292,13 @@ public class Player extends Actor {
     }
 
     public void increaseSpeed(int speedIncrease) {
-        if (speed + speedIncrease > 1200f) {
+        float newSpeed = speed + speedIncrease;
+        if (newSpeed > 1200) {
             speed = 1200f;
+        } else if (newSpeed < 300) {
+            speed = 300f;
         } else {
-            speed += speedIncrease;
+            speed = newSpeed;
         }
     }
 

@@ -126,10 +126,11 @@ public class GameScreen extends Game implements Screen {
         boomerang = new Boomerang();
         bullet = new BaseAttack();
         shield = new Shield();
+        chainLightning = new ChainLightning(enemies);
         abilities.add(boomerang);
         abilities.add(bullet);
         abilities.add(shield);
-        chainLightning = new ChainLightning(enemies);
+
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
@@ -622,7 +623,6 @@ public class GameScreen extends Game implements Screen {
     private Enemy selectRandomEnemy() {
         int enemyChoice = random.nextInt(0, 11);
         Enemy enemy = null;
-        enemyChoice = 0;
 
         switch (enemyChoice) {
             case 0:
@@ -677,9 +677,10 @@ public class GameScreen extends Game implements Screen {
         for (Ability ability : abilities) {
             ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition().cpy());
             ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
+            ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
         }
-        System.out.println("Abilities size " + abilities.size);
     }
+
 
     /**
      * Updates the position of an enemy
