@@ -14,7 +14,7 @@ public class Bullet {
 
     private float width = 64;
     private float height = 64;
-    private Sprite sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/bullet.png"));
+    private Sprite sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/fireball.png"));
 
     public Bullet(Vector2 position, Vector2 velocity) {
         this.position = position;

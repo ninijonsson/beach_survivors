@@ -34,10 +34,10 @@ public class Boss {
 
     public Boss(Vector2 position) {
         this.position = position;
-        width = 500;
-        height = 500;
+        width = 1500;
+        height = 1500;
         healthPoints = 1000;
-        sprite = new Sprite(new Texture("entities/enemies/shark.png"));
+        sprite = new Sprite(new Texture("entities/enemies/ragnaros.png"));
         hitbox = new Rectangle(position.x, position.y, width, height);
     }
 
@@ -64,10 +64,10 @@ public class Boss {
                     fireExpandingSpiral();
                     bulletCooldown = 0.05f;
                 }
-//                if (bombCooldown <= 0) {
-//                    dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
-//                    bombCooldown = 2f;
-//                }
+                if (bombCooldown <= 0) {
+                    dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
+                    bombCooldown = 2f;
+                }
                 if (phaseTimer > 5) {
                     nextPhase();
                 }
@@ -168,7 +168,7 @@ public class Boss {
 
     public void drawBulletHitboxes(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED); 
+        shapeRenderer.setColor(Color.RED);
 
         for (Bullet bullet : bullets) {
             Circle hitbox = bullet.getHitbox();
