@@ -24,18 +24,22 @@ import java.util.Random;
 
 public class Player extends Actor {
 
+
+    //Player stats
     private final int STARTING_HEALTH_POINTS = 100;
-    private int maxHealthPoints;
-    private int currentHealthPoints;
+    private float maxHealthPoints;
+    private float currentHealthPoints;
     private int experiencePoints;
     private float speed = 500f;
     private double baseDamage;
     private double cooldown;
     private float criticalHitChance = 0.10f;
     private double criticalHitDamage = 2;
+    private float hpRegenPerSecond = 0.1f;
+
+
     private float lifesteal = 0f;
 
-    //private int level = 1;
     private boolean isImmune;
     private boolean isAlive;
     private LevelSystem levelSystem;
@@ -361,11 +365,11 @@ public class Player extends Actor {
         return criticalHitDamage;
     }
 
-    public int getCurrentHealthPoints() {
+    public float getCurrentHealthPoints() {
         return currentHealthPoints;
     }
 
-    public int getMaxHealthPoints() {
+    public float getMaxHealthPoints() {
         return maxHealthPoints;
     }
 

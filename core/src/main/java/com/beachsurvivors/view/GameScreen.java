@@ -141,10 +141,6 @@ public class GameScreen extends Game implements Screen {
 
         createParticleEffects();
 
-        //TESTAR OLIKA DROPS
-        ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);
-        //groundItems.add(orb);
-
         Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
         groundItems.add(chest);
 
@@ -154,10 +150,6 @@ public class GameScreen extends Game implements Screen {
 
         createMiniBossSchedule();
 
-        SpeedBoost sp = new SpeedBoost(playerPos.x+ 150, playerPos.y + 150, poolManager);
-        LuckyClover lc = new LuckyClover(playerPos.x- 150, playerPos.y + 150, poolManager);
-        droppedItems.add(sp);
-        droppedItems.add(lc);
     }
 
     private void createParticleEffects() {
@@ -178,7 +170,6 @@ public class GameScreen extends Game implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage); //Uppdaterar vilken stage inputProcessorn ska lyssna på
     }
-
 
     /**
      * The rendering of the game. This method is called 60 times per second
@@ -203,7 +194,6 @@ public class GameScreen extends Game implements Screen {
             gameUI.update(Gdx.graphics.getDeltaTime());
             gameUI.draw();
 
-
         } else {
 
 //            spriteBatch.begin();
@@ -213,9 +203,7 @@ public class GameScreen extends Game implements Screen {
             gameUI.getStage().act(0);
             gameUI.update(0);
             gameUI.draw();
-
         }
-
 
         if (chestOverlay != null) {
             chestOverlay.update(delta);
@@ -227,6 +215,7 @@ public class GameScreen extends Game implements Screen {
                 isOverlayActive = false;
             }
         }
+
     }
 
     /**
@@ -815,7 +804,6 @@ public class GameScreen extends Game implements Screen {
      * Decluttering method for keeping the draw-method simple.
      */
     private void drawStuff() {
-
 
         drawGroundItems();
         drawPowerUps();

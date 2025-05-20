@@ -1,6 +1,5 @@
 package com.beachsurvivors.model.groundItems;
 
-import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
@@ -22,11 +21,11 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
     @Override
     public void onPickup(Player player) {
         System.out.println("You picked up SpeedBoost");
-        applyAffect(player);
+        applyEffect(player);
     }
 
     @Override
-    protected void applyAffect(Player player) {
+    protected void applyEffect(Player player) {
         player.increaseSpeed(speedIncrease);
     }
 
