@@ -139,13 +139,7 @@ public class GameScreen extends Game implements Screen {
         player.setPlayerX(map.getStartingX());
         player.setPlayerY(map.getStartingY());
 
-        poolManager = new ParticleEffectPoolManager();
-        poolManager.register("entities/particles/blueFlame.p", 5, 20);
-        poolManager.register("entities/particles/lootBeam.p", 5, 20);
-        poolManager.register("entities/particles/lootPile.p", 5, 20);
-        poolManager.register("entities/particles/xp_orb.p", 5, 20);
-        poolManager.register("entities/particles/chestClosed.p", 5, 20);
-        poolManager.register("entities/particles/chestOpen.p", 5, 20);
+        createParticleEffects();
 
         //TESTAR OLIKA DROPS
         ExperienceOrb orb = new ExperienceOrb(player.getPlayerX()-150,player.getPlayerY()-140,1000, poolManager);
@@ -164,6 +158,16 @@ public class GameScreen extends Game implements Screen {
         LuckyClover lc = new LuckyClover(playerPos.x- 150, playerPos.y + 150, poolManager);
         droppedItems.add(sp);
         droppedItems.add(lc);
+    }
+
+    private void createParticleEffects() {
+        poolManager = new ParticleEffectPoolManager();
+        poolManager.register("entities/particles/blueFlame.p", 5, 20);
+        poolManager.register("entities/particles/lootBeam.p", 5, 20);
+        poolManager.register("entities/particles/lootPile.p", 5, 20);
+        poolManager.register("entities/particles/xp_orb.p", 5, 20);
+        poolManager.register("entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("entities/particles/chestOpen.p", 5, 20);
     }
 
     /**
