@@ -44,8 +44,9 @@ public class Bullet {
     public void draw(SpriteBatch spriteBatch) {
         sprite.rotate(10);
         sprite.setPosition(position.x - width / 2f, position.y - height / 2f);
-        trailEffect.draw(spriteBatch);
+
         sprite.draw(spriteBatch);
+        trailEffect.draw(spriteBatch);
     }
 
 
