@@ -1,11 +1,13 @@
 package com.beachsurvivors.model;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 
 public class Bullet {
     private Vector2 position;
@@ -14,24 +16,39 @@ public class Bullet {
 
     private float width = 64;
     private float height = 64;
-    private Sprite sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/bullet.png"));
+    private Sprite sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/fire_ball.png"));
 
-    public Bullet(Vector2 position, Vector2 velocity) {
-        this.position = position;
-        this.velocity = velocity;
+
+    private ParticleEffectPool.PooledEffect trailEffect;
+
+    public Bullet(Vector2 position, Vector2 velocity, ParticleEffectPoolManager poolManager) {
+        this.position = new Vector2(position);
+        this.velocity = new Vector2(velocity);
+        this.sprite.setSize(width, height);
+        this.sprite.setOriginCenter();
+        this.trailEffect = poolManager.obtain("entities/particles/fire_trail.p");
+        trailEffect.setPosition(position.x, position.y);
+        trailEffect.start();
+
     }
 
     public void update(float delta) {
         position.mulAdd(velocity, delta);
-        hitbox.set(position.x, position.y,width/2);
-        //TODO: dispose if off screen
+        hitbox.set(position.x, position.y, width / 2f);
+
+        trailEffect.setPosition(position.x, position.y);
+        trailEffect.update(delta);
+
     }
 
     public void draw(SpriteBatch spriteBatch) {
-        spriteBatch.draw(sprite, position.x - width/2, position.y - height/2, width, height);
+        sprite.rotate(10);
+        sprite.setPosition(position.x - width / 2f, position.y - height / 2f);
+        trailEffect.draw(spriteBatch);
+        sprite.draw(spriteBatch);
     }
 
-    // Reused method, with small changes, from ExperienceOrb.
+
     public boolean overlaps(Player player) {
         float closestX = Math.max(player.getHitBox().getX(), Math.min(getHitbox().x, player.getHitBox().getX() + player.getHitBox().getWidth()));
         float closestY = Math.max(player.getHitBox().getY(), Math.min(getHitbox().y, player.getHitBox().getY() + player.getHitBox().getHeight()));
@@ -45,5 +62,13 @@ public class Bullet {
     public Circle getHitbox() {
         return hitbox;
     }
-}
 
+    public void dispose() {
+        trailEffect.free();
+        trailEffect = null;
+    }
+
+    public boolean isEffectComplete() {
+        return trailEffect.isComplete();
+    }
+}

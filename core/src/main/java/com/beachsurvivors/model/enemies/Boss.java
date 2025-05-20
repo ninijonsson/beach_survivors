@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.Bullet;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.BombAttack;
 
@@ -30,15 +31,17 @@ public class Boss {
 
     private Array<BombAttack> bombs = new Array<>();
     private float bombCooldown;
+    private ParticleEffectPoolManager poolManager;
 
 
-    public Boss(Vector2 position) {
+    public Boss(Vector2 position, ParticleEffectPoolManager poolManager) {
         this.position = position;
         width = 500;
         height = 500;
         healthPoints = 1000;
         sprite = new Sprite(new Texture("entities/enemies/shark.png"));
         hitbox = new Rectangle(position.x, position.y, width, height);
+        this.poolManager = poolManager;
     }
 
     public void draw(SpriteBatch spriteBatch) {
@@ -159,7 +162,7 @@ public class Boss {
     }
 
     private void spawnBullet(Vector2 velocity) {
-        bullets.add(new Bullet(new Vector2(position), velocity));
+        bullets.add(new Bullet(new Vector2(position), velocity, poolManager));
     }
 
     private void dropBomb(Vector2 position) {
@@ -168,7 +171,7 @@ public class Boss {
 
     public void drawBulletHitboxes(ShapeRenderer shapeRenderer) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED); 
+        shapeRenderer.setColor(Color.RED);
 
         for (Bullet bullet : bullets) {
             Circle hitbox = bullet.getHitbox();

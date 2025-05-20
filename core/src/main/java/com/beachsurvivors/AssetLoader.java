@@ -76,7 +76,7 @@ public class AssetLoader {
 
         manager.load("entities/abilities/exp_bar.png", Texture.class);
         manager.load("entities/abilities/xp_orb.png", Texture.class);
-
+        manager.load("entities/abilities/fire_ball.png", Texture.class);
         //manager.load("entities/abilities/ability_bar.png", Texture.class);
         manager.load("entities/abilities/bullet.png", Texture.class);
         manager.load("entities/abilities/boomerangmc.png", Texture.class);
@@ -137,6 +137,9 @@ public class AssetLoader {
 
         ParticleEffectLoader.ParticleEffectParameter impactZone = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/impact_zone.p", ParticleEffect.class, impactZone);
+
+        ParticleEffectLoader.ParticleEffectParameter fireEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/fire_trail.p", ParticleEffect.class, fireEffect);
     }
 
     private void addSkins() {

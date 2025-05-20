@@ -125,7 +125,7 @@ public class GameScreen extends Game implements Screen {
 
         player = new Player(map, spriteBatch, this);
         playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
-        boss = new Boss(new Vector2(playerPos));
+
 
         boomerang = new Boomerang();
         bullet = new BaseAttack();
@@ -150,7 +150,8 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("entities/particles/xp_orb.p", 5, 20);
         poolManager.register("entities/particles/chestClosed.p", 5, 20);
         poolManager.register("entities/particles/chestOpen.p", 5, 20);
-
+        poolManager.register("entities/particles/fire_trail.p", 5 , 20);
+        boss = new Boss(new Vector2(playerPos), poolManager);
         Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
         groundItems.add(chest);
 
@@ -252,7 +253,7 @@ public class GameScreen extends Game implements Screen {
         drawStuff();
         spriteBatch.end();
 
-        boss.drawBulletHitboxes(shapeRenderer);
+        //boss.drawBulletHitboxes(shapeRenderer);
 
     }
 
