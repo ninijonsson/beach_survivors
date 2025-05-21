@@ -137,6 +137,9 @@ public class AssetLoader {
 
         ParticleEffectLoader.ParticleEffectParameter impactZone = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/impact_zone.p", ParticleEffect.class, impactZone);
+
+        ParticleEffectLoader.ParticleEffectParameter waterTrail = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/water_trail.p", ParticleEffect.class, waterTrail);
     }
 
     private void addSkins() {

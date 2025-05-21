@@ -75,6 +75,7 @@ entities/particles/particle-star.png
 entities/particles/particle.png
 entities/particles/shieldEffect.p
 entities/particles/smoke.png
+entities/particles/water_trail.p
 entities/particles/xp_orb.p
 entities/particles/xp_orb.png
 entities/power_ups/beer.png
@@ -110,6 +111,7 @@ game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
 game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
+gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas

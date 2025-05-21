@@ -26,6 +26,8 @@ public abstract class Ability implements Disposable {
     private boolean isPersistent = false; //Om abilityn ska vara "permanent" (sköld) eller försvinna, t.ex (BaseAttack)
     private Image icon;
     private boolean isOffCooldown;
+    private int height;
+    private int width;
 
     public Ability(String name, String texturePath, AbilityType type, double damageMultiplier, float cooldown, int width, int height) {
         this.texture = AssetLoader.get().getTexture(texturePath);
@@ -34,6 +36,8 @@ public abstract class Ability implements Disposable {
         this.hitBox = new Rectangle();
         hitBox.setSize(width, height);
 
+        this.height = height;
+        this.width = width;
         this.name = name;
         this.type = type;
         this.damageMultiplier = damageMultiplier;
@@ -41,7 +45,7 @@ public abstract class Ability implements Disposable {
     }
 
     public void updatePosition(float delta, Vector2 position) {
-        getSprite().setPosition(position.x - getSprite().getWidth()/2, position.y - getSprite().getHeight()/2);
+        getSprite().setPosition(position.x - getSprite().getWidth() / 2, position.y - getSprite().getHeight() / 2);
         getHitBox().setPosition(position.x, position.y);
     }
 
@@ -65,7 +69,7 @@ public abstract class Ability implements Disposable {
     public Double getBaseDamage() {
         double min = damageMultiplier;
         double max = damageMultiplier * 1.5;
-        return min + (int)(Math.random() * ((max - min) + 1));
+        return min + (int) (Math.random() * ((max - min) + 1));
     }
 
     public double getDamageMultiplier() {
@@ -123,7 +127,7 @@ public abstract class Ability implements Disposable {
     public void setIcon(String iconImagePath) {
         Texture texture = AssetLoader.get().getTexture(iconImagePath);
         icon = new Image(texture);
-        icon.setSize(64,64);
+        icon.setSize(64, 64);
     }
 
     public Texture getTexture() {
@@ -140,6 +144,14 @@ public abstract class Ability implements Disposable {
 
     public String getName() {
         return name;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
     }
 
     public void setPersistent(boolean isPersistent) {
