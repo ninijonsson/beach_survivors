@@ -62,6 +62,9 @@ public class Player extends Actor {
     private static final int FRAME_ROWS = 1;
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
+    private Texture shadowTexture;
+    protected float shadowOffsetX = 0f;
+    protected float shadowOffsetY = -10f;
     private boolean isMoving;
     private Color tint = Color.WHITE;
 
@@ -75,7 +78,8 @@ public class Player extends Actor {
     private Map map;
     private Sound footstepSound;
     private float footstepTimer = 0;
-    private float footstepInterval = 0.4f; // hur ofta ljudet får spelas (i sekunder)
+    private float footstepInterval = 0.4f;
+
 
 
     public Player(Map map, SpriteBatch spriteBatch, GameScreen gameScreen) {
@@ -108,8 +112,16 @@ public class Player extends Actor {
 
     }
 
+    public void drawShadow(SpriteBatch spriteBatch) {
+        float shadowX = position.x - playerWidth / 2f + shadowOffsetX;
+        float shadowY = position.y - playerHeight / 2f + shadowOffsetY;
+        spriteBatch.draw(shadowTexture, shadowX, shadowY, playerWidth, playerHeight / 4f);
+    }
+
     private void createAnimation() {
         int choice = random.nextInt(1,3);
+        this.shadowTexture = AssetLoader.get().manager.get("entities/abilities/bomb_shadow.png", Texture.class);
+
         switch (choice) {
             case 1:
                 walkSheet = AssetLoader.get().manager.get("entities/beach_girl_sheet.png");
@@ -135,7 +147,7 @@ public class Player extends Actor {
     public void drawAnimation() {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame;
-
+        drawShadow(spriteBatch);
         if (isMoving) {
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 

@@ -1,8 +1,11 @@
 package com.beachsurvivors.model.abilities;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
@@ -13,15 +16,18 @@ public class BaseAttack extends Ability {
     private Vector2 direction;
     private Sound fireSound;
     private float projectileSpeed;
+    private ParticleEffectPool.PooledEffect trailEffect;
+
 
     //Constructor för default baseattack (spelarens)
-    public BaseAttack() {
+    public BaseAttack(ParticleEffectPoolManager poolManager) {
         super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 1.0, 0.7f, 64, 64);
         this.position = new Vector2();
         this.direction = new Vector2();
         this.projectileSpeed = 600f;
-
-        this.fireSound= AssetLoader.get().getSound("entities/abilities/water_gun_fire.wav");
+        trailEffect = poolManager.obtain("entities/particles/water_trail.p");
+        trailEffect.setPosition(position.x, position.y);
+        this.fireSound = AssetLoader.get().getSound("entities/abilities/water_gun_fire.wav");
         fireSound.setVolume(fireSound.play(), 0.5f);
     }
 
@@ -34,7 +40,9 @@ public class BaseAttack extends Ability {
 
     }
 
-    public Vector2 getDirection() { return direction; }
+    public Vector2 getDirection() {
+        return direction;
+    }
 
     public void setDirection(Vector2 direction) {
         this.direction.set(direction);
@@ -56,12 +64,22 @@ public class BaseAttack extends Ability {
 
         getSprite().setOriginCenter();
         getSprite().setRotation(direction.angleDeg() + 90);
+        if (trailEffect != null) {
+            trailEffect.setPosition(position.x + getWidth() / 2f, position.y + getHeight() / 2f);
+
+            trailEffect.update(delta);
+        }
+
     }
 
     public void setPosition(Vector2 startPosition) {
         this.position = startPosition;
         getSprite().setPosition(position.x, position.y);
         getHitBox().setPosition(position.x, position.y);
+    }
+
+    public void drawTrail(SpriteBatch batch) {
+        if (trailEffect != null) trailEffect.draw(batch);
     }
 
     public Vector2 getPosition() {
@@ -72,4 +90,15 @@ public class BaseAttack extends Ability {
     public float getProjectileSpeed() {
         return projectileSpeed;
     }
+
+    @Override
+    public void dispose() {
+        if (trailEffect != null) {
+            trailEffect.free();
+            trailEffect = null;
+        }
+        super.dispose();
+
+    }
+
 }

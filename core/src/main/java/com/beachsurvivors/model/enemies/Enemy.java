@@ -46,6 +46,10 @@ public abstract class Enemy implements Disposable {
     private Texture texture;
     private Sprite sprite;
     private Rectangle hitbox;
+    private final Texture shadowTexture;
+    protected float shadowOffsetX = 0f;
+    protected float shadowOffsetY = -10f;
+
     private Sound hitSound;
     private boolean isImmune;
 
@@ -73,6 +77,7 @@ public abstract class Enemy implements Disposable {
         this.hitbox = new Rectangle(32, 32, width, height);
         isImmune=false;
         isAlive = true;
+        this.shadowTexture = AssetLoader.get().manager.get("entities/abilities/bomb_shadow.png", Texture.class);
         createHealthBar(healthPoints);
 
     }
@@ -88,6 +93,7 @@ public abstract class Enemy implements Disposable {
         healthBar.setPosition(hitbox.x+hitbox.width/2, hitbox.y+height);
         healthBar.setSize(70, 50);
         healthBar.setScale(0.2f);
+
     }
 
     public void addHealthBar(Stage stage) {
@@ -142,6 +148,7 @@ public abstract class Enemy implements Disposable {
 
     public void drawAnimation(SpriteBatch spriteBatch) {
         stateTime += Gdx.graphics.getDeltaTime();
+        drawShadow(spriteBatch);
         TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
         if (isMovingLeft() && !currentFrame.isFlipX()) {
             currentFrame.flip(true, false);
@@ -151,8 +158,18 @@ public abstract class Enemy implements Disposable {
 
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, getPosition().x, getPosition().y, getWidth(), getHeight());
-        spriteBatch.setColor(Color.WHITE); // återställ så inte resten färgas
+        spriteBatch.setColor(Color.WHITE);
 
+    }
+
+    public void drawShadow(SpriteBatch spriteBatch) {
+        float shadowX = position.x + shadowOffsetX;
+        float shadowY = position.y + shadowOffsetY;
+        spriteBatch.draw(shadowTexture, shadowX, shadowY, width, height / 4f);
+    }
+
+    public void setShadowOffsetY(int offset){
+        this.shadowOffsetY=offset;
     }
 
     public void onDeath(){

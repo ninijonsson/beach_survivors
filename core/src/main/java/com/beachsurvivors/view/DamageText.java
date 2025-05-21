@@ -20,15 +20,15 @@ public class DamageText {
         this.duration = duration;
         this.timer = duration;
         this.font = new BitmapFont();
-        this.color = new Color(Color.GRAY);
+        this.color = new Color(Color.WHITE);
 
 
 
         if (isCritical) {
-            font.getData().setScale(3.0f);
+            font.getData().setScale(5.0f);
             color.set(Color.YELLOW);
         } else {
-            font.getData().setScale(2.0f);
+            font.getData().setScale(4.0f);
         }
     }
 

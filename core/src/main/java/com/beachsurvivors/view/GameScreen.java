@@ -120,10 +120,18 @@ public class GameScreen extends Game implements Screen {
         stage = new Stage(gameViewport);
         stage.clear();
 
+        poolManager = new ParticleEffectPoolManager();
+        poolManager.register("entities/particles/blueFlame.p", 5, 20);
+        poolManager.register("entities/particles/lootBeam.p", 5, 20);
+        poolManager.register("entities/particles/lootPile.p", 5, 20);
+        poolManager.register("entities/particles/xp_orb.p", 5, 20);
+        poolManager.register("entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("entities/particles/chestOpen.p", 5, 20);
+        poolManager.register("entities/particles/water_trail.p", 5, 20);
         player = new Player(map, spriteBatch, this);
 
         boomerang = new Boomerang();
-        bullet = new BaseAttack();
+        bullet = new BaseAttack(poolManager);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies);
         abilities.add(boomerang);
@@ -135,13 +143,8 @@ public class GameScreen extends Game implements Screen {
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
 
-        poolManager = new ParticleEffectPoolManager();
-        poolManager.register("entities/particles/blueFlame.p", 5, 20);
-        poolManager.register("entities/particles/lootBeam.p", 5, 20);
-        poolManager.register("entities/particles/lootPile.p", 5, 20);
-        poolManager.register("entities/particles/xp_orb.p", 5, 20);
-        poolManager.register("entities/particles/chestClosed.p", 5, 20);
-        poolManager.register("entities/particles/chestOpen.p", 5, 20);
+
+
 
         Chest chest = new Chest(player.getPosition().x -250,player.getPosition().y -140, poolManager, this);
         groundItems.add(chest);
@@ -484,7 +487,7 @@ public class GameScreen extends Game implements Screen {
                 targetCenter.y - player.getPosition().y
             ).nor();
 
-            BaseAttack bullet = new BaseAttack();
+            BaseAttack bullet = new BaseAttack(poolManager);
             bullet.setDirection(direction);
             bullet.setPosition(player.getPosition().cpy());
 
@@ -893,6 +896,10 @@ public class GameScreen extends Game implements Screen {
                 }
             } else {
                 a.getSprite().draw(spriteBatch);
+            }
+
+            if( a instanceof BaseAttack){
+                ((BaseAttack) a).drawTrail(spriteBatch);
             }
         }
 

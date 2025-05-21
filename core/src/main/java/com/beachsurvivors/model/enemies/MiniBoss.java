@@ -1,5 +1,6 @@
 package com.beachsurvivors.model.enemies;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
@@ -20,22 +21,19 @@ public class MiniBoss extends Enemy {
         setMovementSpeed(200f);
         setDamage(20);
 
+        setShadowOffsetY(-30);
     }
 
     @Override
     public void move() {
-
     }
 
     @Override
     public void attack(Player player, Array enemyAbilities) {
-
     }
 
     @Override
     public void dropItems() {
-
-
     }
 
     public void dropChest(Array<GroundItem> groundItems) {
