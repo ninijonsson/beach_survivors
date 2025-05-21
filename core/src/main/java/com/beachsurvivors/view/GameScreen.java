@@ -308,9 +308,7 @@ public class GameScreen extends Game implements Screen {
                 activeBombs.removeIndex(i);
             }
         }
-
     }
-
 
     /**
      * This method is used to control enemy moving behaviour. Each enemy is given a radius in which other enemies tries
@@ -668,7 +666,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-
     /**
      * Updates position of all abilities that enemies use
      */
@@ -679,7 +676,6 @@ public class GameScreen extends Game implements Screen {
             ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
         }
     }
-
 
     /**
      * Updates the position of an enemy
