@@ -92,9 +92,6 @@ public class Player extends Actor {
         isAlive = true;
         isImmune = false;
 
-//        playerX = map.getStartingX();
-//        playerY = map.getStartingY();
-
         position = new Vector2(map.getStartingX(), map.getStartingY());
 
         beachGuyHitBox = new Rectangle(position.x - playerWidth / 2, position.y - playerHeight / 2, playerWidth, playerHeight);
