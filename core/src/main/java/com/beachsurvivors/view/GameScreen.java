@@ -81,7 +81,6 @@ public class GameScreen extends Game implements Screen {
     private Array<Ability> enemyAbilities = new Array<>();
     private Array<PowerUp> powerUpsToRemove = new Array<>();
     private Array<GroundItem> groundItemsToRemove = new Array<>();
-   // private Vector2 playerPos;
 
     private boolean isPaused = false;
 
