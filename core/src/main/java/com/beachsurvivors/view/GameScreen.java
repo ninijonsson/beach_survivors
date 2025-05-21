@@ -130,11 +130,11 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("entities/particles/water_trail.p", 5, 20);
         player = new Player(map, spriteBatch, this);
 
-        boomerang = new Boomerang();
+        //boomerang = new Boomerang();
         bullet = new BaseAttack(poolManager);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies);
-        abilities.add(boomerang);
+        //abilities.add(boomerang);
         abilities.add(bullet);
         abilities.add(shield);
 
@@ -498,6 +498,7 @@ public class GameScreen extends Game implements Screen {
     private void updateShieldPos() {
         if (!shield.getIsDepleted() && shield.getSprite() != null) {
             shield.updatePosition(0, player.getPosition());
+            shield.rotate(-2);
         }
     }
 
@@ -884,6 +885,12 @@ public class GameScreen extends Game implements Screen {
             dt.draw(spriteBatch);
         }
     }
+    public void showPlayerDamageText(String text, boolean isCritical) {
+        float x = player.getPosition().x;
+        float y = player.getPosition().y + 100;
+        damageTexts.add(new DamageText(text, x, y, 1.0f, isCritical));
+    }
+
 
     private void drawPlayerAbilities() {
         for (Ability a : abilities) {

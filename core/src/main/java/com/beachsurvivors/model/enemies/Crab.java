@@ -9,7 +9,7 @@ public class Crab extends Enemy {
         super(128, 128, 20, 15);
         createAnimation(AssetLoader.get().getTexture("entities/enemies/crab_sheet.png"), 3, 1);
         setHealthPoints(15);
-        setMovementSpeed(250f);
+        setMovementSpeed(150f);
         setDamage(5);
     }
 

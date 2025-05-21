@@ -98,7 +98,7 @@ public class ChestOverlay {
     }
 
     private void selectAbility(int index) {
-        game.getGameUI().updateInfoTable("Du valde ability: " + index);
+        //game.getGameUI().updateInfoTable("Du valde ability: " + index);
         isClosed = true;
         Gdx.input.setInputProcessor(game.getGameUI().getStage());
     }

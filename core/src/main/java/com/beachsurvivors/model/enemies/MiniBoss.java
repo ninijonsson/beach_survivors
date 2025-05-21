@@ -14,11 +14,11 @@ public class MiniBoss extends Enemy {
     private GameScreen gameScreen;
 
     public MiniBoss(ParticleEffectPoolManager poolManager, GameScreen gameScreen) {
-        super(128 * 3, 128 * 3, 150, 100);
+        super(128 * 3, 128 * 3, 250, 100);
         this.poolManager = poolManager;
         this.gameScreen = gameScreen;
         createAnimation(AssetLoader.get().getTexture("entities/enemies/crocodile2.png"), 1, 1);
-        setMovementSpeed(200f);
+        setMovementSpeed(100f);
         setDamage(20);
 
         setShadowOffsetY(-30);

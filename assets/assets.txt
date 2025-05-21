@@ -21,6 +21,10 @@ entities/abilities/bomb_shadow.png
 entities/abilities/boomerangmc.png
 entities/abilities/bullet.png
 entities/abilities/exp_bar.png
+entities/abilities/exp_bar_bg.aseprite
+entities/abilities/exp_bar_bg.png
+entities/abilities/exp_bar_fill.aseprite
+entities/abilities/exp_bar_fill.png
 entities/abilities/fireball.png
 entities/abilities/impact_zone.png
 entities/abilities/lightning.png

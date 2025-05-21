@@ -89,8 +89,10 @@ public class GameUI {
         stage.addActor(timerLabel);
         stage.addActor(abilityBarStack);
         stage.addActor(xpTable);
-        stage.addActor(progressBarTable);
         stage.addActor(buffStack);
+        stage.addActor(progressBar);
+        stage.addActor(currentLevel);
+        stage.addActor(nextLevel);
     }
 
     private void createAbilityTable() {
@@ -205,8 +207,6 @@ public class GameUI {
         xpBar.setScale(1.5f);
         xpBar.setSize(400,70);
         xpTable.add(xpBar);
-        xpTable.top();
-        xpTable.center();
         xpTable.pack();
         xpTable.setPosition(
             ((viewport.getWorldWidth() - xpTable.getWidth()*1.5f) / 2), viewport.getWorldHeight()-xpTable.getHeight()*1.5f
@@ -306,12 +306,11 @@ public class GameUI {
     }
 
     public void createProgressBar() {
-        progressBarTable = new Table();
         Skin skin = new Skin(Gdx.files.internal("skin_composer/testbuttons.json"));
 
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
-        progressBar.setSize(700, 70);
+        progressBar.setSize(550, 70);
 
         levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
         levelFont.setColor(Color.WHITE);
@@ -320,13 +319,18 @@ public class GameUI {
         currentLevel = new Label("Level: " + getPlayerLevel(), labelStyle);
         nextLevel = new Label(getPlayerLevel(), labelStyle);
 
-        progressBarTable.add(currentLevel).padRight(50);
-        progressBarTable.add(progressBar).expandX().fillX();
-        progressBarTable.add(nextLevel).padLeft(40);
+        // Lägg till alla UI-element direkt till stage istället för Table
 
-        progressBarTable.setSize(720, 70);
-        progressBarTable.setPosition(xpTable.getX()-currentLevel.getWidth(), xpTable.getY()+progressBar.getHeight()*0.55f);
+
+        // Justera positioner manuellt
+        float centerX = viewport.getWorldWidth() / 2f;
+        float topY = xpTable.getY() - 2;
+
+        currentLevel.setPosition(centerX - 450, topY + 20);   // vänster sida
+        progressBar.setPosition(centerX - 272, topY);         // mitten
+        nextLevel.setPosition(centerX + 330, topY + 20);       // höger sida
     }
+
 
     private String getPlayerLevel() {
         if (game.getPlayer() == null) {
@@ -427,10 +431,25 @@ public class GameUI {
         timerLabel.setText(timeText);
 
         updateLevelLabels();
+        updateXpBar();
         //updateAbilityBar();
 
         stage.act(deltaTime);
     }
+
+    public void updateXpBar() {
+        if (game.getPlayer() == null) return;
+
+        int currentExp = game.getPlayer().getLevelSystem().getCurrentExp();
+        int expToNext = game.getPlayer().getLevelSystem().getExpToNextLevel();
+
+        progressBar.setRange(0, expToNext);
+        progressBar.setValue(currentExp);
+
+        currentLevel.setText("Level: " + game.getPlayer().getLevel());
+        nextLevel.setText(String.valueOf(game.getPlayer().getLevel() + 1));
+    }
+
 
     public void draw() {
         stage.draw();

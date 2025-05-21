@@ -37,7 +37,7 @@ public class Player extends Actor {
     private float hpRegenPerSecond = 0.1f;
     private float regenTimer = 1f;
     private float areaIncrease = 0f;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
-    private float lifesteal = 0f;
+    private float lifesteal = 10f;
 
     private boolean isImmune;
     private boolean isAlive;
@@ -259,29 +259,30 @@ public class Player extends Actor {
         walkSheet.dispose();
     }
 
-    public void takeDamage(double damage){
+    public void takeDamage(double damage) {
+        if (damage <= 0) return;
         if (!isImmune) {
             currentHealthPoints -= damage;
             damageTaken += damage;
+
+            gameScreen.showPlayerDamageText("-" + (int) damage, true);  // Visa endast om skadan faktiskt tillämpas
+
             if (currentHealthPoints <= 0) {
                 setAlive(false);
                 return;
             }
 
-            isImmune = true; //Immunitet när man tar damage
-            tint = Color.RED; //Ändrar färgen när man tar damage
+            isImmune = true;
+            tint = Color.RED;
 
-            Timer.schedule(new Task() {  //resetar immunitet efter 0,5sekunder
+            Timer.schedule(new Task() {
                 @Override
                 public void run() {
                     isImmune = false;
                 }
             }, 0.5f);
 
-            //Jag gjorde två olika tasks för att 0.1sekunder immunitet kändes lite om där är mkt mobs
-            //men det kanske är fine med 0.1? i så fall kan vi slå ihop båda tasks
-
-            Timer.schedule(new Task() {  //resetar färgen efter 0.1sekunder
+            Timer.schedule(new Task() {
                 @Override
                 public void run() {
                     tint = Color.WHITE;
@@ -289,6 +290,7 @@ public class Player extends Actor {
             }, 0.1f);
         }
     }
+
     public void onDamageDealt(double damageDealt) {
         int healedAmount = Math.round((float) (damageDealt * lifesteal));
         restoreHealthPoints(healedAmount);

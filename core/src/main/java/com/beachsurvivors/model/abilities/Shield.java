@@ -78,4 +78,9 @@ public class Shield extends Ability {
     public double getTotalDamagePrevented() {
         return totalDamagePrevented;
     }
+
+    public void rotate(int i) {
+        getSprite().setOriginCenter();
+        getSprite().rotate(2);
+    }
 }

@@ -29,6 +29,8 @@ public class LevelSystem {
             expToNextLevel = calculateExpForLevelUp(currentLevel);
 
             onLevelUp();
+            ui.updateXpBar();
+
         }
     }
 
