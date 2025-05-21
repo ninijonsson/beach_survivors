@@ -1,16 +1,14 @@
 package com.beachsurvivors.model.abilities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.utilities.CombatHelper;
 import com.beachsurvivors.view.DamageText;
 
 import java.util.HashSet;
@@ -29,9 +27,9 @@ public class ChainLightning extends Ability {
 
 
     public ChainLightning(Array<Enemy> enemies) {
-        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 30, 7, 32, 32);
-        maxJumps = 5;
-        jumpRadius = 500;
+        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 6, 32, 32);
+        maxJumps = 30;
+        jumpRadius = 800;
         this.enemies = enemies;
         chainLightningTimer = getCooldown();
         lightningVisibleTime = 0.5f;
@@ -39,35 +37,44 @@ public class ChainLightning extends Ability {
 
     }
 
-    public void cast(Enemy enemy, float delta) {
+    @Override
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
+
         chainLightningTimer += delta;  //Timer går upp med tiden
 
-        if (chainLightningTimer >= getCooldown()) { //När timer är högre än cooldown, casta chain lightning
+        float cooldown = CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
+        if (chainLightningTimer >= cooldown) { //När timer är högre än cooldown, casta chain lightning
             chainLightningTimer = 0;
+
             showLightning = true;
             lightningVisibleTime = 0.5f;
 
             hitPositions.clear();
 
-            Enemy current = enemy;
-            if (current != null) {
-                playSoundEffect();
+            Enemy current = CombatHelper.getNearestEnemy(player, enemies);
+            if (current == null) return;
 
-            }
             Set<Enemy> alreadyHitEnemies = new HashSet<>();
+            playSoundEffect();
 
             for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
-                current.hit(getDamage());
+                double damage = getDamageMultiplier() * player.getDamage();
+                current.hit(damage);
+                damageTexts.add(new DamageText((damage+""), current.getPosition().x+current.getWidth()/2f,
+                    current.getPosition().y+current.getHeight()+25, 1, player.isCriticalHit()));
 
                 alreadyHitEnemies.add(current);
-                hitPositions.add(current.getEnemyPos());
+                Vector2 targetCenter = current.getCenter();
+                hitPositions.add(targetCenter);
                 current = getNextTarget(current, alreadyHitEnemies);
             }
         }
     }
 
+
     //Uppdateras varje render ifall lightning effekten ska synas eller inte
     public void update(float delta) {
+
         if (showLightning) {
             lightningVisibleTime -= delta;
             if (lightningVisibleTime <= 0) {
@@ -86,7 +93,7 @@ public class ChainLightning extends Ability {
                 continue;
             }
 
-            float distance = enemies.get(i).getEnemyPos().dst(previous.getEnemyPos());
+            float distance = enemies.get(i).getPosition().dst(previous.getPosition());
             if (distance <= jumpRadius && distance < minDistance) { //om distance är innanför jump radius
                 minDistance = distance;  //och om distance < minDistance så blir den nya enemy närmre "closest"
                 closest = enemies.get(i);
@@ -141,14 +148,5 @@ public class ChainLightning extends Ability {
         maxJumps += jumpIncrease;
     }
 
-    @Override
-    public void use() {
-
-    }
-
-    @Override
-    public void use(Player player) {
-
-    }
 
 }

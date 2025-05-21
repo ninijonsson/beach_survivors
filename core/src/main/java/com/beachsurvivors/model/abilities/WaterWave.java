@@ -3,8 +3,11 @@ package com.beachsurvivors.model.abilities;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.view.DamageText;
 
 public class WaterWave extends Ability {
 
@@ -19,7 +22,7 @@ public class WaterWave extends Ability {
     private float waveFrequency = 10f;
     private float totalDistanceTraveled = 0f;
 
-    public WaterWave(String name, double damage, double cooldown, int width, int height,
+    public WaterWave(String name, double damage, float cooldown, int width, int height,
                      Vector2 startPosition, ParticleEffectPoolManager poolManager) {
         super(name, "entities/particles/bullet.png", AbilityType.ATTACK, damage, cooldown, width, height);
         this.position = new Vector2(startPosition);
@@ -69,12 +72,7 @@ public class WaterWave extends Ability {
     }
 
     @Override
-    public void use() {
-
-    }
-
-    @Override
-    public void use(Player player) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
 
     }
 

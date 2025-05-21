@@ -25,6 +25,7 @@ import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.*;
+import com.beachsurvivors.utilities.CombatHelper;
 
 import java.util.Random;
 
@@ -80,7 +81,6 @@ public class GameScreen extends Game implements Screen {
     private Array<Ability> enemyAbilities = new Array<>();
     private Array<PowerUp> powerUpsToRemove = new Array<>();
     private Array<GroundItem> groundItemsToRemove = new Array<>();
-    private Vector2 playerPos;
 
     private boolean isPaused = false;
 
@@ -121,38 +121,20 @@ public class GameScreen extends Game implements Screen {
         stage.clear();
 
         player = new Player(map, spriteBatch, this);
-        playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
 
         boomerang = new Boomerang();
         bullet = new BaseAttack();
         shield = new Shield();
+        chainLightning = new ChainLightning(enemies);
         abilities.add(boomerang);
         abilities.add(bullet);
         abilities.add(shield);
-        chainLightning = new ChainLightning(enemies);
 
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
 
-        player.setPlayerX(map.getStartingX());
-        player.setPlayerY(map.getStartingY());
-
-        createParticleEffects();
-
-        Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
-        groundItems.add(chest);
-
-        Vector2 startPos = new Vector2(player.getPlayerX(), player.getPlayerY());
-        WaterWave wave = new WaterWave("WaterWave", 15, 1.2, 32, 32, startPos, poolManager);
-        abilities.add(wave);
-
-        createMiniBossSchedule();
-
-    }
-
-    private void createParticleEffects() {
         poolManager = new ParticleEffectPoolManager();
         poolManager.register("entities/particles/blueFlame.p", 5, 20);
         poolManager.register("entities/particles/lootBeam.p", 5, 20);
@@ -160,6 +142,16 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("entities/particles/xp_orb.p", 5, 20);
         poolManager.register("entities/particles/chestClosed.p", 5, 20);
         poolManager.register("entities/particles/chestOpen.p", 5, 20);
+
+        Chest chest = new Chest(player.getPosition().x -250,player.getPosition().y -140, poolManager, this);
+        groundItems.add(chest);
+
+        Vector2 startPos = new Vector2(player.getPosition());
+        WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
+        abilities.add(wave);
+
+        createMiniBossSchedule();
+
     }
 
     /**
@@ -235,7 +227,7 @@ public class GameScreen extends Game implements Screen {
      * single game tick and is used to update the visuals of the game.
      */
     private void draw() {
-        gameViewport.getCamera().position.set(player.getPlayerX(), player.getPlayerY(), 0);
+        gameViewport.getCamera().position.set(player.getPosition(), 0);
         gameViewport.getCamera().update();
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         gameViewport.apply();
@@ -260,12 +252,8 @@ public class GameScreen extends Game implements Screen {
     private void input() {
         if (!isPaused) {
             if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                Vector2 position = new Vector2(
-                    player.getPlayerX(),
-                    player.getPlayerY()
-                );
-                activeBombs.add(new BombAttack(position, gameViewport.getCamera()));
-                System.out.println(position);
+                activeBombs.add(new BombAttack(player.getPosition(), gameViewport.getCamera()));
+                System.out.println(player.getPosition());
             }
 
             player.playerInput();
@@ -281,13 +269,14 @@ public class GameScreen extends Game implements Screen {
         pickUpGroundItem();
         updateShieldPos();
         gameUI.updateStats(player);
+        player.update(Gdx.graphics.getDeltaTime());
 
         enemyAttacks();
 
 
         if (playerAbilitiesTestMode) {
             playerShoot();
-            updateAbilityMovement();
+            updateAbilities();
         }
 
         updateDamageText();
@@ -329,40 +318,47 @@ public class GameScreen extends Game implements Screen {
      */
     private void resolveEnemyCollisions(Array<Enemy> enemies) {
         for (int i = 0; i < enemies.size; i++) {
-            Enemy e1 = enemies.get(i);
-            Circle c1 = e1.getCircle();
+            Enemy enemyA = enemies.get(i);
+            Circle circleA = enemyA.getCircle();
 
             for (int j = i + 1; j < enemies.size; j++) { // i + 1 avoids comparing an enemy with itself
-                Enemy e2 = enemies.get(j);
-                Circle c2 = e2.getCircle();
+                Enemy enemyB = enemies.get(j);
+                Circle circleB = enemyB.getCircle();
 
-                if (c1.overlaps(c2)) {
+                if (circleA.overlaps(circleB)) {
                     // Calculate push direction
                     // dx, dy is the vector from enemy 1 to enemy 2.
-                    float dx = c2.x - c1.x;
-                    float dy = c2.y - c1.y;
+                    float deltaX = circleB.x - circleA.x;
+                    float deltaY = circleB.y - circleA.y;
                     // dist is how far apart their centers are.
-                    float dist = (float) Math.sqrt(dx * dx + dy * dy);
-                    float minDist = c1.radius + c2.radius;
+                    float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                    float minimumDistance = circleA.radius + circleB.radius;
 
-                    if (dist == 0) dist = 0.01f; // avoid divide by zero
+                    if (distance == 0) distance = 0.01f; // avoid divide by zero
 
-                    float overlap = minDist - dist;
+                    float overlap = minimumDistance - distance;
 
                     // Normalize direction, gives clean push, 0% wonky
-                    float nx = dx / dist;
-                    float ny = dy / dist;
+                    float directionX = deltaX / distance;
+                    float directionY = deltaY / distance;
 
                     // Push enemies apart
-                    float push = overlap / 2f;
-                    float e1X = e1.getX();
-                    float e1Y = e1.getY();
-                    float e2X = e2.getX();
-                    float e2Y = e2.getY();
-                    e1.setX(e1X -= nx * push);
-                    e1.setY(e1Y -= ny * push);
-                    e2.setX(e2X += nx * push);
-                    e2.setY(e2Y += ny * push);
+                    float pushAmount = overlap / 2f;
+
+                    Vector2 positionA = enemyA.getPosition();
+                    Vector2 positionB = enemyB.getPosition();
+
+                    Vector2 newPositionA = new Vector2(
+                        positionA.x - directionX * pushAmount,
+                        positionA.y - directionY * pushAmount
+                    );
+
+                    Vector2 newPositionB = new Vector2(
+                        positionB.x + directionX * pushAmount,
+                        positionB.y + directionY * pushAmount
+                    );
+                    enemyA.setPosition(newPositionA);
+                    enemyB.setPosition(newPositionB);
                 }
             }
         }
@@ -469,46 +465,46 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void playerShoot() {  //Flytta alla player-shoot metoder till player i stället?
-        float bulletCooldown = (float) bullet.getCooldown();
+        float cooldown = CombatHelper.getActualCooldown(bullet.getCooldown(), player.getCooldownReduction());
         bulletTimer += Gdx.graphics.getDeltaTime();
 
-        if (bulletTimer >= bulletCooldown) {
+        if (bulletTimer >= cooldown) {
             bulletTimer = 0f;
             shootAtNearestEnemy();
         }
     }
 
-    private void updateShieldPos() {
-        if (!shield.getIsDepleted() && shield.getSprite() != null) {
-            shield.updatePosition(player.getPlayerX() - shield.getSprite().getWidth() / 2, player.getPlayerY() - shield.getSprite().getHeight() / 2);
-        }
-    }
-
-
     private void shootAtNearestEnemy() {
         Enemy target = getNearestEnemy();
 
         if (target != null) {
+            Vector2 targetCenter = target.getCenter();
             Vector2 direction = new Vector2(
-                target.getSprite().getX() - player.getPlayerX(),
-                target.getSprite().getY() - player.getPlayerY()
+                targetCenter.x - player.getPosition().x,
+                targetCenter.y - player.getPosition().y
             ).nor();
 
             BaseAttack bullet = new BaseAttack();
             bullet.setDirection(direction);
-            bullet.updatePosition(player.getPlayerX(), player.getPlayerY());
+            bullet.setPosition(player.getPosition().cpy());
 
             abilities.add(bullet);
+        }
+    }
+
+    private void updateShieldPos() {
+        if (!shield.getIsDepleted() && shield.getSprite() != null) {
+            shield.updatePosition(0, player.getPosition());
         }
     }
 
     private Enemy getNearestEnemy() {
         Enemy nearest = null;
         float minDistance = 1000;
-        playerPos.set(player.getPlayerX(), player.getPlayerY());
 
         for (Enemy enemy : enemies) {
-            float distance = playerPos.dst(enemy.getSprite().getX(), enemy.getSprite().getY());
+            float distance = player.getPosition().dst(enemy.getPosition());
+
 
             if (distance < minDistance) {
                 minDistance = distance;
@@ -523,13 +519,13 @@ public class GameScreen extends Game implements Screen {
             enemy.attack(player, enemyAbilities);
         }
         for (Ability a : enemyAbilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
         }
     }
 
     private void castChainLightning() {
         chainLightning.update(Gdx.graphics.getDeltaTime());
-        chainLightning.cast(getNearestEnemy(), Gdx.graphics.getDeltaTime());
+        chainLightning.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
     }
 
     @Override
@@ -617,9 +613,7 @@ public class GameScreen extends Game implements Screen {
         Enemy enemy = selectRandomEnemy();
 
         Vector2 randomPos = getRandomOffscreenPosition(150);
-        enemy.getSprite().setPosition(randomPos.x, randomPos.y);
-        enemy.getHitbox().setX(randomPos.x);
-        enemy.getHitbox().setY(randomPos.y);
+        enemy.setPosition(randomPos);
         enemies.add(enemy);
     }
 
@@ -656,9 +650,7 @@ public class GameScreen extends Game implements Screen {
         if (!(miniBossSchedule.isEmpty()) && miniBossSchedule.first() <= gameTimeSeconds) {
             Enemy miniBoss = new MiniBoss(poolManager, this);
             Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
-            miniBoss.setEnemyPos(randomPos);
-            miniBoss.setX(randomPos.x);
-            miniBoss.setY(randomPos.y);
+            miniBoss.setPosition(randomPos);
             enemies.add(miniBoss);
             miniBossSchedule.removeFirst();
         }
@@ -677,9 +669,11 @@ public class GameScreen extends Game implements Screen {
     /**
      * Updates position of all abilities that enemies use
      */
-    private void updateAbilityMovement() {
-        for (Ability a : abilities) {
-            a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPlayerX(), player.getPlayerY());
+    private void updateAbilities() {
+        for (Ability ability : abilities) {
+            ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition().cpy());
+            ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
+            ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
         }
     }
 
@@ -691,18 +685,20 @@ public class GameScreen extends Game implements Screen {
     private void updateEnemyMovement(Enemy enemy) {
         enemy.updateHealthBarPosition();
         enemy.addHealthBar(stage);
+
         float delta = Gdx.graphics.getDeltaTime();
-        playerPos.set(player.getPlayerX(), player.getPlayerY());
-        Vector2 vector = enemy.moveTowardsPlayer(delta, playerPos, enemy.getEnemyPos());
-        enemy.setMovingLeftRight(vector.x);
+
+        Vector2 direction = enemy.moveTowardsPlayer(delta, player.getPosition(), enemy.getPosition());
+        enemy.setMovingLeftRight(direction.x);
 
         //Uppdaterar Spritens X och Y position baserat på riktningen på fiendens vector2 * speed * tid.
         //vector.x/y är riktningen, movementSpeed är hastighet och delta är tid.
-        enemy.getSprite().translateX(vector.x * enemy.getMovementSpeed() * delta);
-        enemy.getSprite().translateY(vector.y * enemy.getMovementSpeed() * delta);
-        enemy.getHitbox().set(enemy.getSprite().getX(), enemy.getSprite().getY(), enemy.getWidth(), enemy.getHeight());
-    }
+        float speed = enemy.getMovementSpeed();
+        Vector2 movement = new Vector2(direction).scl(speed * delta);
 
+        Vector2 newPosition = enemy.getPosition().cpy().add(movement);
+        enemy.setPosition(newPosition);
+    }
 
     /**
      * What happens when an enemy dies
@@ -717,7 +713,7 @@ public class GameScreen extends Game implements Screen {
 
             // Om fienden är en miniboss ska den droppa en kista
             enemy.dropItems(droppedItems, poolManager);
-            groundItems.add(new ExperienceOrb(enemy.getX(), enemy.getY(), enemy.getExp(), poolManager));
+            groundItems.add(new ExperienceOrb(enemy.getPosition().x, enemy.getPosition().y, enemy.getExp(), poolManager));
             if (enemy instanceof MiniBoss) {
                 ((MiniBoss) enemy).dropChest(groundItems);
             }
@@ -743,7 +739,7 @@ public class GameScreen extends Game implements Screen {
 
             if (ability.getHitBox().overlaps(enemy.getHitbox())) {
                 boolean isCritical = player.isCriticalHit();
-                double damage = ability.getBaseDamage();
+                double damage = player.getDamage() * ability.getDamageMultiplier();
                 if (isCritical) {
                     damage *= player.getCriticalHitDamage();
                 }
@@ -774,7 +770,7 @@ public class GameScreen extends Game implements Screen {
     private void checkEnemyAbilitiesDamagePlayer() {
         for (int i = enemyAbilities.size - 1; i >= 0; i--) {
             if (enemyAbilities.get(i).getHitBox().overlaps(player.getHitBox())) {
-                damagePlayer(enemyAbilities.get(i).getDamage());
+                damagePlayer(enemyAbilities.get(i).getDamageMultiplier());
                 enemyAbilities.get(i).dispose();
                 enemyAbilities.removeIndex(i);
             }
@@ -814,6 +810,9 @@ public class GameScreen extends Game implements Screen {
         drawPlayerAbilities();
         drawChainLightning();
 
+        //drawEnemyHitboxes();
+        //drawPlayerHitbox();
+
 //        xpOrbDebug(player);
     }
 
@@ -833,6 +832,17 @@ public class GameScreen extends Game implements Screen {
         Rectangle hitbox = player.getHitBox();
         shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
         shapeRenderer.end();
+    }
+
+    private void drawEnemyHitboxes() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        for (Enemy enemy : enemies) {
+            Rectangle hitbox = enemy.getHitbox();
+            shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+
+        }
+            shapeRenderer.end();
     }
 
     /**
@@ -876,7 +886,7 @@ public class GameScreen extends Game implements Screen {
         for (Ability a : abilities) {
 
             if (a instanceof Shield) {
-                a.updatePosition(player.getPlayerX() - a.getSprite().getWidth() / 2, player.getPlayerY() - a.getSprite().getHeight() / 2);
+                a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
 
                 if (!shield.getIsDepleted()) {
                     a.getSprite().draw(spriteBatch);
@@ -899,7 +909,7 @@ public class GameScreen extends Game implements Screen {
 
     private void drawChainLightning() {
         //chainLightning.draw(shapeRenderer, playerPos);
-        chainLightning.drawLightning(spriteBatch, playerPos);
+        chainLightning.drawLightning(spriteBatch, player.getPosition());
     }
 
     public int getScreenWidth() {
@@ -921,7 +931,6 @@ public class GameScreen extends Game implements Screen {
             isOverlayActive = true;
         }
     }
-
 
     public void addBoomerang() {
         abilities.add(new Boomerang());

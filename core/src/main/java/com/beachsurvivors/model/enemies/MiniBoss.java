@@ -1,7 +1,7 @@
 package com.beachsurvivors.model.enemies;
 
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.Chest;
@@ -40,7 +40,7 @@ public class MiniBoss extends Enemy {
 
     public void dropChest(Array<GroundItem> groundItems) {
 
-        Chest chest = new Chest(getX() + getWidth() / 2, getY() + getHeight() / 2, poolManager, gameScreen);
+        Chest chest = new Chest(getPosition().x + getWidth() / 2, getPosition().y + getHeight() / 2, poolManager, gameScreen);
         //groundItems.add(chest);
     }
 }

@@ -1,7 +1,7 @@
 package com.beachsurvivors.model.enemies;
 
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class Crab extends Enemy {

@@ -1,12 +1,13 @@
 package com.beachsurvivors.model.abilities;
 
-import com.badlogic.gdx.ai.btree.Task;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.utilities.CombatHelper;
+import com.beachsurvivors.view.DamageText;
 
 public class Shield extends Ability {
 
@@ -16,23 +17,25 @@ public class Shield extends Ability {
     private double totalDamagePrevented;
 
     public Shield() {
-        super("Shield" , "entities/abilities/shield_bubble.png", AbilityType.SHIELD, 0, 20, 150, 150);
+        super("Shield" , "entities/abilities/shield_bubble.png", AbilityType.SHIELD, 0, 10, 150, 150);
         this.currentShieldStrength = INITIAL_SHIELD_STRENGTH;
         isRegening = false;
         getSprite().setColor(1f,1f,1f, 0.4f);
         setPersistent(true);
     }
 
-
     @Override
-    public void use() {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
+
+        if (isOffCooldown()) {
+            setOffCooldown(false);
+            //Do something
+            resetShield();
+            System.out.println("shield reset");
+        }
 
     }
 
-    @Override
-    public void use(Player player) {
-
-    }
 
     @Override
     public void dispose() {
@@ -44,22 +47,10 @@ public class Shield extends Ability {
         if (currentShieldStrength - damage <= 0) {
             totalDamagePrevented += currentShieldStrength;
             currentShieldStrength = 0;
-            regenShield();
+
         } else {
             currentShieldStrength -= damage;
             totalDamagePrevented += damage;
-        }
-    }
-
-    public void regenShield() {
-        if (!isRegening) {
-            isRegening = true;
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    resetShield();
-                }
-            }, (float) getCooldown());
         }
     }
 

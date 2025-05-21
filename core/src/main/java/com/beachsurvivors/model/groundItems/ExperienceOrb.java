@@ -1,14 +1,12 @@
 package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 
@@ -39,7 +37,7 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
 
     public void updateExperienceOrbMovement(Player player) {
         float delta = Gdx.graphics.getDeltaTime();
-        Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        Vector2 playerPos = new Vector2(player.getPosition());
         Vector2 orbPos = new Vector2(getSprite().getX(), getSprite().getY());
         Vector2 vector = moveTowardsPlayer(playerPos, orbPos);
 

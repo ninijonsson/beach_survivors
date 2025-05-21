@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
@@ -36,13 +36,11 @@ public abstract class Enemy implements Disposable {
     private boolean isAlive;
     private int width;
     private int height;
-    private float x;
-    private float y;
 
     private boolean movingRight = true;
     private boolean movingLeft = false;
 
-    private Vector2 enemyPos = new Vector2();
+    private Vector2 position = new Vector2();
     private float radius;
 
     private Texture texture;
@@ -59,14 +57,12 @@ public abstract class Enemy implements Disposable {
     private boolean healthBarAddedToStage = false;
     private Timer.Task hideHealthBarTask;
     private Stage stage;
-    private Texture xpOrb;
 
     public Enemy(int width, int height, int healthPoints, int expOnDeath) {
         this.width = width;
         this.height = height;
         this.healthPoints = healthPoints;
         this.expOnDeath = expOnDeath;
-        this.xpOrb = AssetLoader.get().getTexture("entities/abilities/xp_orb.png");
         this.texture = AssetLoader.get().getTexture("placeholder.png");
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
@@ -74,7 +70,7 @@ public abstract class Enemy implements Disposable {
 
         this.radius = width /4;
 
-        this.hitbox = new Rectangle(0, 0, width, height);
+        this.hitbox = new Rectangle(32, 32, width, height);
         isImmune=false;
         isAlive = true;
         createHealthBar(healthPoints);
@@ -103,7 +99,10 @@ public abstract class Enemy implements Disposable {
     }
 
     public void updateHealthBarPosition() {
-        healthBar.setPosition(sprite.getX(), sprite.getY() + sprite.getHeight() + 5);
+        //healthBar.setPosition(getPosition().x, getPosition().y + sprite.getHeight() + 5);
+
+        healthBar.setPosition(getPosition().x + getWidth() / 2f - healthBar.getWidth() / 2f,
+            getPosition().y + getHeight() + 5);
         healthBar.setValue(healthPoints);
     }
 
@@ -151,7 +150,7 @@ public abstract class Enemy implements Disposable {
         }
 
         spriteBatch.setColor(tint);
-        spriteBatch.draw(currentFrame, getSprite().getX(), getSprite().getY(), getWidth(), getHeight());
+        spriteBatch.draw(currentFrame, getPosition().x, getPosition().y, getWidth(), getHeight());
         spriteBatch.setColor(Color.WHITE); // återställ så inte resten färgas
 
     }
@@ -264,8 +263,8 @@ public abstract class Enemy implements Disposable {
         int chance = random.nextInt(0,100);
 
         // Drop items koordinater
-        float x = getSprite().getWidth()/2 + getSprite().getX();
-        float y = getSprite().getHeight()/2 + getSprite().getY();
+        float x = getPosition().x + getWidth() / 2f;
+        float y = getPosition().y + getHeight() / 2f;
 
         switch (chance) {
             case 1:
@@ -299,17 +298,23 @@ public abstract class Enemy implements Disposable {
         return direction;
     }
 
-    public Vector2 getEnemyPos() {
-        enemyPos = new Vector2(getSprite().getX() + getWidth()/2, getSprite().getY() + getHeight()/2);
-        return enemyPos;
+    public Vector2 getPosition() {
+        return position;
     }
 
-    public void setEnemyPos(Vector2 enemyPos) {
-        this.enemyPos = enemyPos;
+    public Vector2 getCenter() {
+        Vector2 center = new Vector2(position.x+width/2f, position.y + height/2f);
+        return center;
+    }
+
+    public void setPosition(Vector2 position) {
+        this.position.set(position);
+        sprite.setPosition(position.x, position.y);
+        hitbox.setPosition(position.x, position.y);
     }
 
     public Circle getCircle() {
-        return new Circle(enemyPos.x, enemyPos.y, radius);
+        return new Circle(position.x, position.y, radius);
     }
 
     public void setMovingLeftRight(boolean movingLeft, boolean movingRight) {
@@ -317,8 +322,8 @@ public abstract class Enemy implements Disposable {
         this.movingRight = movingRight;
     }
 
-    public void setMovingLeftRight(float x) {
-        if (x < 0) setMovingLeftRight(true, false);
+    public void setMovingLeftRight(float directionX) {
+        if (directionX < 0) setMovingLeftRight(true, false);
         else setMovingLeftRight(false, true);
     }
 
@@ -329,21 +334,6 @@ public abstract class Enemy implements Disposable {
         return movingRight;
     }
 
-    public float getX() {
-        return sprite.getX();
-    }
-
-    public void setX(float x) {
-        sprite.setX(x);
-    }
-
-    public float getY() {
-        return sprite.getY();
-    }
-
-    public void setY(float y) {
-        sprite.setY(y);
-    }
 
     public int getExp() {
         return expOnDeath;

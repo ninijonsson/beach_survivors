@@ -10,13 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.Upgrade;
 import com.beachsurvivors.model.abilities.UpgradeType;
 
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 
 public class LevelUpScreen implements Screen {
@@ -149,7 +147,8 @@ public class LevelUpScreen implements Screen {
             case CriticalHitDamage:
                 player.increaseCritDamage(0.5f);
                 break;
-            case CooldownReduction: //TODO fixa cooldown
+            case CooldownReduction:
+                player.increaseCooldownReduction(10);
 
                 break;
         }
