@@ -264,7 +264,7 @@ public class Player extends Actor {
         if (!isImmune) {
             currentHealthPoints -= damage;
             damageTaken += damage;
-
+            System.out.println("took " + damage + " damage.");
             gameScreen.showPlayerDamageText("-" + (int) damage, true);  // Visa endast om skadan faktiskt tillämpas
 
             if (currentHealthPoints <= 0) {
@@ -326,7 +326,6 @@ public class Player extends Actor {
         if (regenTimer <= 0) {
             regenTimer = 1;
             restoreHealthPoints(hpRegenPerSecond);
-            return;
         }
     }
 

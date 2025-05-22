@@ -72,9 +72,9 @@ public class ChestOverlay {
         upgradeButton3 = new TextButton("", skin, "levelup2");
 
 
-            table.add(upgradeButton1).size(60).pad(10);
-        table.add(upgradeButton2).size(60).pad(10);table.add(upgradeButton3).size(60).pad(10);
-
+        table.add(upgradeButton1).size(60).pad(10);
+        table.add(upgradeButton2).size(60).pad(10);
+        table.add(upgradeButton3).size(60).pad(10);
 
 
         stage.addActor(table);
@@ -146,7 +146,6 @@ public class ChestOverlay {
         chestEffect.draw(spriteBatch); // sen partikeleffekten ovanpå
         spriteBatch.end();
     }
-
 
 
     public boolean isClosed() {

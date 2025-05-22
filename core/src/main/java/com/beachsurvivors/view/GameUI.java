@@ -22,11 +22,9 @@ public class GameUI {
     private Label nextLevel;
     private Label currentLevel;
     private Table abilityTable;
-    private BitmapFont abilityFont;
     private Array<String> infoLog;
     private Array<Label> infoLabels;
     private BitmapFont levelFont;
-    private Label.LabelStyle abilityLabelStyle;
 
 
     private Table healthTable;
@@ -39,6 +37,9 @@ public class GameUI {
     private Label critDamage;
     private Label cooldownReduction;
     private Label movementSpeed;
+    private Label hpRegen;
+    private Label areaRadius;
+    private Label lifeSteal;
 
     private Array<Image> equippedAbilitiesIcons;
     private Stack abilityBarStack;
@@ -49,6 +50,7 @@ public class GameUI {
     private Table buffs;
     private Table buffIcons;
     private Stack buffStack;
+
 
     private Label timerLabel;
     private float gameTime = 0f;
@@ -337,9 +339,7 @@ public class GameUI {
     }
 
 
-    private Label hpRegen;
-    private Label areaRadius;
-    private Label lifeSteal;
+
 
     private void createPlayerStats() {
         float fontScale = 1.2f;
@@ -409,12 +409,8 @@ public class GameUI {
 
     private void updateLevelLabels() {
         if(game.getPlayer()!=null){
-        currentLevel.setText("Level: " + String.valueOf(
-
-            game.getPlayer().getLevelSystem().getCurrentLevel()));
-
-        nextLevel.setText(String.valueOf(
-            game.getPlayer().getLevelSystem().getCurrentLevel() + 1));}
+        currentLevel.setText("Level: " + game.getPlayer().getLevelSystem().getCurrentLevel());
+        nextLevel.setText(game.getPlayer().getLevelSystem().getCurrentLevel() + 1);}
     }
 
     public void update(float deltaTime) {
@@ -427,7 +423,6 @@ public class GameUI {
         timerLabel.setText(timeText);
 
         updateLevelLabels();
-        updateXpBar();
         updateAbilityBar();
 
         stage.act(deltaTime);

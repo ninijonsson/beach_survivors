@@ -31,7 +31,6 @@ public class Shield extends Ability {
             setOffCooldown(false);
             //Do something
             resetShield();
-            System.out.println("shield reset");
         }
 
     }
