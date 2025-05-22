@@ -140,6 +140,9 @@ public class AssetLoader {
 
         ParticleEffectLoader.ParticleEffectParameter waterTrail = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/water_trail.p", ParticleEffect.class, waterTrail);
+
+        ParticleEffectLoader.ParticleEffectParameter electricTrail = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/electric_trail.p", ParticleEffect.class, electricTrail);
     }
 
     private void addSkins() {

@@ -1,10 +1,13 @@
 package com.beachsurvivors.model.abilities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
@@ -16,40 +19,42 @@ import java.util.Set;
 
 public class ChainLightning extends Ability {
 
+    private final ParticleEffectPoolManager poolManager;
     private Array<Enemy> enemies;
     private int maxJumps;
     private float jumpRadius;
     private Array<Vector2> hitPositions = new Array<>();
+    private final Array<ParticleEffectPool.PooledEffect> glowEffects = new Array<>();
 
     private boolean showLightning;
     private float lightningVisibleTime; //Hur länge lightning texturen visas efter den gjort damage
     private double chainLightningTimer; //I stället för att använda TimerTask
 
 
-    public ChainLightning(Array<Enemy> enemies) {
+    public ChainLightning(Array<Enemy> enemies, ParticleEffectPoolManager poolManager) {
         super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 6, 32, 32);
-        maxJumps = 30;
+        maxJumps = 10;
         jumpRadius = 800;
         this.enemies = enemies;
         chainLightningTimer = getCooldown();
-        lightningVisibleTime = 0.5f;
+        lightningVisibleTime = 0f;
         setIcon("entities/abilities/lightning.png");
+        this.poolManager = poolManager;
 
     }
 
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
 
-        chainLightningTimer += delta;  //Timer går upp med tiden
-
-        float cooldown = CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
-        if (chainLightningTimer >= cooldown) { //När timer är högre än cooldown, casta chain lightning
-            chainLightningTimer = 0;
-
             showLightning = true;
             lightningVisibleTime = 0.5f;
 
-            hitPositions.clear();
+        for (ParticleEffectPool.PooledEffect effect : glowEffects) {
+            effect.free();
+        }
+        glowEffects.clear();
+
+        hitPositions.clear();
 
             Enemy current = CombatHelper.getNearestEnemy(player, enemies);
             if (current == null) return;
@@ -68,7 +73,20 @@ public class ChainLightning extends Ability {
                 hitPositions.add(targetCenter);
                 current = getNextTarget(current, alreadyHitEnemies);
             }
-        }
+
+            Vector2 start = player.getPosition();
+            for (int i = 0; i < hitPositions.size; i++) {
+                Vector2 end = hitPositions.get(i);
+                int steps = (int)(start.dst(end) / 60f); // Lägg t.ex. var 60 pixlar
+                for (int j = 1; j <= steps; j++) {
+                    Vector2 pos = new Vector2(start).lerp(end, j / (float)steps);
+                    ParticleEffectPool.PooledEffect effect = poolManager.obtain("entities/particles/electric_trail.p");
+                    effect.setPosition(pos.x, pos.y);
+                    glowEffects.add(effect);
+                }
+                start = end;
+            }
+
     }
 
 
@@ -82,7 +100,31 @@ public class ChainLightning extends Ability {
                 hitPositions.clear();
             }
         }
+
+        for (int i = glowEffects.size - 1; i >= 0; i--) {
+            ParticleEffectPool.PooledEffect effect = glowEffects.get(i);
+            effect.update(delta);
+            if (effect.isComplete()) {
+                effect.free();
+                glowEffects.removeIndex(i);
+            }
+        }
+
     }
+
+    private float getActualCooldown(Player player) {
+        return CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
+    }
+
+    public void tryCast(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
+        chainLightningTimer += delta;
+        if (chainLightningTimer >= getActualCooldown(player)) {
+            use(delta,player, enemies, abilities, damageTexts);
+            chainLightningTimer = 0;
+        }
+    }
+
+
 
     private Enemy getNextTarget(Enemy previous, Set<Enemy> hitEnemies) {
         Enemy closest = null;
@@ -135,6 +177,9 @@ public class ChainLightning extends Ability {
                 0,0,
                 getTexture().getWidth(), getTexture().getHeight(),
                 false, false);
+        }
+        for (ParticleEffectPool.PooledEffect effect : glowEffects) {
+            effect.draw(spriteBatch);
         }
     }
 

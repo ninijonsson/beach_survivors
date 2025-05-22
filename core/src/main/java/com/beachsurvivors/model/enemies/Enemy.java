@@ -214,7 +214,7 @@ public abstract class Enemy implements Disposable {
         this.damage = damage;
     }
     public void playSound(){
-        hitSound.play(0.2f);
+        hitSound.play(0.7f);
     }
     public void setMovementSpeed() {}
 

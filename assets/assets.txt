@@ -63,6 +63,8 @@ entities/particles/chestClosed.p
 entities/particles/chestOpen.p
 entities/particles/coin.png
 entities/particles/confetti.png
+entities/particles/electric_dart.png
+entities/particles/electric_trail.p
 entities/particles/impact_zone.p
 entities/particles/impact_zone.png
 entities/particles/level_up_rain.p

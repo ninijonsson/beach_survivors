@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.PowerUp;
-
 public class GameUI {
     private final FitViewport viewport;
     private final GameScreen game;
@@ -29,7 +28,7 @@ public class GameUI {
     private BitmapFont levelFont;
     private Label.LabelStyle abilityLabelStyle;
 
-    private Table progressBarTable;
+
     private Table healthTable;
     private Table xpTable;
 
@@ -55,13 +54,13 @@ public class GameUI {
     private float gameTime = 0f;
 
     public GameUI(FitViewport viewport, GameScreen game) {
+
         this.viewport = viewport;
         this.game = game;
         stage = new Stage(viewport);
         equippedAbilitiesIcons = new Array<>();
         currentPlayerBuffs = new Array<>();
         icons = new Table();
-
 
         addAbilityIcon("entities/abilities/bullet.png");
         createTables();
@@ -319,10 +318,7 @@ public class GameUI {
         currentLevel = new Label("Level: " + getPlayerLevel(), labelStyle);
         nextLevel = new Label(getPlayerLevel(), labelStyle);
 
-        // Lägg till alla UI-element direkt till stage istället för Table
 
-
-        // Justera positioner manuellt
         float centerX = viewport.getWorldWidth() / 2f;
         float topY = xpTable.getY() - 2;
 
@@ -432,7 +428,7 @@ public class GameUI {
 
         updateLevelLabels();
         updateXpBar();
-        //updateAbilityBar();
+        updateAbilityBar();
 
         stage.act(deltaTime);
     }

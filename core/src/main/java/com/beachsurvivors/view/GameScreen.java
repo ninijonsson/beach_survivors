@@ -38,7 +38,7 @@ public class GameScreen extends Game implements Screen {
     private float growthRate = 1.5f;
     // how often enemies get multiplied, in seconds.
     private int secondsBetweenIntervals = 10;
-    ParticleEffectPoolManager poolManager;
+
     private ChestOverlay chestOverlay;
     private final int SCREEN_WIDTH = 1920;
     private final int SCREEN_HEIGHT = 1080;
@@ -51,6 +51,7 @@ public class GameScreen extends Game implements Screen {
     private boolean isOverlayActive = false;
 
     private ShapeRenderer shapeRenderer;
+    private ParticleEffectPoolManager poolManager;
 
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
@@ -120,21 +121,16 @@ public class GameScreen extends Game implements Screen {
         stage = new Stage(gameViewport);
         stage.clear();
 
-        poolManager = new ParticleEffectPoolManager();
-        poolManager.register("entities/particles/blueFlame.p", 5, 20);
-        poolManager.register("entities/particles/lootBeam.p", 5, 20);
-        poolManager.register("entities/particles/lootPile.p", 5, 20);
-        poolManager.register("entities/particles/xp_orb.p", 5, 20);
-        poolManager.register("entities/particles/chestClosed.p", 5, 20);
-        poolManager.register("entities/particles/chestOpen.p", 5, 20);
-        poolManager.register("entities/particles/water_trail.p", 5, 20);
+
+        addPoolManager();
+
         player = new Player(map, spriteBatch, this);
 
-        //boomerang = new Boomerang();
+        boomerang = new Boomerang();
         bullet = new BaseAttack(poolManager);
         shield = new Shield();
-        chainLightning = new ChainLightning(enemies);
-        //abilities.add(boomerang);
+        chainLightning = new ChainLightning(enemies, poolManager);
+        abilities.add(boomerang);
         abilities.add(bullet);
         abilities.add(shield);
 
@@ -144,9 +140,7 @@ public class GameScreen extends Game implements Screen {
         font.getData().setScale(2);
 
 
-
-
-        Chest chest = new Chest(player.getPosition().x -250,player.getPosition().y -140, poolManager, this);
+        Chest chest = new Chest(player.getPosition().x - 250, player.getPosition().y - 140, poolManager, this);
         groundItems.add(chest);
 
         Vector2 startPos = new Vector2(player.getPosition());
@@ -156,6 +150,8 @@ public class GameScreen extends Game implements Screen {
         createMiniBossSchedule();
 
     }
+
+
 
     /**
      * Override från Screen
@@ -376,7 +372,7 @@ public class GameScreen extends Game implements Screen {
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
                 player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V )) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V)) {
             gameUI.showStatsTable();
         }
 //        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
@@ -529,7 +525,7 @@ public class GameScreen extends Game implements Screen {
 
     private void castChainLightning() {
         chainLightning.update(Gdx.graphics.getDeltaTime());
-        chainLightning.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
+        chainLightning.tryCast(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
     }
 
     @Override
@@ -605,6 +601,9 @@ public class GameScreen extends Game implements Screen {
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
         int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
         int maxEnemies = (int) (baseEnemies * Math.pow(growthRate, interval));
+        if(maxEnemies>100){
+            maxEnemies=100;
+        }
 
         if (spawnMinibossesTestMode) {
             spawnMiniBoss(gameTimeSeconds);
@@ -724,10 +723,6 @@ public class GameScreen extends Game implements Screen {
 
             enemies.removeIndex(i); // Ta bort från fiende-arrayen
             enemy.dispose(); // Ta även bort själva bilden på fienden
-
-            //TODO DETTA SKA CHECKAS NÄR MAN TAR UPP EN ORB INTE NÄR MAN DÖDAR EN ENEMY
-            // Uppdatera progress bar (exp)
-//            gameUI.setProgressBarValue(player.getLevelSystem().getCurrentExp());
         }
     }
 
@@ -820,6 +815,18 @@ public class GameScreen extends Game implements Screen {
 //        xpOrbDebug(player);
     }
 
+    private void addPoolManager() {
+        poolManager = new ParticleEffectPoolManager();
+        poolManager.register("entities/particles/blueFlame.p", 5, 20);
+        poolManager.register("entities/particles/lootBeam.p", 5, 20);
+        poolManager.register("entities/particles/lootPile.p", 5, 20);
+        poolManager.register("entities/particles/xp_orb.p", 5, 20);
+        poolManager.register("entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("entities/particles/chestOpen.p", 5, 20);
+        poolManager.register("entities/particles/water_trail.p", 5, 20);
+        poolManager.register("entities/particles/electric_trail.p", 5, 20);
+    }
+
     private void xpOrbDebug(Player player) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.circle(player.getVaccumHitbox().x, player.getVaccumHitbox().y, player.getVaccumHitbox().radius); // XP orb's range
@@ -846,7 +853,7 @@ public class GameScreen extends Game implements Screen {
             shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
 
         }
-            shapeRenderer.end();
+        shapeRenderer.end();
     }
 
     /**
@@ -885,6 +892,7 @@ public class GameScreen extends Game implements Screen {
             dt.draw(spriteBatch);
         }
     }
+
     public void showPlayerDamageText(String text, boolean isCritical) {
         float x = player.getPosition().x;
         float y = player.getPosition().y + 100;
@@ -905,7 +913,7 @@ public class GameScreen extends Game implements Screen {
                 a.getSprite().draw(spriteBatch);
             }
 
-            if( a instanceof BaseAttack){
+            if (a instanceof BaseAttack) {
                 ((BaseAttack) a).drawTrail(spriteBatch);
             }
         }
