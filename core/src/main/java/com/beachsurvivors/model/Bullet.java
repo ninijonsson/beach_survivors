@@ -18,6 +18,7 @@ public class Bullet {
     private float height = 64;
     private Sprite sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/fire_ball.png"));
 
+    private Sprite sprite = new Sprite(AssetLoader.get().getTexture("entities/abilities/fireball.png"));
 
     private ParticleEffectPool.PooledEffect trailEffect;
 
