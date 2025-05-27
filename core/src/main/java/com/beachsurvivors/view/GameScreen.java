@@ -134,10 +134,10 @@ public class GameScreen extends Game implements Screen {
         player = new Player(map, spriteBatch, this);
 
 
-        bullet = new BaseAttack(poolManager);
+        //bullet = new BaseAttack(poolManager);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
-        abilities.add(bullet);
+        //abilities.add(bullet);
         abilities.add(shield);
 
 
@@ -162,6 +162,7 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void show() {
+        isPaused = false;
         Gdx.input.setInputProcessor(stage); //Uppdaterar vilken stage inputProcessorn ska lyssna på
     }
 
@@ -367,13 +368,6 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V)) {
             gameUI.showStatsTable();
         }
-//        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-//            Vector3 screenCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-//            gameViewport.getCamera().unproject(screenCoords); // camera = your game's OrthographicCamera
-//
-//            Vector2 clickPos = new Vector2(screenCoords.x, screenCoords.y);
-//            groundItems.add(new ExperienceOrb(clickPos.x, clickPos.y, 0, poolManager));
-//        }
 
     }
 
@@ -466,7 +460,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void shootAtNearestEnemy() {
-        Enemy target = getNearestEnemy();
+        Enemy target = CombatHelper.getNearestEnemy(player, enemies);
 
         if (target != null) {
             Vector2 targetCenter = target.getCenter();
@@ -490,22 +484,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private Enemy getNearestEnemy() {
-        Enemy nearest = null;
-        float minDistance = 1000;
-
-        for (Enemy enemy : enemies) {
-            float distance = player.getPosition().dst(enemy.getPosition());
-
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearest = enemy;
-            }
-        }
-        return nearest;
-    }
-
     private void enemyAttacks() {
         for (Enemy enemy : enemies) {
             enemy.attack(player, enemyAbilities);
@@ -524,6 +502,7 @@ public class GameScreen extends Game implements Screen {
     public void resume() {
         setPaused(false);
         main.setScreen(this);
+        Gdx.input.setInputProcessor(stage);
         Timer.instance().start();
     }
 

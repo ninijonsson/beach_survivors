@@ -5,18 +5,26 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.utilities.AssetLoader;
 
 public class HelpScreen implements Screen {
     private Stage stage;
     private GameScreen game;
     private Main main;
+    private TextButton backButton;
+    private Skin skin;
 
     public HelpScreen(GameScreen game, Main main) {
         this.game = game;
         this.main = main;
+
 
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         Gdx.input.setInputProcessor(stage);
@@ -29,6 +37,10 @@ public class HelpScreen implements Screen {
         Texture background = new Texture(Gdx.files.internal("entities/how_to_play.png"));
         Image backgroundImage = new Image(background);
 
+        skin = AssetLoader.get().getSkin("game_over_screen/deathscreen_skin.json");
+        backButton = new TextButton("Back", skin);
+        backButton.setSize(200,100);
+
         backgroundImage.setScale(2.0f);
 
         // Sätt positionen så att bilden blir centrerad på skärmen
@@ -36,13 +48,17 @@ public class HelpScreen implements Screen {
         float y = stage.getHeight() / 2f - backgroundImage.getHeight() * backgroundImage.getScaleY() / 2f;
 
         backgroundImage.setPosition(x, y);
+        backButton.setPosition((stage.getWidth() - backButton.getWidth()) /2, 30);
 
         stage.addActor(backgroundImage);
+        stage.addActor(backButton);
+
+        addListeners();
     }
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage); // Lyssna på event listeners
     }
 
     @Override
@@ -54,7 +70,7 @@ public class HelpScreen implements Screen {
         stage.draw();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.resume();
+            main.showPreviousScreen();
         }
     }
 
@@ -81,5 +97,14 @@ public class HelpScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public void addListeners() {
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                main.showPreviousScreen();
+            }
+        });
     }
 }

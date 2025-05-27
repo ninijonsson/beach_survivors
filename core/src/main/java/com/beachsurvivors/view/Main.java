@@ -1,41 +1,49 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+
 public class Main extends Game {
 
     private MainMenuScreen menuScreen;
     private GameScreen gameScreen;
+    private PauseScreen pauseScreen;
     private LoadingScreen loadingScreen;
+    private Screen previousScreen;
     private boolean isSoundOn = true;
 
     @Override
     public void create() {
         gameScreen = new GameScreen(this);
         menuScreen = new MainMenuScreen(this);
+        pauseScreen = new PauseScreen(gameScreen, this);
         setScreen(loadingScreen);
         setScreen(menuScreen);
+        previousScreen = menuScreen;
     }
 
     public void startGame() {
+        previousScreen = getScreen();
         setScreen(gameScreen);
     }
 
-    public void switchScreen() {
-        if (this.getScreen() == menuScreen) {
-            if (gameScreen == null) gameScreen = new GameScreen(this);
+    public void playGame() {
+        if (gameScreen != null) {
             setScreen(gameScreen);
         } else {
-            setScreen(menuScreen);
+            gameScreen = new GameScreen(this);
+            setScreen(gameScreen);
         }
+        previousScreen = gameScreen;
     }
 
     public void goToMainMenu() {
         menuScreen.mainTheme.play();
         menuScreen.playSound.stop();
-        if (gameScreen != null) gameScreen.dispose();
-        gameScreen = null;
+//        if (gameScreen != null) gameScreen.dispose();
+//        gameScreen = null;
         setScreen(menuScreen);
     }
 
@@ -56,11 +64,18 @@ public class Main extends Game {
     }
 
     public void goToHelpScreen() {
+        previousScreen = getScreen();
         setScreen(new HelpScreen(gameScreen,this));
     }
 
+    public void showPreviousScreen() {
+        setScreen(previousScreen);
+    }
+
+
     public void pause() {
-        setScreen(new PauseScreen(gameScreen, this));
+        previousScreen = getScreen();
+        setScreen(pauseScreen);
     }
 
     public void turnOffInGameMusic() {
@@ -70,6 +85,10 @@ public class Main extends Game {
 
     public void turnOnInGameMusic() {
         menuScreen.playSound.play();
+    }
+
+    public void setPreviousScreen(Screen screen) {
+        previousScreen = screen;
     }
 
     public boolean isSoundOn() {
