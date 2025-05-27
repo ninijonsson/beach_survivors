@@ -146,15 +146,6 @@ public class GameScreen extends Game implements Screen {
         font.getData().setScale(2);
 
 
-        Chest chest = new Chest(player.getPosition().x - 250, player.getPosition().y - 140, poolManager, this);
-        Chest chest2 = new Chest(player.getPosition().x - 500, player.getPosition().y - 140, poolManager, this);
-        Chest chest3 = new Chest(player.getPosition().x - 750, player.getPosition().y - 140, poolManager, this);
-        Chest chest4 = new Chest(player.getPosition().x - 950, player.getPosition().y - 140, poolManager, this);
-        groundItems.add(chest4);
-        groundItems.add(chest);
-        groundItems.add(chest2);
-        groundItems.add(chest3);
-
         Vector2 startPos = new Vector2(player.getPosition());
         WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
         abilities.add(wave);

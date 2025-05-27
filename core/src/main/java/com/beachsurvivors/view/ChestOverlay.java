@@ -237,11 +237,25 @@ public class ChestOverlay {
         if (isClosed) return;
 
         spriteBatch.setProjectionMatrix(stage.getCamera().combined);
-        stage.draw(); // först rita UI
+
         spriteBatch.begin();
-        chestEffect.draw(spriteBatch); // sen partikeleffekten ovanpå
+        spriteBatch.setColor(0, 0, 0, 0.4f);
+        spriteBatch.draw(
+            AssetLoader.get().getTexture("entities/icons/blank.png"),
+            0, 0,
+            stage.getViewport().getWorldWidth(),
+            stage.getViewport().getWorldHeight()
+        );
+        spriteBatch.setColor(1, 1, 1, 1);
+        spriteBatch.end();
+
+        stage.draw();
+
+        spriteBatch.begin();
+        chestEffect.draw(spriteBatch);
         spriteBatch.end();
     }
+
 
 
     public boolean isClosed() {

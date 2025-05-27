@@ -39,6 +39,6 @@ public class MiniBoss extends Enemy {
     public void dropChest(Array<GroundItem> groundItems) {
 
         Chest chest = new Chest(getPosition().x + getWidth() / 2, getPosition().y + getHeight() / 2, poolManager, gameScreen);
-        //groundItems.add(chest);
+        groundItems.add(chest);
     }
 }
