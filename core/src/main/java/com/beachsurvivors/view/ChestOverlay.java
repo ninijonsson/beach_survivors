@@ -117,7 +117,7 @@ public class ChestOverlay {
         //todo detta måste göras på ett bättre sätt, så att det kan slumpas fram vilka abilities som kan väljas.
         abilityButtons[0] = createImageButton("entities/icons/ability_icon.png", "[1]\nShield", 200, 120, () -> selectAbility(0), 0);
         abilityButtons[1] = createImageButton("entities/icons/ability_icon.png", "[2]\nBoomerang", 200, 120, () -> selectAbility(1), 1);
-        abilityButtons[2] = createImageButton("entities/icons/ability_icon.png", "[3]\nChain Lightninga", 200, 120, () -> selectAbility(2), 2);
+        abilityButtons[2] = createImageButton("entities/icons/ability_icon.png", "[3]\nChain Lightning", 200, 120, () -> selectAbility(2), 2);
 
 
         for (int i = 0; i < 3; i++) {
