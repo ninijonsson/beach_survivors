@@ -2,16 +2,22 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.PowerUp;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class GameUI {
     private final FitViewport viewport;
     private final GameScreen game;
@@ -42,6 +48,9 @@ public class GameUI {
     private Label lifeSteal;
 
     private Array<Image> equippedAbilitiesIcons;
+    private Map<String, Label> abilityCountLabels = new HashMap<>();
+    private Map<String, Integer> abilityCounts = new HashMap<>();
+
     private Stack abilityBarStack;
     private Table icons;
     private final int ICON_SIZE = 64;
@@ -80,7 +89,6 @@ public class GameUI {
         createInfoTable();
         createPlayerStats();
         createBuffBar();
-
         addActors();
     }
 
@@ -111,7 +119,7 @@ public class GameUI {
         abilityTable.setPosition(((viewport.getWorldWidth()/2 - abilityTable.getWidth() / 2)), 0);
 
         createAbilityIconsTable();
-
+        updateAbilityBar();
     }
 
     private void createAbilityIconsTable() {
@@ -123,7 +131,7 @@ public class GameUI {
         int bottomPad = 5;
         int rightPad = 5;
         icons.add(equippedAbilitiesIcons.get(0)).padLeft(25).padBottom(bottomPad).padRight(rightPad);
-        updateAbilityBar();
+
 
         abilityBarStack.add(abilityTable);
         abilityBarStack.add(icons);
@@ -133,12 +141,37 @@ public class GameUI {
     }
 
     public void addAbilityIcon(String imagePath) {
-        Texture texture = AssetLoader.get().getTexture(imagePath);
-        Image icon = new Image(texture);
-        icon.setSize(64,64);
-        equippedAbilitiesIcons.add(icon);
-        updateAbilityBar();
+        if (!abilityCounts.containsKey(imagePath)) {
+            Texture texture = AssetLoader.get().getTexture(imagePath);
+            Image icon = new Image(texture);
+            icon.setSize(ICON_SIZE, ICON_SIZE);
+
+            Stack stack = new Stack();
+            stack.add(icon);
+
+            Label label = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+            label.setFontScale(1.4f);
+            label.setAlignment(Align.bottomLeft);
+            label.setVisible(false);
+
+            stack.add(label);
+            icons.add(stack).padLeft(25).padBottom(5).padRight(5).size(ICON_SIZE);
+
+            abilityCountLabels.put(imagePath, label);
+            abilityCounts.put(imagePath, 1);
+            equippedAbilitiesIcons.add(icon);
+        } else {
+            int count = abilityCounts.get(imagePath) + 1;
+            abilityCounts.put(imagePath, count);
+
+            Label label = abilityCountLabels.get(imagePath);
+            if (count > 1) {
+                label.setText(String.valueOf(count));
+                label.setVisible(true);
+            }
+        }
     }
+
 
     private void updateAbilityBar() {
         int bottomPad = 5;
@@ -221,7 +254,15 @@ public class GameUI {
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(1.5f);
+
+        Pixmap bgPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        bgPixmap.setColor(0, 0, 0, 0.5f);
+        bgPixmap.fill();
+        Texture bgTexture = new Texture(bgPixmap);
+        Drawable bgDrawable = new Image(bgTexture).getDrawable();
+
         Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
+        style.background = bgDrawable;
 
         float startY = 150;
         float spacing = 25;
@@ -232,11 +273,12 @@ public class GameUI {
             infoLabels.add(label);
             stage.addActor(label);
         }
+
         updateInfoTable("Welcome to Beach Survivors, try not to die");
     }
 
-    public void updateInfoTable(String logMessage){
-        if(infoLog.size == 5){
+    public void updateInfoTable(String logMessage) {
+        if (infoLog.size == 5) {
             infoLog.removeIndex(0);
         }
 
@@ -260,31 +302,31 @@ public class GameUI {
         BitmapFont font = new BitmapFont();
         font.getData().setScale(2);
 
+        Pixmap bgPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        bgPixmap.setColor(0, 0, 0, 0.5f);
+        bgPixmap.fill();
+        Texture bgTexture = new Texture(bgPixmap);
+        Drawable bgDrawable = new Image(bgTexture).getDrawable();
+
         Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
-        Label timeLabelTop = new Label("Elapsed time:", style);
-
-        timeLabelTop.setColor(Color.WHITE);
-        timeLabelTop.setPosition(30, viewport.getWorldHeight() - 50);
-
-        stage.addActor(timeLabelTop);
+        style.background = bgDrawable;
 
         timerLabel = new Label("00:00", style);
-        timerLabel.setColor(Color.WHITE);
-        timerLabel.setPosition(30, viewport.getWorldHeight() - timerLabel.getHeight() - 50);
+        timerLabel.setPosition(30, viewport.getWorldHeight() - 50);
+        stage.addActor(timerLabel);
     }
 
     private void createPlayerHealthBar() {
         Skin healthSkin = new Skin(Gdx.files.internal("skin_composer/healthbutton.json"));
         healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
-        healthBar.setValue(100);
         healthBar.setSize(100, 50);
-        percentageLabel = new Label(getHealthPercentage() + "%", healthSkin);
+        percentageLabel = new Label("100%", healthSkin);
         percentageLabel.setColor(Color.BLACK);
 
         healthTable = new Table();
         healthTable.add(healthBar);
         healthTable.add(percentageLabel).padLeft(10);
-        healthTable.setPosition(viewport.getWorldWidth() / 2 - healthTable.getWidth() / 2, viewport.getWorldHeight() / 2 - healthTable.getHeight() / 2 + 100); // Placera healthBar i mitten längst ner
+        healthTable.setPosition(viewport.getWorldWidth() / 2 - healthTable.getWidth() / 2, viewport.getWorldHeight() / 2 - healthTable.getHeight() / 2 + 100);
     }
 
     public Stage getStage() {
@@ -295,16 +337,15 @@ public class GameUI {
         progressBar.setValue(value);
     }
 
-    public void setHealthBarValue(float value, float playerMaxHp) {
-        healthBar.setValue(value);
-        healthBar.setRange(0, playerMaxHp);
-        percentageLabel.setText(getHealthPercentage() + "%");
+    public void setHealthBarValue(Player player) {
+        float currentHp = player.getCurrentHealthPoints();
+        float maxHp = player.getMaxHealthPoints();
+        healthBar.setRange(0, maxHp);
+        healthBar.setValue(currentHp);
+        percentageLabel.setText((int)currentHp + " / " + (int)maxHp);
     }
 
-    private String getHealthPercentage() {
-        double percentage = (healthBar.getValue() / healthBar.getMaxValue()) * 100;
-        return String.format("%.0f", percentage);
-    }
+
 
     public void createProgressBar() {
         Skin skin = new Skin(Gdx.files.internal("skin_composer/testbuttons.json"));
@@ -317,8 +358,9 @@ public class GameUI {
         levelFont.setColor(Color.WHITE);
         Label.LabelStyle labelStyle = new Label.LabelStyle(levelFont, Color.WHITE);
 
-        currentLevel = new Label("Level: " + getPlayerLevel(), labelStyle);
-        nextLevel = new Label(getPlayerLevel(), labelStyle);
+
+        currentLevel = new Label("Level: 1", labelStyle);
+        nextLevel = new Label("2", labelStyle);
 
 
         float centerX = viewport.getWorldWidth() / 2f;
@@ -328,17 +370,6 @@ public class GameUI {
         progressBar.setPosition(centerX - 272, topY);         // mitten
         nextLevel.setPosition(centerX + 330, topY + 20);       // höger sida
     }
-
-
-    private String getPlayerLevel() {
-        if (game.getPlayer() == null) {
-            return "1";
-        } else {
-            return String.valueOf(game.getPlayer().getLevelSystem().getCurrentLevel());
-        }
-    }
-
-
 
 
     private void createPlayerStats() {
@@ -419,11 +450,8 @@ public class GameUI {
         int minutes = (int) (gameTime / 60f);
         int seconds = (int) (gameTime % 60f);
 
-        String timeText = String.format("%02d:%02d", minutes, seconds);
-        timerLabel.setText(timeText);
-
+        timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
         updateLevelLabels();
-        updateAbilityBar();
 
         stage.act(deltaTime);
     }

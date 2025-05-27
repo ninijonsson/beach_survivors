@@ -50,6 +50,7 @@ entities/enemies/shark.png
 entities/enemies/shark_sheet.png
 entities/how_to_play.png
 entities/icons/ability_icon.png
+entities/icons/ability_icon_selected.png
 entities/icons/blank.png
 entities/icons/chest_open.png
 entities/icons/chest_open_asperite.aseprite

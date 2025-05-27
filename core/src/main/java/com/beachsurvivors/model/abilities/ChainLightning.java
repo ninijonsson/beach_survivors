@@ -193,5 +193,4 @@ public class ChainLightning extends Ability {
         maxJumps += jumpIncrease;
     }
 
-
 }

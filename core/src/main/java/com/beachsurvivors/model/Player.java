@@ -1,5 +1,6 @@
 package com.beachsurvivors.model;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.beachsurvivors.model.abilities.Boomerang;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.controller.LevelSystem;
 import com.beachsurvivors.model.Map.Map;
@@ -169,7 +171,9 @@ public class Player extends Actor {
         levelSystem.gainExp(exp);
     }
 
-    public void playerInput() {
+    public void playerInput(Boolean overlayActive) {
+
+        if (overlayActive) return;
         movementKeys();
         //FLYTTADE KEYBINDS TILL GAMESCREEN
     }

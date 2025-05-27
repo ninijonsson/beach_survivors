@@ -62,6 +62,7 @@ public class GameScreen extends Game implements Screen {
     private Array<Ability> abilities;
     private Array<PowerUp> currentPowerUps;
     private Boomerang boomerang;
+    float numberOfBoomerangs;
     private BaseAttack bullet;
     private Shield shield;
     private ChainLightning chainLightning;
@@ -84,6 +85,12 @@ public class GameScreen extends Game implements Screen {
     private Array<GroundItem> groundItemsToRemove = new Array<>();
 
     private boolean isPaused = false;
+
+
+
+    private boolean isChestOverlayActive = false;
+
+
 
     //Boolean variables to toggle when testing the game with/without
     //some elements. Set all to true for testing everything.
@@ -126,11 +133,10 @@ public class GameScreen extends Game implements Screen {
 
         player = new Player(map, spriteBatch, this);
 
-        boomerang = new Boomerang();
+
         bullet = new BaseAttack(poolManager);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
-        abilities.add(boomerang);
         abilities.add(bullet);
         abilities.add(shield);
 
@@ -141,7 +147,13 @@ public class GameScreen extends Game implements Screen {
 
 
         Chest chest = new Chest(player.getPosition().x - 250, player.getPosition().y - 140, poolManager, this);
+        Chest chest2 = new Chest(player.getPosition().x - 500, player.getPosition().y - 140, poolManager, this);
+        Chest chest3 = new Chest(player.getPosition().x - 750, player.getPosition().y - 140, poolManager, this);
+        Chest chest4 = new Chest(player.getPosition().x - 950, player.getPosition().y - 140, poolManager, this);
+        groundItems.add(chest4);
         groundItems.add(chest);
+        groundItems.add(chest2);
+        groundItems.add(chest3);
 
         Vector2 startPos = new Vector2(player.getPosition());
         WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
@@ -173,41 +185,30 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void render(float delta) {
-        if (isPaused) return;
+        input(); // hanterar ESC / TAB osv.
 
-        input();
+        // Rita alltid spelet
+        logicIfNotPaused(delta);
+        draw();
 
-        if (!isPaused) {
+        // Rita UI och ev. överlägg
+        gameUI.getStage().act(delta);
+        gameUI.update(delta);
+        gameUI.draw();
 
-            logic();
-            draw();
-            gameUI.getStage().act(delta);
-            gameUI.update(Gdx.graphics.getDeltaTime());
-            gameUI.draw();
-
-        } else {
-
-//            spriteBatch.begin();
-//            main.pause();
-//            spriteBatch.end();
-
-            gameUI.getStage().act(0);
-            gameUI.update(0);
-            gameUI.draw();
-        }
-
-        if (chestOverlay != null) {
-            chestOverlay.update(delta);
+        if (isChestOverlayActive && chestOverlay != null) {
+            chestOverlay.update(delta);  // inga world updates men ev. effekt
             chestOverlay.draw();
-
             if (chestOverlay.isClosed()) {
                 chestOverlay.dispose();
                 chestOverlay = null;
-                isOverlayActive = false;
+                isChestOverlayActive = false;
+                resume();
             }
         }
-
     }
+
+
 
     /**
      * Method for keeping the correct width and height while resizing the game window.
@@ -255,7 +256,7 @@ public class GameScreen extends Game implements Screen {
                 System.out.println(player.getPosition());
             }
 
-            player.playerInput();
+            player.playerInput(isChestOverlayActive());
         }
         keyBinds();
     }
@@ -417,7 +418,7 @@ public class GameScreen extends Game implements Screen {
                 powerUp.dispose();
             }
         }
-        gameUI.setHealthBarValue(player.getCurrentHealthPoints(), player.getMaxHealthPoints());
+        gameUI.setHealthBarValue(player);
         droppedItems.removeAll(powerUpsToRemove, true);
         powerUpsToRemove.clear();
     }
@@ -784,7 +785,7 @@ public class GameScreen extends Game implements Screen {
 
         if (remainingDamage >= 0) {
             player.takeDamage(remainingDamage);
-            gameUI.setHealthBarValue(player.getCurrentHealthPoints(), player.getMaxHealthPoints());
+            gameUI.setHealthBarValue(player);
             System.out.println("player HP : " + player.getCurrentHealthPoints());
         }
 
@@ -794,6 +795,12 @@ public class GameScreen extends Game implements Screen {
                 player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
     }
+
+    private void logicIfNotPaused(float delta) {
+        if (isPaused || isChestOverlayActive) return;
+        logic(); // endast körs om spelet inte är pausat eller overlay är aktiv
+    }
+
 
     /**
      * Decluttering method for keeping the draw-method simple.
@@ -811,8 +818,6 @@ public class GameScreen extends Game implements Screen {
 
         //drawEnemyHitboxes();
         //drawPlayerHitbox();
-
-//        xpOrbDebug(player);
     }
 
     private void addPoolManager() {
@@ -946,18 +951,48 @@ public class GameScreen extends Game implements Screen {
         isPaused = paused;
     }
 
+    public boolean isChestOverlayActive() {
+        return isChestOverlayActive;
+    }
 
     public void showChestOverlay() {
         if (chestOverlay == null) {
             chestOverlay = new ChestOverlay(this);
-            isOverlayActive = true;
+            isChestOverlayActive = true;
         }
     }
 
+
+    private void stopGame() {
+        pause();
+    }
+
     public void addBoomerang() {
-        abilities.add(new Boomerang());
+        if (numberOfBoomerangs >= 4) return;
+
+        numberOfBoomerangs++;
+
+        Array<Boomerang> newBoomerangs = new Array<>();
+
+        for (int i = 0; i < numberOfBoomerangs; i++) {
+            Boomerang b = new Boomerang();
+            float angle = i * (360f / numberOfBoomerangs);
+            b.setAngle(angle);
+            newBoomerangs.add(b);
+        }
+
+        // Ta bort gamla boomerangs (endast dessa)
+        for (int i = abilities.size - 1; i >= 0; i--) {
+            if (abilities.get(i) instanceof Boomerang) {
+                abilities.removeIndex(i);
+            }
+        }
+
+        abilities.addAll(newBoomerangs);
         gameUI.addAbilityIcon("entities/abilities/boomerangmc.png");
     }
+
+
 
     public Player getPlayer() {
         return player;
@@ -981,4 +1016,20 @@ public class GameScreen extends Game implements Screen {
         return gameUI;
     }
 
+    public void addAbility(int index) {
+        //todo detta måste göras på ett bättre sätt
+        switch(index){
+            case 0:
+                System.out.println("du valde nått");
+                break;
+            case 1:
+                addBoomerang();
+                break;
+            case 2:
+                System.out.println("du valde nått");
+                break;
+            default:
+                break;
+        }
+    }
 }
