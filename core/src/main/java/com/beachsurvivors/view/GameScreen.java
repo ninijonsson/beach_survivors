@@ -380,8 +380,12 @@ public class GameScreen extends Game implements Screen {
 
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            main.pause();
-            pause();
+            if (!isPaused) {
+                main.pause();
+                pause();
+            } else {
+                resume();
+            }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),

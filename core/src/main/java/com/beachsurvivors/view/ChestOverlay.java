@@ -34,10 +34,6 @@ public class ChestOverlay {
     private boolean effectStarted = false;
 
 
-
-
-
-
     public ChestOverlay(GameScreen game) {
         this.game = game;
         this.spriteBatch = new SpriteBatch();
