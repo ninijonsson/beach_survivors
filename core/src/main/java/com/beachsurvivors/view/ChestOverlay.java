@@ -151,6 +151,7 @@ public class ChestOverlay {
                         selectedIndex = (selectedIndex + 1) % 3;
                         updateArrowPosition();
                         return true;
+                    case Input.Keys.SPACE:
                     case Input.Keys.ENTER:
                         selectAbility(selectedIndex);
                         return true;

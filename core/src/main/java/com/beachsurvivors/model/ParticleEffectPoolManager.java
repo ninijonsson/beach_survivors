@@ -37,7 +37,6 @@ public class ParticleEffectPoolManager {
     }
 
     public void updateAndDraw(float delta, com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
-        System.out.println("active effects: " + activeEffects.size);
         for (int i = activeEffects.size - 1; i >= 0; i--) {
             PooledEffect effect = activeEffects.get(i);
             effect.draw(batch, delta);

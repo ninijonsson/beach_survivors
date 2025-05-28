@@ -140,14 +140,17 @@ public class MainMenuScreen implements Screen {
             @Override
             public boolean keyDown(int keycode) {
                 switch (keycode) {
+                    case Input.Keys.W:
                     case Input.Keys.UP:
                         selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
                         updateArrowPosition();
                         return true;
+                    case Input.Keys.S:
                     case Input.Keys.DOWN:
                         selectedIndex = (selectedIndex + 1) % buttons.length;
                         updateArrowPosition();
                         return true;
+                    case Input.Keys.SPACE:
                     case Input.Keys.ENTER:
                         buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
                         return true;

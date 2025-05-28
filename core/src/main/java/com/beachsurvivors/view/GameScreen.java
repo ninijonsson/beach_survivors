@@ -221,7 +221,7 @@ public class GameScreen extends Game implements Screen {
         if (isPaused && pauseOverlay != null) {
             pauseOverlay.getStage().act(delta);
             pauseOverlay.getStage().draw();
-
+            pauseOverlay.render(delta);
         }
     }
 
@@ -534,10 +534,9 @@ public class GameScreen extends Game implements Screen {
         if (isPaused) return;
         isPaused = true;
         Timer.instance().stop();
-
         pauseOverlay.show();
-        Gdx.input.setInputProcessor(pauseOverlay.getStage());
     }
+
 
 
     @Override

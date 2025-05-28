@@ -1,9 +1,13 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -20,6 +24,12 @@ public class PauseOverlay {
     private Skin skin;
     private boolean isSoundOn;
     private Image dimBackground;
+    private int selectedIndex = 0;
+    private Image selectorArrow;
+    private ImageButton[] buttons;
+    private boolean arrowInitialized = false;
+
+
 
     public PauseOverlay(GameScreen game, Main main) {
         this.game = game;
@@ -27,19 +37,18 @@ public class PauseOverlay {
         isSoundOn = main.isSoundOn();
 
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
-        //Gdx.input.setInputProcessor(stage);
-
         skin = AssetLoader.get().getSkin("skin_composer/pause_menu/pause_menu.json");
 
-        //createDarkerBackground();
-        table = buildUI();
-        table.setVisible(false);
+        table = buildUI(); // Lägg till tabellen
+        table.setVisible(true); // Viktigt – gör table synlig så layout fungerar
+        stage.act(0);           // Uppdaterar layouten direkt
+        updateArrowPosition();  // Placera coinen efter layout
     }
+
 
     private Table buildUI() {
         Table pauseMenu = new Window("", skin, "default");
-        pauseMenu.setSize(1200, 972); // Bildens dimensioner
-        //pauseMenu.setDebug(true); // Rutnät för debugging
+        pauseMenu.setSize(1200, 972);
 
         // Centrera pausmenyn
         pauseMenu.setPosition(game.getScreenWidth() / 5f,
@@ -59,6 +68,10 @@ public class PauseOverlay {
         ImageButton helpButton = new ImageButton(skin, "help");
         ImageButton exitButton = new ImageButton(skin, "exit");
 
+        // Select icon - går att byta ut
+        buttons = new ImageButton[] { resumeButton, helpButton, exitButton };
+
+
         // Runda knappar
         pauseMenu.add(soundButton).size(96, 96).left().padTop(260);
         pauseMenu.add(restartButton).size(96, 96).padTop(260);
@@ -70,6 +83,11 @@ public class PauseOverlay {
         pauseMenu.add(exitButton).size(333, 83).pad(10).padLeft(100).row();
 
         stage.addActor(pauseMenu);
+        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/coin.png");
+        selectorArrow = new Image(arrowTexture);
+        selectorArrow.setSize(32, 32);
+        stage.addActor(selectorArrow);
+
 
         // Stänga av/sätta på musik
         soundButton.addListener(new ChangeListener() {
@@ -120,6 +138,10 @@ public class PauseOverlay {
             }
         });
 
+        stage.act(0); // tvingar layout så att knapparna får position
+        updateArrowPosition(); // sätter coinen vid första knappen
+
+        this.table = pauseMenu;
         return pauseMenu;
     }
 
@@ -158,8 +180,47 @@ public class PauseOverlay {
     public void show() {
         table.setVisible(true);
 
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.W:
+                    case Input.Keys.UP:
+                        selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
+                        System.out.println("pressed up");
+                        updateArrowPosition();
+                        return true;
+                    case Input.Keys.S:
+                    case Input.Keys.DOWN:
+                        selectedIndex = (selectedIndex + 1) % buttons.length;
+                        System.out.println("pressed down");
+                        updateArrowPosition();
+                        return true;
+                    case Input.Keys.SPACE:
+                    case Input.Keys.ENTER:
+                        System.out.println("pressed enter");
+                        buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
+                        return true;
+                    case Input.Keys.ESCAPE:
+                        game.resume();
+                        return true;
+                }
+                return false;
+            }
+        });
 
+
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
+
+        stage.act(0);        // Uppdatera layout så vi får rätt positioner
+        updateArrowPosition();    // Placera coinen direkt på första knappen
     }
+
+
+
+
     public void hide() {
         table.setVisible(false);
     }
@@ -167,6 +228,32 @@ public class PauseOverlay {
     public Stage getStage() {
         return stage;
     }
+
+    private void updateArrowPosition() {
+        ImageButton current = buttons[selectedIndex];
+        Vector2 localPos = new Vector2(current.getWidth() / 2f, current.getHeight() / 2f);
+        Vector2 stagePos = current.localToStageCoordinates(localPos);
+
+        float x = stagePos.x - current.getWidth() / 2f - selectorArrow.getWidth() - 10;
+        float y = stagePos.y - selectorArrow.getHeight() / 2f;
+
+        selectorArrow.setPosition(x, y);
+    }
+
+    public void render(float delta) {
+        stage.act(delta);
+        stage.draw();
+
+        if (!arrowInitialized) {
+            updateArrowPosition();
+            arrowInitialized = true;
+        }
+    }
+
+
+
+
+
 
 //    @Override
 //    public void show() {
