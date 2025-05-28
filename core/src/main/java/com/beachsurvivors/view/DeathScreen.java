@@ -67,7 +67,7 @@ public class DeathScreen implements Screen {
         createActors();
 
         buttons = new ImageButton[] { retryButton, mainMenuButton, exitButton };
-        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/coin.png");
+        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/select_arrow.png");
         selectorArrow = new Image(arrowTexture);
         selectorArrow.setSize(32, 32);
         stage.addActor(selectorArrow);
@@ -83,18 +83,18 @@ public class DeathScreen implements Screen {
                     case Input.Keys.W:
                     case Input.Keys.UP:
                         selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
-                        menuSwitch.play(0.1f);
+                        menuSwitch.play(0.4f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.S:
                     case Input.Keys.DOWN:
                         selectedIndex = (selectedIndex + 1) % buttons.length;
-                        menuSwitch.play(0.1f);
+                        menuSwitch.play(0.4f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.SPACE:
                     case Input.Keys.ENTER:
-                        menuChoice.play(0.2f);
+                        menuChoice.play(0.6f);
                         buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
                         return true;
                 }
@@ -193,6 +193,7 @@ public class DeathScreen implements Screen {
         mainMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                menuChoice.play(0.6f);
                 gameScreen.getMain().goToMainMenu();
             }
         });
@@ -200,6 +201,7 @@ public class DeathScreen implements Screen {
         retryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                menuChoice.play(0.6f);
                 gameScreen.getMain().restart();
             }
         });

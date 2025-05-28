@@ -50,7 +50,7 @@ public class PauseOverlay {
         table = buildUI(); // Lägg till tabellen
         table.setVisible(true); // Viktigt – gör table synlig så layout fungerar
         stage.act(0);           // Uppdaterar layouten direkt
-        updateArrowPosition();  // Placera coinen efter layout
+        updateArrowPosition();
     }
 
 
@@ -91,7 +91,7 @@ public class PauseOverlay {
         pauseMenu.add(exitButton).size(333, 83).pad(10).padLeft(100).row();
 
         stage.addActor(pauseMenu);
-        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/coin.png");
+        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/select_arrow.png");
         selectorArrow = new Image(arrowTexture);
         selectorArrow.setSize(32, 32);
         stage.addActor(selectorArrow);
@@ -107,6 +107,7 @@ public class PauseOverlay {
                 } else {
                     soundButton.setStyle(soundOnStyle);
                     main.setSoundOn(true);
+
                 }
 
                 toggleSound();
@@ -118,6 +119,7 @@ public class PauseOverlay {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 main.setSoundOn(true);
+                menuChoice.play(0.6f);
                 main.restart();
             }
         });
@@ -127,6 +129,7 @@ public class PauseOverlay {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.resume();
+                menuChoice.play(0.6f);
             }
         });
 
@@ -135,6 +138,7 @@ public class PauseOverlay {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 main.goToHelpScreen();
+                menuChoice.play(0.6f);
             }
         });
 
@@ -143,6 +147,7 @@ public class PauseOverlay {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 main.goToMainMenu();
+                menuChoice.play(0.6f);
             }
         });
 

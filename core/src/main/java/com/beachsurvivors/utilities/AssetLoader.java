@@ -73,6 +73,7 @@ public class AssetLoader {
         manager.load("entities/chest.png", Texture.class);
         manager.load("entities/icons/ability_icon.png", Texture.class);
         manager.load("entities/icons/ability_icon_selected.png", Texture.class);
+        manager.load("entities/icons/select_arrow.png", Texture.class);
         manager.load("entities/icons/chest_open.png", Texture.class);
         manager.load("entities/coconut.png", Texture.class);
         manager.load("entities/death.png", Texture.class);

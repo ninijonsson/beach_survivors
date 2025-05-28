@@ -100,7 +100,7 @@ public class MainMenuScreen implements Screen {
 
         buttons = new ImageButton[] { playButton, helpButton, exitButton };
 
-        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/coin.png");
+        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/select_arrow.png");
         selectorArrow = new Image(arrowTexture);
         selectorArrow.setSize(32, 32);
         stage.addActor(selectorArrow);
@@ -139,18 +139,18 @@ public class MainMenuScreen implements Screen {
                     case Input.Keys.W:
                     case Input.Keys.UP:
                         selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
-                        menuSwitch.play(0.1f);
+                        menuSwitch.play(0.4f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.S:
                     case Input.Keys.DOWN:
                         selectedIndex = (selectedIndex + 1) % buttons.length;
-                        menuSwitch.play(0.1f);
+                        menuSwitch.play(0.4f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.SPACE:
                     case Input.Keys.ENTER:
-                        menuChoice.play(0.2f);
+                        menuChoice.play(0.6f);
                         buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
                         return true;
                 }
@@ -175,6 +175,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 mainTheme.stop();
+                menuChoice.play(0.6f);
                 startGameMusic();
                 main.playGame();
             }
@@ -184,6 +185,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 mainTheme.stop();
+                menuChoice.play(0.6f);
                 main.goToHelpScreen();
             }
         });

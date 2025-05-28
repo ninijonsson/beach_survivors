@@ -107,5 +107,6 @@ public class HelpScreen implements Screen {
                 main.showPreviousScreen();
             }
         });
+
     }
 }
