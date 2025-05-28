@@ -44,6 +44,7 @@ public class AssetLoader {
         manager.load("main_menu/sound/play_sound.wav", Sound.class);
         manager.load("main_menu/sound/holiday.wav", Sound.class);
         manager.load("sounds/chain_lightning.wav", Sound.class);
+        manager.load("entities/abilities/death_splatter.wav", Sound.class);
     }
 
     private void addTextures() {
@@ -144,6 +145,9 @@ public class AssetLoader {
 
         ParticleEffectLoader.ParticleEffectParameter electricTrail = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/electric_trail.p", ParticleEffect.class, electricTrail);
+
+        ParticleEffectLoader.ParticleEffectParameter deathEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/death_effect.p", ParticleEffect.class, deathEffect);
     }
 
     private void addSkins() {
