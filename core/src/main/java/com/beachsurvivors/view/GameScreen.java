@@ -134,11 +134,12 @@ public class GameScreen extends Game implements Screen {
         player = new Player(map, spriteBatch, this);
 
 
-        //bullet = new BaseAttack(poolManager);
+        bullet = new BaseAttack(poolManager);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
         //abilities.add(bullet);
         abilities.add(shield);
+        abilities.add(chainLightning);
 
 
         font = new BitmapFont();
@@ -288,7 +289,7 @@ public class GameScreen extends Game implements Screen {
         }
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
-        castChainLightning();
+        //castChainLightning();
         updatePowerUps();
 
         vaccum();
