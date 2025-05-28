@@ -29,6 +29,8 @@ entities/abilities/exp_bar_fill.png
 entities/abilities/fireball.png
 entities/abilities/impact_zone.png
 entities/abilities/lightning.png
+entities/abilities/menu_select.wav
+entities/abilities/menu_switch.wav
 entities/abilities/shield_bubble.png
 entities/abilities/test_ability_bar.png
 entities/abilities/test_ability_bar1.png

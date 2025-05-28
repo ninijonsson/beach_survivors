@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -29,6 +30,10 @@ public class PauseOverlay {
     private ImageButton[] buttons;
     private boolean arrowInitialized = false;
 
+    private Sound menuSwitch;
+    private Sound menuChoice;
+
+
 
 
     public PauseOverlay(GameScreen game, Main main) {
@@ -38,6 +43,9 @@ public class PauseOverlay {
 
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
         skin = AssetLoader.get().getSkin("skin_composer/pause_menu/pause_menu.json");
+
+        menuSwitch = AssetLoader.get().manager.get("entities/abilities/menu_switch.wav");
+        menuChoice = AssetLoader.get().manager.get("entities/abilities/menu_select.wav");
 
         table = buildUI(); // Lägg till tabellen
         table.setVisible(true); // Viktigt – gör table synlig så layout fungerar
@@ -188,18 +196,18 @@ public class PauseOverlay {
                     case Input.Keys.W:
                     case Input.Keys.UP:
                         selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
-                        System.out.println("pressed up");
+                        menuSwitch.play(0.4f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.S:
                     case Input.Keys.DOWN:
                         selectedIndex = (selectedIndex + 1) % buttons.length;
-                        System.out.println("pressed down");
+                        menuSwitch.play(0.4f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.SPACE:
                     case Input.Keys.ENTER:
-                        System.out.println("pressed enter");
+                        menuChoice.play(0.6f);
                         buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
                         return true;
                     case Input.Keys.ESCAPE:

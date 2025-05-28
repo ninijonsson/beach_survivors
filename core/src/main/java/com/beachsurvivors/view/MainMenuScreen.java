@@ -22,11 +22,12 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     Sound playSound;
     Music mainTheme;
+    Sound menuSwitch;
+    Sound menuChoice;
 
     private int selectedIndex = 0;
     private Image selectorArrow;
     private ImageButton[] buttons;
-
 
     Texture backgroundTexture;
     Texture logoTexture;
@@ -46,6 +47,9 @@ public class MainMenuScreen implements Screen {
 
         playSound = AssetLoader.get().manager.get("main_menu/sound/holiday.wav");
         mainTheme = AssetLoader.get().manager.get("sounds/beach.mp3");
+        menuSwitch = AssetLoader.get().manager.get("entities/abilities/menu_switch.wav");
+        menuChoice = AssetLoader.get().manager.get("entities/abilities/menu_select.wav");
+
         mainTheme.play();
         mainTheme.setVolume(0.5f);
         mainTheme.setLooping(true);
@@ -103,8 +107,6 @@ public class MainMenuScreen implements Screen {
 
         stage.act(0); // tvingar layout
         updateArrowPosition();
-
-
     }
 
     @Override
@@ -112,26 +114,20 @@ public class MainMenuScreen implements Screen {
         fitViewport.update(width, height, true);
     }
 
+    @Override
+    public void pause() {}
 
     @Override
-    public void pause() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
+    public void dispose() {}
 
     public void draw(float delta) {
         stage.act(delta);
         stage.draw();
     }
+
     @Override
     public void show() {
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -143,15 +139,18 @@ public class MainMenuScreen implements Screen {
                     case Input.Keys.W:
                     case Input.Keys.UP:
                         selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
+                        menuSwitch.play(0.4f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.S:
                     case Input.Keys.DOWN:
                         selectedIndex = (selectedIndex + 1) % buttons.length;
+                        menuSwitch.play(0.4f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.SPACE:
                     case Input.Keys.ENTER:
+                        menuChoice.play(0.6f);
                         buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
                         return true;
                 }
@@ -161,7 +160,6 @@ public class MainMenuScreen implements Screen {
 
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
-
     }
 
     @Override
@@ -170,12 +168,9 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     public void addListeners() {
-
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -213,7 +208,4 @@ public class MainMenuScreen implements Screen {
         float y = current.getY() + current.getHeight() / 2f - selectorArrow.getHeight() / 2f;
         selectorArrow.setPosition(x, y);
     }
-
-
-
 }
