@@ -9,7 +9,7 @@ public class Main extends Game {
 
     private MainMenuScreen menuScreen;
     private GameScreen gameScreen;
-    private PauseScreen pauseScreen;
+    private PauseOverlay pauseOverlay;
     private LoadingScreen loadingScreen;
     private Screen previousScreen;
     private boolean isSoundOn = true;
@@ -18,7 +18,7 @@ public class Main extends Game {
     public void create() {
         gameScreen = new GameScreen(this);
         menuScreen = new MainMenuScreen(this);
-        pauseScreen = new PauseScreen(gameScreen, this);
+        //pauseScreen = new PauseScreen(gameScreen, this, stage);
         setScreen(loadingScreen);
         setScreen(menuScreen);
         previousScreen = menuScreen;
@@ -42,8 +42,8 @@ public class Main extends Game {
     public void goToMainMenu() {
         menuScreen.mainTheme.play();
         menuScreen.playSound.stop();
-//        if (gameScreen != null) gameScreen.dispose();
-//        gameScreen = null;
+        if (gameScreen != null) gameScreen.dispose();
+        gameScreen = null;
         setScreen(menuScreen);
     }
 
@@ -65,18 +65,17 @@ public class Main extends Game {
 
     public void goToHelpScreen() {
         previousScreen = getScreen();
-        setScreen(new HelpScreen(gameScreen,this));
+        if (gameScreen != null) {
+            setScreen(new HelpScreen(gameScreen.getScreenWidth(), gameScreen.getScreenHeight(), this));
+        } else {
+            setScreen(new HelpScreen(1920, 1080, this));
+        }
     }
 
     public void showPreviousScreen() {
         setScreen(previousScreen);
     }
 
-
-    public void pause() {
-        previousScreen = getScreen();
-        setScreen(pauseScreen);
-    }
 
     public void turnOffInGameMusic() {
         // TODO: Stäng av ljudeffekterna också

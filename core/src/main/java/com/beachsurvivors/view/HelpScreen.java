@@ -21,12 +21,13 @@ public class HelpScreen implements Screen {
     private TextButton backButton;
     private Skin skin;
 
-    public HelpScreen(GameScreen game, Main main) {
-        this.game = game;
+    private int screenWidth;
+    private int screenHeight;
+
+    public HelpScreen(int screenWidth, int screenHeight, Main main) {
         this.main = main;
 
-
-        stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
+        stage = new Stage(new FitViewport(screenWidth, screenHeight));
         Gdx.input.setInputProcessor(stage);
 
         buildUI();
@@ -91,12 +92,12 @@ public class HelpScreen implements Screen {
 
     @Override
     public void hide() {
-        dispose();
+       // dispose();
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
+        //stage.dispose();
     }
 
     public void addListeners() {
