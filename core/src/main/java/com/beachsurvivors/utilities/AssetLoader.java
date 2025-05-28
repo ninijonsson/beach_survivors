@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.beachsurvivors.model.ParticleEffectPoolManager;
 
 public class AssetLoader {
     private static final AssetLoader instance = new AssetLoader();
@@ -23,6 +24,20 @@ public class AssetLoader {
         addParticles();
         addMusic();
         manager.finishLoading();
+    }
+
+    public static void registerParticles(ParticleEffectPoolManager poolManager) {
+        poolManager.register("entities/particles/blueFlame.p", 5, 20);
+        poolManager.register("entities/particles/lootBeam.p", 5, 20);
+        poolManager.register("entities/particles/lootPile.p", 5, 20);
+        poolManager.register("entities/particles/xp_orb.p", 5, 20);
+        poolManager.register("entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("entities/particles/chestOpen.p", 5, 20);
+        poolManager.register("entities/particles/water_trail.p", 5, 20);
+        poolManager.register("entities/particles/electric_trail.p", 5, 20);
+        poolManager.register("entities/particles/death_effect.p", 5, 20);
+        poolManager.register("entities/particles/bomb_explosion.p", 5, 20);
+        poolManager.register("entities/particles/arrow_effect.p", 5, 20);
     }
 
     private void addMusic() {
@@ -151,6 +166,9 @@ public class AssetLoader {
 
         ParticleEffectLoader.ParticleEffectParameter deathEffect = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/death_effect.p", ParticleEffect.class, deathEffect);
+
+        ParticleEffectLoader.ParticleEffectParameter arrowEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/arrow_effect.p", ParticleEffect.class, arrowEffect);
     }
 
     private void addSkins() {

@@ -39,8 +39,8 @@ public class HelpScreen implements Screen {
         Image backgroundImage = new Image(background);
 
         skin = AssetLoader.get().getSkin("game_over_screen/deathscreen_skin.json");
-        backButton = new TextButton("Back", skin);
-        backButton.setSize(200,100);
+        backButton = new TextButton("RETURN [ESC]", skin);
+        backButton.setSize(440,100);
 
         backgroundImage.setScale(2.0f);
 

@@ -139,18 +139,18 @@ public class MainMenuScreen implements Screen {
                     case Input.Keys.W:
                     case Input.Keys.UP:
                         selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
-                        menuSwitch.play(0.4f);
+                        menuSwitch.play(0.1f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.S:
                     case Input.Keys.DOWN:
                         selectedIndex = (selectedIndex + 1) % buttons.length;
-                        menuSwitch.play(0.4f);
+                        menuSwitch.play(0.1f);
                         updateArrowPosition();
                         return true;
                     case Input.Keys.SPACE:
                     case Input.Keys.ENTER:
-                        menuChoice.play(0.6f);
+                        menuChoice.play(0.2f);
                         buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
                         return true;
                 }

@@ -63,7 +63,9 @@ entities/icons/coin.aseprite
 entities/icons/coin.png
 entities/icons/meat_piece.png
 entities/icons/rib_piece.png
+entities/icons/select_arrow.png
 entities/icons/skull_piece.png
+entities/particles/arrow_effect.p
 entities/particles/blueFlame.p
 entities/particles/bomb_explosion.p
 entities/particles/bone_piece.png
@@ -92,6 +94,7 @@ entities/particles/particle-fire.png
 entities/particles/particle-star.png
 entities/particles/particle.png
 entities/particles/rib_piece.png
+entities/particles/select_arrow.png
 entities/particles/shieldEffect.p
 entities/particles/skull_piece.png
 entities/particles/smoke.png
