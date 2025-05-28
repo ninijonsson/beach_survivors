@@ -138,7 +138,7 @@ public class MainMenuScreen implements Screen {
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 mainTheme.stop();
                 startGameMusic();
-                main.switchScreen();
+                main.playGame();
             }
         });
 

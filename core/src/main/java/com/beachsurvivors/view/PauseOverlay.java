@@ -1,46 +1,43 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.utilities.AssetLoader;
 
-public class PauseScreen implements Screen {
+public class PauseOverlay {
     private Stage stage;
+    private Table table;
     private GameScreen game;
     private Main main;
     private Skin skin;
     private boolean isSoundOn;
     private Image dimBackground;
 
-    public PauseScreen(GameScreen game, Main main) {
+    public PauseOverlay(GameScreen game, Main main) {
         this.game = game;
         this.main = main;
         isSoundOn = main.isSoundOn();
 
         stage = new Stage(new FitViewport(game.getScreenWidth(), game.getScreenHeight()));
-        Gdx.input.setInputProcessor(stage);
+        //Gdx.input.setInputProcessor(stage);
 
         skin = AssetLoader.get().getSkin("skin_composer/pause_menu/pause_menu.json");
 
         //createDarkerBackground();
-        buildUI();
+        table = buildUI();
+        table.setVisible(false);
     }
 
-    private void buildUI() {
-        Window pauseMenu = new Window("", skin, "default");
+    private Table buildUI() {
+        Table pauseMenu = new Window("", skin, "default");
         pauseMenu.setSize(1200, 972); // Bildens dimensioner
         //pauseMenu.setDebug(true); // Rutnät för debugging
 
@@ -122,7 +119,10 @@ public class PauseScreen implements Screen {
                 main.goToMainMenu();
             }
         });
+
+        return pauseMenu;
     }
+
 
     public void toggleSound() {
         if (!main.isSoundOn()) {
@@ -151,44 +151,67 @@ public class PauseScreen implements Screen {
         }
     }
 
-    @Override
+    public boolean isVisible() {
+        return table.isVisible();
+    }
+
     public void show() {
+        table.setVisible(true);
+
 
     }
-
-    @Override
-    public void render(float delta) {
-        stage.act(delta);
-        stage.draw();
-
-        // Återgå till spelet ifall du trycker på ESC
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            game.resume();
-        }
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
     public void hide() {
-        dispose();
+        table.setVisible(false);
     }
 
-    @Override
-    public void dispose() {
-        stage.dispose();
+    public Stage getStage() {
+        return stage;
     }
+
+//    @Override
+//    public void show() {
+//        table.setVisible(false);
+//        Gdx.input.setInputProcessor(stage); // Lyssna på event listeners
+//    }
+//
+//    @Override
+//    public void hide() {
+//        Gdx.input.setInputProcessor(stage);
+//    }
+
+
+//    @Override
+//    public void render(float delta) {
+//        stage.act(delta);
+//        stage.draw();
+//
+//        // Återgå till spelet ifall du trycker på ESC
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+//            game.resume();
+//        }
+//    }
+//
+//    @Override
+//    public void resize(int width, int height) {
+//        stage.getViewport().update(width, height, true);
+//    }
+//
+//    @Override
+//    public void pause() {
+//
+//    }
+//
+//    @Override
+//    public void resume() {
+//
+//    }
+//
+//
+//
+//    @Override
+//    public void dispose() {
+//        //stage.dispose();
+//    }
+
+
 }

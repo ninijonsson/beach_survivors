@@ -71,26 +71,23 @@ public class GameScreen extends Game implements Screen {
     private double totalPlayerDamageDealt;
 
     private BitmapFont font;
-    private Array<DamageText> damageTexts = new Array<>();
+    private Array<DamageText> damageTexts;
     private Random random = new Random();
 
 
-    private Array<GroundItem> groundItems = new Array<>();  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
+    private Array<GroundItem> groundItems;  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
     private Queue<Integer> miniBossSchedule = new Queue<>(10);
     /// /array med intervaller på när miniboss ska spawna
 
-    private Array<Enemy> enemies = new Array<>();
-    private Array<Ability> enemyAbilities = new Array<>();
-    private Array<PowerUp> powerUpsToRemove = new Array<>();
-    private Array<GroundItem> groundItemsToRemove = new Array<>();
+    private Array<Enemy> enemies;
+    private Array<Ability> enemyAbilities;
+    private Array<PowerUp> powerUpsToRemove;
+    private Array<GroundItem> groundItemsToRemove;
 
     private boolean isPaused = false;
-
-
+    private PauseOverlay pauseOverlay;
 
     private boolean isChestOverlayActive = false;
-
-
 
     //Boolean variables to toggle when testing the game with/without
     //some elements. Set all to true for testing everything.
@@ -104,9 +101,8 @@ public class GameScreen extends Game implements Screen {
         gameViewport = new FitViewport(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f);
         gameUI = new GameUI(new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT), this);
 
-        droppedItems = new Array<>();
-        abilities = new Array<>();
-        currentPowerUps = new Array<>();
+        initializeArrays();
+
         totalEnemiesKilled = 0;
         create();
 
@@ -118,15 +114,17 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void create() {
+        stage = new Stage(gameViewport);
+        stage.clear();
+
         spriteBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
+        pauseOverlay = new PauseOverlay(this, main);
 
         tiledMap = new TmxMapLoader().load("map2/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 2f);
         assert tiledMap != null;
         Map map = new Map(tiledMap);
-        stage = new Stage(gameViewport);
-        stage.clear();
 
 
         addPoolManager();
@@ -137,7 +135,7 @@ public class GameScreen extends Game implements Screen {
         bullet = new BaseAttack(poolManager);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
-        abilities.add(bullet);
+        //abilities.add(bullet);
         abilities.add(shield);
 
 
@@ -154,6 +152,22 @@ public class GameScreen extends Game implements Screen {
 
     }
 
+    private void initializeArrays() {
+        groundItems = new Array<>();
+        miniBossSchedule = new Queue<>(10);
+
+        enemies = new Array<>();
+        enemyAbilities = new Array<>();
+        powerUpsToRemove = new Array<>();
+        groundItemsToRemove = new Array<>();
+
+        droppedItems = new Array<>();
+        abilities = new Array<>();
+        currentPowerUps = new Array<>();
+
+        damageTexts = new Array<>();
+    }
+
 
 
     /**
@@ -162,6 +176,7 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void show() {
+        isPaused = false;
         Gdx.input.setInputProcessor(stage); //Uppdaterar vilken stage inputProcessorn ska lyssna på
     }
 
@@ -176,26 +191,36 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void render(float delta) {
-        input(); // hanterar ESC / TAB osv.
 
-        // Rita alltid spelet
-        logicIfNotPaused(delta);
-        draw();
 
-        // Rita UI och ev. överlägg
-        gameUI.getStage().act(delta);
-        gameUI.update(delta);
-        gameUI.draw();
+            input(); // hanterar ESC / TAB osv.
 
-        if (isChestOverlayActive && chestOverlay != null) {
-            chestOverlay.update(delta);  // inga world updates men ev. effekt
-            chestOverlay.draw();
-            if (chestOverlay.isClosed()) {
-                chestOverlay.dispose();
-                chestOverlay = null;
-                isChestOverlayActive = false;
-                resume();
+            // Rita alltid spelet
+        if (!isPaused) {
+
+            logicIfNotPaused(delta);
+            draw();
+
+            // Rita UI och ev. överlägg
+            gameUI.getStage().act(delta);
+            gameUI.update(delta);
+            gameUI.draw();
+        }
+
+            if (isChestOverlayActive && chestOverlay != null) {
+                chestOverlay.update(delta);  // inga world updates men ev. effekt
+                chestOverlay.draw();
+                if (chestOverlay.isClosed()) {
+                    chestOverlay.dispose();
+                    chestOverlay = null;
+                    isChestOverlayActive = false;
+                    resume();
+                }
             }
+        if (isPaused && pauseOverlay != null) {
+            pauseOverlay.getStage().act(delta);
+            pauseOverlay.getStage().draw();
+
         }
     }
 
@@ -242,10 +267,6 @@ public class GameScreen extends Game implements Screen {
      */
     private void input() {
         if (!isPaused) {
-            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                activeBombs.add(new BombAttack(player.getPosition(), gameViewport.getCamera()));
-                System.out.println(player.getPosition());
-            }
 
             player.playerInput(isChestOverlayActive());
         }
@@ -367,13 +388,6 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V)) {
             gameUI.showStatsTable();
         }
-//        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-//            Vector3 screenCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-//            gameViewport.getCamera().unproject(screenCoords); // camera = your game's OrthographicCamera
-//
-//            Vector2 clickPos = new Vector2(screenCoords.x, screenCoords.y);
-//            groundItems.add(new ExperienceOrb(clickPos.x, clickPos.y, 0, poolManager));
-//        }
 
     }
 
@@ -466,7 +480,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void shootAtNearestEnemy() {
-        Enemy target = getNearestEnemy();
+        Enemy target = CombatHelper.getNearestEnemy(player, enemies);
 
         if (target != null) {
             Vector2 targetCenter = target.getCenter();
@@ -490,22 +504,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private Enemy getNearestEnemy() {
-        Enemy nearest = null;
-        float minDistance = 1000;
-
-        for (Enemy enemy : enemies) {
-            float distance = player.getPosition().dst(enemy.getPosition());
-
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearest = enemy;
-            }
-        }
-        return nearest;
-    }
-
     private void enemyAttacks() {
         for (Enemy enemy : enemies) {
             enemy.attack(player, enemyAbilities);
@@ -523,15 +521,22 @@ public class GameScreen extends Game implements Screen {
     @Override
     public void resume() {
         setPaused(false);
-        main.setScreen(this);
+        Gdx.input.setInputProcessor(gameUI.getStage());
         Timer.instance().start();
+        pauseOverlay.hide();
+        main.setScreen(this);
     }
 
     @Override
     public void pause() {
-        isPaused = !isPaused;
+        if (isPaused) return;
+        isPaused = true;
         Timer.instance().stop();
+
+        pauseOverlay.show();
+        Gdx.input.setInputProcessor(pauseOverlay.getStage());
     }
+
 
     @Override
     public void hide() {
