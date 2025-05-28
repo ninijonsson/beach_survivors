@@ -28,15 +28,12 @@ public class ChainLightning extends Ability {
 
     private boolean showLightning;
     private float lightningVisibleTime; //Hur länge lightning texturen visas efter den gjort damage
-    private double chainLightningTimer; //I stället för att använda TimerTask
-
 
     public ChainLightning(Array<Enemy> enemies, ParticleEffectPoolManager poolManager) {
         super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 6, 32, 32);
         maxJumps = 10;
         jumpRadius = 800;
         this.enemies = enemies;
-        chainLightningTimer = getCooldown();
         lightningVisibleTime = 0f;
         setIcon("entities/abilities/lightning.png");
         this.poolManager = poolManager;
@@ -46,8 +43,10 @@ public class ChainLightning extends Ability {
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
 
-            showLightning = true;
-            lightningVisibleTime = 0.5f;
+        setOffCooldown(false);
+
+        showLightning = true;
+        lightningVisibleTime = 0.5f;
 
         for (ParticleEffectPool.PooledEffect effect : glowEffects) {
             effect.free();
@@ -87,11 +86,14 @@ public class ChainLightning extends Ability {
                 start = end;
             }
 
+
+
     }
 
 
     //Uppdateras varje render ifall lightning effekten ska synas eller inte
     public void update(float delta) {
+
 
         if (showLightning) {
             lightningVisibleTime -= delta;
@@ -111,20 +113,6 @@ public class ChainLightning extends Ability {
         }
 
     }
-
-    private float getActualCooldown(Player player) {
-        return CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
-    }
-
-    public void tryCast(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
-        chainLightningTimer += delta;
-        if (chainLightningTimer >= getActualCooldown(player)) {
-            use(delta,player, enemies, abilities, damageTexts);
-            chainLightningTimer = 0;
-        }
-    }
-
-
 
     private Enemy getNextTarget(Enemy previous, Set<Enemy> hitEnemies) {
         Enemy closest = null;

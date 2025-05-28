@@ -51,6 +51,7 @@ public class BaseAttack extends Ability {
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
 
+        System.out.println(delta +" time");
     }
 
     @Override

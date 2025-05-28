@@ -139,6 +139,7 @@ public class GameScreen extends Game implements Screen {
         chainLightning = new ChainLightning(enemies, poolManager);
         abilities.add(bullet);
         abilities.add(shield);
+        abilities.add(chainLightning);
 
 
         font = new BitmapFont();
@@ -287,7 +288,7 @@ public class GameScreen extends Game implements Screen {
         }
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
-        castChainLightning();
+        //castChainLightning();
         updatePowerUps();
 
         vaccum();
@@ -367,13 +368,6 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V)) {
             gameUI.showStatsTable();
         }
-//        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-//            Vector3 screenCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-//            gameViewport.getCamera().unproject(screenCoords); // camera = your game's OrthographicCamera
-//
-//            Vector2 clickPos = new Vector2(screenCoords.x, screenCoords.y);
-//            groundItems.add(new ExperienceOrb(clickPos.x, clickPos.y, 0, poolManager));
-//        }
 
     }
 
@@ -515,10 +509,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private void castChainLightning() {
-        chainLightning.update(Gdx.graphics.getDeltaTime());
-        chainLightning.tryCast(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
-    }
 
     @Override
     public void resume() {
@@ -667,8 +657,11 @@ public class GameScreen extends Game implements Screen {
     private void updateAbilities() {
         for (Ability ability : abilities) {
             ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition().cpy());
-            ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
-            ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
+            ability.updateCooldownTimer(Gdx.graphics.getDeltaTime(), player);
+            if (ability.isOffCooldown()) {
+                ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
+                ability.setOffCooldown(false);
+            }
         }
     }
 
@@ -981,6 +974,10 @@ public class GameScreen extends Game implements Screen {
 
         abilities.addAll(newBoomerangs);
         gameUI.addAbilityIcon("entities/abilities/boomerangmc.png");
+    }
+
+    public void addShield() {
+        abilities.add(shield);
     }
 
 

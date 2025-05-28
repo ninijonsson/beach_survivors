@@ -49,14 +49,14 @@ public abstract class Ability implements Disposable {
         getHitBox().setPosition(position.x, position.y);
     }
 
-    public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+    public void updateCooldownTimer(float delta, Player player) {
         cooldownTimer += delta;
         float actualCooldown = CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
 
         if (cooldownTimer >= actualCooldown) {
             cooldownTimer = 0f;
             //Do something
-            isOffCooldown = true;
+            setOffCooldown(true);
         }
     }
 
