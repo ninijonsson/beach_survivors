@@ -45,6 +45,7 @@ entities/enemies/crab_sheet.png
 entities/enemies/crocodile1.png
 entities/enemies/crocodile1_sheet.png
 entities/enemies/crocodile2.png
+entities/enemies/crocodile2_walk_sheet.png
 entities/enemies/navy_seal_sheet.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
