@@ -18,7 +18,7 @@ public class Main extends Game {
     public void create() {
         gameScreen = new GameScreen(this);
         menuScreen = new MainMenuScreen(this);
-        //pauseScreen = new PauseScreen(gameScreen, this, stage);
+
         setScreen(loadingScreen);
         setScreen(menuScreen);
         previousScreen = menuScreen;
@@ -52,6 +52,7 @@ public class Main extends Game {
         gameScreen = new GameScreen(this);
         setScreen(gameScreen);
         menuScreen.startGameMusic();
+        previousScreen = gameScreen;
     }
 
     public void gameOver(int enemiesKilled, double damageDone, float gameTime,
@@ -65,6 +66,7 @@ public class Main extends Game {
 
     public void goToHelpScreen() {
         previousScreen = getScreen();
+
         if (gameScreen != null) {
             setScreen(new HelpScreen(gameScreen.getScreenWidth(), gameScreen.getScreenHeight(), this));
         } else {
@@ -86,9 +88,6 @@ public class Main extends Game {
         menuScreen.playSound.play();
     }
 
-    public void setPreviousScreen(Screen screen) {
-        previousScreen = screen;
-    }
 
     public boolean isSoundOn() {
         return isSoundOn;
