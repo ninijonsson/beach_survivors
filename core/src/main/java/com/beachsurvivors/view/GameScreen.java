@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
@@ -258,6 +259,7 @@ public class GameScreen extends Game implements Screen {
         stage.act();
         stage.draw();
         drawStuff();
+        poolManager.updateAndDraw(Gdx.graphics.getDeltaTime(), spriteBatch);
         spriteBatch.end();
 
     }
@@ -709,17 +711,23 @@ public class GameScreen extends Game implements Screen {
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
             totalEnemiesKilled++;
-            gameUI.updateInfoTable("You gained " + enemy.getExp() + " exp.");
+            //gameUI.updateInfoTable("You gained " + enemy.getExp() + " exp.");
 
-            // Om fienden är en miniboss ska den droppa en kista
             enemy.dropItems(droppedItems, poolManager);
             groundItems.add(new ExperienceOrb(enemy.getPosition().x, enemy.getPosition().y, enemy.getExp(), poolManager));
+
             if (enemy instanceof MiniBoss) {
                 ((MiniBoss) enemy).dropChest(groundItems);
             }
 
-            enemies.removeIndex(i); // Ta bort från fiende-arrayen
-            enemy.dispose(); // Ta även bort själva bilden på fienden
+            // Lägg till dödseffekt innan dispose
+            ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect.p");
+            deathEffect.setPosition(enemy.getPosition().x+enemy.getSprite().getWidth()*0.5f, enemy.getPosition().y+enemy.getSprite().getHeight()*0.5f);
+
+            poolManager.addActiveEffect(deathEffect);
+
+            enemies.removeIndex(i);
+            enemy.dispose();
         }
     }
 
@@ -826,6 +834,8 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("entities/particles/chestOpen.p", 5, 20);
         poolManager.register("entities/particles/water_trail.p", 5, 20);
         poolManager.register("entities/particles/electric_trail.p", 5, 20);
+        poolManager.register("entities/particles/death_effect.p", 5, 20);
+        poolManager.register("entities/particles/bomb_explosion.p", 5, 20);
     }
 
     private void xpOrbDebug(Player player) {

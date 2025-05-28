@@ -9,6 +9,7 @@ import com.beachsurvivors.utilities.AssetLoader;
 public class ParticleEffectPoolManager {
 
     private final ObjectMap<String, ParticleEffectPool> pools = new ObjectMap<>();
+    private final com.badlogic.gdx.utils.Array<PooledEffect> activeEffects = new com.badlogic.gdx.utils.Array<>();
 
     public void register(String effectPath, int min, int max) {
         ParticleEffect base = AssetLoader.get().getParticleEffect(effectPath);
@@ -34,4 +35,21 @@ public class ParticleEffectPoolManager {
         }
         return effect;
     }
+
+    public void updateAndDraw(float delta, com.badlogic.gdx.graphics.g2d.SpriteBatch batch) {
+        System.out.println("active effects: " + activeEffects.size);
+        for (int i = activeEffects.size - 1; i >= 0; i--) {
+            PooledEffect effect = activeEffects.get(i);
+            effect.draw(batch, delta);
+            if (effect.isComplete()) {
+                effect.free();
+                activeEffects.removeIndex(i);
+            }
+        }
+    }
+
+    public void addActiveEffect(PooledEffect effect) {
+        activeEffects.add(effect);
+    }
+
 }

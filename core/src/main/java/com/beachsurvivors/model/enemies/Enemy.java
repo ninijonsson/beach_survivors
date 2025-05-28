@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -51,6 +52,7 @@ public abstract class Enemy implements Disposable {
     protected float shadowOffsetY = -10f;
 
     private Sound hitSound;
+    private Sound deathSound;
     private boolean isImmune;
 
     private Animation<TextureRegion> walkAnimation;
@@ -61,6 +63,7 @@ public abstract class Enemy implements Disposable {
     private boolean healthBarAddedToStage = false;
     private Timer.Task hideHealthBarTask;
     private Stage stage;
+    Random rand = new Random();
 
     public Enemy(int width, int height, int healthPoints, int expOnDeath) {
         this.width = width;
@@ -71,6 +74,7 @@ public abstract class Enemy implements Disposable {
         this.sprite = new Sprite(texture);
         this.sprite.setSize(width, height);
         this.hitSound = AssetLoader.get().getSound("sounds/shark_damage_2.wav");
+        this.deathSound = AssetLoader.get().getSound("entities/abilities/death_splatter.wav");
 
         this.radius = width /4;
 
@@ -276,6 +280,7 @@ public abstract class Enemy implements Disposable {
     }
 
     public void dropItems(Array<PowerUp> droppedItems, ParticleEffectPoolManager poolManager) {
+        playDeathSound();
         Random random = new Random();
         int chance = random.nextInt(0,100);
 
@@ -302,6 +307,12 @@ public abstract class Enemy implements Disposable {
                 break;
             default:
         }
+    }
+
+    private void playDeathSound() {
+        float pitch = MathUtils.random(0.8f, 1.2f);
+        long id = deathSound.play(0.2f);
+        deathSound.setPitch(id, pitch);
     }
 
     @Override
