@@ -132,7 +132,7 @@ public class GameScreen extends Game implements Screen {
         player = new Player(map, spriteBatch, this);
 
 
-        //bullet = new BaseAttack(poolManager);
+        bullet = new BaseAttack(poolManager);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
         //abilities.add(bullet);
@@ -200,12 +200,12 @@ public class GameScreen extends Game implements Screen {
 
             logicIfNotPaused(delta);
             draw();
-        }
 
             // Rita UI och ev. överlägg
             gameUI.getStage().act(delta);
             gameUI.update(delta);
             gameUI.draw();
+        }
 
             if (isChestOverlayActive && chestOverlay != null) {
                 chestOverlay.update(delta);  // inga world updates men ev. effekt
@@ -537,9 +537,6 @@ public class GameScreen extends Game implements Screen {
         Gdx.input.setInputProcessor(pauseOverlay.getStage());
     }
 
-    private Stage getStage() {
-        return stage;
-    }
 
     @Override
     public void hide() {
