@@ -1,7 +1,6 @@
 package com.beachsurvivors.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,6 +22,11 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     Sound playSound;
     Music mainTheme;
+
+    private int selectedIndex = 0;
+    private Image selectorArrow;
+    private ImageButton[] buttons;
+
 
     Texture backgroundTexture;
     Texture logoTexture;
@@ -89,6 +93,18 @@ public class MainMenuScreen implements Screen {
         stage.addActor(stack);
 
         addListeners();
+
+        buttons = new ImageButton[] { playButton, helpButton, exitButton };
+
+        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/coin.png");
+        selectorArrow = new Image(arrowTexture);
+        selectorArrow.setSize(32, 32);
+        stage.addActor(selectorArrow);
+
+        stage.act(0); // tvingar layout
+        updateArrowPosition();
+
+
     }
 
     @Override
@@ -118,7 +134,31 @@ public class MainMenuScreen implements Screen {
     }
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage); // Lyssna på event listeners
+        InputMultiplexer multiplexer = new InputMultiplexer();
+
+        multiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.UP:
+                        selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
+                        updateArrowPosition();
+                        return true;
+                    case Input.Keys.DOWN:
+                        selectedIndex = (selectedIndex + 1) % buttons.length;
+                        updateArrowPosition();
+                        return true;
+                    case Input.Keys.ENTER:
+                        buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
+
     }
 
     @Override
@@ -162,5 +202,15 @@ public class MainMenuScreen implements Screen {
         playSound.setLooping(playSound.play(0.1f),true);
         playSound.setPitch(0,0.7f);
     }
+
+    private void updateArrowPosition() {
+        ImageButton current = buttons[selectedIndex];
+
+        float x = current.getX() - selectorArrow.getWidth() - 20;
+        float y = current.getY() + current.getHeight() / 2f - selectorArrow.getHeight() / 2f;
+        selectorArrow.setPosition(x, y);
+    }
+
+
 
 }
