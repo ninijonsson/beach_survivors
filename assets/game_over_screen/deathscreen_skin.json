@@ -112,7 +112,9 @@
 		"imageOver": "play_button_2_hover_scaled"
 	},
 	"help": {
-		"imageUp": "help_button_scaled-300"
+		"imageUp": "help_button_scaled-300",
+		"imageDown": "help_button_pressed",
+		"imageOver": "help_button_hover"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {
