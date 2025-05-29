@@ -70,6 +70,8 @@ public class GameScreen extends Game implements Screen {
     private float bulletTimer = 0f;
     private int totalEnemiesKilled;
     private double totalPlayerDamageDealt;
+    private boolean hasWaterWaveAbility = false;
+    private float waterWaveTimer = 0f;
 
     private BitmapFont font;
     private Array<DamageText> damageTexts;
@@ -139,6 +141,8 @@ public class GameScreen extends Game implements Screen {
         //abilities.add(bullet);
         abilities.add(shield);
 
+        Chest testChest = new Chest(player.getPosition().x-200, player.getPosition().y, poolManager, this);
+        groundItems.add(testChest);
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
@@ -148,9 +152,7 @@ public class GameScreen extends Game implements Screen {
         Vector2 startPos = new Vector2(player.getPosition());
         WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
         abilities.add(wave);
-
         createMiniBossSchedule();
-
     }
 
     private void initializeArrays() {
@@ -168,7 +170,6 @@ public class GameScreen extends Game implements Screen {
 
         damageTexts = new Array<>();
     }
-
 
 
     /**
@@ -194,9 +195,9 @@ public class GameScreen extends Game implements Screen {
     public void render(float delta) {
 
 
-            input(); // hanterar ESC / TAB osv.
+        input(); // hanterar ESC / TAB osv.
 
-            // Rita alltid spelet
+        // Rita alltid spelet
         if (!isPaused) {
 
             logicIfNotPaused(delta);
@@ -208,23 +209,22 @@ public class GameScreen extends Game implements Screen {
             gameUI.draw();
         }
 
-            if (isChestOverlayActive && chestOverlay != null) {
-                chestOverlay.update(delta);  // inga world updates men ev. effekt
-                chestOverlay.draw();
-                if (chestOverlay.isClosed()) {
-                    chestOverlay.dispose();
-                    chestOverlay = null;
-                    isChestOverlayActive = false;
-                    resume();
-                }
+        if (isChestOverlayActive && chestOverlay != null) {
+            chestOverlay.update(delta);  // inga world updates men ev. effekt
+            chestOverlay.draw();
+            if (chestOverlay.isClosed()) {
+                chestOverlay.dispose();
+                chestOverlay = null;
+                isChestOverlayActive = false;
+                resume();
             }
+        }
         if (isPaused && pauseOverlay != null) {
             pauseOverlay.getStage().act(delta);
             pauseOverlay.getStage().draw();
             pauseOverlay.render(delta);
         }
     }
-
 
 
     /**
@@ -291,6 +291,10 @@ public class GameScreen extends Game implements Screen {
         if (playerAbilitiesTestMode) {
             playerShoot();
             updateAbilities();
+            if (hasWaterWaveAbility) {
+                castWaterWave();
+            }
+
         }
 
         updateDamageText();
@@ -362,15 +366,9 @@ public class GameScreen extends Game implements Screen {
                     Vector2 positionA = enemyA.getPosition();
                     Vector2 positionB = enemyB.getPosition();
 
-                    Vector2 newPositionA = new Vector2(
-                        positionA.x - directionX * pushAmount,
-                        positionA.y - directionY * pushAmount
-                    );
+                    Vector2 newPositionA = new Vector2(positionA.x - directionX * pushAmount, positionA.y - directionY * pushAmount);
 
-                    Vector2 newPositionB = new Vector2(
-                        positionB.x + directionX * pushAmount,
-                        positionB.y + directionY * pushAmount
-                    );
+                    Vector2 newPositionB = new Vector2(positionB.x + directionX * pushAmount, positionB.y + directionY * pushAmount);
                     enemyA.setPosition(newPositionA);
                     enemyB.setPosition(newPositionB);
                 }
@@ -388,8 +386,7 @@ public class GameScreen extends Game implements Screen {
             }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
-                player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(), player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V)) {
             gameUI.showStatsTable();
@@ -485,15 +482,29 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+    private void castWaterWave() {
+        float cooldown = CombatHelper.getActualCooldown(2f, player.getCooldownReduction()); // 2s base
+        waterWaveTimer += Gdx.graphics.getDeltaTime();
+
+        if (waterWaveTimer >= cooldown) {
+            waterWaveTimer = 0f;
+            Vector2 direction = player.getLastDirection(); // vi behöver lägga till detta i Player
+            if (direction.isZero()) return;
+
+            WaterWave wave = new WaterWave("Water Wave", 15, 2f, 32, 32, player.getPosition().cpy(), poolManager);
+            wave.setDirection(direction);
+            abilities.add(wave);
+            System.out.println("cast waterwave in direction " + direction);
+        }
+    }
+
+
     private void shootAtNearestEnemy() {
         Enemy target = CombatHelper.getNearestEnemy(player, enemies);
 
         if (target != null) {
             Vector2 targetCenter = target.getCenter();
-            Vector2 direction = new Vector2(
-                targetCenter.x - player.getPosition().x,
-                targetCenter.y - player.getPosition().y
-            ).nor();
+            Vector2 direction = new Vector2(targetCenter.x - player.getPosition().x, targetCenter.y - player.getPosition().y).nor();
 
             BaseAttack bullet = new BaseAttack(poolManager);
             bullet.setDirection(direction);
@@ -540,7 +551,6 @@ public class GameScreen extends Game implements Screen {
         Timer.instance().stop();
         pauseOverlay.show();
     }
-
 
 
     @Override
@@ -603,8 +613,8 @@ public class GameScreen extends Game implements Screen {
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
         int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
         int maxEnemies = (int) (baseEnemies * Math.pow(growthRate, interval));
-        if(maxEnemies>100){
-            maxEnemies=100;
+        if (maxEnemies > 100) {
+            maxEnemies = 100;
         }
 
         if (spawnMinibossesTestMode) {
@@ -725,7 +735,7 @@ public class GameScreen extends Game implements Screen {
 
             // Lägg till dödseffekt innan dispose
             ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect.p");
-            deathEffect.setPosition(enemy.getPosition().x+enemy.getSprite().getWidth()*0.5f, enemy.getPosition().y+enemy.getSprite().getHeight()*0.5f);
+            deathEffect.setPosition(enemy.getPosition().x + enemy.getSprite().getWidth() * 0.5f, enemy.getPosition().y + enemy.getSprite().getHeight() * 0.5f);
 
             poolManager.addActiveEffect(deathEffect);
 
@@ -753,11 +763,7 @@ public class GameScreen extends Game implements Screen {
 
                 if (enemy.hit(damage)) {
                     totalPlayerDamageDealt += damage;
-                    damageTexts.add(new DamageText(String.valueOf((int) damage),
-                        enemy.getSprite().getX() + random.nextInt(50),
-                        enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50),
-                        1.0f,
-                        isCritical));
+                    damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50), enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
                 }
 
                 if (!ability.isPersistent()) {
@@ -798,8 +804,7 @@ public class GameScreen extends Game implements Screen {
 
         if (!player.isAlive()) {
             System.out.println("You died");
-            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
-                player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(), player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
     }
 
@@ -919,16 +924,19 @@ public class GameScreen extends Game implements Screen {
 
             if (a instanceof Shield) {
                 a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
-
                 if (!shield.getIsDepleted()) {
                     a.getSprite().draw(spriteBatch);
                 }
+
+            } else if (a instanceof BaseAttack) {
+                a.getSprite().draw(spriteBatch);
+                ((BaseAttack) a).drawTrail(spriteBatch);
+
+            } else if (a instanceof WaterWave) {
+                ((WaterWave) a).draw(spriteBatch);
+
             } else {
                 a.getSprite().draw(spriteBatch);
-            }
-
-            if (a instanceof BaseAttack) {
-                ((BaseAttack) a).drawTrail(spriteBatch);
             }
         }
 
@@ -936,6 +944,7 @@ public class GameScreen extends Game implements Screen {
             bomb.draw(spriteBatch);
         }
     }
+
 
     private void drawEnemyAbilities() {
         for (Ability a : enemyAbilities) {
@@ -976,6 +985,11 @@ public class GameScreen extends Game implements Screen {
         pause();
     }
 
+    public void enableWaterWave() {
+        hasWaterWaveAbility = true;
+        //gameUI.addAbilityIcon("entities/abilities/water_wave_icon.png"); // byt ikon om du vill
+    }
+
     public void addBoomerang() {
         if (numberOfBoomerangs >= 4) return;
 
@@ -1002,7 +1016,6 @@ public class GameScreen extends Game implements Screen {
     }
 
 
-
     public Player getPlayer() {
         return player;
     }
@@ -1027,9 +1040,9 @@ public class GameScreen extends Game implements Screen {
 
     public void addAbility(int index) {
         //todo detta måste göras på ett bättre sätt
-        switch(index){
+        switch (index) {
             case 0:
-                System.out.println("du valde nått");
+                enableWaterWave();
                 break;
             case 1:
                 addBoomerang();
@@ -1037,6 +1050,8 @@ public class GameScreen extends Game implements Screen {
             case 2:
                 System.out.println("du valde nått");
                 break;
+
+
             default:
                 break;
         }

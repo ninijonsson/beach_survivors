@@ -13,7 +13,7 @@ public class NavySeal extends Enemy {
     private float attackCooldown = 5f;
 
     public NavySeal() {
-        super( 100, 100, 20, 25);
+        super( 100, 100, 120, 25);
         createAnimation(AssetLoader.get().getTexture("entities/enemies/navy_seal_sheet.png"), 4, 1);
         setHealthPoints(30);
         setHitSound(AssetLoader.get().getSound("sounds/shark_damage_2.wav"));

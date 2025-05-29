@@ -40,6 +40,7 @@ public class Player extends Actor {
     private float regenTimer = 1f;
     private float areaIncrease = 0f;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
     private float lifesteal = 10f;
+    private Vector2 lastDirection = new Vector2(1, 0);
 
     private boolean isImmune;
     private boolean isAlive;
@@ -241,6 +242,33 @@ public class Player extends Actor {
         }
     }
 
+
+    public Vector2 getMovementDirection() {
+        Vector2 direction = new Vector2();
+
+        if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
+            direction.x -= 1;
+        }
+        if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
+            direction.x += 1;
+        }
+        if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
+            direction.y -= 1;
+        }
+        if ((Gdx.input.isKeyPressed(Input.Keys.UP)) || (Gdx.input.isKeyPressed(Input.Keys.W))) {
+            direction.y += 1;
+        }
+
+        if (!direction.isZero()) {
+            direction.nor();
+            lastDirection.set(direction);
+        }
+
+
+        return direction;
+    }
+
+
     public void setMovingLeftRight(boolean movingLeft, boolean movingRight) {
         this.movingLeft = movingLeft;
         this.movingRight = movingRight;
@@ -322,6 +350,7 @@ public class Player extends Actor {
 
     public void update(float deltaTime) {
         regenerateHp(deltaTime);
+        getMovementDirection();
     }
 
     private void regenerateHp(float delta) {
@@ -455,5 +484,8 @@ public class Player extends Actor {
         return vaccumStrength;
     }
 
+    public Vector2 getLastDirection() {
+        return lastDirection.cpy();
+    }
 }
 

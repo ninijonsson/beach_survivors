@@ -6,7 +6,7 @@ import com.beachsurvivors.model.Player;
 
 public class Crab extends Enemy {
     public Crab() {
-        super(128, 128, 20, 15);
+        super(128, 128, 50, 15);
         createAnimation(AssetLoader.get().getTexture("entities/enemies/crab_sheet.png"), 3, 1);
         setHealthPoints(15);
         setMovementSpeed(150f);
