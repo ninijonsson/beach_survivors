@@ -26,12 +26,12 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
 
     @Override
     protected void applyEffect(Player player) {
-        player.increaseSpeed(speedIncrease);
+        player.increaseSpeedModifier(speedIncrease);
     }
 
     @Override
     public synchronized void removeEffect(Player player) {
-        player.increaseSpeed(-speedIncrease);
+        player.increaseSpeedModifier(-speedIncrease);
     }
 
 

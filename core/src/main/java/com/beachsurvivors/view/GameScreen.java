@@ -77,7 +77,6 @@ public class GameScreen extends Game implements Screen {
     private Array<DamageText> damageTexts;
     private Random random = new Random();
 
-
     private Array<GroundItem> groundItems;  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
     private Queue<Integer> miniBossSchedule = new Queue<>(10);
     /// /array med intervaller på när miniboss ska spawna
@@ -318,6 +317,7 @@ public class GameScreen extends Game implements Screen {
         updatePowerUps();
 
         vaccum();
+
         for (int i = activeBombs.size - 1; i >= 0; i--) {
             BombAttack bomb = activeBombs.get(i);
             bomb.update(Gdx.graphics.getDeltaTime());
@@ -473,7 +473,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void playerShoot() {  //Flytta alla player-shoot metoder till player i stället?
-        float cooldown = CombatHelper.getActualCooldown(bullet.getCooldown(), player.getCooldownReduction());
+        float cooldown = CombatHelper.getActualCooldown(bullet.getCooldown(), player.getCooldownTime());
         bulletTimer += Gdx.graphics.getDeltaTime();
 
         if (bulletTimer >= cooldown) {
@@ -483,7 +483,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void castWaterWave() {
-        float cooldown = CombatHelper.getActualCooldown(2f, player.getCooldownReduction()); // 2s base
+        float cooldown = CombatHelper.getActualCooldown(2f, player.getCooldownTime()); // 2s base
         waterWaveTimer += Gdx.graphics.getDeltaTime();
 
         if (waterWaveTimer >= cooldown) {
@@ -999,6 +999,7 @@ public class GameScreen extends Game implements Screen {
 
         for (int i = 0; i < numberOfBoomerangs; i++) {
             Boomerang b = new Boomerang();
+            b.setOrbitRadius(player.getAreaRange());
             float angle = i * (360f / numberOfBoomerangs);
             b.setAngle(angle);
             newBoomerangs.add(b);
@@ -1013,6 +1014,14 @@ public class GameScreen extends Game implements Screen {
 
         abilities.addAll(newBoomerangs);
         gameUI.addAbilityIcon("entities/abilities/boomerangmc.png");
+    }
+
+    public void increaseBoomerangRadius(float increase) {
+        for (Ability ability : abilities) {
+            if (ability instanceof Boomerang) {
+                ((Boomerang) ability).increaseOrbitRadius(increase);
+            }
+        }
     }
 
 

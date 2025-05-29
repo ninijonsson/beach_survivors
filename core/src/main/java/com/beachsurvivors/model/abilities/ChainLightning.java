@@ -1,6 +1,5 @@
 package com.beachsurvivors.model.abilities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -113,7 +112,7 @@ public class ChainLightning extends Ability {
     }
 
     private float getActualCooldown(Player player) {
-        return CombatHelper.getActualCooldown(getCooldown(), player.getCooldownReduction());
+        return CombatHelper.getActualCooldown(getCooldown(), player.getCooldownTime());
     }
 
     public void tryCast(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {

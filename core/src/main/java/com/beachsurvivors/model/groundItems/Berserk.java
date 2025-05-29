@@ -24,7 +24,7 @@ public class Berserk extends PowerUp implements PickUpAble {
 
     @Override
     public void applyEffect(Player player) {
-        player.increaseSpeed(movementSpeedIncrease);
+        player.increaseSpeedModifier(movementSpeedIncrease);
 //        Timer.schedule(new Timer.Task() {
 //            @Override
 //            public void run() {
@@ -35,7 +35,7 @@ public class Berserk extends PowerUp implements PickUpAble {
 
     @Override
     public void removeEffect(Player player) {
-        player.increaseSpeed(-movementSpeedIncrease);
+        player.increaseSpeedModifier(-movementSpeedIncrease);
     }
 
 

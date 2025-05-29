@@ -1,10 +1,9 @@
 package com.beachsurvivors.model;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.graphics.Color;
@@ -12,11 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.beachsurvivors.model.abilities.Boomerang;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.controller.LevelSystem;
 import com.beachsurvivors.model.Map.Map;
@@ -28,18 +23,22 @@ public class Player extends Actor {
 
     //Player stats
     private final int STARTING_HEALTH_POINTS = 100;
+    private final int MAX_SPEED = 1200;
+    private final int MIN_SPEED = 300;
+
     private float maxHealthPoints;
     private float currentHealthPoints;
     private int experiencePoints;
-    private float speed = 500f;
+    private float baseSpeed = 500f; //permanent speed
+    private float speedModifier = 0f; //buffad speed
     private double damage = 10;
-    private float cooldownReduction = 10f;  //CDr i procent, börjar med 10%, högre cdr = snabbare cast time
+    private float cooldownTime = 1f;  //cooldown time börjar med 100%, lägre = snabbare
     private float criticalHitChance = 0.10f;
     private double criticalHitDamage = 2;
     private float hpRegenPerSecond = 0.1f;
     private float regenTimer = 1f;
-    private float areaIncrease = 0f;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
-    private float lifesteal = 10f;
+    private float areaRange = 300;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
+    private float lifesteal = 0f;
     private Vector2 lastDirection = new Vector2(1, 0);
 
     private boolean isImmune;
@@ -99,13 +98,12 @@ public class Player extends Actor {
         isAlive = true;
         isImmune = false;
 
-//        playerX = map.getStartingX();
-//        playerY = map.getStartingY();
-
         position = new Vector2(map.getStartingX(), map.getStartingY());
 
         beachGuyHitBox = new Rectangle(position.x - playerWidth / 2, position.y - playerHeight / 2, playerWidth, playerHeight);
-        vaccumHitbox = new Circle(position.x, position.y, vaccumRadius);
+        //vaccumHitbox = new Circle(position.x, position.y, vaccumRadius);
+        vaccumHitbox = new Circle(position.x, position.y, areaRange);
+
 
         currentHealthPoints = STARTING_HEALTH_POINTS;
         maxHealthPoints = STARTING_HEALTH_POINTS;
@@ -221,7 +219,7 @@ public class Player extends Actor {
             isMoving = false;
         }
 
-        Vector2 newPlayerPosition = new Vector2(position.x, position.y).add(direction.scl(speed * delta));
+        Vector2 newPlayerPosition = new Vector2(position.x, position.y).add(direction.scl(getSpeed() * delta));
 
         // LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
         Polygon tempHitBox = new Polygon(new float[]{
@@ -337,15 +335,12 @@ public class Player extends Actor {
         dispose();
     }
 
-    public void increaseSpeed(int speedIncrease) {
-        float newSpeed = speed + speedIncrease;
-        if (newSpeed > 1200) {
-            speed = 1200f;
-        } else if (newSpeed < 300) {
-            speed = 300f;
-        } else {
-            speed = newSpeed;
-        }
+    public void increaseBaseSpeed(int amount) {
+        baseSpeed = MathUtils.clamp(baseSpeed + amount, MIN_SPEED, MAX_SPEED);
+    }
+
+    public void increaseSpeedModifier(float amount) {
+        speedModifier += amount;
     }
 
     public void update(float deltaTime) {
@@ -389,12 +384,19 @@ public class Player extends Actor {
         criticalHitDamage += critDamageIncrease;
     }
 
-    public void increaseCooldownReduction(double cooldownReduction) {
-        this.cooldownReduction += cooldownReduction;
+    public void increaseCooldownReduction(float cooldownReduction) {
+        this.cooldownTime *= cooldownReduction;
     }
 
-    public void increaseAreaRange(float areaIncrease) {
-        this.areaIncrease += areaIncrease;
+
+
+    public void increaseAreaRadius(float increase) {
+        this.areaRange += increase;
+        vaccumHitbox.setRadius(areaRange);
+    }
+
+    public void increaseHpRegen(float increase) {
+        this.hpRegenPerSecond += increase;
     }
 
 
@@ -431,8 +433,8 @@ public class Player extends Actor {
         return maxHealthPoints;
     }
 
-    public float getCooldownReduction() {
-        return cooldownReduction;
+    public float getCooldownTime() {
+        return cooldownTime;
     }
 
     public float getHpRegenPerSecond() {
@@ -443,8 +445,8 @@ public class Player extends Actor {
         return lifesteal;
     }
 
-    public float getAreaIncrease() {
-        return areaIncrease;
+    public float getAreaRange() {
+        return areaRange;
     }
 
     public boolean isAlive() {
@@ -455,8 +457,12 @@ public class Player extends Actor {
         this.isAlive = isAlive;
     }
 
+    public float getBaseSpeed() {
+        return baseSpeed;
+    }
+
     public float getSpeed() {
-        return speed;
+        return MathUtils.clamp(baseSpeed + speedModifier, MIN_SPEED, MAX_SPEED);
     }
 
     public int getLevel() {
@@ -487,5 +493,7 @@ public class Player extends Actor {
     public Vector2 getLastDirection() {
         return lastDirection.cpy();
     }
+
+
 }
 

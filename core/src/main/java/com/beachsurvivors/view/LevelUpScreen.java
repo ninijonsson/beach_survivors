@@ -136,7 +136,7 @@ public class LevelUpScreen implements Screen {
                 player.increaseMaximumHealthPoints(20);
                 break;
             case Speed:
-                player.increaseSpeed(100);
+                player.increaseBaseSpeed(100);
                 break;
             case Damage:
                 player.increaseDamage(10);
@@ -148,9 +148,21 @@ public class LevelUpScreen implements Screen {
                 player.increaseCritDamage(0.5f);
                 break;
             case CooldownReduction:
-                player.increaseCooldownReduction(10);
-
+                player.increaseCooldownReduction(0.9f);
                 break;
+            case AreaRange:
+                player.increaseAreaRadius(100);
+                game.increaseBoomerangRadius(50);
+                break;
+            case HpRegen:
+                player.increaseHpRegen(0.1f);
+                break;
+            case LifeSteal:
+                player.increaseLifesteal(0.1f);
+                break;
+
+            default:
+
         }
     }
 
@@ -162,7 +174,10 @@ public class LevelUpScreen implements Screen {
         upgrades.add(new Upgrade(UpgradeType.Damage, "Increases your \n damage by 10"));
         upgrades.add(new Upgrade(UpgradeType.CriticalHitChance, "Increases your \n critical  hit \n chance by 5%"));
         upgrades.add(new Upgrade(UpgradeType.CriticalHitDamage, "Increases your \n critical hit \n damage by 50%"));
-        upgrades.add(new Upgrade(UpgradeType.CooldownReduction, "Increases your \n cooldown  reduction \n by 10%"));
+        upgrades.add(new Upgrade(UpgradeType.CooldownReduction, "Reduces your \n cooldown time \n by 10%"));
+        upgrades.add(new Upgrade(UpgradeType.AreaRange, "Increases your \n area by \n 100 units"));
+        upgrades.add(new Upgrade(UpgradeType.HpRegen, "Increases your \n Hp Regen by \n 0.1 HP/s"));
+        upgrades.add(new Upgrade(UpgradeType.LifeSteal, "Increases your \n life steal \n by 0.1"));
 
         return upgrades.get(random.nextInt(upgrades.size));
     }

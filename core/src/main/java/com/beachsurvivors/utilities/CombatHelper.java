@@ -22,8 +22,9 @@ public class CombatHelper {
         return nearest;
     }
 
-    public static float getActualCooldown(float cooldown, float cooldownReduction) {
-        float actualCooldown = cooldown * (100 - cooldownReduction) / 100;
+    public static float getActualCooldown(float cooldown, float cooldownTime) {
+        float actualCooldown = cooldown * cooldownTime;
         return actualCooldown;
     }
+
 }

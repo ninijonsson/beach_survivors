@@ -48,6 +48,9 @@ public class Boomerang extends Ability {
         getSprite().getTexture().dispose();
     }
 
+    public void increaseOrbitRadius(float increase) {
+        this.orbitRadius += increase;
+    }
 
 
     public float getSpinSpeed() {

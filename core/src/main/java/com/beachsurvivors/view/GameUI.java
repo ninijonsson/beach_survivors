@@ -427,9 +427,9 @@ public class GameUI {
         damage.setText("Base Damage: " + player.getDamage());
         critChance.setText("CritHit Chance: " + String.format("%.0f", player.getCriticalHitChance()*100) + "%");
         critDamage.setText("CritHit Damage: " + String.format("%.0f", player.getCriticalHitDamage()*100) + "%");
-        cooldownReduction.setText("Cooldown Reduction: " + player.getCooldownReduction() + "%");
+        cooldownReduction.setText("Cooldown Time: " + String.format("%.1f", player.getCooldownTime()*100) + "%");
         movementSpeed.setText("Movement Speed: " + player.getSpeed());
-        areaRadius.setText("Area Increase: " + player.getAreaIncrease()*100 + "%");
+        areaRadius.setText("Area: " + player.getAreaRange());
         lifeSteal.setText("Life Steal: " + player.getLifesteal());
     }
 
