@@ -88,7 +88,7 @@ public class LevelUpScreen implements Screen {
         upgradeButton1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                applyUpgrade(upgrade1.getType());
+                applyUpgrade(upgrade1);
                 game.printLog("Upgrade chosen: " + upgrade1.getType());
                 resumeGame();
             }
@@ -97,7 +97,7 @@ public class LevelUpScreen implements Screen {
         upgradeButton2.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                applyUpgrade(upgrade2.getType());
+                applyUpgrade(upgrade2);
                 game.printLog("Upgrade chosen: " + upgrade2.getType());
                 resumeGame();
             }
@@ -106,7 +106,7 @@ public class LevelUpScreen implements Screen {
         upgradeButton3.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                applyUpgrade(upgrade3.getType());
+                applyUpgrade(upgrade3);
                 game.printLog("Upgrade chosen: " + upgrade3.getType());
                 resumeGame();
             }
@@ -130,54 +130,56 @@ public class LevelUpScreen implements Screen {
         upgradeButton3.setText(upgrade3.getDescription());
     }
 
-    private void applyUpgrade(UpgradeType type) {
+    private void applyUpgrade(Upgrade upgrade) {
+        UpgradeType type = upgrade.getType();
+        float value = upgrade.getValue();
+
         switch (type) {
             case Health:
-                player.increaseMaximumHealthPoints(20);
+                player.increaseMaximumHealthPoints((int) value);
                 break;
             case Speed:
-                player.increaseBaseSpeed(100);
+                player.increaseBaseSpeed((int) value);
                 break;
             case Damage:
-                player.increaseDamage(10);
+                player.increaseDamage(value);
                 break;
             case CriticalHitChance:
-                player.increaseCritChance(0.05f);
+                player.increaseCritChance(value);
                 break;
             case CriticalHitDamage:
-                player.increaseCritDamage(0.5f);
+                player.increaseCritDamage(value);
                 break;
             case CooldownTime:
-                player.reduceCooldownTime(0.9f);
+                player.reduceCooldownTime(value);
                 break;
             case AreaRange:
-                player.increaseAreaRadius(100);
-                game.increaseBoomerangRadius(50);
+                player.increaseAreaRadius(value);
+                game.increaseBoomerangRadius(value);
                 break;
             case HpRegen:
-                player.increaseHpRegen(0.1f);
+                player.increaseHpRegen(value);
                 break;
             case LifeSteal:
-                player.increaseLifesteal(0.1f);
+                player.increaseLifesteal(value);
                 break;
 
             default:
-
         }
     }
 
     private Upgrade getRandomUpgrade() {
         Array<Upgrade> upgrades = new Array<>();
 
-        upgrades.add(new Upgrade(UpgradeType.Health, "Gain +20 to \n maximum health"));
-        upgrades.add(new Upgrade(UpgradeType.Speed,"Gain +100 \n movement speed"));
-        upgrades.add(new Upgrade(UpgradeType.Damage, "Increases your \n damage by 10"));
-        upgrades.add(new Upgrade(UpgradeType.CriticalHitChance, "Increases your \n critical  hit \n chance by 5%"));
-        upgrades.add(new Upgrade(UpgradeType.CriticalHitDamage, "Increases your \n critical hit \n damage by 50%"));
-        upgrades.add(new Upgrade(UpgradeType.CooldownTime, "Reduces your \n cooldown time \n by 10%"));
-        upgrades.add(new Upgrade(UpgradeType.AreaRange, "Increases your \n area by \n 100 units"));
-        upgrades.add(new Upgrade(UpgradeType.HpRegen, "Increases your \n Hp Regen by \n 0.1 HP/s"));
-        upgrades.add(new Upgrade(UpgradeType.LifeSteal, "Increases your \n life steal \n by 0.1"));
+        upgrades.add(new Upgrade(UpgradeType.Health, 20f));
+        upgrades.add(new Upgrade(UpgradeType.Speed,100));
+        upgrades.add(new Upgrade(UpgradeType.Damage, 10));
+        upgrades.add(new Upgrade(UpgradeType.CriticalHitChance, 0.05f));
+        upgrades.add(new Upgrade(UpgradeType.CriticalHitDamage, 0.5f));
+        upgrades.add(new Upgrade(UpgradeType.CooldownTime, 0.9f));
+        upgrades.add(new Upgrade(UpgradeType.AreaRange, 100));
+        upgrades.add(new Upgrade(UpgradeType.HpRegen, 0.1f));
+        upgrades.add(new Upgrade(UpgradeType.LifeSteal, 0.1f));
 
         return upgrades.get(random.nextInt(upgrades.size));
     }
@@ -232,17 +234,17 @@ public class LevelUpScreen implements Screen {
 
     public void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            applyUpgrade(upgrade1.getType());
+            applyUpgrade(upgrade1);
             game.printLog("Upgrade chosen: " + upgrade1.getType());
             resumeGame();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            applyUpgrade(upgrade2.getType());
+            applyUpgrade(upgrade2);
             game.printLog("Upgrade chosen: " + upgrade2.getType());
             resumeGame();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-            applyUpgrade(upgrade3.getType());
+            applyUpgrade(upgrade3);
             game.printLog("Upgrade chosen: " + upgrade3.getType());
             resumeGame();
         }
