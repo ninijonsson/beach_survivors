@@ -6,7 +6,7 @@ public enum UpgradeType {
     Damage,
     CriticalHitChance,
     CriticalHitDamage,
-    CooldownReduction,
+    CooldownTime,
     AreaRange,
     HpRegen,
     LifeSteal,

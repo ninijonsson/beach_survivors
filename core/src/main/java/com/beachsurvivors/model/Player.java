@@ -384,8 +384,8 @@ public class Player extends Actor {
         criticalHitDamage += critDamageIncrease;
     }
 
-    public void increaseCooldownReduction(float cooldownReduction) {
-        this.cooldownTime *= cooldownReduction;
+    public void reduceCooldownTime(float cooldownTime) {
+        this.cooldownTime *= cooldownTime;
     }
 
 
