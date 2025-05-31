@@ -111,7 +111,7 @@ public class ChestOverlay {
         table.add(title).colspan(3).padBottom(10).row();
 
         //todo detta måste göras på ett bättre sätt, så att det kan slumpas fram vilka abilities som kan väljas.
-        abilityButtons[0] = createImageButton("entities/icons/ability_icon.png", "[1]\nWater wave", 200, 120, () -> selectAbility(0), 0);
+        abilityButtons[0] = createImageButton("entities/icons/ability_icon.png", "[1]\nBlood wave", 200, 120, () -> selectAbility(0), 0);
         abilityButtons[1] = createImageButton("entities/icons/ability_icon.png", "[2]\nBoomerang", 200, 120, () -> selectAbility(1), 1);
         abilityButtons[2] = createImageButton("entities/icons/ability_icon.png", "[3]\nDoes Nothing", 200, 120, () -> selectAbility(2), 2);
 

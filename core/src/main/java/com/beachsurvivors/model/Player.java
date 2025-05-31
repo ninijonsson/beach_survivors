@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.graphics.Color;
@@ -12,9 +12,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beachsurvivors.model.abilities.Boomerang;
 import com.beachsurvivors.utilities.AssetLoader;
@@ -39,7 +36,7 @@ public class Player extends Actor {
     private float hpRegenPerSecond = 0.1f;
     private float regenTimer = 1f;
     private float areaIncrease = 0f;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
-    private float lifesteal = 10f;
+    private float lifesteal = 0.05f;
     private Vector2 lastDirection = new Vector2(1, 0);
 
     private boolean isImmune;
@@ -326,6 +323,7 @@ public class Player extends Actor {
     public void onDamageDealt(double damageDealt) {
         int healedAmount = Math.round((float) (damageDealt * lifesteal));
         restoreHealthPoints(healedAmount);
+        System.out.println("stole: "+ healedAmount + " life");
     }
 
     public void increaseLifesteal(float amount) {

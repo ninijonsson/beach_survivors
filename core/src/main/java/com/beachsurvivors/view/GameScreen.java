@@ -150,7 +150,7 @@ public class GameScreen extends Game implements Screen {
 
 
         Vector2 startPos = new Vector2(player.getPosition());
-        WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
+        BloodWave wave = new BloodWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
         abilities.add(wave);
         createMiniBossSchedule();
     }
@@ -491,7 +491,7 @@ public class GameScreen extends Game implements Screen {
             Vector2 direction = player.getLastDirection(); // vi behöver lägga till detta i Player
             if (direction.isZero()) return;
 
-            WaterWave wave = new WaterWave("Water Wave", 15, 2f, 32, 32, player.getPosition().cpy(), poolManager);
+            BloodWave wave = new BloodWave("Water Wave", 15, 2f, 32, 32, player.getPosition().cpy(), poolManager);
             wave.setDirection(direction);
             abilities.add(wave);
             System.out.println("cast waterwave in direction " + direction);
@@ -685,12 +685,19 @@ public class GameScreen extends Game implements Screen {
      * Updates position of all abilities that enemies use
      */
     private void updateAbilities() {
-        for (Ability ability : abilities) {
+        for (int i = abilities.size - 1; i >= 0; i--) {
+            Ability ability = abilities.get(i);
             ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition().cpy());
             ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
             ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
+
+            if (ability instanceof BaseAttack && ((BaseAttack) ability).hasExpired()) {
+                ability.dispose();
+                abilities.removeIndex(i);
+            }
         }
     }
+
 
     /**
      * Updates the position of an enemy
@@ -932,8 +939,8 @@ public class GameScreen extends Game implements Screen {
                 a.getSprite().draw(spriteBatch);
                 ((BaseAttack) a).drawTrail(spriteBatch);
 
-            } else if (a instanceof WaterWave) {
-                ((WaterWave) a).draw(spriteBatch);
+            } else if (a instanceof BloodWave) {
+                ((BloodWave) a).draw(spriteBatch);
 
             } else {
                 a.getSprite().draw(spriteBatch);

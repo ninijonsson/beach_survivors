@@ -18,6 +18,10 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
     private float speed = 1;
     private Sound pickUpSound;
 
+    private float lifetime = 0f;
+    private float maxLifetime = 30f;
+
+
     private boolean attracted = false;
     private boolean bounced = false;
     private float verticalVelocity = 0f;
@@ -69,6 +73,10 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
         }
         getHitbox().set(getSprite().getX(), getSprite().getY(), getWidth(), getHeight());
 
+    }
+
+    public boolean hasExpired() {
+        return lifetime >= maxLifetime;
     }
 
     // Custom overlap-check method because libgdx does not have one for checking Circle-Rectangle overlaps.
