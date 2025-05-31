@@ -12,7 +12,7 @@ import com.beachsurvivors.model.enemies.Enemy;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.view.DamageText;
 
-public class WaterWave extends Ability {
+public class BloodWave extends Ability {
 
     private ParticleEffect effect;
     private Vector2 position;
@@ -32,7 +32,7 @@ public class WaterWave extends Ability {
     private double damage = 15;
 
 
-    public WaterWave(String name, double damage, float cooldown, int width, int height,
+    public BloodWave(String name, double damage, float cooldown, int width, int height,
                      Vector2 startPosition, ParticleEffectPoolManager poolManager) {
         super(name, "entities/particles/bullet.png", AbilityType.ATTACK, damage, cooldown, width, height);
         this.position = new Vector2(startPosition);

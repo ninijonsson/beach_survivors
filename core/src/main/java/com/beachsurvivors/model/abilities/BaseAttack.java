@@ -17,6 +17,8 @@ public class BaseAttack extends Ability {
     private Sound fireSound;
     private float projectileSpeed;
     private ParticleEffectPool.PooledEffect trailEffect;
+    private float lifetime = 0f;
+
 
 
     //Constructor för default baseattack (spelarens)
@@ -53,8 +55,13 @@ public class BaseAttack extends Ability {
 
     }
 
+    public boolean hasExpired() {
+        return lifetime >= 5f;
+    }
+
     @Override
     public void updatePosition(float delta, Vector2 vector) {
+        lifetime += delta;
 
         Vector2 movement = direction.cpy().scl(projectileSpeed * delta);
         this.position.add(movement);
