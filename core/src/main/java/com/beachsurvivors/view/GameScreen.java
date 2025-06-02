@@ -609,7 +609,7 @@ public class GameScreen extends Game implements Screen {
     private Enemy selectRandomEnemy() {
         int enemyChoice = random.nextInt(0, 11);
         Enemy enemy = null;
-        enemyChoice = 0;
+        //enemyChoice = 0;
 
         switch (enemyChoice) {
             case 0:
