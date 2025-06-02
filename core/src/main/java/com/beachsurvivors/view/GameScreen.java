@@ -151,7 +151,7 @@ public class GameScreen extends Game implements Screen {
 
 
         Vector2 startPos = new Vector2(player.getPosition());
-        BloodWave wave = new BloodWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
+        WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
         abilities.add(wave);
         createMiniBossSchedule();
     }
@@ -494,7 +494,7 @@ public class GameScreen extends Game implements Screen {
             Vector2 direction = player.getLastDirection(); // vi behöver lägga till detta i Player
             if (direction.isZero()) return;
 
-            BloodWave wave = new BloodWave("Water Wave", 15, 2f, 32, 32, player.getPosition().cpy(), poolManager);
+            WaterWave wave = new WaterWave("Water Wave", 15, 2f, 32, 32, player.getPosition().cpy(), poolManager);
             wave.setDirection(direction);
             abilities.add(wave);
             System.out.println("cast waterwave in direction " + direction);
@@ -956,8 +956,8 @@ public class GameScreen extends Game implements Screen {
                 a.getSprite().draw(spriteBatch);
                 ((BaseAttack) a).drawTrail(spriteBatch);
 
-            } else if (a instanceof BloodWave) {
-                ((BloodWave) a).draw(spriteBatch);
+            } else if (a instanceof WaterWave) {
+                ((WaterWave) a).draw(spriteBatch);
 
             } else {
                 a.getSprite().draw(spriteBatch);

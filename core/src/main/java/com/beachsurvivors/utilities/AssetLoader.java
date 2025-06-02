@@ -75,6 +75,7 @@ public class AssetLoader {
         manager.load("entities/icons/select_arrow.png", Texture.class);
         manager.load("entities/icons/chest_open.png", Texture.class);
         manager.load("entities/coconut.png", Texture.class);
+        manager.load("entities/aim.png", Texture.class);
         manager.load("entities/death.png", Texture.class);
         manager.load("entities/how_to_play.png", Texture.class);
         manager.load("entities/abilities/bomb_shadow.png", Texture.class);

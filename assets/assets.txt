@@ -37,6 +37,7 @@ entities/abilities/test_ability_bar1.png
 entities/abilities/test_ability_bar2.png
 entities/abilities/water_gun_fire.wav
 entities/abilities/xp_orb.png
+entities/aim.png
 entities/beach_girl_sheet.png
 entities/beach_guy_sheet.png
 entities/beer.png
