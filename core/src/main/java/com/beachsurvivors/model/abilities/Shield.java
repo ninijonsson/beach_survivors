@@ -2,11 +2,9 @@ package com.beachsurvivors.model.abilities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.model.enemies.Enemy;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
-import com.beachsurvivors.utilities.CombatHelper;
 import com.beachsurvivors.view.DamageText;
 
 public class Shield extends Ability {
@@ -25,7 +23,7 @@ public class Shield extends Ability {
     }
 
     @Override
-    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts, Array<Projectile> playerProjectiles) {
 
         if (isOffCooldown()) {
             setOffCooldown(false);

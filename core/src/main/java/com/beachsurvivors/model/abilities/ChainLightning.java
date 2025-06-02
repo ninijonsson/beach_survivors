@@ -43,7 +43,7 @@ public class ChainLightning extends Ability {
     }
 
     @Override
-    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts, Array<Projectile> playerProjectiles) {
 
             showLightning = true;
             lightningVisibleTime = 0.5f;
@@ -118,7 +118,7 @@ public class ChainLightning extends Ability {
     public void tryCast(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
         chainLightningTimer += delta;
         if (chainLightningTimer >= getActualCooldown(player)) {
-            use(delta,player, enemies, abilities, damageTexts);
+            use(delta,player, enemies, abilities, damageTexts, new Array<>());
             chainLightningTimer = 0;
         }
     }

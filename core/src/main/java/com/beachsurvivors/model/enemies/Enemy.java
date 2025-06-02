@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.model.abilities.Projectile;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
@@ -87,7 +88,7 @@ public abstract class Enemy implements Disposable {
     }
 
     public abstract void move();
-    public abstract void attack(Player player, Array<Ability> enemyAbilities);
+    public abstract void attack(Player player, Array<Ability> enemyAbilities, Array<Projectile> enemyProjectiles);
     public abstract void dropItems();
 
     private void createHealthBar(int healthPoints) {
@@ -109,8 +110,6 @@ public abstract class Enemy implements Disposable {
     }
 
     public void updateHealthBarPosition() {
-        //healthBar.setPosition(getPosition().x, getPosition().y + sprite.getHeight() + 5);
-
         healthBar.setPosition(getPosition().x + getWidth() / 2f - healthBar.getWidth() / 2f,
             getPosition().y + getHeight() + 5);
         healthBar.setValue(healthPoints);
