@@ -1,4 +1,4 @@
-package com.beachsurvivors.controller;
+package com.beachsurvivors.utilities;
 
 import com.beachsurvivors.view.GameUI;
 import com.beachsurvivors.view.Main;

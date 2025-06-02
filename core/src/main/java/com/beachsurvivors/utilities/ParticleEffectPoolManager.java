@@ -1,10 +1,9 @@
-package com.beachsurvivors.model;
+package com.beachsurvivors.utilities;
 
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.beachsurvivors.utilities.AssetLoader;
 
 public class ParticleEffectPoolManager {
 

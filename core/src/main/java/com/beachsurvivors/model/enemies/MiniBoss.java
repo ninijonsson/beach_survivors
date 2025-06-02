@@ -1,9 +1,8 @@
 package com.beachsurvivors.model.enemies;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.utilities.AssetLoader;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.Chest;
 import com.beachsurvivors.model.groundItems.GroundItem;

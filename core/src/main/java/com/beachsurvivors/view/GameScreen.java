@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.abilities.*;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.model.Player;
@@ -97,6 +97,7 @@ public class GameScreen extends Game implements Screen {
     private boolean spawnEnemiesTestMode = true; //Toggles if enemies spawn
     private boolean spawnMinibossesTestMode = true; //Toggles if minibosses spawn
     private boolean testMode = false;
+    private boolean splatterMode = false;
 
     public GameScreen(Main main) {
         this.main = main;
@@ -743,10 +744,19 @@ public class GameScreen extends Game implements Screen {
             }
 
             // Lägg till dödseffekt innan dispose
-            ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect_safe.p");
-            deathEffect.setPosition(enemy.getPosition().x + enemy.getSprite().getWidth() * 0.5f, enemy.getPosition().y + enemy.getSprite().getHeight() * 0.5f);
 
-            poolManager.addActiveEffect(deathEffect);
+            if(splatterMode){
+                ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect.p");
+                deathEffect.setPosition(enemy.getPosition().x + enemy.getSprite().getWidth() * 0.5f, enemy.getPosition().y + enemy.getSprite().getHeight() * 0.5f);
+                poolManager.addActiveEffect(deathEffect);
+                enemy.playDeathSound();
+            } else {
+                ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect_safe.p");
+                deathEffect.setPosition(enemy.getPosition().x + enemy.getSprite().getWidth() * 0.5f, enemy.getPosition().y + enemy.getSprite().getHeight() * 0.5f);
+                poolManager.addActiveEffect(deathEffect);
+            }
+
+
 
             enemies.removeIndex(i);
             enemy.dispose();

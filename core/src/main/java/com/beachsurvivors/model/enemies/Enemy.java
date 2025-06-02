@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
 import com.beachsurvivors.utilities.AssetLoader;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.groundItems.*;
@@ -280,7 +280,7 @@ public abstract class Enemy implements Disposable {
     }
 
     public void dropItems(Array<PowerUp> droppedItems, ParticleEffectPoolManager poolManager) {
-        playDeathSound();
+
         Random random = new Random();
         int chance = random.nextInt(0,100);
 
@@ -309,7 +309,7 @@ public abstract class Enemy implements Disposable {
         }
     }
 
-    private void playDeathSound() {
+    public void playDeathSound() {
         float pitch = MathUtils.random(0.8f, 1.2f);
         long id = deathSound.play(0.2f);
         deathSound.setPitch(id, pitch);
@@ -317,7 +317,6 @@ public abstract class Enemy implements Disposable {
 
     @Override
     public void dispose() {
-
     }
 
     public Vector2 moveTowardsPlayer(float delta, Vector2 playerPosition, Vector2 enemyPosition) {

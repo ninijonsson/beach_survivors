@@ -2,7 +2,7 @@ package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.utilities.AssetLoader;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.BaseAttack;
 

@@ -1,6 +1,5 @@
 package com.beachsurvivors.model;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
@@ -14,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beachsurvivors.utilities.AssetLoader;
-import com.beachsurvivors.controller.LevelSystem;
+import com.beachsurvivors.utilities.LevelSystem;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.view.GameScreen;
 
