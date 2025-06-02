@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 public class ParticleEffectPoolManager {
 
-    private final ObjectMap<String, ParticleEffectPool> pools = new ObjectMap<>();
+    private static final ObjectMap<String, ParticleEffectPool> pools = new ObjectMap<>();
     private final com.badlogic.gdx.utils.Array<PooledEffect> activeEffects = new com.badlogic.gdx.utils.Array<>();
 
     public void register(String effectPath, int min, int max) {
@@ -19,7 +19,7 @@ public class ParticleEffectPoolManager {
         pools.put(effectPath, pool);
     }
 
-    public PooledEffect obtain(String effectPath) {
+    public static PooledEffect obtain(String effectPath) {
         ParticleEffectPool pool = pools.get(effectPath);
         if (pool == null) {
             throw new IllegalArgumentException("Effect not registered: " + effectPath);
@@ -27,7 +27,7 @@ public class ParticleEffectPoolManager {
         return pool.obtain();
     }
 
-    public PooledEffect obtain(String effectPath, float x, float y) {
+    public static PooledEffect obtain(String effectPath, float x, float y) {
         PooledEffect effect = obtain(effectPath);
         if (effect != null) {
             effect.setPosition(x, y);

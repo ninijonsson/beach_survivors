@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -83,6 +82,8 @@ public class GameScreen extends Game implements Screen {
     private Array<Ability> enemyAbilities;
     private Array<PowerUp> powerUpsToRemove;
     private Array<GroundItem> groundItemsToRemove;
+    private Array<Projectile> playerProjectiles;
+    private Array<Projectile> enemyProjectiles;
 
     private boolean isPaused = false;
     private PauseOverlay pauseOverlay;
@@ -135,6 +136,7 @@ public class GameScreen extends Game implements Screen {
 
 
         bullet = new BaseAttack(poolManager);
+        abilities.add(bullet);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
         abilities.add(shield);
@@ -157,6 +159,8 @@ public class GameScreen extends Game implements Screen {
         enemyAbilities = new Array<>();
         powerUpsToRemove = new Array<>();
         groundItemsToRemove = new Array<>();
+        playerProjectiles = new Array<>();
+        enemyProjectiles = new Array<>();
 
         droppedItems = new Array<>();
         abilities = new Array<>();
@@ -282,10 +286,10 @@ public class GameScreen extends Game implements Screen {
         player.update(Gdx.graphics.getDeltaTime());
 
         enemyAttacks();
+        updateProjectiles();
 
 
         if (playerAbilitiesTestMode) {
-            playerShoot();
             updateAbilities();
             if (hasWaterWaveAbility) {
                 castWaterWave();
@@ -305,6 +309,7 @@ public class GameScreen extends Game implements Screen {
                 handleEnemyDeaths(enemy, i); //IF THEY ARE DEAD
                 checkPlayerAbilityHits(enemy); //IF THEY ARE HIT BY THE PLAYER
                 checkDamageAgainstPlayer(enemy); //IF THEY DAMAGE THE PLAYER
+                checkProjectileHits(enemy);
             }
             checkEnemyAbilitiesDamagePlayer();
         }
@@ -468,15 +473,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private void playerShoot() {  //Flytta alla player-shoot metoder till player i stället?
-        float cooldown = CombatHelper.getActualCooldown(bullet.getCooldown(), player.getCooldownTime());
-        bulletTimer += Gdx.graphics.getDeltaTime();
-
-        if (bulletTimer >= cooldown) {
-            bulletTimer = 0f;
-            shootAtNearestEnemy();
-        }
-    }
 
     private void castWaterWave() {
         float cooldown = CombatHelper.getActualCooldown(2f, player.getCooldownTime()); // 2s base
@@ -494,22 +490,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-
-    private void shootAtNearestEnemy() {
-        Enemy target = CombatHelper.getNearestEnemy(player, enemies);
-
-        if (target != null) {
-            Vector2 targetCenter = target.getCenter();
-            Vector2 direction = new Vector2(targetCenter.x - player.getPosition().x, targetCenter.y - player.getPosition().y).nor();
-
-            BaseAttack bullet = new BaseAttack(poolManager);
-            bullet.setDirection(direction);
-            bullet.setPosition(player.getPosition().cpy());
-
-            abilities.add(bullet);
-        }
-    }
-
     private void updateShieldPos() {
         if (!shield.getIsDepleted() && shield.getSprite() != null) {
             shield.updatePosition(0, player.getPosition());
@@ -519,7 +499,7 @@ public class GameScreen extends Game implements Screen {
 
     private void enemyAttacks() {
         for (Enemy enemy : enemies) {
-            enemy.attack(player, enemyAbilities);
+            enemy.attack(player, enemyAbilities, enemyProjectiles);
         }
         for (Ability a : enemyAbilities) {
             a.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition());
@@ -676,16 +656,30 @@ public class GameScreen extends Game implements Screen {
      * Updates position of all abilities that enemies use
      */
     private void updateAbilities() {
-        for (int i = abilities.size - 1; i >= 0; i--) {
-            Ability ability = abilities.get(i);
+        for (Ability ability : abilities) {
             ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition().cpy());
             ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
-            ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
+            if (ability.isOffCooldown()) {
 
-            if (ability instanceof BaseAttack && ((BaseAttack) ability).hasExpired()) {
-                ability.dispose();
-                abilities.removeIndex(i);
+                ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts, playerProjectiles);
             }
+
+
+//            if (ability instanceof BaseAttack && ((BaseAttack) ability).hasExpired()) {
+//                ability.dispose();
+//                abilities.removeIndex(i);
+//            }
+        }
+    }
+
+    private void updateProjectiles() {
+        float delta = Gdx.graphics.getDeltaTime();
+
+        for (Projectile projectile : playerProjectiles) {
+            projectile.updatePosition(delta);
+        }
+        for (Projectile projectile : enemyProjectiles) {
+            projectile.updatePosition(delta);
         }
     }
 
@@ -744,8 +738,6 @@ public class GameScreen extends Game implements Screen {
                 poolManager.addActiveEffect(deathEffect);
             }
 
-
-
             enemies.removeIndex(i);
             enemy.dispose();
         }
@@ -777,6 +769,26 @@ public class GameScreen extends Game implements Screen {
                     ability.dispose();
                     abilities.removeIndex(j);
                 }
+            }
+        }
+    }
+
+    private void checkProjectileHits(Enemy enemy) {
+        for (Projectile projectile : playerProjectiles) {
+            if(projectile.getHitBox().overlaps(enemy.getHitbox())) {
+                boolean isCritical = player.isCriticalHit();
+                double damage = player.getDamage() * projectile.getDamageMultiplier();
+                if (isCritical) {
+                    damage *= player.getCriticalHitDamage();
+                }
+
+                if (enemy.hit(damage)) {
+                    totalPlayerDamageDealt += damage;
+                    damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50), enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
+                }
+
+                projectile.dispose();
+                playerProjectiles.removeValue(projectile, true);
             }
         }
     }
@@ -833,6 +845,7 @@ public class GameScreen extends Game implements Screen {
         drawDamageText();
         player.drawAnimation();
         drawPlayerAbilities();
+        drawProjectiles();
         drawChainLightning();
 
         if(testMode){
@@ -940,10 +953,6 @@ public class GameScreen extends Game implements Screen {
                     a.getSprite().draw(spriteBatch);
                 }
 
-            } else if (a instanceof BaseAttack) {
-                a.getSprite().draw(spriteBatch);
-                ((BaseAttack) a).drawTrail(spriteBatch);
-
             } else if (a instanceof WaterWave) {
                 ((WaterWave) a).draw(spriteBatch);
 
@@ -954,6 +963,15 @@ public class GameScreen extends Game implements Screen {
 
         for (BombAttack bomb : activeBombs) {
             bomb.draw(spriteBatch);
+        }
+    }
+
+    private void drawProjectiles() {
+        for (Projectile projectile : playerProjectiles) {
+            projectile.draw(spriteBatch);
+        }
+        for (Projectile projectile : enemyProjectiles) {
+            projectile.draw(spriteBatch);
         }
     }
 
@@ -990,11 +1008,6 @@ public class GameScreen extends Game implements Screen {
             chestOverlay = new ChestOverlay(this);
             isChestOverlayActive = true;
         }
-    }
-
-
-    private void stopGame() {
-        pause();
     }
 
     public void enableWaterWave() {
