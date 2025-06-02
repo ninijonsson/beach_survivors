@@ -34,8 +34,6 @@ public class PauseOverlay {
     private Sound menuChoice;
 
 
-
-
     public PauseOverlay(GameScreen game, Main main) {
         this.game = game;
         this.main = main;
@@ -118,9 +116,11 @@ public class PauseOverlay {
         restartButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                hide();
                 main.setSoundOn(true);
                 menuChoice.play(0.6f);
-                main.restart();
+                game.endRun();
+                //main.restart();
             }
         });
 
@@ -231,11 +231,9 @@ public class PauseOverlay {
         updateArrowPosition();    // Placera coinen direkt på första knappen
     }
 
-
-
-
     public void hide() {
         table.setVisible(false);
+        Gdx.input.setInputProcessor(null);
     }
 
     public Stage getStage() {
@@ -262,56 +260,5 @@ public class PauseOverlay {
             arrowInitialized = true;
         }
     }
-
-
-
-
-
-
-//    @Override
-//    public void show() {
-//        table.setVisible(false);
-//        Gdx.input.setInputProcessor(stage); // Lyssna på event listeners
-//    }
-//
-//    @Override
-//    public void hide() {
-//        Gdx.input.setInputProcessor(stage);
-//    }
-
-
-//    @Override
-//    public void render(float delta) {
-//        stage.act(delta);
-//        stage.draw();
-//
-//        // Återgå till spelet ifall du trycker på ESC
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-//            game.resume();
-//        }
-//    }
-//
-//    @Override
-//    public void resize(int width, int height) {
-//        stage.getViewport().update(width, height, true);
-//    }
-//
-//    @Override
-//    public void pause() {
-//
-//    }
-//
-//    @Override
-//    public void resume() {
-//
-//    }
-//
-//
-//
-//    @Override
-//    public void dispose() {
-//        //stage.dispose();
-//    }
-
 
 }

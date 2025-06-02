@@ -48,6 +48,10 @@ public class Main extends Game {
     }
 
     public void restart() {
+        setScreen(null);
+        if (gameScreen != null) {
+            gameScreen.dispose();
+        }
         menuScreen.playSound.stop();    //Vi kanske skulle flytta playSound till gamescreen?
         gameScreen = new GameScreen(this);
         setScreen(gameScreen);

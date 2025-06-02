@@ -99,6 +99,7 @@ public class GameScreen extends Game implements Screen {
 
     public GameScreen(Main main) {
         this.main = main;
+        pauseOverlay = new PauseOverlay(this, main);
 
         gameViewport = new FitViewport(SCREEN_WIDTH * 1.5f, SCREEN_HEIGHT * 1.5f);
         gameUI = new GameUI(new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT), this);
@@ -301,8 +302,8 @@ public class GameScreen extends Game implements Screen {
             for (int i = enemies.size - 1; i >= 0; i--) { //LOOP THROUGH ALL ENEMIES AND UPDATE RELATED POSITIONS.
                 Enemy enemy = enemies.get(i);
                 updateEnemyMovement(enemy); //MOVE TOWARDS PLAYER
-                handleEnemyDeaths(enemy, i); //IF THEY ARE DEAD
                 checkPlayerAbilityHits(enemy); //IF THEY ARE HIT BY THE PLAYER
+                handleEnemyDeaths(enemy, i); //IF THEY ARE DEAD
                 checkDamageAgainstPlayer(enemy); //IF THEY DAMAGE THE PLAYER
             }
             checkEnemyAbilitiesDamagePlayer();
@@ -382,12 +383,18 @@ public class GameScreen extends Game implements Screen {
             }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(), player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
+            main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
+                player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V)) {
             gameUI.showStatsTable();
         }
 
+    }
+
+    public void endRun() {
+        main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(),
+            player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
     }
 
     private void vaccum() {
@@ -560,6 +567,22 @@ public class GameScreen extends Game implements Screen {
 //        player.dispose();  //dessa borde inte disposas
 //        boomerang.dispose();
         font.dispose();
+
+        for (Ability ability : abilities) {
+            ability.dispose();
+        }
+        for (Enemy enemy : enemies) {
+            enemy.dispose();
+        }
+        enemies.clear();
+        abilities.clear();
+        groundItems.clear();
+        droppedItems.clear();
+        damageTexts.clear();
+
+        player = null;
+
+        bullet = null;
     }
 
     /**

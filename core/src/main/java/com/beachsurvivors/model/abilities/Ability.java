@@ -52,6 +52,7 @@ public abstract class Ability implements Disposable {
     public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
         cooldownTimer += delta;
         float actualCooldown = CombatHelper.getActualCooldown(getCooldown(), player.getCooldownTime());
+        System.out.println("Enemeis after restart" + enemies.size);
 
         if (cooldownTimer >= actualCooldown) {
             cooldownTimer = 0f;

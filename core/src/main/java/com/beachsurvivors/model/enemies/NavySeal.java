@@ -30,11 +30,6 @@ public class NavySeal extends Enemy {
 
     }
 
-    @Override
-    public void dispose() {
-
-    }
-
     public void attack(Player player, Array<Ability> enemyAbilities) {
 
         attackTimer += Gdx.graphics.getDeltaTime();

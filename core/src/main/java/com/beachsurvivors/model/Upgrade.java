@@ -26,7 +26,7 @@ public class Upgrade {
         switch (type) {
             case Health: return "Gain " + (int)value + " to \n maximum health";
             case Speed: return "Gain " + (int)value + "\n movement speed";
-            case Damage: return "Increases your \n damage by " + value;
+            case Damage: return "Increases your \n damage by " + String.format("%.0f", value);
             case CriticalHitChance: return "Increases your \n critical  hit \n chance by " + (int)(value * 100) + "%";
             case CriticalHitDamage: return "Increases your \n critical hit \n damage by " + (int)(value * 100) +"%";
             case CooldownTime: return "Reduces your \n cooldown time \n by " + (int)((1 - value) * 100) + "%";

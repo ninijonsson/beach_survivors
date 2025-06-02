@@ -317,6 +317,7 @@ public abstract class Enemy implements Disposable {
 
     @Override
     public void dispose() {
+
     }
 
     public Vector2 moveTowardsPlayer(float delta, Vector2 playerPosition, Vector2 enemyPosition) {
