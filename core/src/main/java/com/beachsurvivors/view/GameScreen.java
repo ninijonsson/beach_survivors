@@ -174,6 +174,7 @@ public class GameScreen extends Game implements Screen {
     public void show() {
         isPaused = false;
         Gdx.input.setInputProcessor(stage); //Uppdaterar vilken stage inputProcessorn ska lyssna på
+        Timer.instance().start();
     }
 
     /**
