@@ -283,6 +283,7 @@ public class GameScreen extends Game implements Screen {
         pickUpGroundItem();
         updateShieldPos();
         gameUI.updateStats(player);
+        gameUI.updateFpsLabel("FPS: " + Gdx.graphics.getFramesPerSecond());
         player.update(Gdx.graphics.getDeltaTime());
 
         enemyAttacks();
@@ -312,6 +313,7 @@ public class GameScreen extends Game implements Screen {
                 checkProjectileHits(enemy);
             }
             checkEnemyAbilitiesDamagePlayer();
+            checkEnemyProjectilesHitPlayer();
         }
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
@@ -612,6 +614,7 @@ public class GameScreen extends Game implements Screen {
     private Enemy selectRandomEnemy() {
         int enemyChoice = random.nextInt(0, 11);
         Enemy enemy = null;
+        enemyChoice = 0;
 
         switch (enemyChoice) {
             case 0:
@@ -638,8 +641,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void spawnMiniBoss(float gameTimeSeconds) {
-
-
+        
         if (gameTimeSeconds >= nextMiniBossTime) {
             Enemy miniBoss = new MiniBoss(poolManager, this);
             gameUI.updateInfoTable("Spawned a miniboss! Watch out!");
@@ -660,26 +662,30 @@ public class GameScreen extends Game implements Screen {
             ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition().cpy());
             ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
             if (ability.isOffCooldown()) {
-
                 ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts, playerProjectiles);
+                ability.setOffCooldown(false);
             }
-
-
-//            if (ability instanceof BaseAttack && ((BaseAttack) ability).hasExpired()) {
-//                ability.dispose();
-//                abilities.removeIndex(i);
-//            }
         }
     }
 
     private void updateProjectiles() {
         float delta = Gdx.graphics.getDeltaTime();
 
-        for (Projectile projectile : playerProjectiles) {
+        for (int i = playerProjectiles.size - 1; i >= 0; i--) {
+            Projectile projectile = playerProjectiles.get(i);
             projectile.updatePosition(delta);
+
+            if (projectile.hasExpired()) {
+                playerProjectiles.removeValue(projectile, true);
+            }
         }
-        for (Projectile projectile : enemyProjectiles) {
+        for (int i = enemyProjectiles.size - 1; i >= 0; i--) {
+            Projectile projectile = enemyProjectiles.get(i);
             projectile.updatePosition(delta);
+
+            if (projectile.hasExpired()) {
+                enemyProjectiles.removeValue(projectile, true);
+            }
         }
     }
 
@@ -777,14 +783,15 @@ public class GameScreen extends Game implements Screen {
         for (Projectile projectile : playerProjectiles) {
             if(projectile.getHitBox().overlaps(enemy.getHitbox())) {
                 boolean isCritical = player.isCriticalHit();
-                double damage = player.getDamage() * projectile.getDamageMultiplier();
+                double damage = projectile.getDamage();
                 if (isCritical) {
                     damage *= player.getCriticalHitDamage();
                 }
 
                 if (enemy.hit(damage)) {
                     totalPlayerDamageDealt += damage;
-                    damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50), enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
+                    damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50),
+                        enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
                 }
 
                 projectile.dispose();
@@ -805,6 +812,17 @@ public class GameScreen extends Game implements Screen {
                 damagePlayer(enemyAbilities.get(i).getDamageMultiplier());
                 enemyAbilities.get(i).dispose();
                 enemyAbilities.removeIndex(i);
+            }
+        }
+
+    }
+
+    private void checkEnemyProjectilesHitPlayer() {
+        for (int i = enemyProjectiles.size - 1; i >= 0; i--) {
+            if (enemyProjectiles.get(i).getHitBox().overlaps(player.getHitBox())) {
+                damagePlayer(enemyProjectiles.get(i).getDamage());
+                enemyProjectiles.get(i).dispose();
+                enemyProjectiles.removeIndex(i);
             }
         }
     }

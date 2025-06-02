@@ -16,7 +16,7 @@ public class BaseAttack extends Ability {
     private float projectileSpeed = 600;
 
     public BaseAttack(ParticleEffectPoolManager poolManager) {
-        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 1.0, 0.7f, 64, 64);
+        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 1.0, 1f, 64, 64);
 
         setPersistent(true);
         this.fireSound = AssetLoader.get().getSound("entities/abilities/water_gun_fire.wav");
@@ -34,7 +34,7 @@ public class BaseAttack extends Ability {
                 targetCenter.y - player.getPosition().y).nor();
 
             Projectile projectile = new Projectile("entities/abilities/bullet.png",
-                getDamageMultiplier(), projectileSpeed, 64, 64);
+                player.getDamage(), projectileSpeed, 64, 64);
             projectile.setDirection(direction);
             projectile.setPosition(player.getPosition().cpy());
 

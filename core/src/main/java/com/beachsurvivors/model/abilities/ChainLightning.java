@@ -31,7 +31,8 @@ public class ChainLightning extends Ability {
 
 
     public ChainLightning(Array<Enemy> enemies, ParticleEffectPoolManager poolManager) {
-        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK, 2, 6, 32, 32);
+        super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK,
+            2, 8, 32, 32);
         maxJumps = 10;
         jumpRadius = 800;
         this.enemies = enemies;

@@ -53,6 +53,9 @@ entities/enemies/crocodile2_walk_sheet.png
 entities/enemies/navy_seal_sheet.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
+entities/enemies/slutboss_sheet-2.png
+entities/enemies/slutboss_sheet-3.png
+entities/enemies/slutboss_sheet.png
 entities/how_to_play.png
 entities/icons/ability_icon.png
 entities/icons/ability_icon_selected.png

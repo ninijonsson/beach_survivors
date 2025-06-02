@@ -16,7 +16,7 @@ public class Projectile {
     private Rectangle hitBox;
     private int width;
     private int height;
-    private float damageMultiplier = 1f;
+    private double damage;
 
     private Vector2 position;
     private Vector2 direction;
@@ -25,7 +25,7 @@ public class Projectile {
     private float lifetime = 0f;
 
     public Projectile(String texturePath, double damage, float projectileSpeed, int width, int height) {
-
+        this.damage = damage;
         this.width = width;
         this.height = height;
         this.texture = AssetLoader.get().getTexture(texturePath);
@@ -43,7 +43,7 @@ public class Projectile {
     }
 
     public boolean hasExpired() {
-        return lifetime >= 5f;
+        return lifetime >= 10f;
     }
 
     public void updatePosition(float delta) {
@@ -59,9 +59,10 @@ public class Projectile {
         getSprite().setRotation(direction.angleDeg() + 90);
         if (trailEffect != null) {
             trailEffect.setPosition(position.x + width / 2f, position.y + height / 2f);
-
             trailEffect.update(delta);
         }
+
+
 
     }
 
@@ -94,8 +95,8 @@ public class Projectile {
         return hitBox;
     }
 
-    public float getDamageMultiplier() {
-        return damageMultiplier;
+    public double getDamage() {
+        return damage;
     }
 
     public void dispose() {

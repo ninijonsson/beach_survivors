@@ -15,7 +15,8 @@ public class Shield extends Ability {
     private double totalDamagePrevented;
 
     public Shield() {
-        super("Shield" , "entities/abilities/shield_bubble.png", AbilityType.SHIELD, 0, 10, 150, 150);
+        super("Shield" , "entities/abilities/shield_bubble.png", AbilityType.SHIELD,
+            0, 8, 150, 150);
         this.currentShieldStrength = INITIAL_SHIELD_STRENGTH;
         isRegening = false;
         getSprite().setColor(1f,1f,1f, 0.4f);
@@ -25,11 +26,19 @@ public class Shield extends Ability {
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts, Array<Projectile> playerProjectiles) {
 
-        if (isOffCooldown()) {
-            setOffCooldown(false);
-            //Do something
-            resetShield();
+//        if (isOffCooldown()) {
+//            setOffCooldown(false);
+//            //Do something
+//            resetShield();
+//        }
+        System.out.println("shield used");
+        currentShieldStrength = INITIAL_SHIELD_STRENGTH;
+        isRegening = false;
+
+        if (getSprite() == null) {
+            setSprite(new Sprite(AssetLoader.get().getTexture("entities/abilities/bubble2.png")));
         }
+
 
     }
 

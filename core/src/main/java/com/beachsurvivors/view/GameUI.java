@@ -89,6 +89,7 @@ public class GameUI {
         createInfoTable();
         createPlayerStats();
         createBuffBar();
+        createFpsLabel();
         addActors();
     }
 
@@ -316,6 +317,7 @@ public class GameUI {
         stage.addActor(timerLabel);
     }
 
+
     private void createPlayerHealthBar() {
         Skin healthSkin = new Skin(Gdx.files.internal("skin_composer/healthbutton.json"));
         healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
@@ -435,6 +437,20 @@ public class GameUI {
 
     public void showStatsTable() {
         statsTable.setVisible(!statsTable.isVisible());
+    }
+
+    Label fps;
+
+    private void createFpsLabel() {
+        Skin skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
+        String fpsText = "FPS: " + Gdx.graphics.getFramesPerSecond();
+        fps = new Label(fpsText, skin, "stats");
+        fps.setPosition(1800,1000);
+        stage.addActor(fps);
+    }
+
+    public void updateFpsLabel(String fpsText) {
+        fps.setText(fpsText);
     }
 
 
