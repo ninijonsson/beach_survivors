@@ -94,19 +94,19 @@ public class ChainLightning extends Ability {
 
         if (showLightning) {
             lightningVisibleTime -= delta;
+
             if (lightningVisibleTime <= 0) {
                 showLightning = false;
                 hitPositions.clear();
-
             }
-        }
 
-        for (int i = glowEffects.size - 1; i >= 0; i--) {
-            ParticleEffectPool.PooledEffect effect = glowEffects.get(i);
-            effect.update(delta);
-            if (effect.isComplete()) {
-                effect.free();
-                glowEffects.removeIndex(i);
+            for (int i = glowEffects.size - 1; i >= 0; i--) {
+                ParticleEffectPool.PooledEffect effect = glowEffects.get(i);
+                effect.update(delta);
+                if (effect.isComplete()) {
+                    effect.free();
+                    glowEffects.removeIndex(i);
+                }
             }
         }
     }
