@@ -49,7 +49,6 @@ public class GameScreen extends Game implements Screen {
     private final FitViewport gameViewport;
     private Stage stage;
     private final GameUI gameUI;
-    private boolean isOverlayActive = false;
 
     private ShapeRenderer shapeRenderer;
     private ParticleEffectPoolManager poolManager;
@@ -62,7 +61,6 @@ public class GameScreen extends Game implements Screen {
 
     private Array<Ability> abilities;
     private Array<PowerUp> currentPowerUps;
-    private Boomerang boomerang;
     float numberOfBoomerangs;
     private BaseAttack bullet;
     private Shield shield;
@@ -78,7 +76,7 @@ public class GameScreen extends Game implements Screen {
     private Random random = new Random();
 
     private Array<GroundItem> groundItems;  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
-    private Queue<Integer> miniBossSchedule = new Queue<>(10);
+    private float nextMiniBossTime = 60f;
     /// /array med intervaller på när miniboss ska spawna
 
     private Array<Enemy> enemies;
@@ -139,11 +137,8 @@ public class GameScreen extends Game implements Screen {
         bullet = new BaseAttack(poolManager);
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
-        //abilities.add(bullet);
         abilities.add(shield);
 
-        Chest testChest = new Chest(player.getPosition().x-200, player.getPosition().y, poolManager, this);
-        groundItems.add(testChest);
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
@@ -153,12 +148,10 @@ public class GameScreen extends Game implements Screen {
         Vector2 startPos = new Vector2(player.getPosition());
         WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
         abilities.add(wave);
-        createMiniBossSchedule();
     }
 
     private void initializeArrays() {
         groundItems = new Array<>();
-        miniBossSchedule = new Queue<>(10);
 
         enemies = new Array<>();
         enemyAbilities = new Array<>();
@@ -453,7 +446,6 @@ public class GameScreen extends Game implements Screen {
                 groundItemsToRemove.add(groundItem);
                 if (groundItem instanceof ExperienceOrb) {
                     gameUI.setProgressBarValue(player.getLevelSystem().getCurrentExp());
-                    gameUI.updateInfoTable("You gained " + ((ExperienceOrb) groundItem).getExp() + " exp.");
                 }
             }
         }
@@ -665,24 +657,18 @@ public class GameScreen extends Game implements Screen {
 
     private void spawnMiniBoss(float gameTimeSeconds) {
 
-        if (!(miniBossSchedule.isEmpty()) && miniBossSchedule.first() <= gameTimeSeconds) {
+
+        if (gameTimeSeconds >= nextMiniBossTime) {
             Enemy miniBoss = new MiniBoss(poolManager, this);
+            gameUI.updateInfoTable("Spawned a miniboss! Watch out!");
             Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
             miniBoss.setPosition(randomPos);
             enemies.add(miniBoss);
-            miniBossSchedule.removeFirst();
+
+            nextMiniBossTime += 60f;
         }
     }
 
-    /**
-     * Method for creating a schedule for when minibosses should spawn
-     * var i is for seconds
-     */
-    private void createMiniBossSchedule() {
-        for (int i = 10; i <= 100; i += 20) {
-            miniBossSchedule.addLast(i);
-        }
-    }
 
     /**
      * Updates position of all abilities that enemies use

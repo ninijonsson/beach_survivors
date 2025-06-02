@@ -53,7 +53,6 @@ public class NavySeal extends Enemy {
             bullet.setPosition(getPosition().cpy());
 
             enemyAbilities.add(bullet);
-            System.out.println("bullet added");
 
         }
     }
