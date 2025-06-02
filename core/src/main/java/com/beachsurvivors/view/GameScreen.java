@@ -96,6 +96,7 @@ public class GameScreen extends Game implements Screen {
     private boolean playerAbilitiesTestMode = true; //Toggles if player use abilities
     private boolean spawnEnemiesTestMode = true; //Toggles if enemies spawn
     private boolean spawnMinibossesTestMode = true; //Toggles if minibosses spawn
+    private boolean testMode = false;
 
     public GameScreen(Main main) {
         this.main = main;
@@ -258,6 +259,7 @@ public class GameScreen extends Game implements Screen {
         stage.act();
         stage.draw();
         drawStuff();
+
         poolManager.updateAndDraw(Gdx.graphics.getDeltaTime(), spriteBatch);
         spriteBatch.end();
 
@@ -741,7 +743,7 @@ public class GameScreen extends Game implements Screen {
             }
 
             // Lägg till dödseffekt innan dispose
-            ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect.p");
+            ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect_safe.p");
             deathEffect.setPosition(enemy.getPosition().x + enemy.getSprite().getWidth() * 0.5f, enemy.getPosition().y + enemy.getSprite().getHeight() * 0.5f);
 
             poolManager.addActiveEffect(deathEffect);
@@ -835,8 +837,12 @@ public class GameScreen extends Game implements Screen {
         drawPlayerAbilities();
         drawChainLightning();
 
-        //drawEnemyHitboxes();
-        //drawPlayerHitbox();
+        if(testMode){
+            drawMapCollisions();
+            drawEnemyHitboxes();
+            drawPlayerHitbox();
+        }
+
     }
 
     private void addPoolManager() {
@@ -850,6 +856,7 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("entities/particles/water_trail.p", 5, 20);
         poolManager.register("entities/particles/electric_trail.p", 5, 20);
         poolManager.register("entities/particles/death_effect.p", 5, 20);
+        poolManager.register("entities/particles/death_effect_safe.p", 5, 20);
         poolManager.register("entities/particles/bomb_explosion.p", 5, 20);
     }
 
@@ -1072,4 +1079,24 @@ public class GameScreen extends Game implements Screen {
                 break;
         }
     }
+
+
+    //FÖR TESTNING - GER KOLLISION MED KARTAN
+    private void drawMapCollisions() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+
+        for (Polygon polygon : player.getMap().getMapBoundary()) {
+            shapeRenderer.polygon(polygon.getTransformedVertices());
+        }
+
+        shapeRenderer.setColor(Color.BLUE);
+        for (Polygon polygon : player.getMap().getCollisionObjects()) {
+            shapeRenderer.polygon(polygon.getTransformedVertices());
+        }
+
+        shapeRenderer.end();
+    }
+
+
 }

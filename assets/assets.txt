@@ -76,6 +76,7 @@ entities/particles/chestOpen.p
 entities/particles/coin.png
 entities/particles/confetti.png
 entities/particles/death_effect.p
+entities/particles/death_effect_safe.p
 entities/particles/electric_dart.png
 entities/particles/electric_trail.p
 entities/particles/impact_zone.p
@@ -134,6 +135,7 @@ game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
 game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
+gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas

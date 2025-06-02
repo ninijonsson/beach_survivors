@@ -495,6 +495,10 @@ public class Player extends Actor {
         return lastDirection.cpy();
     }
 
+    //FÖR TESTNING - GER KOLLISION MED KARTAN
+    public Map getMap() {
+        return map;
+    }
 
 }
 

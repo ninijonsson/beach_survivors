@@ -20,6 +20,7 @@ public class Berserk extends PowerUp implements PickUpAble {
     @Override
     public void onPickup(Player player) {
         applyEffect(player);
+        super.dispose();
     }
 
     @Override

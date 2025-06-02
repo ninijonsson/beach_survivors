@@ -168,6 +168,9 @@ public class AssetLoader {
         ParticleEffectLoader.ParticleEffectParameter deathEffect = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/death_effect.p", ParticleEffect.class, deathEffect);
 
+        ParticleEffectLoader.ParticleEffectParameter safeDeathEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/death_effect_safe.p", ParticleEffect.class, safeDeathEffect);
+
         ParticleEffectLoader.ParticleEffectParameter arrowEffect = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/arrow_effect.p", ParticleEffect.class, arrowEffect);
     }
