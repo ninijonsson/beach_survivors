@@ -555,6 +555,7 @@ public class GameScreen extends Game implements Screen {
     @Override
     public void dispose() {
         spriteBatch.dispose();
+        shapeRenderer.dispose();
         mapRenderer.dispose();
         tiledMap.dispose();
 //        player.dispose();  //dessa borde inte disposas
