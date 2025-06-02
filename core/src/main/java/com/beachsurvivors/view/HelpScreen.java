@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.utilities.AssetLoader;
 
@@ -72,6 +73,7 @@ public class HelpScreen implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             main.showPreviousScreen();
+
         }
     }
 
@@ -92,6 +94,7 @@ public class HelpScreen implements Screen {
 
     @Override
     public void hide() {
+        Timer.instance().start();
        // dispose();
     }
 
