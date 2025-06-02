@@ -8,7 +8,7 @@ public class Crocodile extends Enemy {
     public Crocodile() {
         super( 200,100, 120, 30);
         createAnimation(AssetLoader.get().getTexture("entities/enemies/crocodile1_sheet.png"), 2, 1);
-        setMovementSpeed(100f);
+        setMovementSpeed(70f);
         setDamage(20);
     }
 

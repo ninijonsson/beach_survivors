@@ -58,6 +58,8 @@ entities/icons/ability_icon.png
 entities/icons/ability_icon_selected.png
 entities/icons/blank.png
 entities/icons/bone_piece.png
+entities/icons/boomerang.png
+entities/icons/chain_lightning.png
 entities/icons/chest_open.png
 entities/icons/chest_open_asperite.aseprite
 entities/icons/coin.aseprite
@@ -66,6 +68,7 @@ entities/icons/meat_piece.png
 entities/icons/rib_piece.png
 entities/icons/select_arrow.png
 entities/icons/skull_piece.png
+entities/icons/water_wave.png
 entities/particles/arrow_effect.p
 entities/particles/blueFlame.p
 entities/particles/bomb_explosion.p
