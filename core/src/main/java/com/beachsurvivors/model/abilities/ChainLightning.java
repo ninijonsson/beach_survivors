@@ -27,8 +27,6 @@ public class ChainLightning extends Ability {
 
     private boolean showLightning;
     private float lightningVisibleTime; //Hur länge lightning texturen visas efter den gjort damage
-    private double chainLightningTimer; //I stället för att använda TimerTask
-
 
     public ChainLightning(Array<Enemy> enemies, ParticleEffectPoolManager poolManager) {
         super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK,
@@ -36,7 +34,6 @@ public class ChainLightning extends Ability {
         maxJumps = 10;
         jumpRadius = 800;
         this.enemies = enemies;
-        chainLightningTimer = getCooldown();
         lightningVisibleTime = 0f;
         setIcon("entities/abilities/lightning.png");
         this.poolManager = poolManager;
@@ -46,8 +43,8 @@ public class ChainLightning extends Ability {
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts, Array<Projectile> playerProjectiles) {
 
-            showLightning = true;
-            lightningVisibleTime = 0.5f;
+        showLightning = true;
+        lightningVisibleTime = 0.5f;
 
         for (ParticleEffectPool.PooledEffect effect : glowEffects) {
             effect.free();
@@ -56,75 +53,63 @@ public class ChainLightning extends Ability {
 
         hitPositions.clear();
 
-            Enemy current = CombatHelper.getNearestEnemy(player, enemies);
-            if (current == null) return;
+        Enemy current = CombatHelper.getNearestEnemy(player, enemies);
+        if (current == null) return;
 
-            Set<Enemy> alreadyHitEnemies = new HashSet<>();
-            playSoundEffect();
+        Set<Enemy> alreadyHitEnemies = new HashSet<>();
+        playSoundEffect();
 
-            for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
-                double damage = getDamageMultiplier() * player.getDamage();
-                current.hit(damage);
-                damageTexts.add(new DamageText((damage+""), current.getPosition().x+current.getWidth()/2f,
-                    current.getPosition().y+current.getHeight()+25, 1, player.isCriticalHit()));
+        for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
+            double damage = getDamageMultiplier() * player.getDamage();
+            current.hit(damage);
+            damageTexts.add(new DamageText((damage+""), current.getPosition().x+current.getWidth()/2f,
+                current.getPosition().y+current.getHeight()+25, 1, player.isCriticalHit()));
 
-                alreadyHitEnemies.add(current);
-                Vector2 targetCenter = current.getCenter();
-                hitPositions.add(targetCenter);
-                current = getNextTarget(current, alreadyHitEnemies);
+            alreadyHitEnemies.add(current);
+            Vector2 targetCenter = current.getCenter();
+            hitPositions.add(targetCenter);
+            current = getNextTarget(current, alreadyHitEnemies);
+        }
+
+        Vector2 start = player.getPosition();
+        for (int i = 0; i < hitPositions.size; i++) {
+            Vector2 end = hitPositions.get(i);
+            int steps = (int)(start.dst(end) / 60f); // Lägg t.ex. var 60 pixlar
+            for (int j = 1; j <= steps; j++) {
+                Vector2 pos = new Vector2(start).lerp(end, j / (float)steps);
+                ParticleEffectPool.PooledEffect effect = poolManager.obtain("entities/particles/electric_trail.p");
+                effect.setPosition(pos.x, pos.y);
+                glowEffects.add(effect);
             }
-
-            Vector2 start = player.getPosition();
-            for (int i = 0; i < hitPositions.size; i++) {
-                Vector2 end = hitPositions.get(i);
-                int steps = (int)(start.dst(end) / 60f); // Lägg t.ex. var 60 pixlar
-                for (int j = 1; j <= steps; j++) {
-                    Vector2 pos = new Vector2(start).lerp(end, j / (float)steps);
-                    ParticleEffectPool.PooledEffect effect = poolManager.obtain("entities/particles/electric_trail.p");
-                    effect.setPosition(pos.x, pos.y);
-                    glowEffects.add(effect);
-                }
-                start = end;
-            }
+            start = end;
+        }
 
     }
 
 
     //Uppdateras varje render ifall lightning effekten ska synas eller inte
-    public void update(float delta) {
+    @Override
+    public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
+        super.update(delta, player, enemies, abilities);
 
         if (showLightning) {
             lightningVisibleTime -= delta;
+
             if (lightningVisibleTime <= 0) {
                 showLightning = false;
                 hitPositions.clear();
             }
-        }
 
-        for (int i = glowEffects.size - 1; i >= 0; i--) {
-            ParticleEffectPool.PooledEffect effect = glowEffects.get(i);
-            effect.update(delta);
-            if (effect.isComplete()) {
-                effect.free();
-                glowEffects.removeIndex(i);
+            for (int i = glowEffects.size - 1; i >= 0; i--) {
+                ParticleEffectPool.PooledEffect effect = glowEffects.get(i);
+                effect.update(delta);
+                if (effect.isComplete()) {
+                    effect.free();
+                    glowEffects.removeIndex(i);
+                }
             }
         }
-
     }
-
-    private float getActualCooldown(Player player) {
-        return CombatHelper.getActualCooldown(getCooldown(), player.getCooldownTime());
-    }
-
-    public void tryCast(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts) {
-        chainLightningTimer += delta;
-        if (chainLightningTimer >= getActualCooldown(player)) {
-            use(delta,player, enemies, abilities, damageTexts, new Array<>());
-            chainLightningTimer = 0;
-        }
-    }
-
-
 
     private Enemy getNextTarget(Enemy previous, Set<Enemy> hitEnemies) {
         Enemy closest = null;

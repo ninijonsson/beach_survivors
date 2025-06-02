@@ -140,6 +140,7 @@ public class GameScreen extends Game implements Screen {
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
         abilities.add(shield);
+        abilities.add(chainLightning);
 
 
         font = new BitmapFont();
@@ -317,7 +318,6 @@ public class GameScreen extends Game implements Screen {
         }
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
-        castChainLightning();
         updatePowerUps();
 
         vaccum();
@@ -508,11 +508,6 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private void castChainLightning() {
-        chainLightning.update(Gdx.graphics.getDeltaTime());
-        chainLightning.tryCast(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts);
-    }
-
     @Override
     public void resume() {
         setPaused(false);
@@ -614,7 +609,7 @@ public class GameScreen extends Game implements Screen {
     private Enemy selectRandomEnemy() {
         int enemyChoice = random.nextInt(0, 11);
         Enemy enemy = null;
-        enemyChoice = 0;
+        //enemyChoice = 0;
 
         switch (enemyChoice) {
             case 0:
@@ -641,7 +636,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void spawnMiniBoss(float gameTimeSeconds) {
-        
+
         if (gameTimeSeconds >= nextMiniBossTime) {
             Enemy miniBoss = new MiniBoss(poolManager, this);
             gameUI.updateInfoTable("Spawned a miniboss! Watch out!");
@@ -771,10 +766,10 @@ public class GameScreen extends Game implements Screen {
                     damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50), enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
                 }
 
-                if (!ability.isPersistent()) {
-                    ability.dispose();
-                    abilities.removeIndex(j);
-                }
+//                if (!ability.isPersistent()) {
+//                    ability.dispose();
+//                    abilities.removeIndex(j);
+//                }
             }
         }
     }

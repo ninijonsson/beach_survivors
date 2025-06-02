@@ -424,7 +424,7 @@ public class GameUI {
 
 
     public void updateStats(Player player) {
-        healthPoints.setText("Health Points " +String.format("%.1f",player.getCurrentHealthPoints()) + "/"+player.getMaxHealthPoints());
+        healthPoints.setText("Health Points " + String.format("%.1f",player.getCurrentHealthPoints()) + "/" + String.format("%.0f", player.getMaxHealthPoints()));
         hpRegen.setText("HP / Second: " + player.getHpRegenPerSecond());
         damage.setText("Base Damage: " + player.getDamage());
         critChance.setText("CritHit Chance: " + String.format("%.0f", player.getCriticalHitChance()*100) + "%");
