@@ -181,7 +181,7 @@ public class DeathScreen implements Screen {
         leftTable.add(totalHealing).padBottom(bottomPadding).left();
         leftTable.row();
 
-        Label damageShielded = new Label("Damage absorbed: " + damagePrevented, skin);
+        Label damageShielded = new Label("Damage absorbed: " + String.format("%.1f", damagePrevented), skin);
         damageShielded.setFontScale(fontscale);
         leftTable.add(damageShielded).padBottom(bottomPadding).left();
 
