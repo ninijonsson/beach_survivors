@@ -181,6 +181,7 @@ public class AssetLoader {
         manager.load("level_up_screen/uiskin.json", Skin.class);
         manager.load("skin_composer/pause_menu/pause_menu.json", Skin.class);
         manager.load("game_over_screen/deathscreen_skin.json", Skin.class);
+        manager.load("skin_composer/victory_screen/victory_screen.json", Skin.class);
     }
 
 

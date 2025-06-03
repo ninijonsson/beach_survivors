@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.utilities.AssetLoader;
 
@@ -49,21 +50,29 @@ public class VictoryScreen implements Screen {
         skin = AssetLoader.get().manager.get("skin_composer/victory_screen/victory_screen.json");
         table = buildUI();
 
+        // createText();
+        // createButtons();
+        buildListeners();
+
         menuSwitch = AssetLoader.get().manager.get("entities/abilities/menu_switch.wav");
         menuChoice = AssetLoader.get().manager.get("entities/abilities/menu_select.wav");
     }
 
     private Table buildUI() {
-        Table victoryTable = new Window("victory", skin, "default");
+        Table victoryTable = new Window("", skin, "default");
         victoryTable.setSize(1200, 972);
-        victoryTable.setPosition(gameScreen.getScreenWidth() / 5f,
-            stage.getHeight() / 2f);
 
-        createButtons();
-        createText();
-        buildListeners();
+        createText(victoryTable);
+        createButtons(victoryTable);
+
+        victoryTable.pack();
 
         stage.addActor(victoryTable);
+
+        float x = stage.getViewport().getWorldWidth() / 2f;
+        float y = stage.getViewport().getWorldHeight() / 2f;
+
+        victoryTable.setPosition(x, y, Align.center);
 
         return victoryTable;
     }
@@ -87,24 +96,26 @@ public class VictoryScreen implements Screen {
         });
     }
 
-    private void createButtons() {
-        restartButton = new ImageButton(skin, "retry");
-        mainMenuButton = new ImageButton(skin, "menu");
+    private void createButtons(Table table) {
+        restartButton = new ImageButton(skin, "restart");
+        mainMenuButton = new ImageButton(skin, "exit");
 
-        restartButton.getImageCell().grow();
-        mainMenuButton.getImageCell().grow();
-
-        table.add(restartButton);
+        table.row();
+        table.add(restartButton).padBottom(10);
+        table.row();
         table.add(mainMenuButton);
     }
 
-    private void createText() {
-        float fontscale = 1.15f;
+    private void createText(Table table) {
+        float fontscale = 2f;
         int bottomPadding = 10;
+
+        table.add().height(120);
+        table.row();
 
         Label enemiesKilledText = new Label("Enemies killed: " + enemiesKilled , skin);
         enemiesKilledText.setFontScale(fontscale);
-        table.add(enemiesKilledText).padBottom(bottomPadding).left();
+        table.add(enemiesKilledText).padBottom(bottomPadding).padTop(100).left();
         table.row();
 
         Label timeSurvivedText = new Label("Time survived: " + timeStamp, skin);
@@ -130,9 +141,10 @@ public class VictoryScreen implements Screen {
         Label damageShielded = new Label("Damage absorbed: " + damagePrevented, skin);
         damageShielded.setFontScale(fontscale);
         table.add(damageShielded).padBottom(bottomPadding).left();
+        table.row();
 
-        table.setPosition(gameScreen.getScreenWidth()-1100, gameScreen.getScreenHeight()/2.4f);
-        stage.addActor(table);
+        table.add().height(80);
+        table.row();
     }
 
     public boolean isTableVisible() {
@@ -141,12 +153,14 @@ public class VictoryScreen implements Screen {
 
     @Override
     public void show() {
-
+        table.setVisible(true);
+        stage.act(0);
     }
 
     @Override
-    public void render(float v) {
-
+    public void render(float delta) {
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override

@@ -67,6 +67,12 @@ public class Main extends Game {
         setScreen(new DeathScreen(gameScreen, enemiesKilled, damageDone, gameTime, healingReceived, damageTaken, damagePrevented));
     }
 
+    public void victory(int enemiesKilled, double damageDone, float gameTime,
+                        double healingReceived, double damageTaken, double damagePrevented) {
+        setScreen(new VictoryScreen(gameScreen, enemiesKilled, damageDone,
+            gameTime, healingReceived, damageTaken, damagePrevented));
+    }
+
     public void levelUp() {
         setScreen(new LevelUpScreen(gameScreen, gameScreen.getPlayer()));
     }
