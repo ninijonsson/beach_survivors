@@ -18,6 +18,12 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.model.abilities.AbilityDescription;
+import com.beachsurvivors.utilities.MusicHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ChestOverlay {
     private GameScreen game;
@@ -32,6 +38,9 @@ public class ChestOverlay {
     private Stack[] abilityButtons = new Stack[3];
     private Image[] abilityImages = new Image[3];
     private boolean effectStarted = false;
+    private List<AbilityDescription> offeredAbilities = new ArrayList<>();
+
+
 
 
     public ChestOverlay(GameScreen game) {
@@ -44,6 +53,7 @@ public class ChestOverlay {
         createTable();
         createEffect();
         createButtons();
+        MusicHandler.pause();
     }
 
     private void createTable() {
@@ -110,20 +120,20 @@ public class ChestOverlay {
         title.setFontScale(2f);
         table.add(title).colspan(3).padBottom(10).row();
 
-        //todo detta måste göras på ett bättre sätt, så att det kan slumpas fram vilka abilities som kan väljas.
-        abilityButtons[0] = createImageButton("entities/icons/ability_icon.png", "[1]\nWater wave", 200, 120, () -> selectAbility(0), 0);
-        abilityButtons[1] = createImageButton("entities/icons/ability_icon.png", "[2]\nBoomerang", 200, 120, () -> selectAbility(1), 1);
-        abilityButtons[2] = createImageButton("entities/icons/ability_icon.png", "[3]\nDoes Nothing", 200, 120, () -> selectAbility(2), 2);
+        // Hämta slumpade abilities från GameScreen
+        offeredAbilities = game.getRandomAvailableAbilities();
 
-
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < offeredAbilities.size(); i++) {
+            final int choiceIndex = i;
+            AbilityDescription desc = offeredAbilities.get(i);
+            String buttonText = "[" + (i + 1) + "]\n" + desc.getName();
+            abilityButtons[i] = createImageButton("entities/icons/ability_icon.png", buttonText, 200, 120, () -> selectAbility(choiceIndex), i);
             table.add(abilityButtons[i]).size(250, 100).pad(10);
         }
 
 
         table.row();
 
-        // Pilen
         Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/coin.png");
         selectorArrow = new Image(arrowTexture);
         selectorArrow.setSize(32, 32);
@@ -132,19 +142,18 @@ public class ChestOverlay {
         stage.act(0);
         updateArrowPosition();
 
-
         stage.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 switch (keycode) {
                     case Input.Keys.A:
                     case Input.Keys.LEFT:
-                        selectedIndex = (selectedIndex + 2) % 3;
+                        selectedIndex = (selectedIndex + 2) % offeredAbilities.size();
                         updateArrowPosition();
                         return true;
                     case Input.Keys.D:
                     case Input.Keys.RIGHT:
-                        selectedIndex = (selectedIndex + 1) % 3;
+                        selectedIndex = (selectedIndex + 1) % offeredAbilities.size();
                         updateArrowPosition();
                         return true;
                     case Input.Keys.SPACE:
@@ -152,19 +161,20 @@ public class ChestOverlay {
                         selectAbility(selectedIndex);
                         return true;
                     case Input.Keys.NUM_1:
-                        selectAbility(0);
+                        if (offeredAbilities.size() > 0) selectAbility(0);
                         return true;
                     case Input.Keys.NUM_2:
-                        selectAbility(1);
+                        if (offeredAbilities.size() > 1) selectAbility(1);
                         return true;
                     case Input.Keys.NUM_3:
-                        selectAbility(2);
+                        if (offeredAbilities.size() > 2) selectAbility(2);
                         return true;
                 }
                 return false;
             }
         });
     }
+
 
     private void updateArrowPosition() {
         for (int i = 0; i < abilityImages.length; i++) {
@@ -187,11 +197,15 @@ public class ChestOverlay {
 
 
     private void selectAbility(int index) {
-        //todo detta måste göras på ett bättre sätt, så att det kan slumpas
-        game.addAbility(index);
+        if (index < offeredAbilities.size()) {
+            AbilityDescription desc = offeredAbilities.get(index);
+            game.addOrUpgradeAbility(desc);
+        }
         isClosed = true;
+        MusicHandler.resume();
         Gdx.input.setInputProcessor(game.getGameUI().getStage());
     }
+
 
 
     private void createEffect() {

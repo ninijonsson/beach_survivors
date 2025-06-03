@@ -39,15 +39,21 @@ public class AssetLoader {
         poolManager.register("entities/particles/arrow_effect.p", 5, 20);
     }
 
+
     private void addMusic() {
         manager.load("sounds/beach.mp3", Music.class);
         manager.load("entities/abilities/bomb_explosion.mp3", Sound.class);
         manager.load("entities/abilities/bomb_fall.wav", Sound.class);
         manager.load("entities/abilities/water_gun_fire.wav", Sound.class);
+        manager.load("entities/abilities/shield_break.wav", Sound.class);
+        manager.load("entities/abilities/shield_regen.wav", Sound.class);
+        manager.load("entities/abilities/shield_hit.wav", Sound.class);
+
         manager.load("sounds/item_pickup.wav", Sound.class);
         manager.load("sounds/crab_rave.mp3", Sound.class);
         manager.load("sounds/footstep.mp3", Sound.class);
         manager.load("sounds/level_up.mp3", Sound.class);
+
 
 
     }
@@ -56,7 +62,7 @@ public class AssetLoader {
         manager.load("sounds/shark_damage_2.wav", Sound.class);
         manager.load("sounds/Seal_Damage.wav", Sound.class);
         manager.load("main_menu/sound/play_sound.wav", Sound.class);
-        manager.load("main_menu/sound/holiday.wav", Sound.class);
+        manager.load("main_menu/sound/holiday.wav", Music.class);
         manager.load("sounds/chain_lightning.wav", Sound.class);
         manager.load("entities/abilities/death_splatter.wav", Sound.class);
         manager.load("entities/abilities/menu_select.wav", Sound.class);

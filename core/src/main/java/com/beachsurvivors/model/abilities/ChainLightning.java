@@ -24,6 +24,7 @@ public class ChainLightning extends Ability {
     private float jumpRadius;
     private Array<Vector2> hitPositions = new Array<>();
     private final Array<ParticleEffectPool.PooledEffect> glowEffects = new Array<>();
+    private boolean setEnabled = false;
 
     private boolean showLightning;
     private float lightningVisibleTime; //Hur länge lightning texturen visas efter den gjort damage
@@ -31,7 +32,7 @@ public class ChainLightning extends Ability {
     public ChainLightning(Array<Enemy> enemies, ParticleEffectPoolManager poolManager) {
         super("ChainLightning", "entities/abilities/lightning.png", AbilityType.ATTACK,
             2, 8, 32, 32);
-        maxJumps = 10;
+        maxJumps = 3;
         jumpRadius = 800;
         this.enemies = enemies;
         lightningVisibleTime = 0f;
@@ -42,47 +43,49 @@ public class ChainLightning extends Ability {
 
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts, Array<Projectile> playerProjectiles) {
+        if(setEnabled){
+            showLightning = true;
+            lightningVisibleTime = 0.5f;
 
-        showLightning = true;
-        lightningVisibleTime = 0.5f;
-
-        for (ParticleEffectPool.PooledEffect effect : glowEffects) {
-            effect.free();
-        }
-        glowEffects.clear();
-
-        hitPositions.clear();
-
-        Enemy current = CombatHelper.getNearestEnemy(player, enemies);
-        if (current == null) return;
-
-        Set<Enemy> alreadyHitEnemies = new HashSet<>();
-        playSoundEffect();
-
-        for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
-            double damage = getDamageMultiplier() * player.getDamage();
-            current.hit(damage);
-            damageTexts.add(new DamageText((damage+""), current.getPosition().x+current.getWidth()/2f,
-                current.getPosition().y+current.getHeight()+25, 1, player.isCriticalHit()));
-
-            alreadyHitEnemies.add(current);
-            Vector2 targetCenter = current.getCenter();
-            hitPositions.add(targetCenter);
-            current = getNextTarget(current, alreadyHitEnemies);
-        }
-
-        Vector2 start = player.getPosition();
-        for (int i = 0; i < hitPositions.size; i++) {
-            Vector2 end = hitPositions.get(i);
-            int steps = (int)(start.dst(end) / 60f); // Lägg t.ex. var 60 pixlar
-            for (int j = 1; j <= steps; j++) {
-                Vector2 pos = new Vector2(start).lerp(end, j / (float)steps);
-                ParticleEffectPool.PooledEffect effect = poolManager.obtain("entities/particles/electric_trail.p");
-                effect.setPosition(pos.x, pos.y);
-                glowEffects.add(effect);
+            for (ParticleEffectPool.PooledEffect effect : glowEffects) {
+                effect.free();
             }
-            start = end;
+            glowEffects.clear();
+
+            hitPositions.clear();
+
+            Enemy current = CombatHelper.getNearestEnemy(player, enemies);
+            if (current == null) return;
+
+            Set<Enemy> alreadyHitEnemies = new HashSet<>();
+            playSoundEffect();
+
+            for (int i = 0; i < maxJumps && current != null; i++) { //om current == null så avbryter den (finns ingen nearby enemy)
+                double damage = getDamageMultiplier() * player.getDamage();
+                current.hit(damage);
+                damageTexts.add(new DamageText((damage+""), current.getPosition().x+current.getWidth()/2f,
+                    current.getPosition().y+current.getHeight()+25, 1, player.isCriticalHit()));
+
+                alreadyHitEnemies.add(current);
+                Vector2 targetCenter = current.getCenter();
+                hitPositions.add(targetCenter);
+                current = getNextTarget(current, alreadyHitEnemies);
+            }
+
+            Vector2 start = player.getPosition();
+            for (int i = 0; i < hitPositions.size; i++) {
+                Vector2 end = hitPositions.get(i);
+                int steps = (int)(start.dst(end) / 60f); // Lägg t.ex. var 60 pixlar
+                for (int j = 1; j <= steps; j++) {
+                    Vector2 pos = new Vector2(start).lerp(end, j / (float)steps);
+                    ParticleEffectPool.PooledEffect effect = poolManager.obtain("entities/particles/electric_trail.p");
+                    effect.setPosition(pos.x, pos.y);
+                    glowEffects.add(effect);
+                }
+                start = end;
+            }
         }
+
 
     }
 
@@ -183,4 +186,7 @@ public class ChainLightning extends Ability {
         maxJumps += jumpIncrease;
     }
 
+    public void setEnabled(boolean b) {
+        setEnabled=b;
+    }
 }

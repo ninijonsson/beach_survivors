@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.utilities.MusicHandler;
 
 public class MainMenuScreen implements Screen {
 
@@ -45,7 +46,6 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(Main main) {
         this.main = main;
 
-        playSound = AssetLoader.get().manager.get("main_menu/sound/holiday.wav");
         mainTheme = AssetLoader.get().manager.get("sounds/beach.mp3");
         menuSwitch = AssetLoader.get().manager.get("entities/abilities/menu_switch.wav");
         menuChoice = AssetLoader.get().manager.get("entities/abilities/menu_select.wav");
@@ -199,8 +199,7 @@ public class MainMenuScreen implements Screen {
     }
 
     public void startGameMusic() {
-        playSound.setLooping(playSound.play(0.1f),true);
-        playSound.setPitch(0,0.7f);
+        MusicHandler.play("main_menu/sound/holiday.wav", true);
     }
 
     private void updateArrowPosition() {

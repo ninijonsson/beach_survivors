@@ -107,7 +107,6 @@ com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 		}
 	}
 }
-
 com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	default: {
 		up: button
@@ -170,6 +169,11 @@ com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
 	default-vertical: {
 		background: progress-bar-vertical
 		knobBefore: progress-bar-knob-vertical
+	}
+	shield: {
+		background: menu
+		knobBefore: progress-bar-knob-experience
+		knobAfter: progress-bar-knob-horizontal
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {

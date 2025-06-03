@@ -26,8 +26,9 @@ import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.*;
 import com.beachsurvivors.model.groundItems.*;
 import com.beachsurvivors.utilities.CombatHelper;
+import com.beachsurvivors.model.abilities.AbilityDescription;
 
-import java.util.Random;
+import java.util.*;
 
 public class GameScreen extends Game implements Screen {
     private Array<BombAttack> activeBombs = new Array<>();
@@ -64,11 +65,12 @@ public class GameScreen extends Game implements Screen {
     private BaseAttack bullet;
     private Shield shield;
     private ChainLightning chainLightning;
-    private float bulletTimer = 0f;
     private int totalEnemiesKilled;
     private double totalPlayerDamageDealt;
     private boolean hasWaterWaveAbility = false;
     private float waterWaveTimer = 0f;
+
+    private HashMap<AbilityDescription, Integer> abilityLevels = new HashMap<>();
 
     private BitmapFont font;
     private Array<DamageText> damageTexts;
@@ -150,7 +152,12 @@ public class GameScreen extends Game implements Screen {
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
 
-
+        groundItems.add(new Chest(player.getPosition().x-300, player.getPosition().y, poolManager, this));
+        groundItems.add(new Chest(player.getPosition().x-500, player.getPosition().y, poolManager, this));
+        groundItems.add(new Chest(player.getPosition().x-700, player.getPosition().y, poolManager, this));
+        groundItems.add(new Chest(player.getPosition().x-800, player.getPosition().y, poolManager, this));
+        groundItems.add(new Chest(player.getPosition().x-900, player.getPosition().y, poolManager, this));
+        groundItems.add(new Chest(player.getPosition().x-950, player.getPosition().y, poolManager, this));
         Vector2 startPos = new Vector2(player.getPosition());
         WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
         abilities.add(wave);
@@ -780,7 +787,6 @@ public class GameScreen extends Game implements Screen {
                         damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50), enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
                     }
 
-                    System.out.println(ability.getName() + " hit " + enemy + " for " + damage);
 
     //                if (!ability.isPersistent()) {
     //                    ability.dispose();
@@ -841,15 +847,27 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void damagePlayer(double damage) {
-        int shieldStrength = shield.getCurrentShieldStrength();
-        double remainingDamage = damage - shieldStrength;
+        if (player.isImmune()) return;
 
-        shield.damageShield(damage);
+        float shieldStrength = shield.getCurrentShieldStrength();
 
-        if (remainingDamage >= 0) {
-            player.takeDamage(remainingDamage);
+        if (shieldStrength > 0) {
+            double damageAbsorbed = Math.min(shieldStrength, damage);
+            shield.damageShield(damageAbsorbed);
+            double remainingDamage = damage - damageAbsorbed;
+
+
+            player.triggerImmunity();
+
+            if (remainingDamage > 0) {
+                player.takeDamage(remainingDamage);
+                gameUI.setHealthBarValue(player);
+            }
+
+        } else {
+            player.takeDamage(damage);
             gameUI.setHealthBarValue(player);
-            System.out.println("player HP : " + player.getCurrentHealthPoints());
+            player.triggerImmunity();
         }
 
         if (!player.isAlive()) {
@@ -857,6 +875,8 @@ public class GameScreen extends Game implements Screen {
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(), player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
     }
+
+
 
     private void logicIfNotPaused(float delta) {
         if (isPaused || isChestOverlayActive) return;
@@ -1103,24 +1123,49 @@ public class GameScreen extends Game implements Screen {
         return gameUI;
     }
 
-    public void addAbility(int index) {
-        //todo detta måste göras på ett bättre sätt
-        switch (index) {
-            case 0:
-                enableWaterWave();
-                break;
-            case 1:
-                addBoomerang();
-                break;
-            case 2:
-                System.out.println("du valde nått");
+    public void addOrUpgradeAbility(AbilityDescription ability) {
+        int currentLevel = abilityLevels.getOrDefault(ability, 0);
+
+        switch (ability) {
+            case Water_wave:
+                if (currentLevel == 0) {
+                    enableWaterWave();
+                    printLog("Unlocked Water Wave!");
+                } else {
+                    // Öka piercing här om du har stöd för det i klassen
+                    printLog("Water Wave upgraded! Increased piercing.");
+                }
                 break;
 
+            case Boomerang_:
+                if (currentLevel < 4) {
+                    addBoomerang();
+                    printLog("Boomerang upgraded! Now: " + (currentLevel + 1));
+                } else {
+                    printLog("Boomerang is already maxed!");
+                }
+                break;
 
-            default:
+            case Shield:
+                shield.increaseHealth(25); // Exempel: ge extra sköld
+                printLog("Shield reinforced! Current strength: "+ shield.getInitialShieldStrength());
+
+                break;
+
+            case Chain_Lightning:
+                if (currentLevel == 0) {
+                    chainLightning.setEnabled(true);
+                    printLog("Unlocked Chain Lightning!");
+                } else {
+                    chainLightning.increaseMaxJumps(1);
+                    printLog("Chain Lightning upgraded! +1 bounce.");
+                }
                 break;
         }
+
+        abilityLevels.put(ability, currentLevel + 1);
     }
+
 
 
     //FÖR TESTNING - GER KOLLISION MED KARTAN
@@ -1138,6 +1183,30 @@ public class GameScreen extends Game implements Screen {
         }
 
         shapeRenderer.end();
+    }
+
+    public List<AbilityDescription> getRandomAvailableAbilities() {
+        List<AbilityDescription> available = new ArrayList<>();
+
+        for (AbilityDescription desc : AbilityDescription.values()) {
+            int level = abilityLevels.getOrDefault(desc, 0);
+
+            switch (desc) {
+                case Boomerang_:
+                    if (level < 4) available.add(desc);
+                    break;
+                case Water_wave:
+                case Chain_Lightning:
+                    available.add(desc); // hanteras i addOrUpgradeAbility
+                    break;
+                case Shield:
+                    available.add(desc); // alltid tillåten
+                    break;
+            }
+        }
+
+        Collections.shuffle(available);
+        return available.subList(0, Math.min(3, available.size()));
     }
 
 

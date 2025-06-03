@@ -294,7 +294,6 @@ public class Player extends Actor {
         if (!isImmune) {
             currentHealthPoints -= damage;
             damageTaken += damage;
-            System.out.println("took " + damage + " damage.");
             gameScreen.showPlayerDamageText("-" + (int) damage, true);  // Visa endast om skadan faktiskt tillämpas
 
             if (currentHealthPoints <= 0) {
@@ -497,6 +496,31 @@ public class Player extends Actor {
     //FÖR TESTNING - GER KOLLISION MED KARTAN
     public Map getMap() {
         return map;
+    }
+
+    public boolean isImmune(){
+        return isImmune;
+    }
+
+    public void triggerImmunity() {
+        if (isImmune) return;
+
+        isImmune = true;
+        tint = Color.RED;
+
+        Timer.schedule(new Task() {
+            @Override
+            public void run() {
+                isImmune = false;
+            }
+        }, 0.5f);
+
+        Timer.schedule(new Task() {
+            @Override
+            public void run() {
+                tint = Color.WHITE;
+            }
+        }, 0.1f);
     }
 
 }

@@ -3,6 +3,7 @@ package com.beachsurvivors.view;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Timer;
+import com.beachsurvivors.utilities.MusicHandler;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
@@ -49,7 +50,7 @@ public class Main extends Game {
     }
 
     public void restart() {
-        menuScreen.playSound.stop();    //Vi kanske skulle flytta playSound till gamescreen?
+        MusicHandler.stop();    //Vi kanske skulle flytta playSound till gamescreen?
         Timer.instance().clear();
 
         if (gameScreen != null) gameScreen.dispose();

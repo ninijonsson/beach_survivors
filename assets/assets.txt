@@ -31,7 +31,10 @@ entities/abilities/impact_zone.png
 entities/abilities/lightning.png
 entities/abilities/menu_select.wav
 entities/abilities/menu_switch.wav
+entities/abilities/shield_break.wav
 entities/abilities/shield_bubble.png
+entities/abilities/shield_hit.wav
+entities/abilities/shield_regen.wav
 entities/abilities/test_ability_bar.png
 entities/abilities/test_ability_bar1.png
 entities/abilities/test_ability_bar2.png
@@ -142,6 +145,7 @@ game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
 game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
+gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas

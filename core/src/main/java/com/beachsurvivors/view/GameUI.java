@@ -11,6 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.model.abilities.Ability;
+import com.beachsurvivors.model.abilities.Shield;
 import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.PowerUp;
@@ -24,6 +26,7 @@ public class GameUI {
     private final Stage stage;
     private ProgressBar progressBar;
     private ProgressBar healthBar;
+    private ProgressBar shieldBar;
     private Label percentageLabel;
     private Label nextLevel;
     private Label currentLevel;
@@ -320,16 +323,39 @@ public class GameUI {
 
     private void createPlayerHealthBar() {
         Skin healthSkin = new Skin(Gdx.files.internal("skin_composer/healthbutton.json"));
+
+        // Skapa shield-baren
+        shieldBar = new ProgressBar(0, 100, 0.5f, false, healthSkin, "shield");
+        shieldBar.setSize(100, 50);
+
+        // Skapa HP-baren
         healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
         healthBar.setSize(100, 50);
+
         percentageLabel = new Label("100%", healthSkin);
         percentageLabel.setColor(Color.BLACK);
 
+        // Lägg båda i en gemensam table
         healthTable = new Table();
-        healthTable.add(healthBar);
+
+        healthTable.align(Align.center);
+
+        // Lägg till shieldBar överst
+
+
+        // Lägg till healthBar och HP-text
+        healthTable.add(shieldBar).width(100).height(10).row();
+        healthTable.add(healthBar).width(100).height(10);
+
         healthTable.add(percentageLabel).padLeft(10);
-        healthTable.setPosition(viewport.getWorldWidth() / 2 - healthTable.getWidth() / 2, viewport.getWorldHeight() / 2 - healthTable.getHeight() / 2 + 100);
+
+        // Placera tabellen på skärmen
+        healthTable.setPosition(
+            viewport.getWorldWidth() / 2 - healthTable.getWidth() / 2,
+            viewport.getWorldHeight() / 2 - healthTable.getHeight() / 2 + 100
+        );
     }
+
 
     public Stage getStage() {
         return stage;
@@ -345,7 +371,25 @@ public class GameUI {
         healthBar.setRange(0, maxHp);
         healthBar.setValue(currentHp);
         percentageLabel.setText((int)currentHp + " / " + (int)maxHp);
+
+        Shield shield = null;
+        for (Ability ability : game.getAbilities()) {
+            if (ability instanceof Shield) {
+                shield = (Shield) ability;
+                break;
+            }
+        }
+
+        if (shield != null) {
+            float currentShield = shield.getCurrentShieldStrength();
+            float maxShield = shield.getInitialShieldStrength();
+            shieldBar.setRange(0, maxShield);
+            shieldBar.setValue(currentShield);
+        } else {
+            shieldBar.setValue(0);
+        }
     }
+
 
 
 
