@@ -166,25 +166,6 @@ public class PauseOverlay {
         }
     }
 
-    public void createDarkerBackground() {
-        if (dimBackground == null) {
-            // Skapa en svart transparent rektangel
-            Pixmap pixmap = new Pixmap((int) stage.getWidth(), (int) stage.getHeight(), Pixmap.Format.RGBA8888);
-            pixmap.setColor(0, 0, 0, 0.5f); // 50 % svart
-            pixmap.fill();
-
-            Texture texture = new Texture(pixmap);
-            pixmap.dispose();
-
-            dimBackground = new Image(new TextureRegionDrawable(new TextureRegion(texture)));
-            dimBackground.setSize(stage.getWidth(), stage.getHeight());
-
-            if (!stage.getActors().contains(dimBackground, true)) {
-                stage.addActor(dimBackground);
-            }
-        }
-    }
-
     public boolean isVisible() {
         return table.isVisible();
     }
@@ -228,9 +209,6 @@ public class PauseOverlay {
 
         stage.act(0);        // Uppdatera layout så vi får rätt positioner
     }
-
-
-
 
     public void hide() {
         table.setVisible(false);

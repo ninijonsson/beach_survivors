@@ -1,0 +1,62 @@
+
+victory_screen.png
+size: 2048, 2048
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+Silkscreen-Regular(1)
+  rotate: false
+  xy: 1, 534
+  size: 505, 79
+  orig: 505, 79
+  offset: 0, 0
+  index: -1
+main-menu_button_hover_scaled-300
+  rotate: false
+  xy: 1203, 1483
+  size: 192, 48
+  orig: 192, 48
+  offset: 0, 0
+  index: -1
+main-menu_button_pressed_scaled-300
+  rotate: false
+  xy: 1397, 1539
+  size: 192, 48
+  orig: 192, 48
+  offset: 0, 0
+  index: -1
+main-menu_button_scaled-300
+  rotate: false
+  xy: 1, 428
+  size: 192, 48
+  orig: 192, 48
+  offset: 0, 0
+  index: -1
+play_button_2
+  rotate: false
+  xy: 1203, 1533
+  size: 192, 54
+  orig: 192, 54
+  offset: 0, 0
+  index: -1
+play_button_hover_2
+  rotate: false
+  xy: 1, 478
+  size: 192, 54
+  orig: 192, 54
+  offset: 0, 0
+  index: -1
+play_button_pressed_2
+  rotate: false
+  xy: 508, 559
+  size: 192, 54
+  orig: 192, 54
+  offset: 0, 0
+  index: -1
+victory_screen
+  rotate: false
+  xy: 1, 615
+  size: 1200, 972
+  orig: 1200, 972
+  offset: 0, 0
+  index: -1
