@@ -34,6 +34,7 @@ public class GameUI {
     private Array<String> infoLog;
     private Array<Label> infoLabels;
     private BitmapFont levelFont;
+    private Label fps;
 
 
     private Table healthTable;
@@ -62,6 +63,7 @@ public class GameUI {
     private Table buffs;
     private Table buffIcons;
     private Stack buffStack;
+
 
 
     private Label timerLabel;
@@ -424,6 +426,10 @@ public class GameUI {
         statsTable = new Table();
         statsTable.setSize(600,400);
 
+        Label label = new Label("Press [TAB] to hide stats", skin, "stats");
+        statsTable.add(label).left().row();
+        label.setFontScale(fontScale);
+
         healthPoints = new Label("HealthPoints" , skin, "stats");
         statsTable.add(healthPoints).left().row();
         healthPoints.setFontScale(fontScale);
@@ -462,7 +468,7 @@ public class GameUI {
 
         statsTable.setPosition(-80, game.getScreenHeight()/2f);
         stage.addActor(statsTable);
-        statsTable.setVisible(false);
+        statsTable.setVisible(true);
 
     }
 
@@ -483,7 +489,6 @@ public class GameUI {
         statsTable.setVisible(!statsTable.isVisible());
     }
 
-    Label fps;
 
     private void createFpsLabel() {
         Skin skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
