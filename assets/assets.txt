@@ -27,6 +27,7 @@ entities/abilities/exp_bar_bg.aseprite
 entities/abilities/exp_bar_bg.png
 entities/abilities/exp_bar_fill.aseprite
 entities/abilities/exp_bar_fill.png
+entities/abilities/fire_ball.png
 entities/abilities/fireball.png
 entities/abilities/impact_zone.png
 entities/abilities/lightning.png
@@ -55,6 +56,7 @@ entities/enemies/crocodile1_sheet.png
 entities/enemies/crocodile2.png
 entities/enemies/crocodile2_walk_sheet.png
 entities/enemies/navy_seal_sheet.png
+entities/enemies/ragnaros.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
 entities/enemies/slutboss_sheet-2.png
@@ -92,6 +94,7 @@ entities/particles/death_effect.p
 entities/particles/death_effect_safe.p
 entities/particles/electric_dart.png
 entities/particles/electric_trail.p
+entities/particles/fire_trail.p
 entities/particles/impact_zone.p
 entities/particles/impact_zone.png
 entities/particles/level_up_rain.p
@@ -126,6 +129,7 @@ entities/ui/ability_bar.png
 entities/ui/ability_bar_placeholder.png
 entities/ui/ability_slot_placeholder.png
 entities/ui/buff_bar.png
+entities/waypoint.png
 fonts/level.fnt
 fonts/level.png
 fonts/timer.fnt
@@ -169,6 +173,7 @@ main_menu/menu_background.jpeg
 main_menu/sound/Holiday.wav
 main_menu/sound/play_sound.wav
 placeholder.png
+redarrow.png
 shark_death.wav
 skin_composer/font-export.fnt
 skin_composer/font-title-export.fnt
@@ -197,3 +202,4 @@ sounds/footstep.mp3
 sounds/item_pickup.wav
 sounds/level_up.mp3
 sounds/shark_damage_2.wav
+

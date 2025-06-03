@@ -1,4 +1,4 @@
-package com.beachsurvivors.utilities;
+package com.beachsurvivors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -71,6 +71,7 @@ public class AssetLoader {
 
     private void addTextures() {
         manager.load("placeholder.png", Texture.class);
+        manager.load("entities/waypoint.png", Texture.class);
         manager.load("entities/particles/bullet.png", Texture.class);
         manager.load("entities/particles/particle.png", Texture.class);
         manager.load("entities/beer.png", Texture.class);
@@ -108,7 +109,7 @@ public class AssetLoader {
 
         manager.load("entities/abilities/exp_bar.png", Texture.class);
         manager.load("entities/abilities/xp_orb.png", Texture.class);
-
+        manager.load("entities/abilities/fire_ball.png", Texture.class);
         //manager.load("entities/abilities/ability_bar.png", Texture.class);
         manager.load("entities/abilities/bullet.png", Texture.class);
         manager.load("entities/abilities/boomerangmc.png", Texture.class);
@@ -128,6 +129,8 @@ public class AssetLoader {
         manager.load("entities/enemies/crocodile2.png", Texture.class);
         manager.load("entities/enemies/crab_sheet.png", Texture.class);
         manager.load("entities/enemies/crocodile2_walk_sheet.png", Texture.class);
+        manager.load("entities/enemies/ragnaros.png", Texture.class);
+
 
         manager.load("entities/beach_girl_sheet.png", Texture.class);
         manager.load("entities/beach_guy_sheet.png", Texture.class);
@@ -187,6 +190,9 @@ public class AssetLoader {
 
         ParticleEffectLoader.ParticleEffectParameter arrowEffect = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/arrow_effect.p", ParticleEffect.class, arrowEffect);
+
+        ParticleEffectLoader.ParticleEffectParameter fireEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/fire_trail.p", ParticleEffect.class, fireEffect);
     }
 
     private void addSkins() {

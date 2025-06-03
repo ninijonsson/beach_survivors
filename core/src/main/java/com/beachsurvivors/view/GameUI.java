@@ -37,6 +37,11 @@ public class GameUI {
     private Label fps;
 
 
+    private ProgressBar bossHealthBar;
+    private Label bossHealthLabel;
+    private Table bossHealthTable;
+
+    private Table progressBarTable;
     private Table healthTable;
     private Table xpTable;
 
@@ -95,6 +100,8 @@ public class GameUI {
         createPlayerStats();
         createBuffBar();
         createFpsLabel();
+        createBossHealthBar();
+
         addActors();
     }
 
@@ -108,6 +115,32 @@ public class GameUI {
         stage.addActor(progressBar);
         stage.addActor(currentLevel);
         stage.addActor(nextLevel);
+    }
+
+    private void createBossHealthBar() {
+        Skin bossSkin = new Skin(Gdx.files.internal("skin_composer/healthbutton.json"));
+
+        bossHealthBar = new ProgressBar(0, 100, 1f, false, bossSkin);
+        bossHealthBar.setValue(100);
+        bossHealthBar.setAnimateDuration(0.25f);
+        bossHealthBar.setSize(600, 30);
+
+        BitmapFont bossFont = new BitmapFont();
+        bossFont.getData().setScale(2f);
+        Label.LabelStyle bossLabelStyle = new Label.LabelStyle(bossFont, Color.RED);
+        bossHealthLabel = new Label("BOSS HP", bossLabelStyle);
+        bossHealthLabel.setAlignment(Align.center);
+
+        bossHealthTable = new Table();
+        bossHealthTable.setFillParent(false);
+        bossHealthTable.setSize(650, 60);
+        bossHealthTable.top().center();
+        bossHealthTable.setPosition(viewport.getWorldWidth() / 2f - 325, viewport.getWorldHeight() - 150);
+
+        bossHealthTable.add(bossHealthLabel).padBottom(10).row();
+        bossHealthTable.add(bossHealthBar).width(600).height(30);
+
+        stage.addActor(bossHealthTable);
     }
 
     private void createAbilityTable() {
@@ -178,6 +211,15 @@ public class GameUI {
         }
     }
 
+
+    public void updateBossHealth(float current, float max) {
+        bossHealthBar.setRange(0, max);
+        bossHealthBar.setValue(current);
+    }
+
+    public void setBossBarVisible(boolean visible) {
+        bossHealthTable.setVisible(visible);
+    }
 
     private void updateAbilityBar() {
         int bottomPad = 5;
@@ -302,6 +344,34 @@ public class GameUI {
             }
         }
     }
+
+    public void updateInfoTable_color(String logMessage, Color color) {
+        if (infoLog.size == 5) {
+            infoLog.removeIndex(0);
+        }
+
+        int minutes = (int)(gameTime / 60f);
+        int seconds = (int)(gameTime % 60f);
+        String timestamp = String.format("[%02d:%02d] ", minutes, seconds);
+
+        infoLog.add(timestamp + logMessage);
+
+        for (int i = 0; i < infoLabels.size; i++) {
+            if (i < infoLog.size) {
+                infoLabels.get(i).setText(infoLog.get(i));
+                if (i == infoLog.size - 1) {
+                    // Color only the latest message
+                    infoLabels.get(i).setColor(color);
+                } else {
+                    // Reset older messages to default color (e.g., white)
+                    infoLabels.get(i).setColor(Color.WHITE);
+                }
+            } else {
+                infoLabels.get(i).setText("");
+            }
+        }
+    }
+
 
 
     private void createTimerLabel() {
