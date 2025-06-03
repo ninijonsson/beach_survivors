@@ -183,6 +183,11 @@ skin_composer/pause_menu/pause_menu.png
 skin_composer/testbuttons.atlas
 skin_composer/testbuttons.json
 skin_composer/testbuttons.png
+skin_composer/victory_screen/Silkscreen-Regular(1).fnt
+skin_composer/victory_screen/Silkscreen-Regular.fnt
+skin_composer/victory_screen/victory_screen.atlas
+skin_composer/victory_screen/victory_screen.json
+skin_composer/victory_screen/victory_screen.png
 sounds/Seal_Damage.wav
 sounds/Shark_Damage.wav
 sounds/beach.mp3

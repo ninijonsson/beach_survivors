@@ -80,6 +80,8 @@ public class GameScreen extends Game implements Screen {
     private float nextMiniBossTime = 60f;
     private float nextEnemyBuffTime = 60f;
     private float enemyHpMultiplier = 1f;
+    int minibossHP = 200;
+
 
     /// /array med intervaller på när miniboss ska spawna
 
@@ -666,12 +668,14 @@ public class GameScreen extends Game implements Screen {
 
         if (gameTimeSeconds >= nextMiniBossTime) {
             Enemy miniBoss = new MiniBoss(poolManager, this);
+            miniBoss.setHealthPoints(minibossHP);
             gameUI.updateInfoTable("Spawned a miniboss! Watch out!");
             Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
             miniBoss.setPosition(randomPos);
             enemies.add(miniBoss);
 
             nextMiniBossTime += 60f;
+            minibossHP += 100;
         }
     }
 
