@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.enemies.Enemy;
-import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.view.DamageText;
 
 public class WaterWave extends Ability {

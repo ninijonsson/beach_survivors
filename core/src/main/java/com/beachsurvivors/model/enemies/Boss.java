@@ -12,10 +12,10 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.model.Bullet;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.PuzzleOrb;
 import com.beachsurvivors.model.abilities.BombAttack;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.view.GameScreen;
 
 public class Boss {
@@ -173,7 +173,6 @@ public class Boss {
         for (BombAttack bomb : bombs) {
             bomb.update(delta);
 
-            if ()
         }
 
 //
@@ -215,7 +214,7 @@ public class Boss {
             bulletCooldown = 0.05f;
         }
         if (bombCooldown <= 0) {
-            dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
+            dropBomb(new Vector2(player.getPosition()));
             bombCooldown = 5f;
         }
         spawnPuzzleOrbIfNeeded(delta, player);
@@ -235,7 +234,7 @@ public class Boss {
             bulletCooldown = 0.75f;
         }
         if (bombCooldown <= 0) {
-            dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
+            dropBomb(new Vector2(player.getPosition()));
             bombCooldown = 4f;
         }
         spawnPuzzleOrbIfNeeded(delta, player);
@@ -248,7 +247,7 @@ public class Boss {
             bulletCooldown = 1.5f;
         }
         if (bombCooldown <= 0) {
-            dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
+            dropBomb(new Vector2(player.getPosition()));
             bombCooldown = 3f;
         }
         spawnPuzzleOrbIfNeeded(delta, player);
@@ -417,7 +416,7 @@ public class Boss {
             spawnPos = getRandomOrbSpawnPosition();
         } while (
             spawnPos.dst(position) < 400f ||  // Too close to boss
-                spawnPos.dst(new Vector2(player.getPlayerX(),player.getPlayerY())) < 800f  // Too close to player
+                spawnPos.dst(new Vector2(player.getPosition())) < 800f  // Too close to player
         );
         return spawnPos;
     }

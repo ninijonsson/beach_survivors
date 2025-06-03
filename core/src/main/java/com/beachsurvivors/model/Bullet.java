@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.beachsurvivors.AssetLoader;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 
 public class Bullet {
     private Vector2 position;

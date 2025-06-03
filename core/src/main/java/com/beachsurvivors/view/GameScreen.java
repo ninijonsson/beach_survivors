@@ -103,12 +103,6 @@ public class GameScreen extends Game implements Screen {
     private Vector2 bossSpawnPos;
     private Sprite warningSprite;
 
-    private Array<Enemy> enemies = new Array<>();
-    private Array<Ability> enemyAbilities = new Array<>();
-    private Array<PowerUp> powerUpsToRemove = new Array<>();
-    private Array<GroundItem> groundItemsToRemove = new Array<>();
-    private Vector2 playerPos;
-
     private boolean isPaused = false;
     private PauseOverlay pauseOverlay;
 
@@ -182,8 +176,6 @@ public class GameScreen extends Game implements Screen {
         groundItems.add(new Chest(player.getPosition().x-950, player.getPosition().y, poolManager, this));
         Vector2 startPos = new Vector2(player.getPosition());
         WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
-        player.setPlayerX(map.getStartingX());
-        player.setPlayerY(map.getStartingY());
 
         poolManager = new ParticleEffectPoolManager();
         poolManager.register("entities/particles/blueFlame.p", 5, 20);
@@ -193,11 +185,9 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("entities/particles/chestClosed.p", 5, 20);
         poolManager.register("entities/particles/chestOpen.p", 5, 20);
         poolManager.register("entities/particles/fire_trail.p", 5 , 20);
-        Chest chest = new Chest(player.getPlayerX()-250,player.getPlayerY()-140, poolManager, this);
+        Chest chest = new Chest(player.getPosition().x-250,player.getPosition().y-140, poolManager, this);
         groundItems.add(chest);
 
-        Vector2 startPos = new Vector2(player.getPlayerX(), player.getPlayerY());
-        WaterWave wave = new WaterWave("WaterWave", 15, 1.2, 32, 32, startPos, poolManager);
         abilities.add(wave);
     }
 
@@ -371,7 +361,7 @@ public class GameScreen extends Game implements Screen {
         bossSpawnTimer += delta;
 
         if (!warningGiven && bossSpawnTimer >= bossSpawnDelay - 10f) {
-            bossSpawnPos = new Vector2(playerPos.x,playerPos.y+200);
+            bossSpawnPos = new Vector2(player.getPosition().x,player.getPosition().y+200);
             warningSprite.setPosition(bossSpawnPos.x, bossSpawnPos.y);
             showBossWarning();
         }
@@ -984,7 +974,7 @@ public class GameScreen extends Game implements Screen {
 
     private void logicIfNotPaused(float delta) {
         if (isPaused || isChestOverlayActive) return;
-        logic(); // endast körs om spelet inte är pausat eller overlay är aktiv
+        logic(delta); // endast körs om spelet inte är pausat eller overlay är aktiv
     }
 
 
