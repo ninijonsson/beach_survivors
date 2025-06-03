@@ -77,6 +77,9 @@ public class GameScreen extends Game implements Screen {
 
     private Array<GroundItem> groundItems;  //Array med alla groundItems som inte är powerUps. Kistor, exp o.s.v
     private float nextMiniBossTime = 60f;
+    private float nextEnemyBuffTime = 60f;
+    private float enemyHpMultiplier = 1f;
+
     /// /array med intervaller på när miniboss ska spawna
 
     private Array<Enemy> enemies;
@@ -605,7 +608,9 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void spawnEnemies() {
+
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
+        buffEnemies(gameTimeSeconds);
         int interval = (int) (gameTimeSeconds / secondsBetweenIntervals);
         int maxEnemies = (int) (baseEnemies * Math.pow(growthRate, interval));
         if (maxEnemies > 100) {
@@ -621,10 +626,19 @@ public class GameScreen extends Game implements Screen {
         }
 
         Enemy enemy = selectRandomEnemy();
+        enemy.setHealthPoints((float) (enemy.getHealthPoints() * enemyHpMultiplier));
 
         Vector2 randomPos = getRandomOffscreenPosition(150);
         enemy.setPosition(randomPos);
         enemies.add(enemy);
+    }
+
+    private void buffEnemies(float gameTimeSeconds) {
+        if (gameTimeSeconds >= nextEnemyBuffTime) {
+            enemyHpMultiplier *= 1.25f;
+            nextEnemyBuffTime += 60f;
+            gameUI.updateInfoTable("Enemies got stronger!");
+        }
     }
 
     private Enemy selectRandomEnemy() {
@@ -720,7 +734,6 @@ public class GameScreen extends Game implements Screen {
     private void handleEnemyDeaths(Enemy enemy, int i) {
         if (!enemy.isAlive()) {
             totalEnemiesKilled++;
-            //gameUI.updateInfoTable("You gained " + enemy.getExp() + " exp.");
 
             enemy.dropItems(droppedItems, poolManager);
             groundItems.add(new ExperienceOrb(enemy.getPosition().x, enemy.getPosition().y, enemy.getExp(), poolManager));
@@ -731,12 +744,12 @@ public class GameScreen extends Game implements Screen {
 
             // Lägg till dödseffekt innan dispose
 
-            if(splatterMode){
+            if(splatterMode){ //Bloding effekt
                 ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect.p");
                 deathEffect.setPosition(enemy.getPosition().x + enemy.getSprite().getWidth() * 0.5f, enemy.getPosition().y + enemy.getSprite().getHeight() * 0.5f);
                 poolManager.addActiveEffect(deathEffect);
                 enemy.playDeathSound();
-            } else {
+            } else { //Rökig effect
                 ParticleEffectPool.PooledEffect deathEffect = poolManager.obtain("entities/particles/death_effect_safe.p");
                 deathEffect.setPosition(enemy.getPosition().x + enemy.getSprite().getWidth() * 0.5f, enemy.getPosition().y + enemy.getSprite().getHeight() * 0.5f);
                 poolManager.addActiveEffect(deathEffect);
