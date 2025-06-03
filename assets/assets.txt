@@ -91,6 +91,7 @@ entities/ui/ability_bar.png
 entities/ui/ability_bar_placeholder.png
 entities/ui/ability_slot_placeholder.png
 entities/ui/buff_bar.png
+entities/waypoint.png
 fonts/level.fnt
 fonts/level.png
 fonts/timer.fnt
@@ -113,7 +114,6 @@ game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
 game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
-gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas
@@ -135,6 +135,7 @@ main_menu/menu_background.jpeg
 main_menu/sound/Holiday.wav
 main_menu/sound/play_sound.wav
 placeholder.png
+redarrow.png
 shark_death.wav
 skin_composer/font-export.fnt
 skin_composer/font-title-export.fnt
@@ -158,3 +159,4 @@ sounds/footstep.mp3
 sounds/item_pickup.wav
 sounds/level_up.mp3
 sounds/shark_damage_2.wav
+warningSign.png

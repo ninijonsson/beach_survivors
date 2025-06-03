@@ -61,9 +61,6 @@ public abstract class Enemy implements Disposable {
     private Stage stage;
     private Texture xpOrb;
 
-    // used for boss
-    public Enemy() {}
-
     public Enemy(int width, int height, int healthPoints, int expOnDeath) {
         this.width = width;
         this.height = height;

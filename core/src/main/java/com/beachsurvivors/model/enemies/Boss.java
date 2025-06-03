@@ -1,51 +1,96 @@
 package com.beachsurvivors.model.enemies;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.model.Bullet;
 import com.beachsurvivors.model.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.PuzzleOrb;
 import com.beachsurvivors.model.abilities.BombAttack;
+import com.beachsurvivors.view.GameScreen;
 
 public class Boss {
     private float phaseTimer;
     private int phase = 0;
-    private boolean isAlive = true;
+    private boolean isAlive = false;
 
+    private float scale = 1f;
+    private boolean scaleUp = true;
+
+    private boolean isVulnerable = false;
+    private float vulnerableTimer = 0f;
+    private float vulnerabilityDuration = 5f;
+    private PuzzleOrb puzzleOrb;
+    private float orbCooldown = 10f;
+    private boolean orbPickedUp = false;
+
+    private Color tint = Color.WHITE;
+
+    private GameScreen game;
+    private Camera camera;
     private Vector2 position;
     private float width;
     private float height;
-    private float healthPoints;
+    private double healthPoints;
     private Sprite sprite;
     private Rectangle hitbox;
 
     private Array<Bullet> bullets = new Array<>();
     private float bulletCooldown;
-    private float bulletSpeed = 500f;
+    private float bulletSpeed = 200f;
     private float spiralAngle = 0;
+    private float patternAngleOffset = 0f;
+    private float angleStep = 40f; // Amount to rotate pattern every time
 
     private Array<BombAttack> bombs = new Array<>();
     private float bombCooldown;
     private ParticleEffectPoolManager poolManager;
 
+    private Player player; // to track player position
+    private BitmapFont font = new BitmapFont();
 
-    public Boss(Vector2 position, ParticleEffectPoolManager poolManager) {
+    private Sprite arrowSprite;
+
+
+    public Boss(Vector2 position, ParticleEffectPoolManager poolManager, Camera camera, GameScreen game) {
         this.position = position;
-        width = 1500;
-        height = 1500;
+        width = 700;
+        height = 700;
         healthPoints = 1000;
-        sprite = new Sprite(new Texture("entities/enemies/ragnaros.png"));
+        sprite = new Sprite(new Texture("placeholder.png"));
         hitbox = new Rectangle(position.x, position.y, width, height);
         this.poolManager = poolManager;
+
+        arrowSprite = new Sprite(new Texture("redarrow.png"));
+        arrowSprite.setSize(1000,1000);
+
+        this.camera = camera;
+        this.game = game;
+        isAlive = true;
     }
 
     public void draw(SpriteBatch spriteBatch) {
-        spriteBatch.draw(sprite, position.x - width/2, position.y - height/2, width, height);
+        sprite.setColor(tint);
+        sprite.setOriginCenter();
+        sprite.setScale(scale);
+        sprite.setPosition(position.x - width/2, position.y - height/2);
+        sprite.setSize(width,height);
+        sprite.draw(spriteBatch);
+
+        if (isVulnerable) {
+            font.setColor(Color.RED);
+            font.getData().setScale(3f); // make it big
+            font.draw(spriteBatch, "BOSS VULNERABLE", position.x - 200, position.y + height / 2 + 50);
+        }
 
         for (Bullet bullet : bullets) {
             bullet.draw(spriteBatch);
@@ -54,61 +99,188 @@ public class Boss {
         for (BombAttack bomb : bombs) {
             bomb.draw(spriteBatch);
         }
+
+        if (puzzleOrb != null) {
+            puzzleOrb.draw(spriteBatch);
+        }
+
+        if (camera != null) {
+            Rectangle viewBounds = new Rectangle(camera.position.x - camera.viewportWidth / 2,
+                camera.position.y - camera.viewportHeight / 2,
+                camera.viewportWidth,
+                camera.viewportHeight);
+            if (puzzleOrb != null) {
+                if (!puzzleOrb.overlaps(viewBounds)) {
+                    // Boss is off-screen, so draw an arrow pointing toward it
+
+                    Vector2 direction = new Vector2(puzzleOrb.getPosition()).sub(camera.position.x, camera.position.y).nor();
+
+                    float arrowDistanceFromCenter = 400f;
+                    Vector2 arrowPosition = new Vector2(camera.position.x, camera.position.y).add(direction.scl(arrowDistanceFromCenter));
+
+                    float angle = direction.angleDeg();
+
+                    arrowSprite.setOriginCenter();
+                    arrowSprite.setRotation(angle);
+                    arrowSprite.setPosition(arrowPosition.x - arrowSprite.getWidth() / 2, arrowPosition.y - arrowSprite.getHeight() / 2);
+                    arrowSprite.setScale(0.1f); // scale it down so it's not gigantic
+                    arrowSprite.draw(spriteBatch);
+                }
+            }
+        }
     }
 
     public void update(float delta, Player player) {
+        this.player = player;
+        hitbox.setPosition(position.x - width / 2, position.y - height / 2);
+        sprite.setPosition(position.x - width / 2, position.y - height / 2);
+
+        // visual feedback when vulnerable
+        if (isVulnerable) {
+            if (scaleUp) {
+                scale += 0.005f;
+                if (scale > 1.05f) scaleUp = false;
+            } else {
+                scale -= 0.005f;
+                if (scale < 0.95f) scaleUp = true;
+            }
+        } else {
+            scale = 1f;
+        }
+
         phaseTimer += delta;
         bulletCooldown -= delta;
         bombCooldown -= delta;
 
-        switch (phase) {
-            case 0:
-                if (bulletCooldown <= 0) {
-                    fireExpandingSpiral();
-                    bulletCooldown = 0.05f;
-                }
-                if (bombCooldown <= 0) {
-                    dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
-                    bombCooldown = 2f;
-                }
-                if (phaseTimer > 5) {
-                    nextPhase();
-                }
-                break;
-            case 1:
-                if (bulletCooldown <= 0) {
-                    fireRadial();
-                    bulletCooldown = 1f;
-                }
-                if (phaseTimer > 5) {
-                    nextPhase();
-                }
-                break;
-            case 2:
-                if (bulletCooldown <= 0) {
-                    fireSpiral();
-                    bulletCooldown = 0.1f;
-                }
-                if (phaseTimer > 5) {
-                    nextPhase();
-                }
-                break;
-
-
-            //TODO: Add more phases
+        if (isVulnerable) {
+            vulnerableTimer -= delta;
+            if (vulnerableTimer <= 0) {
+                isVulnerable = false;
+            }
         }
+
+        handlePhases(delta, player);
 
         for (Bullet bullet : bullets) {
             bullet.update(delta);
 
             if (bullet.overlaps(player)) {
-                player.takeDamage(100);
+                game.damagePlayer(50);
 
             }
         }
 
         for (BombAttack bomb : bombs) {
             bomb.update(delta);
+
+            if ()
+        }
+
+//
+    }
+
+    private void nextPhase() {
+        phase++;
+        phaseTimer = 0;
+        orbPickedUp = false;
+    }
+
+    private float getHealthPercent() {
+        return (float) healthPoints / 1000f; // or whatever max HP is
+    }
+
+    private void spawnPuzzleOrbIfNeeded(float delta, Player player) {
+        orbCooldown -= delta;
+
+        if (puzzleOrb == null && orbCooldown <= 0) {
+            puzzleOrb = new PuzzleOrb(getSafeRandomOrbSpawnPosition(player));
+            orbCooldown = 15f;
+            orbPickedUp = false;
+        }
+
+        if (puzzleOrb != null) {
+            puzzleOrb.update(delta);
+            if (puzzleOrb.overlaps(player.getHitBox())) {
+                puzzleOrb.deactivate();
+                puzzleOrb = null;
+                makeVulnerable();
+                orbPickedUp = true;
+            }
+        }
+    }
+
+    private void phaseZero(float delta, Player player) {
+        if (bulletCooldown <= 0) {
+            fireExpandingSpiral();
+            bulletCooldown = 0.05f;
+        }
+        if (bombCooldown <= 0) {
+            dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
+            bombCooldown = 5f;
+        }
+        spawnPuzzleOrbIfNeeded(delta, player);
+    }
+
+    private void phaseOne(float delta, Player player) {
+        if (bulletCooldown <= 0) {
+            fireRadial();
+            bulletCooldown = 1.5f;
+        }
+        spawnPuzzleOrbIfNeeded(delta, player);
+    }
+
+    private void phaseTwo(float delta, Player player) {
+        if (bulletCooldown <= 0) {
+            fireSpiral();
+            bulletCooldown = 0.75f;
+        }
+        if (bombCooldown <= 0) {
+            dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
+            bombCooldown = 4f;
+        }
+        spawnPuzzleOrbIfNeeded(delta, player);
+    }
+
+    private void phaseThree(float delta, Player player) {
+        if (bulletCooldown <= 0) {
+            fireRadial();
+            fireSpiral();
+            bulletCooldown = 1.5f;
+        }
+        if (bombCooldown <= 0) {
+            dropBomb(new Vector2(player.getPlayerX(), player.getPlayerY()));
+            bombCooldown = 3f;
+        }
+        spawnPuzzleOrbIfNeeded(delta, player);
+    }
+
+
+    private void handlePhases(float delta, Player player) {
+        phaseTimer += delta;
+
+        switch (phase) {
+            case 0:
+                if (!isVulnerable) phaseZero(delta, player);
+                if (phaseTimer > 10f || getHealthPercent() < 0.9f) nextPhase();
+                break;
+
+            case 1:
+                if (!isVulnerable) phaseOne(delta, player);
+                if (orbPickedUp && (phaseTimer > 15f || getHealthPercent() < 0.65f)) nextPhase();
+                break;
+
+            case 2:
+                if (!isVulnerable) phaseTwo(delta, player);
+                if (orbPickedUp && (phaseTimer > 20f || getHealthPercent() < 0.35f)) nextPhase();
+                break;
+
+            case 3:
+                if (!isVulnerable) phaseThree(delta, player);
+                break;
+
+            default:
+
+                break;
         }
     }
 
@@ -116,33 +288,27 @@ public class Boss {
         spiralAngle += 15f;
         if (spiralAngle >= 360f) spiralAngle -= 360f;
 
-        Vector2 velocity = angleToVector(spiralAngle);
-        spawnBullet(velocity);
+        spawnBullet(angleToVector(spiralAngle));
     }
 
     private void fireRadial() {
-        for (int i = 0; i < 360; i += 10) {
-            Vector2 velocity = angleToVector(i);
-            spawnBullet(velocity);
+        for (int i = 0; i < 360; i += 15) {
+            float angle = i + patternAngleOffset;
+            spawnBullet(angleToVector(angle));
         }
+        patternAngleOffset += angleStep;
+        if (patternAngleOffset >= 360f) patternAngleOffset -= 360f;
     }
 
     private void fireSpiral() {
-        // float value between 0.0 and 359.9. Changes over time.a
-        float angle = (System.currentTimeMillis() % 3600) / 10f;
-        float angle2 = 90+angle;
-        float angle3 = 180+angle;
-        float angle4 = 270+angle;
+        float baseAngle = (System.currentTimeMillis() % 3600) / 10f;
 
-        Vector2 velocity = angleToVector(angle);
-        Vector2 velocity2 = angleToVector(angle2);
-        Vector2 velocity3 = angleToVector(angle3);
-        Vector2 velocity4 = angleToVector(angle4);
-
-        spawnBullet(velocity);
-        spawnBullet(velocity2);
-        spawnBullet(velocity3);
-        spawnBullet(velocity4);
+        int spirals = 4; // 4 bullets spiraling outward
+        for (int i = 0; i < spirals; i++) {
+            float angle = baseAngle + (i * 90f); // spread them out evenly
+            Vector2 velocity = angleToVector(angle);
+            spawnBullet(velocity);
+        }
     }
 
 
@@ -153,12 +319,6 @@ public class Boss {
         float vy = MathUtils.sin(radians) * bulletSpeed;
 
         return new Vector2(vx, vy);
-    }
-
-
-    private void nextPhase() {
-        phase++;
-        phaseTimer = 0;
     }
 
     private void spawnBullet(Vector2 velocity) {
@@ -181,8 +341,112 @@ public class Boss {
         shapeRenderer.end();
     }
 
+//    private void puzzleOrbLogic(float delta, Player player) {
+//        // Puzzle orb logic
+//        orbCooldown -= delta;
+//        if (puzzleOrb == null && orbCooldown <= 0) {
+//            puzzleOrb = new PuzzleOrb(getSafeRandomOrbSpawnPosition(player));
+//            orbCooldown = 15f; // next orb in 15 seconds
+//        }
+//
+//        if (puzzleOrb != null) {
+//            puzzleOrb.update(delta);
+//            if (puzzleOrb.overlaps(player.getHitBox())) {
+//                puzzleOrb.deactivate();
+//                puzzleOrb = null;
+//                makeVulnerable();
+//            }
+//        }
+//
+//    }
+
+    private void makeVulnerable() {
+        isVulnerable = true;
+        vulnerableTimer = vulnerabilityDuration;
+
+        // Automatically turn off vulnerability after X seconds
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                Gdx.app.postRunnable(() -> {
+                    isVulnerable = false;
+                });
+            }
+        }, vulnerabilityDuration);
+    }
+
+    public void takeDamage(float amount) {
+        if (!isVulnerable) return;
+
+        healthPoints -= amount;
+        if (healthPoints <= 0) {
+            onDeath();
+        }
+    }
+
+    public boolean hit(double damage) {
+        if (isVulnerable) {
+            healthPoints -= damage;
+            System.out.println(damage);
+//            playSound();
+
+            if (healthPoints <= 0) {
+                isAlive = false;
+                onDeath();
+                return true;
+            } else {
+                tint = Color.RED;
+
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        Gdx.app.postRunnable(() -> {
+                            tint = Color.WHITE;
+
+                        });
+                    }
+                }, 0.1f);
+                return true;}
+        }
+        return false;
+    }
+
+    private Vector2 getSafeRandomOrbSpawnPosition(Player player) {
+        Vector2 spawnPos;
+        do {
+            spawnPos = getRandomOrbSpawnPosition();
+        } while (
+            spawnPos.dst(position) < 400f ||  // Too close to boss
+                spawnPos.dst(new Vector2(player.getPlayerX(),player.getPlayerY())) < 800f  // Too close to player
+        );
+        return spawnPos;
+    }
+
+
+    private Vector2 getRandomOrbSpawnPosition() {
+        float minDistance = 1000f;
+        float maxDistance = 2000f;
+
+        float angle = MathUtils.random(0f, 360f);
+        float distance = MathUtils.random(minDistance, maxDistance);
+
+        float offsetX = MathUtils.cosDeg(angle) * distance;
+        float offsetY = MathUtils.sinDeg(angle) * distance;
+
+        return new Vector2(position.x + offsetX, position.y + offsetY);
+    }
+
+
+    private void clearScreen() {
+        bullets.clear();
+        bombs.clear();
+        puzzleOrb = null;
+    }
+
     private void onDeath() {
         isAlive = false;
+        System.out.println("boss dead");
+        clearScreen();
     }
 
     public boolean isAlive() {
@@ -192,8 +456,21 @@ public class Boss {
     public float getWidth() {
         return width;
     }
+
     public float getHeight() {
         return height;
+    }
+
+    public Rectangle getHitbox() {
+        return hitbox;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
+    }
+
+    public double getHealthPoints() {
+        return healthPoints;
     }
 }
 

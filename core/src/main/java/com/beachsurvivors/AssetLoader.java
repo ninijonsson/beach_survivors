@@ -48,6 +48,7 @@ public class AssetLoader {
 
     private void addTextures() {
         manager.load("placeholder.png", Texture.class);
+        manager.load("entities/waypoint.png", Texture.class);
         manager.load("entities/particles/bullet.png", Texture.class);
         manager.load("entities/particles/particle.png", Texture.class);
         manager.load("entities/beer.png", Texture.class);
