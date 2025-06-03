@@ -224,6 +224,9 @@ public class GameScreen extends Game implements Screen {
             pauseOverlay.getStage().draw();
             pauseOverlay.render(delta);
         }
+
+        System.out.println("Abilities array: " + abilities.size);
+        System.out.println("Projectiles array: " + abilities.size);
     }
 
 
@@ -754,22 +757,25 @@ public class GameScreen extends Game implements Screen {
         for (int j = abilities.size - 1; j >= 0; j--) {
             Ability ability = abilities.get(j);
 
-            if (ability.getHitBox().overlaps(enemy.getHitbox())) {
-                boolean isCritical = player.isCriticalHit();
-                double damage = player.getDamage() * ability.getDamageMultiplier();
-                if (isCritical) {
-                    damage *= player.getCriticalHitDamage();
+            if (!(ability instanceof Shield)) {
+                if (ability.getHitBox().overlaps(enemy.getHitbox())) {
+                    boolean isCritical = player.isCriticalHit();
+                    double damage = player.getDamage() * ability.getDamageMultiplier();
+                    if (isCritical) {
+                        damage *= player.getCriticalHitDamage();
+                    }
+
+                    if (enemy.hit(damage)) {
+                        totalPlayerDamageDealt += damage;
+                        damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50), enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
+                    }
+
+    //                if (!ability.isPersistent()) {
+    //                    ability.dispose();
+    //                    abilities.removeIndex(j);
+    //                }
                 }
 
-                if (enemy.hit(damage)) {
-                    totalPlayerDamageDealt += damage;
-                    damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50), enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
-                }
-
-//                if (!ability.isPersistent()) {
-//                    ability.dispose();
-//                    abilities.removeIndex(j);
-//                }
             }
         }
     }
