@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -35,12 +37,11 @@ public class ChestOverlay {
     private Sound crabRave;
     private int selectedIndex = 0;
     private Image selectorArrow;
+    private Label description;
     private Stack[] abilityButtons = new Stack[3];
     private Image[] abilityImages = new Image[3];
     private boolean effectStarted = false;
     private List<AbilityDescription> offeredAbilities = new ArrayList<>();
-
-
 
 
     public ChestOverlay(GameScreen game) {
@@ -52,7 +53,9 @@ public class ChestOverlay {
         crabRave.setVolume(crabRave.play(), 0.05f);
         createTable();
         createEffect();
+        createDescriptionLabel();
         createButtons();
+
         MusicHandler.pause();
     }
 
@@ -106,6 +109,32 @@ public class ChestOverlay {
         return stack;
     }
 
+    private void createDescriptionLabel() {
+        BitmapFont font = new BitmapFont();
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+        description = new Label("", labelStyle);
+        description.setWrap(true);
+        description.setAlignment(Align.center);
+
+        description.setWidth(600);
+        description.setFontScale(2.2f);
+
+        description.setPosition(
+            (stage.getViewport().getWorldWidth() - description.getWidth()) / 2f,
+            150
+        );
+        Pixmap bg = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        bg.setColor(0, 0, 0, 0.5f);
+        bg.fill();
+        Texture bgTex = new Texture(bg);
+        Drawable bgDrawable = new Image(bgTex).getDrawable();
+
+        labelStyle.background = bgDrawable;
+
+
+        stage.addActor(description);
+    }
 
 
 
@@ -133,7 +162,6 @@ public class ChestOverlay {
 
 
         table.row();
-
         Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/coin.png");
         selectorArrow = new Image(arrowTexture);
         selectorArrow.setSize(32, 32);
@@ -191,9 +219,18 @@ public class ChestOverlay {
             selected.getX() + selected.getWidth() / 2f - selectorArrow.getWidth() / 2f,
             selected.getY() - selectorArrow.getHeight() - 10
         );
+        updateDescription();
     }
 
+    private void updateDescription() {
+        if (offeredAbilities == null || selectedIndex >= offeredAbilities.size()) {
+            description.setText("No description.");
+            return;
+        }
 
+        AbilityDescription desc = offeredAbilities.get(selectedIndex);
+        description.setText(desc.getDescription() != null ? desc.getDescription() : "No description.");
+    }
 
 
     private void selectAbility(int index) {
@@ -205,7 +242,6 @@ public class ChestOverlay {
         MusicHandler.resume();
         Gdx.input.setInputProcessor(game.getGameUI().getStage());
     }
-
 
 
     private void createEffect() {
@@ -238,10 +274,8 @@ public class ChestOverlay {
             );
             chestEffect.update(delta);
         }
-
         stage.act(delta);
     }
-
 
 
     public void draw() {
@@ -266,7 +300,6 @@ public class ChestOverlay {
         chestEffect.draw(spriteBatch);
         spriteBatch.end();
     }
-
 
 
     public boolean isClosed() {

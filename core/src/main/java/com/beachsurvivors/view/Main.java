@@ -43,7 +43,7 @@ public class Main extends Game {
 
     public void goToMainMenu() {
         menuScreen.mainTheme.play();
-        menuScreen.playSound.stop();
+        MusicHandler.stop();
         if (gameScreen != null) gameScreen.dispose();
         gameScreen = null;
         setScreen(menuScreen);
