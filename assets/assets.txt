@@ -53,6 +53,9 @@ entities/enemies/crocodile2_walk_sheet.png
 entities/enemies/navy_seal_sheet.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
+entities/enemies/slutboss_sheet-2.png
+entities/enemies/slutboss_sheet-3.png
+entities/enemies/slutboss_sheet.png
 entities/how_to_play.png
 entities/icons/ability_icon.png
 entities/icons/ability_icon_selected.png
@@ -139,7 +142,6 @@ game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
 game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
-gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas

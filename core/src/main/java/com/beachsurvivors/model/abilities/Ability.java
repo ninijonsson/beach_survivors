@@ -49,18 +49,18 @@ public abstract class Ability implements Disposable {
         getHitBox().setPosition(position.x, position.y);
     }
 
+    //Uppdaterar ability med deltatime, om timer = cooldown så är den offCooldown och use() kan användas.
     public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
         cooldownTimer += delta;
         float actualCooldown = CombatHelper.getActualCooldown(getCooldown(), player.getCooldownTime());
 
         if (cooldownTimer >= actualCooldown) {
             cooldownTimer = 0f;
-            //Do something
             isOffCooldown = true;
         }
     }
 
-    public abstract void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts);
+    public abstract void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts, Array<Projectile> playerProjectiles);
 
     public AbilityType getType() {
         return type;
