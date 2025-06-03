@@ -113,6 +113,11 @@ public class WaterWave extends Ability {
     }
 
     @Override
+    public void updatePosition(float delta, Vector2 position) {
+
+    }
+
+    @Override
     public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
         if (effect == null || direction == null) return;
 

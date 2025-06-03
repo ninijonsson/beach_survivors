@@ -62,8 +62,6 @@ public class Projectile {
             trailEffect.update(delta);
         }
 
-
-
     }
 
     public void draw(SpriteBatch batch) {

@@ -111,6 +111,11 @@ public class ChainLightning extends Ability {
         }
     }
 
+    @Override
+    public void updatePosition(float delta, Vector2 position) {
+
+    }
+
     private Enemy getNextTarget(Enemy previous, Set<Enemy> hitEnemies) {
         Enemy closest = null;
         float minDistance = Float.MAX_VALUE;
