@@ -3,7 +3,7 @@ package com.beachsurvivors.model;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.graphics.Color;
@@ -11,12 +11,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.beachsurvivors.AssetLoader;
-import com.beachsurvivors.controller.LevelSystem;
+import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.utilities.LevelSystem;
 import com.beachsurvivors.model.Map.Map;
 import com.beachsurvivors.view.GameScreen;
 
@@ -24,21 +21,25 @@ import java.util.Random;
 
 public class Player extends Actor {
 
-
     //Player stats
     private final int STARTING_HEALTH_POINTS = 100;
+    private final int MAX_SPEED = 1200;
+    private final int MIN_SPEED = 300;
+
     private float maxHealthPoints;
     private float currentHealthPoints;
     private int experiencePoints;
-    private float speed = 500f;
-    private double baseDamage;
-    private double cooldown;
+    private float baseSpeed = 500f; //permanent speed
+    private float speedModifier = 0f; //buffad speed
+    private double damage = 10;
+    private float cooldownTime = 1f;  //cooldown time börjar med 100%, lägre = snabbare
     private float criticalHitChance = 0.10f;
     private double criticalHitDamage = 2;
     private float hpRegenPerSecond = 0.1f;
-
-
+    private float regenTimer = 1f;
+    private float areaRange = 300;  //Hur stor AoE spelaren har, för Boomerangen, Magnet/vacuum osv
     private float lifesteal = 0f;
+    private Vector2 lastDirection = new Vector2(1, 0);
 
     private boolean isImmune;
     private boolean isAlive;
@@ -54,8 +55,7 @@ public class Player extends Actor {
     private float vaccumStrength = 100;
 
     private Rectangle beachGuyHitBox;
-    private float playerX;
-    private float playerY;
+    private Vector2 position;
 
     private float playerHeight;
     private float playerWidth;
@@ -64,6 +64,9 @@ public class Player extends Actor {
     private static final int FRAME_ROWS = 1;
     private Animation<TextureRegion> walkAnimation;
     private Texture walkSheet;
+    private Texture shadowTexture;
+    protected float shadowOffsetX = 0f;
+    protected float shadowOffsetY = -10f;
     private boolean isMoving;
     private Color tint = Color.WHITE;
 
@@ -77,7 +80,7 @@ public class Player extends Actor {
     private Map map;
     private Sound footstepSound;
     private float footstepTimer = 0;
-    private float footstepInterval = 0.4f; // hur ofta ljudet får spelas (i sekunder)
+    private float footstepInterval = 0.4f;
 
 
 
@@ -95,11 +98,12 @@ public class Player extends Actor {
         isAlive = true;
         isImmune = false;
 
-        playerX = map.getStartingX();
-        playerY = map.getStartingY();
+        position = new Vector2(map.getStartingX(), map.getStartingY());
 
-        beachGuyHitBox = new Rectangle(playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
-        vaccumHitbox = new Circle(playerX, playerY, vaccumRadius);
+        beachGuyHitBox = new Rectangle(position.x - playerWidth / 2, position.y - playerHeight / 2, playerWidth, playerHeight);
+        //vaccumHitbox = new Circle(position.x, position.y, vaccumRadius);
+        vaccumHitbox = new Circle(position.x, position.y, areaRange);
+
 
         currentHealthPoints = STARTING_HEALTH_POINTS;
         maxHealthPoints = STARTING_HEALTH_POINTS;
@@ -109,8 +113,16 @@ public class Player extends Actor {
 
     }
 
+    public void drawShadow(SpriteBatch spriteBatch) {
+        float shadowX = position.x - playerWidth / 2f + shadowOffsetX;
+        float shadowY = position.y - playerHeight / 2f + shadowOffsetY;
+        spriteBatch.draw(shadowTexture, shadowX, shadowY, playerWidth, playerHeight / 4f);
+    }
+
     private void createAnimation() {
         int choice = random.nextInt(1,3);
+        this.shadowTexture = AssetLoader.get().manager.get("entities/abilities/bomb_shadow.png", Texture.class);
+
         switch (choice) {
             case 1:
                 walkSheet = AssetLoader.get().manager.get("entities/beach_girl_sheet.png");
@@ -136,7 +148,7 @@ public class Player extends Actor {
     public void drawAnimation() {
         stateTime += Gdx.graphics.getDeltaTime();
         TextureRegion currentFrame;
-
+        drawShadow(spriteBatch);
         if (isMoving) {
             currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 
@@ -150,7 +162,7 @@ public class Player extends Actor {
         }
         // Rita animationen centrerad kring playerX och playerY
         spriteBatch.setColor(tint);
-        spriteBatch.draw(currentFrame, playerX - playerWidth / 2, playerY - playerHeight / 2, playerWidth, playerHeight);
+        spriteBatch.draw(currentFrame, position.x - playerWidth / 2, position.y - playerHeight / 2, playerWidth, playerHeight);
 
     }
 
@@ -158,7 +170,9 @@ public class Player extends Actor {
         levelSystem.gainExp(exp);
     }
 
-    public void playerInput() {
+    public void playerInput(Boolean overlayActive) {
+
+        if (overlayActive) return;
         movementKeys();
         //FLYTTADE KEYBINDS TILL GAMESCREEN
     }
@@ -205,7 +219,7 @@ public class Player extends Actor {
             isMoving = false;
         }
 
-        Vector2 newPlayerPosition = new Vector2(playerX, playerY).add(direction.scl(speed * delta));
+        Vector2 newPlayerPosition = new Vector2(position.x, position.y).add(direction.scl(getSpeed() * delta));
 
         // LOGIK FÖR ATT KONTROLLERA SPELARENS NYA POSITION. OM DEN ÄR GILTIG ELLER EJ
         Polygon tempHitBox = new Polygon(new float[]{
@@ -220,11 +234,38 @@ public class Player extends Actor {
         if (map.isInsidePolygon(newPlayerPosition.x, newPlayerPosition.y) &&
             map.isValidMove(tempHitBox) &&
             !map.collidesWithObject(tempHitBox)) {
-            playerX = newPlayerPosition.x;
-            playerY = newPlayerPosition.y;
-            beachGuyHitBox.setPosition(playerX - playerWidth / 2, playerY - playerHeight / 2);
+            position.x = newPlayerPosition.x;
+            position.y = newPlayerPosition.y;
+            beachGuyHitBox.setPosition(position.x - playerWidth / 2, position.y - playerHeight / 2);
         }
     }
+
+
+    public Vector2 getMovementDirection() {
+        Vector2 direction = new Vector2();
+
+        if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
+            direction.x -= 1;
+        }
+        if ((Gdx.input.isKeyPressed(Input.Keys.RIGHT)) || (Gdx.input.isKeyPressed(Input.Keys.D))) {
+            direction.x += 1;
+        }
+        if ((Gdx.input.isKeyPressed(Input.Keys.DOWN)) || (Gdx.input.isKeyPressed(Input.Keys.S))) {
+            direction.y -= 1;
+        }
+        if ((Gdx.input.isKeyPressed(Input.Keys.UP)) || (Gdx.input.isKeyPressed(Input.Keys.W))) {
+            direction.y += 1;
+        }
+
+        if (!direction.isZero()) {
+            direction.nor();
+            lastDirection.set(direction);
+        }
+
+
+        return direction;
+    }
+
 
     public void setMovingLeftRight(boolean movingLeft, boolean movingRight) {
         this.movingLeft = movingLeft;
@@ -248,29 +289,29 @@ public class Player extends Actor {
         walkSheet.dispose();
     }
 
-    public void takeDamage(double damage){
+    public void takeDamage(double damage) {
+        if (damage <= 0) return;
         if (!isImmune) {
             currentHealthPoints -= damage;
             damageTaken += damage;
+            gameScreen.showPlayerDamageText("-" + (int) damage, true);  // Visa endast om skadan faktiskt tillämpas
+
             if (currentHealthPoints <= 0) {
                 setAlive(false);
                 return;
             }
 
-            isImmune = true; //Immunitet när man tar damage
-            tint = Color.RED; //Ändrar färgen när man tar damage
+            isImmune = true;
+            tint = Color.RED;
 
-            Timer.schedule(new Task() {  //resetar immunitet efter 0,5sekunder
+            Timer.schedule(new Task() {
                 @Override
                 public void run() {
                     isImmune = false;
                 }
             }, 0.5f);
 
-            //Jag gjorde två olika tasks för att 0.1sekunder immunitet kändes lite om där är mkt mobs
-            //men det kanske är fine med 0.1? i så fall kan vi slå ihop båda tasks
-
-            Timer.schedule(new Task() {  //resetar färgen efter 0.1sekunder
+            Timer.schedule(new Task() {
                 @Override
                 public void run() {
                     tint = Color.WHITE;
@@ -278,6 +319,7 @@ public class Player extends Actor {
             }, 0.1f);
         }
     }
+
     public void onDamageDealt(double damageDealt) {
         int healedAmount = Math.round((float) (damageDealt * lifesteal));
         restoreHealthPoints(healedAmount);
@@ -292,15 +334,29 @@ public class Player extends Actor {
         dispose();
     }
 
-    public void increaseSpeed(int speedIncrease) {
-        if (speed + speedIncrease > 1200f) {
-            speed = 1200f;
-        } else {
-            speed += speedIncrease;
+    public void increaseBaseSpeed(int amount) {
+        baseSpeed = MathUtils.clamp(baseSpeed + amount, MIN_SPEED, MAX_SPEED);
+    }
+
+    public void increaseSpeedModifier(float amount) {
+        speedModifier += amount;
+    }
+
+    public void update(float deltaTime) {
+        regenerateHp(deltaTime);
+        getMovementDirection();
+    }
+
+    private void regenerateHp(float delta) {
+
+        regenTimer -= delta;
+        if (regenTimer <= 0) {
+            regenTimer = 1;
+            restoreHealthPoints(hpRegenPerSecond);
         }
     }
 
-    public void restoreHealthPoints(int increasedHealthPoints) {
+    public void restoreHealthPoints(float increasedHealthPoints) {
         currentHealthPoints += increasedHealthPoints;
         healingReceived += increasedHealthPoints;
 
@@ -315,7 +371,7 @@ public class Player extends Actor {
     }
 
     public void increaseDamage(double increasedDamage) {
-        baseDamage += increasedDamage;
+        damage += increasedDamage;
     }
 
 
@@ -327,6 +383,22 @@ public class Player extends Actor {
         criticalHitDamage += critDamageIncrease;
     }
 
+    public void reduceCooldownTime(float cooldownTime) {
+        this.cooldownTime *= cooldownTime;
+    }
+
+
+
+    public void increaseAreaRadius(float increase) {
+        this.areaRange += increase;
+        vaccumHitbox.setRadius(areaRange);
+    }
+
+    public void increaseHpRegen(float increase) {
+        this.hpRegenPerSecond += increase;
+    }
+
+
     public boolean isCriticalHit() {
         return random.nextFloat() < criticalHitChance;
     }
@@ -335,26 +407,13 @@ public class Player extends Actor {
         return beachGuyHitBox;
     }
 
-    public float getPlayerX() {
-        return playerX;
+
+    public Vector2 getPosition() {
+        return position;
     }
 
-    public void setPlayerX(float playerX) {
-        this.playerX = playerX;
-        beachGuyHitBox.setX(playerX - playerWidth / 2);
-    }
-
-    public float getPlayerY() {
-        return playerY;
-    }
-
-    public void setPlayerY(float playerY) {
-        this.playerY = playerY;
-        beachGuyHitBox.setY(playerY - playerHeight / 2);
-    }
-
-    public double getBaseDamage() {
-        return baseDamage;
+    public double getDamage() {
+        return damage;
     }
 
     public float getCriticalHitChance() {
@@ -373,8 +432,20 @@ public class Player extends Actor {
         return maxHealthPoints;
     }
 
-    public double getCooldown() {
-        return cooldown;
+    public float getCooldownTime() {
+        return cooldownTime;
+    }
+
+    public float getHpRegenPerSecond() {
+        return hpRegenPerSecond;
+    }
+
+    public float getLifesteal() {
+        return lifesteal;
+    }
+
+    public float getAreaRange() {
+        return areaRange;
     }
 
     public boolean isAlive() {
@@ -385,8 +456,12 @@ public class Player extends Actor {
         this.isAlive = isAlive;
     }
 
+    public float getBaseSpeed() {
+        return baseSpeed;
+    }
+
     public float getSpeed() {
-        return speed;
+        return MathUtils.clamp(baseSpeed + speedModifier, MIN_SPEED, MAX_SPEED);
     }
 
     public int getLevel() {
@@ -406,12 +481,46 @@ public class Player extends Actor {
     }
 
     public Circle getVaccumHitbox() {
-        vaccumHitbox.setPosition(playerX,playerY);
+        vaccumHitbox.setPosition(position.x, position.y);
         return vaccumHitbox;
     }
 
     public float getVaccumStrength() {
         return vaccumStrength;
+    }
+
+    public Vector2 getLastDirection() {
+        return lastDirection.cpy();
+    }
+
+    //FÖR TESTNING - GER KOLLISION MED KARTAN
+    public Map getMap() {
+        return map;
+    }
+
+    public boolean isImmune(){
+        return isImmune;
+    }
+
+    public void triggerImmunity() {
+        if (isImmune) return;
+
+        isImmune = true;
+        tint = Color.RED;
+
+        Timer.schedule(new Task() {
+            @Override
+            public void run() {
+                isImmune = false;
+            }
+        }, 0.5f);
+
+        Timer.schedule(new Task() {
+            @Override
+            public void run() {
+                tint = Color.WHITE;
+            }
+        }, 0.1f);
     }
 
 }

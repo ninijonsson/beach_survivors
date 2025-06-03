@@ -1,16 +1,21 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
 
 public class DeathScreen implements Screen {
 
@@ -24,7 +29,6 @@ public class DeathScreen implements Screen {
     private ImageButton exitButton;
     private ImageButton mainMenuButton;
 
-
     private int enemiesKilled;
     private double damageDone;
     private double damageTaken;
@@ -32,6 +36,12 @@ public class DeathScreen implements Screen {
     private double damagePrevented;
     private String timeStamp;
 
+    private Image selectorArrow;
+    private int selectedIndex = 0;
+    private ImageButton[] buttons;
+    private boolean arrowInitialized = false;
+    private Sound menuSwitch;
+    private Sound menuChoice;
 
     public DeathScreen(GameScreen gameScreen, int enemiesKilled, double damageDone,
                        float timeSurvived, double damageTaken, double healingReceived, double damagePrevented) {
@@ -47,12 +57,52 @@ public class DeathScreen implements Screen {
 
         skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
 
+        menuSwitch = AssetLoader.get().manager.get("entities/abilities/menu_switch.wav");
+        menuChoice = AssetLoader.get().manager.get("entities/abilities/menu_select.wav");
+
         int minutes = (int)(timeSurvived / 60f);
         int seconds = (int)(timeSurvived % 60f);
         timeStamp = String.format("[%02d:%02d] ", minutes, seconds);
 
         createActors();
 
+        buttons = new ImageButton[] { retryButton, mainMenuButton, exitButton };
+        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/select_arrow.png");
+        selectorArrow = new Image(arrowTexture);
+        selectorArrow.setSize(32, 32);
+        stage.addActor(selectorArrow);
+
+        stage.act(0);
+        updateArrowPosition();
+
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.W:
+                    case Input.Keys.UP:
+                        selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
+                        menuSwitch.play(0.4f);
+                        updateArrowPosition();
+                        return true;
+                    case Input.Keys.S:
+                    case Input.Keys.DOWN:
+                        selectedIndex = (selectedIndex + 1) % buttons.length;
+                        menuSwitch.play(0.4f);
+                        updateArrowPosition();
+                        return true;
+                    case Input.Keys.SPACE:
+                    case Input.Keys.ENTER:
+                        menuChoice.play(0.6f);
+                        buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
+                        return true;
+                }
+                return false;
+            }
+        });
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     public void createActors() {
@@ -62,7 +112,6 @@ public class DeathScreen implements Screen {
         Texture backgroundTexture = AssetLoader.get().manager.get("game_over_screen/you_died.png");
         Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
 
-        //Stackar actors, background underst, tables ovanpå
         Stack stack = new Stack();
         stack.setSize(1200,972);
         stack.setPosition(gameScreen.getScreenWidth()/2f-stack.getWidth()/2,
@@ -78,12 +127,10 @@ public class DeathScreen implements Screen {
     }
 
     private void createActorsRightTable() {
-
         retryButton = new ImageButton(skin, "retry");
         exitButton = new ImageButton(skin, "exit");
         mainMenuButton = new ImageButton(skin, "menu");
 
-        //Grow() för att bilden ska fylla ut knapparna
         retryButton.getImageCell().grow();
         mainMenuButton.getImageCell().grow();
         exitButton.getImageCell().grow();
@@ -103,11 +150,9 @@ public class DeathScreen implements Screen {
 
         rightTable.setPosition(gameScreen.getScreenWidth()*0.65f, gameScreen.getScreenHeight()/2.5f);
         stage.addActor(rightTable);
-
     }
 
     private void createActorsLeftTable() {
-
         float fontscale = 1.15f;
         int bottomPadding = 10;
 
@@ -131,7 +176,7 @@ public class DeathScreen implements Screen {
         leftTable.add(totalDamageTaken).padBottom(bottomPadding).left();
         leftTable.row();
 
-        Label totalHealing = new Label("Healing received: " + healingReceived, skin);
+        Label totalHealing = new Label("Healing received: " + String.format("%.0f", healingReceived), skin);
         totalHealing.setFontScale(fontscale);
         leftTable.add(totalHealing).padBottom(bottomPadding).left();
         leftTable.row();
@@ -145,11 +190,10 @@ public class DeathScreen implements Screen {
     }
 
     public void addListeners() {
-
         mainMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                System.out.println("Main menu");
+                menuChoice.play(0.6f);
                 gameScreen.getMain().goToMainMenu();
             }
         });
@@ -157,7 +201,7 @@ public class DeathScreen implements Screen {
         retryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                System.out.println("Retry");
+                menuChoice.play(0.6f);
                 gameScreen.getMain().restart();
             }
         });
@@ -165,44 +209,47 @@ public class DeathScreen implements Screen {
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                System.out.println("Exit");
                 Gdx.app.exit();
             }
         });
-
     }
 
+    private void updateArrowPosition() {
+        ImageButton current = buttons[selectedIndex];
+        Vector2 localPos = new Vector2(current.getWidth() / 2f, current.getHeight() / 2f);
+        Vector2 stagePos = current.localToStageCoordinates(localPos);
+
+        float x = stagePos.x - current.getWidth() / 2f - selectorArrow.getWidth() - 10;
+        float y = stagePos.y - selectorArrow.getHeight() / 2f;
+
+        selectorArrow.setPosition(x, y);
+    }
 
     @Override
-    public void show() {
-
-    }
+    public void show() {}
 
     @Override
     public void render(float v) {
         stage.act();
         stage.draw();
+
+        if (!arrowInitialized) {
+            updateArrowPosition();
+            arrowInitialized = true;
+        }
     }
 
     @Override
-    public void resize(int i, int i1) {
-
-    }
+    public void resize(int i, int i1) {}
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {

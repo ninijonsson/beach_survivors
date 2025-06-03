@@ -1,49 +1,66 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.utils.Timer;
+import com.beachsurvivors.utilities.MusicHandler;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+
 public class Main extends Game {
 
     private MainMenuScreen menuScreen;
     private GameScreen gameScreen;
+    private PauseOverlay pauseOverlay;
     private LoadingScreen loadingScreen;
+    private Screen previousScreen;
     private boolean isSoundOn = true;
 
     @Override
     public void create() {
         gameScreen = new GameScreen(this);
         menuScreen = new MainMenuScreen(this);
+
         setScreen(loadingScreen);
         setScreen(menuScreen);
+        previousScreen = menuScreen;
     }
 
     public void startGame() {
+        previousScreen = getScreen();
         setScreen(gameScreen);
     }
 
-    public void switchScreen() {
-        if (this.getScreen() == menuScreen) {
-            if (gameScreen == null) gameScreen = new GameScreen(this);
+    public void playGame() {
+        if (gameScreen != null) {
             setScreen(gameScreen);
         } else {
-            setScreen(menuScreen);
+            gameScreen = new GameScreen(this);
+            setScreen(gameScreen);
         }
+        previousScreen = gameScreen;
     }
 
     public void goToMainMenu() {
         menuScreen.mainTheme.play();
-        menuScreen.playSound.stop();
+        MusicHandler.stop();
         if (gameScreen != null) gameScreen.dispose();
         gameScreen = null;
         setScreen(menuScreen);
     }
 
     public void restart() {
-        menuScreen.playSound.stop();    //Vi kanske skulle flytta playSound till gamescreen?
+        MusicHandler.stop();    //Vi kanske skulle flytta playSound till gamescreen?
+        Timer.instance().clear();
+
+        if (gameScreen != null) gameScreen.dispose();
+
         gameScreen = new GameScreen(this);
         setScreen(gameScreen);
+
+        Timer.instance().start();
         menuScreen.startGameMusic();
+        previousScreen = gameScreen;
     }
 
     public void gameOver(int enemiesKilled, double damageDone, float gameTime,
@@ -51,17 +68,30 @@ public class Main extends Game {
         setScreen(new DeathScreen(gameScreen, enemiesKilled, damageDone, gameTime, healingReceived, damageTaken, damagePrevented));
     }
 
+    public void victory(int enemiesKilled, double damageDone, float gameTime,
+                        double healingReceived, double damageTaken, double damagePrevented) {
+        setScreen(new VictoryScreen(gameScreen, enemiesKilled, damageDone,
+            gameTime, healingReceived, damageTaken, damagePrevented));
+    }
+
     public void levelUp() {
         setScreen(new LevelUpScreen(gameScreen, gameScreen.getPlayer()));
     }
 
     public void goToHelpScreen() {
-        setScreen(new HelpScreen(gameScreen,this));
+        previousScreen = getScreen();
+
+        if (gameScreen != null) {
+            setScreen(new HelpScreen(gameScreen.getScreenWidth(), gameScreen.getScreenHeight(), this));
+        } else {
+            setScreen(new HelpScreen(1920, 1080, this));
+        }
     }
 
-    public void pause() {
-        setScreen(new PauseScreen(gameScreen, this));
+    public void showPreviousScreen() {
+        setScreen(previousScreen);
     }
+
 
     public void turnOffInGameMusic() {
         // TODO: Stäng av ljudeffekterna också
@@ -71,6 +101,7 @@ public class Main extends Game {
     public void turnOnInGameMusic() {
         menuScreen.playSound.play();
     }
+
 
     public boolean isSoundOn() {
         return isSoundOn;

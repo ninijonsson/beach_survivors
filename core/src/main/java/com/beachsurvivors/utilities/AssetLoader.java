@@ -25,15 +25,35 @@ public class AssetLoader {
         manager.finishLoading();
     }
 
+    public static void registerParticles(ParticleEffectPoolManager poolManager) {
+        poolManager.register("entities/particles/blueFlame.p", 5, 20);
+        poolManager.register("entities/particles/lootBeam.p", 5, 20);
+        poolManager.register("entities/particles/lootPile.p", 5, 20);
+        poolManager.register("entities/particles/xp_orb.p", 5, 20);
+        poolManager.register("entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("entities/particles/chestOpen.p", 5, 20);
+        poolManager.register("entities/particles/water_trail.p", 5, 20);
+        poolManager.register("entities/particles/electric_trail.p", 5, 20);
+        poolManager.register("entities/particles/death_effect.p", 5, 20);
+        poolManager.register("entities/particles/bomb_explosion.p", 5, 20);
+        poolManager.register("entities/particles/arrow_effect.p", 5, 20);
+    }
+
+
     private void addMusic() {
         manager.load("sounds/beach.mp3", Music.class);
         manager.load("entities/abilities/bomb_explosion.mp3", Sound.class);
         manager.load("entities/abilities/bomb_fall.wav", Sound.class);
         manager.load("entities/abilities/water_gun_fire.wav", Sound.class);
+        manager.load("entities/abilities/shield_break.wav", Sound.class);
+        manager.load("entities/abilities/shield_regen.wav", Sound.class);
+        manager.load("entities/abilities/shield_hit.wav", Sound.class);
+
         manager.load("sounds/item_pickup.wav", Sound.class);
         manager.load("sounds/crab_rave.mp3", Sound.class);
         manager.load("sounds/footstep.mp3", Sound.class);
         manager.load("sounds/level_up.mp3", Sound.class);
+
 
 
     }
@@ -42,8 +62,11 @@ public class AssetLoader {
         manager.load("sounds/shark_damage_2.wav", Sound.class);
         manager.load("sounds/Seal_Damage.wav", Sound.class);
         manager.load("main_menu/sound/play_sound.wav", Sound.class);
-        manager.load("main_menu/sound/holiday.wav", Sound.class);
+        manager.load("main_menu/sound/holiday.wav", Music.class);
         manager.load("sounds/chain_lightning.wav", Sound.class);
+        manager.load("entities/abilities/death_splatter.wav", Sound.class);
+        manager.load("entities/abilities/menu_select.wav", Sound.class);
+        manager.load("entities/abilities/menu_switch.wav", Sound.class);
     }
 
     private void addTextures() {
@@ -55,8 +78,11 @@ public class AssetLoader {
         manager.load("entities/burger.png", Texture.class);
         manager.load("entities/chest.png", Texture.class);
         manager.load("entities/icons/ability_icon.png", Texture.class);
+        manager.load("entities/icons/ability_icon_selected.png", Texture.class);
+        manager.load("entities/icons/select_arrow.png", Texture.class);
         manager.load("entities/icons/chest_open.png", Texture.class);
         manager.load("entities/coconut.png", Texture.class);
+        manager.load("entities/aim.png", Texture.class);
         manager.load("entities/death.png", Texture.class);
         manager.load("entities/how_to_play.png", Texture.class);
         manager.load("entities/abilities/bomb_shadow.png", Texture.class);
@@ -94,6 +120,7 @@ public class AssetLoader {
         manager.load("entities/enemies/navy_seal_sheet.png", Texture.class);
         manager.load("entities/enemies/crocodile2.png", Texture.class);
         manager.load("entities/enemies/crab_sheet.png", Texture.class);
+        manager.load("entities/enemies/crocodile2_walk_sheet.png", Texture.class);
         manager.load("entities/enemies/ragnaros.png", Texture.class);
 
 
@@ -141,6 +168,21 @@ public class AssetLoader {
         ParticleEffectLoader.ParticleEffectParameter impactZone = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/impact_zone.p", ParticleEffect.class, impactZone);
 
+        ParticleEffectLoader.ParticleEffectParameter waterTrail = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/water_trail.p", ParticleEffect.class, waterTrail);
+
+        ParticleEffectLoader.ParticleEffectParameter electricTrail = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/electric_trail.p", ParticleEffect.class, electricTrail);
+
+        ParticleEffectLoader.ParticleEffectParameter deathEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/death_effect.p", ParticleEffect.class, deathEffect);
+
+        ParticleEffectLoader.ParticleEffectParameter safeDeathEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/death_effect_safe.p", ParticleEffect.class, safeDeathEffect);
+
+        ParticleEffectLoader.ParticleEffectParameter arrowEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/arrow_effect.p", ParticleEffect.class, arrowEffect);
+
         ParticleEffectLoader.ParticleEffectParameter fireEffect = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/fire_trail.p", ParticleEffect.class, fireEffect);
     }
@@ -151,6 +193,7 @@ public class AssetLoader {
         manager.load("level_up_screen/uiskin.json", Skin.class);
         manager.load("skin_composer/pause_menu/pause_menu.json", Skin.class);
         manager.load("game_over_screen/deathscreen_skin.json", Skin.class);
+        manager.load("skin_composer/victory_screen/victory_screen.json", Skin.class);
     }
 
 

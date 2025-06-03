@@ -1,14 +1,15 @@
 package com.beachsurvivors.model.enemies;
 
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.abilities.Ability;
+import com.beachsurvivors.model.abilities.Projectile;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 
 public class Shark extends Enemy {
     public Shark () {
         super( 100, 100, 20, 20);
         createAnimation((AssetLoader.get().getTexture("entities/enemies/shark_sheet.png")) , 4, 1);
-        setHealthPoints(20);
         setMovementSpeed(150f);
         setDamage(5);
     }
@@ -21,7 +22,7 @@ public class Shark extends Enemy {
 
 
     @Override
-    public void attack(Player player, Array enemyAbilities) {
+    public void attack(Player player, Array<Ability> enemyAbilities, Array<Projectile> enemyProjectiles) {
 
     }
 

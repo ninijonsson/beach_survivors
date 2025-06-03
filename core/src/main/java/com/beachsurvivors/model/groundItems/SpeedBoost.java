@@ -1,7 +1,7 @@
 package com.beachsurvivors.model.groundItems;
 
-import com.beachsurvivors.AssetLoader;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 
 public class SpeedBoost extends PowerUp implements PickUpAble {
@@ -26,12 +26,12 @@ public class SpeedBoost extends PowerUp implements PickUpAble {
 
     @Override
     protected void applyEffect(Player player) {
-        player.increaseSpeed(speedIncrease);
+        player.increaseSpeedModifier(speedIncrease);
     }
 
     @Override
-    public void removeEffect(Player player) {
-        player.increaseSpeed(-speedIncrease);
+    public synchronized void removeEffect(Player player) {
+        player.increaseSpeedModifier(-speedIncrease);
     }
 
 

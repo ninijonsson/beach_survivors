@@ -2,17 +2,23 @@ package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.abilities.Ability;
+import com.beachsurvivors.model.abilities.Shield;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.PowerUp;
-import com.beachsurvivors.model.groundItems.SpeedBoost;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameUI {
     private final FitViewport viewport;
@@ -20,15 +26,15 @@ public class GameUI {
     private final Stage stage;
     private ProgressBar progressBar;
     private ProgressBar healthBar;
+    private ProgressBar shieldBar;
     private Label percentageLabel;
     private Label nextLevel;
     private Label currentLevel;
     private Table abilityTable;
-    private BitmapFont abilityFont;
     private Array<String> infoLog;
     private Array<Label> infoLabels;
     private BitmapFont levelFont;
-    private Label.LabelStyle abilityLabelStyle;
+
 
     private ProgressBar bossHealthBar;
     private Label bossHealthLabel;
@@ -45,8 +51,14 @@ public class GameUI {
     private Label critDamage;
     private Label cooldownReduction;
     private Label movementSpeed;
+    private Label hpRegen;
+    private Label areaRadius;
+    private Label lifeSteal;
 
     private Array<Image> equippedAbilitiesIcons;
+    private Map<String, Label> abilityCountLabels = new HashMap<>();
+    private Map<String, Integer> abilityCounts = new HashMap<>();
+
     private Stack abilityBarStack;
     private Table icons;
     private final int ICON_SIZE = 64;
@@ -56,17 +68,18 @@ public class GameUI {
     private Table buffIcons;
     private Stack buffStack;
 
+
     private Label timerLabel;
     private float gameTime = 0f;
 
     public GameUI(FitViewport viewport, GameScreen game) {
+
         this.viewport = viewport;
         this.game = game;
         stage = new Stage(viewport);
         equippedAbilitiesIcons = new Array<>();
         currentPlayerBuffs = new Array<>();
         icons = new Table();
-
 
         addAbilityIcon("entities/abilities/bullet.png");
         createTables();
@@ -84,6 +97,7 @@ public class GameUI {
         createInfoTable();
         createPlayerStats();
         createBuffBar();
+        createFpsLabel();
         createBossHealthBar();
 
         addActors();
@@ -95,8 +109,10 @@ public class GameUI {
         stage.addActor(timerLabel);
         stage.addActor(abilityBarStack);
         stage.addActor(xpTable);
-        stage.addActor(progressBarTable);
         stage.addActor(buffStack);
+        stage.addActor(progressBar);
+        stage.addActor(currentLevel);
+        stage.addActor(nextLevel);
     }
 
     private void createBossHealthBar() {
@@ -140,7 +156,7 @@ public class GameUI {
         abilityTable.setPosition(((viewport.getWorldWidth()/2 - abilityTable.getWidth() / 2)), 0);
 
         createAbilityIconsTable();
-
+        updateAbilityBar();
     }
 
     private void createAbilityIconsTable() {
@@ -152,7 +168,7 @@ public class GameUI {
         int bottomPad = 5;
         int rightPad = 5;
         icons.add(equippedAbilitiesIcons.get(0)).padLeft(25).padBottom(bottomPad).padRight(rightPad);
-        updateAbilityBar();
+
 
         abilityBarStack.add(abilityTable);
         abilityBarStack.add(icons);
@@ -162,12 +178,37 @@ public class GameUI {
     }
 
     public void addAbilityIcon(String imagePath) {
-        Texture texture = AssetLoader.get().getTexture(imagePath);
-        Image icon = new Image(texture);
-        icon.setSize(64,64);
-        equippedAbilitiesIcons.add(icon);
-        updateAbilityBar();
+        if (!abilityCounts.containsKey(imagePath)) {
+            Texture texture = AssetLoader.get().getTexture(imagePath);
+            Image icon = new Image(texture);
+            icon.setSize(ICON_SIZE, ICON_SIZE);
+
+            Stack stack = new Stack();
+            stack.add(icon);
+
+            Label label = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+            label.setFontScale(1.4f);
+            label.setAlignment(Align.bottomLeft);
+            label.setVisible(false);
+
+            stack.add(label);
+            icons.add(stack).padLeft(25).padBottom(5).padRight(5).size(ICON_SIZE);
+
+            abilityCountLabels.put(imagePath, label);
+            abilityCounts.put(imagePath, 1);
+            equippedAbilitiesIcons.add(icon);
+        } else {
+            int count = abilityCounts.get(imagePath) + 1;
+            abilityCounts.put(imagePath, count);
+
+            Label label = abilityCountLabels.get(imagePath);
+            if (count > 1) {
+                label.setText(String.valueOf(count));
+                label.setVisible(true);
+            }
+        }
     }
+
 
     public void updateBossHealth(float current, float max) {
         bossHealthBar.setRange(0, max);
@@ -246,8 +287,6 @@ public class GameUI {
         xpBar.setScale(1.5f);
         xpBar.setSize(400,70);
         xpTable.add(xpBar);
-        xpTable.top();
-        xpTable.center();
         xpTable.pack();
         xpTable.setPosition(
             ((viewport.getWorldWidth() - xpTable.getWidth()*1.5f) / 2), viewport.getWorldHeight()-xpTable.getHeight()*1.5f
@@ -261,7 +300,15 @@ public class GameUI {
 
         BitmapFont font = new BitmapFont();
         font.getData().setScale(1.5f);
+
+        Pixmap bgPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        bgPixmap.setColor(0, 0, 0, 0.5f);
+        bgPixmap.fill();
+        Texture bgTexture = new Texture(bgPixmap);
+        Drawable bgDrawable = new Image(bgTexture).getDrawable();
+
         Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
+        style.background = bgDrawable;
 
         float startY = 150;
         float spacing = 25;
@@ -272,11 +319,12 @@ public class GameUI {
             infoLabels.add(label);
             stage.addActor(label);
         }
+
         updateInfoTable("Welcome to Beach Survivors, try not to die");
     }
 
-    public void updateInfoTable(String logMessage){
-        if(infoLog.size == 5){
+    public void updateInfoTable(String logMessage) {
+        if (infoLog.size == 5) {
             infoLog.removeIndex(0);
         }
 
@@ -328,32 +376,56 @@ public class GameUI {
         BitmapFont font = new BitmapFont();
         font.getData().setScale(2);
 
+        Pixmap bgPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        bgPixmap.setColor(0, 0, 0, 0.5f);
+        bgPixmap.fill();
+        Texture bgTexture = new Texture(bgPixmap);
+        Drawable bgDrawable = new Image(bgTexture).getDrawable();
+
         Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
-        Label timeLabelTop = new Label("Elapsed time:", style);
-
-        timeLabelTop.setColor(Color.WHITE);
-        timeLabelTop.setPosition(30, viewport.getWorldHeight() - 50);
-
-        stage.addActor(timeLabelTop);
+        style.background = bgDrawable;
 
         timerLabel = new Label("00:00", style);
-        timerLabel.setColor(Color.WHITE);
-        timerLabel.setPosition(30, viewport.getWorldHeight() - timerLabel.getHeight() - 50);
+        timerLabel.setPosition(30, viewport.getWorldHeight() - 50);
+        stage.addActor(timerLabel);
     }
+
 
     private void createPlayerHealthBar() {
         Skin healthSkin = new Skin(Gdx.files.internal("skin_composer/healthbutton.json"));
+
+        // Skapa shield-baren
+        shieldBar = new ProgressBar(0, 100, 0.5f, false, healthSkin, "shield");
+        shieldBar.setSize(100, 50);
+
+        // Skapa HP-baren
         healthBar = new ProgressBar(0, 100, 0.5f, false, healthSkin);
-        healthBar.setValue(100);
         healthBar.setSize(100, 50);
-        percentageLabel = new Label(getHealthPercentage() + "%", healthSkin);
+
+        percentageLabel = new Label("100%", healthSkin);
         percentageLabel.setColor(Color.BLACK);
 
+        // Lägg båda i en gemensam table
         healthTable = new Table();
-        healthTable.add(healthBar);
+
+        healthTable.align(Align.center);
+
+        // Lägg till shieldBar överst
+
+
+        // Lägg till healthBar och HP-text
+        healthTable.add(shieldBar).width(100).height(10).row();
+        healthTable.add(healthBar).width(100).height(10);
+
         healthTable.add(percentageLabel).padLeft(10);
-        healthTable.setPosition(viewport.getWorldWidth() / 2 - healthTable.getWidth() / 2, viewport.getWorldHeight() / 2 - healthTable.getHeight() / 2 + 100); // Placera healthBar i mitten längst ner
+
+        // Placera tabellen på skärmen
+        healthTable.setPosition(
+            viewport.getWorldWidth() / 2 - healthTable.getWidth() / 2,
+            viewport.getWorldHeight() / 2 - healthTable.getHeight() / 2 + 100
+        );
     }
+
 
     public Stage getStage() {
         return stage;
@@ -363,48 +435,57 @@ public class GameUI {
         progressBar.setValue(value);
     }
 
-    public void setHealthBarValue(float value, float playerMaxHp) {
-        healthBar.setValue(value);
-        healthBar.setRange(0, playerMaxHp);
-        percentageLabel.setText(getHealthPercentage() + "%");
+    public void setHealthBarValue(Player player) {
+        float currentHp = player.getCurrentHealthPoints();
+        float maxHp = player.getMaxHealthPoints();
+        healthBar.setRange(0, maxHp);
+        healthBar.setValue(currentHp);
+        percentageLabel.setText((int)currentHp + " / " + (int)maxHp);
+
+        Shield shield = null;
+        for (Ability ability : game.getAbilities()) {
+            if (ability instanceof Shield) {
+                shield = (Shield) ability;
+                break;
+            }
+        }
+
+        if (shield != null) {
+            float currentShield = shield.getCurrentShieldStrength();
+            float maxShield = shield.getInitialShieldStrength();
+            shieldBar.setRange(0, maxShield);
+            shieldBar.setValue(currentShield);
+        } else {
+            shieldBar.setValue(0);
+        }
     }
 
-    private String getHealthPercentage() {
-        double percentage = (healthBar.getValue() / healthBar.getMaxValue()) * 100;
-        return String.format("%.0f", percentage);
-    }
+
+
 
     public void createProgressBar() {
-        progressBarTable = new Table();
         Skin skin = new Skin(Gdx.files.internal("skin_composer/testbuttons.json"));
 
         progressBar = new ProgressBar(0, 100, 0.5f, false, skin);
         progressBar.setValue(0);
-        progressBar.setSize(700, 70);
+        progressBar.setSize(550, 70);
 
         levelFont = new BitmapFont(Gdx.files.internal("fonts/level.fnt"));
         levelFont.setColor(Color.WHITE);
         Label.LabelStyle labelStyle = new Label.LabelStyle(levelFont, Color.WHITE);
 
-        currentLevel = new Label("Level: " + getPlayerLevel(), labelStyle);
-        nextLevel = new Label(getPlayerLevel(), labelStyle);
 
-        progressBarTable.add(currentLevel).padRight(50);
-        progressBarTable.add(progressBar).expandX().fillX();
-        progressBarTable.add(nextLevel).padLeft(40);
+        currentLevel = new Label("Level: 1", labelStyle);
+        nextLevel = new Label("2", labelStyle);
 
-        progressBarTable.setSize(720, 70);
-        progressBarTable.setPosition(xpTable.getX()-currentLevel.getWidth(), xpTable.getY()+progressBar.getHeight()*0.55f);
+
+        float centerX = viewport.getWorldWidth() / 2f;
+        float topY = xpTable.getY() - 2;
+
+        currentLevel.setPosition(centerX - 450, topY + 20);   // vänster sida
+        progressBar.setPosition(centerX - 272, topY);         // mitten
+        nextLevel.setPosition(centerX + 330, topY + 20);       // höger sida
     }
-
-    private String getPlayerLevel() {
-        if (game.getPlayer() == null) {
-            return "1";
-        } else {
-            return String.valueOf(game.getPlayer().getLevelSystem().getCurrentLevel());
-        }
-    }
-
 
 
     private void createPlayerStats() {
@@ -416,6 +497,10 @@ public class GameUI {
         healthPoints = new Label("HealthPoints" , skin, "stats");
         statsTable.add(healthPoints).left().row();
         healthPoints.setFontScale(fontScale);
+
+        hpRegen = new Label("HP Regen" , skin, "stats");
+        statsTable.add(hpRegen).left().row();
+        hpRegen.setFontScale(fontScale);
 
         damage = new Label("Base Damage" , skin, "stats");
         statsTable.add(damage).left().row();
@@ -437,34 +522,56 @@ public class GameUI {
         statsTable.add(movementSpeed).left().row();
         movementSpeed.setFontScale(fontScale);
 
+        areaRadius = new Label("Area" , skin, "stats");
+        statsTable.add(areaRadius).left().row();
+        areaRadius.setFontScale(fontScale);
+
+        lifeSteal = new Label("Life Steal" , skin, "stats");
+        statsTable.add(lifeSteal).left().row();
+        lifeSteal.setFontScale(fontScale);
+
         statsTable.setPosition(-80, game.getScreenHeight()/2f);
         stage.addActor(statsTable);
         statsTable.setVisible(false);
 
     }
 
+
     public void updateStats(Player player) {
-        healthPoints.setText("Health Points " +player.getCurrentHealthPoints() + "/"+player.getMaxHealthPoints());
-        damage.setText("Base Damage: " + player.getBaseDamage());
+        healthPoints.setText("Health Points " + String.format("%.1f",player.getCurrentHealthPoints()) + "/" + String.format("%.0f", player.getMaxHealthPoints()));
+        hpRegen.setText("HP / Second: " + player.getHpRegenPerSecond());
+        damage.setText("Base Damage: " + player.getDamage());
         critChance.setText("CritHit Chance: " + String.format("%.0f", player.getCriticalHitChance()*100) + "%");
         critDamage.setText("CritHit Damage: " + String.format("%.0f", player.getCriticalHitDamage()*100) + "%");
-        cooldownReduction.setText("Cooldown Reduction: " + player.getCooldown() + "%");
+        cooldownReduction.setText("Cooldown Time: " + String.format("%.1f", player.getCooldownTime()*100) + "%");
         movementSpeed.setText("Movement Speed: " + player.getSpeed());
+        areaRadius.setText("Area: " + player.getAreaRange());
+        lifeSteal.setText("Life Steal: " + player.getLifesteal());
     }
 
     public void showStatsTable() {
         statsTable.setVisible(!statsTable.isVisible());
     }
 
+    Label fps;
+
+    private void createFpsLabel() {
+        Skin skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");
+        String fpsText = "FPS: " + Gdx.graphics.getFramesPerSecond();
+        fps = new Label(fpsText, skin, "stats");
+        fps.setPosition(1800,1000);
+        stage.addActor(fps);
+    }
+
+    public void updateFpsLabel(String fpsText) {
+        fps.setText(fpsText);
+    }
+
 
     private void updateLevelLabels() {
         if(game.getPlayer()!=null){
-        currentLevel.setText("Level: " + String.valueOf(
-
-            game.getPlayer().getLevelSystem().getCurrentLevel()));
-
-        nextLevel.setText(String.valueOf(
-            game.getPlayer().getLevelSystem().getCurrentLevel() + 1));}
+        currentLevel.setText("Level: " + game.getPlayer().getLevelSystem().getCurrentLevel());
+        nextLevel.setText(game.getPlayer().getLevelSystem().getCurrentLevel() + 1);}
     }
 
     public void update(float deltaTime) {
@@ -473,14 +580,25 @@ public class GameUI {
         int minutes = (int) (gameTime / 60f);
         int seconds = (int) (gameTime % 60f);
 
-        String timeText = String.format("%02d:%02d", minutes, seconds);
-        timerLabel.setText(timeText);
-
+        timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
         updateLevelLabels();
-        //updateAbilityBar();
 
         stage.act(deltaTime);
     }
+
+    public void updateXpBar() {
+        if (game.getPlayer() == null) return;
+
+        int currentExp = game.getPlayer().getLevelSystem().getCurrentExp();
+        int expToNext = game.getPlayer().getLevelSystem().getExpToNextLevel();
+
+        progressBar.setRange(0, expToNext);
+        progressBar.setValue(currentExp);
+
+        currentLevel.setText("Level: " + game.getPlayer().getLevel());
+        nextLevel.setText(String.valueOf(game.getPlayer().getLevel() + 1));
+    }
+
 
     public void draw() {
         stage.draw();

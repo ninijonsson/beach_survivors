@@ -1,8 +1,8 @@
 package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.utils.Timer;
-import com.beachsurvivors.AssetLoader;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.BaseAttack;
 
@@ -20,11 +20,12 @@ public class Berserk extends PowerUp implements PickUpAble {
     @Override
     public void onPickup(Player player) {
         applyEffect(player);
+        super.dispose();
     }
 
     @Override
     public void applyEffect(Player player) {
-        player.increaseSpeed(movementSpeedIncrease);
+        player.increaseSpeedModifier(movementSpeedIncrease);
 //        Timer.schedule(new Timer.Task() {
 //            @Override
 //            public void run() {
@@ -35,7 +36,7 @@ public class Berserk extends PowerUp implements PickUpAble {
 
     @Override
     public void removeEffect(Player player) {
-        player.increaseSpeed(-movementSpeedIncrease);
+        player.increaseSpeedModifier(-movementSpeedIncrease);
     }
 
 
@@ -44,12 +45,12 @@ public class Berserk extends PowerUp implements PickUpAble {
     }
 
     private void applyAffectBullet(BaseAttack bullet) {
-        bullet.increaseDamage(damageIncrease);
+       // bullet.increaseDamage(damageIncrease);
         bullet.decreaseCooldown(attackSpeedIncrease);
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                bullet.increaseDamage(-damageIncrease);
+              //  bullet.increaseDamage(-damageIncrease);
                 bullet.decreaseCooldown(+attackSpeedIncrease);
             }
         }, getDuration());

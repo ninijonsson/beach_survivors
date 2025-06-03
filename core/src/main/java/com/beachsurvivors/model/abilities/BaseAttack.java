@@ -1,55 +1,61 @@
 package com.beachsurvivors.model.abilities;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.beachsurvivors.AssetLoader;
+import com.badlogic.gdx.utils.Array;
+import com.beachsurvivors.utilities.CombatHelper;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.view.DamageText;
 
 public class BaseAttack extends Ability {
-    private Vector2 direction;
+
     private Sound fireSound;
+    private float projectileSpeed = 600;
 
-    //Constructor för default baseattack (spelarens)
-    public BaseAttack() {
-        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 10.0, 0.4, 64, 64);
-        this.direction = new Vector2(0, 0);
-        this.fireSound= AssetLoader.get().getSound("entities/abilities/water_gun_fire.wav");
-        fireSound.setVolume(fireSound.play(), 0.5f);
-    }
+    public BaseAttack(ParticleEffectPoolManager poolManager) {
+        super("bullet", "entities/abilities/bullet.png", AbilityType.ATTACK, 1.0, 1f, 64, 64);
 
-
-    //Constructor för custom base attack (för Navy Seals t.ex.)
-    public BaseAttack(String texturePath, int damage) {
-        super("bullet", texturePath, AbilityType.ATTACK, damage, 1, 32, 32);
-
-    }
-
-    public Vector2 getDirection() { return direction; }
-
-    public void setDirection(Vector2 direction) { this.direction = direction; }
-
-    @Override
-    public void updatePosition(float delta, float playerX, float playerY) {
-        float speed = 600f;
-        float newX = getSprite().getX() + direction.x * speed * delta;
-        float newY = getSprite().getY() + direction.y * speed * delta;
-        getSprite().setPosition(newX, newY);
-        getHitBox().setPosition(newX, newY);
-
-        getSprite().setOriginCenter();
-        getSprite().setRotation(direction.angleDeg() + 90);
-    }
-
-
-
-    @Override
-    public void use() {
-
+        setPersistent(true);
+        this.fireSound = AssetLoader.get().getSound("entities/abilities/water_gun_fire.wav");
     }
 
     @Override
-    public void use(Player player) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities,
+                    Array<DamageText> damageTexts, Array<Projectile> playerProjectiles) {
 
+        Enemy target = CombatHelper.getNearestEnemy(player, enemies);
+
+        if (target != null) {
+            Vector2 targetCenter = target.getCenter();
+            Vector2 direction = new Vector2(targetCenter.x - player.getPosition().x,
+                targetCenter.y - player.getPosition().y).nor();
+
+            Projectile projectile = new Projectile("entities/abilities/bullet.png",
+                player.getDamage(), projectileSpeed, 64, 64);
+            projectile.setDirection(direction);
+            projectile.setPosition(player.getPosition().cpy());
+
+            playerProjectiles.add(projectile);
+            fireSound.setVolume(fireSound.play(), 0.5f);
+
+        }
+        setOffCooldown(false);
     }
+
+    @Override
+    public void updatePosition(float delta, Vector2 vector) {
+    }
+
+    public float getProjectileSpeed() {
+        return projectileSpeed;
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
+
 }

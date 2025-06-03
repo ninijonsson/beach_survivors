@@ -3,8 +3,10 @@ package com.beachsurvivors.model.abilities;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
+import com.beachsurvivors.model.enemies.Enemy;
+import com.beachsurvivors.view.DamageText;
 
 public class FireLine extends Ability {
     private final Player player;
@@ -18,7 +20,7 @@ public class FireLine extends Ability {
 
     public FireLine(Player player, ParticleEffectPoolManager poolManager) {
 
-        super("Fire Line", "texturePath", AbilityType.ATTACK, 10, 5, 50, 50);
+        super("Fire Line", "texturePath", AbilityType.ATTACK, 1, 5, 50, 50);
         this.direction = new Vector2(0, 0);
         this.player = player;
         this.poolManager = poolManager;
@@ -39,10 +41,6 @@ public class FireLine extends Ability {
         getSprite().setRotation(direction.angleDeg() + 90);
     }
 
-    @Override
-    public void use() {
-
-    }
 
     public void fire() {
         fireEffects.clear();
@@ -59,9 +57,8 @@ public class FireLine extends Ability {
         }
     }
 
-
     @Override
-    public void use(Player player) {
+    public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts, Array<Projectile> playerProjectiles) {
 
     }
 }

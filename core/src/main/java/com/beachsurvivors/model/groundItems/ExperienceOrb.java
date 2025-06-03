@@ -1,15 +1,13 @@
 package com.beachsurvivors.model.groundItems;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.beachsurvivors.AssetLoader;
-import com.beachsurvivors.model.ParticleEffectPoolManager;
+import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 
 public class ExperienceOrb extends GroundItem implements PickUpAble {
@@ -19,6 +17,10 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
     // used for xpOrb acceleration
     private float speed = 1;
     private Sound pickUpSound;
+
+    private float lifetime = 0f;
+    private float maxLifetime = 30f;
+
 
     private boolean attracted = false;
     private boolean bounced = false;
@@ -39,7 +41,7 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
 
     public void updateExperienceOrbMovement(Player player) {
         float delta = Gdx.graphics.getDeltaTime();
-        Vector2 playerPos = new Vector2(player.getPlayerX(), player.getPlayerY());
+        Vector2 playerPos = new Vector2(player.getPosition());
         Vector2 orbPos = new Vector2(getSprite().getX(), getSprite().getY());
         Vector2 vector = moveTowardsPlayer(playerPos, orbPos);
 
@@ -73,6 +75,10 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
 
     }
 
+    public boolean hasExpired() {
+        return lifetime >= maxLifetime;
+    }
+
     // Custom overlap-check method because libgdx does not have one for checking Circle-Rectangle overlaps.
     // Intended for checking if xpOrb is in players radius.
     public boolean overlaps(Circle circle) {
@@ -104,9 +110,7 @@ public class ExperienceOrb extends GroundItem implements PickUpAble {
     @Override
     public void onPickup(Player player) {
         player.gainExp(experience);
-
         pickUpSound.setVolume(pickUpSound.play(), 0.2f);
-
     }
 
     @Override

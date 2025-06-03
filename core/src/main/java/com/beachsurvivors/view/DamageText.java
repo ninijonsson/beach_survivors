@@ -3,6 +3,7 @@ package com.beachsurvivors.view;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class DamageText {
     private String text;
@@ -20,21 +21,25 @@ public class DamageText {
         this.duration = duration;
         this.timer = duration;
         this.font = new BitmapFont();
-        this.color = new Color(Color.GRAY);
+        this.color = new Color(Color.WHITE);
 
 
 
         if (isCritical) {
-            font.getData().setScale(3.0f);
+            font.getData().setScale(5.0f);
             color.set(Color.YELLOW);
         } else {
-            font.getData().setScale(2.0f);
+            font.getData().setScale(4.0f);
         }
     }
 
     public void update(float delta) {
         timer -= delta;
         y += moveSpeed * delta;
+    }
+
+    public DamageText(int damage, Vector2 position, boolean isCritical) {
+        this(String.valueOf(damage), position.x, position.y, 1.0f, isCritical);
     }
 
     public boolean isActive() {

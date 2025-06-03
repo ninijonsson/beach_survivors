@@ -8,6 +8,8 @@
     <file url="file://$PROJECT_DIR$/assets/SkinComposer/healthbutton.json" />
     <file url="file://$PROJECT_DIR$/assets/SkinComposer/testbuttons.json" />
     <file url="file://$PROJECT_DIR$/assets/levelUpScreen/uiskin.json" />
+    <file url="file://$PROJECT_DIR$/assets/skin_composer/healthbutton.json" />
+    <file url="file://$PROJECT_DIR$/assets/skin_composer/shieldbar.json" />
     <file url="file://$PROJECT_DIR$/assets/uiskin.json" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="openjdk-21" project-jdk-type="JavaSDK" />

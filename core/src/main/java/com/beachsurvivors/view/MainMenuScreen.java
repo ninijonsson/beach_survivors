@@ -1,29 +1,21 @@
 package com.beachsurvivors.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.utilities.MusicHandler;
 
 public class MainMenuScreen implements Screen {
 
@@ -31,6 +23,12 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     Sound playSound;
     Music mainTheme;
+    Sound menuSwitch;
+    Sound menuChoice;
+
+    private int selectedIndex = 0;
+    private Image selectorArrow;
+    private ImageButton[] buttons;
 
     Texture backgroundTexture;
     Texture logoTexture;
@@ -48,8 +46,10 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(Main main) {
         this.main = main;
 
-        playSound = AssetLoader.get().manager.get("main_menu/sound/holiday.wav");
         mainTheme = AssetLoader.get().manager.get("sounds/beach.mp3");
+        menuSwitch = AssetLoader.get().manager.get("entities/abilities/menu_switch.wav");
+        menuChoice = AssetLoader.get().manager.get("entities/abilities/menu_select.wav");
+
         mainTheme.play();
         mainTheme.setVolume(0.5f);
         mainTheme.setLooping(true);
@@ -97,6 +97,16 @@ public class MainMenuScreen implements Screen {
         stage.addActor(stack);
 
         addListeners();
+
+        buttons = new ImageButton[] { playButton, helpButton, exitButton };
+
+        Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/select_arrow.png");
+        selectorArrow = new Image(arrowTexture);
+        selectorArrow.setSize(32, 32);
+        stage.addActor(selectorArrow);
+
+        stage.act(0); // tvingar layout
+        updateArrowPosition();
     }
 
     @Override
@@ -104,29 +114,52 @@ public class MainMenuScreen implements Screen {
         fitViewport.update(width, height, true);
     }
 
+    @Override
+    public void pause() {}
 
     @Override
-    public void pause() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
+    public void dispose() {}
 
     public void draw(float delta) {
         stage.act(delta);
         stage.draw();
     }
+
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage); // Lyssna på event listeners
+        InputMultiplexer multiplexer = new InputMultiplexer();
+
+        multiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                switch (keycode) {
+                    case Input.Keys.W:
+                    case Input.Keys.UP:
+                        selectedIndex = (selectedIndex + buttons.length - 1) % buttons.length;
+                        menuSwitch.play(0.4f);
+                        updateArrowPosition();
+                        return true;
+                    case Input.Keys.S:
+                    case Input.Keys.DOWN:
+                        selectedIndex = (selectedIndex + 1) % buttons.length;
+                        menuSwitch.play(0.4f);
+                        updateArrowPosition();
+                        return true;
+                    case Input.Keys.SPACE:
+                    case Input.Keys.ENTER:
+                        menuChoice.play(0.6f);
+                        buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
+                        return true;
+                }
+                return false;
+            }
+        });
+
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
@@ -135,18 +168,16 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     public void addListeners() {
-
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 mainTheme.stop();
+                menuChoice.play(0.6f);
                 startGameMusic();
-                main.switchScreen();
+                main.playGame();
             }
         });
 
@@ -154,6 +185,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
                 mainTheme.stop();
+                menuChoice.play(0.6f);
                 main.goToHelpScreen();
             }
         });
@@ -167,8 +199,14 @@ public class MainMenuScreen implements Screen {
     }
 
     public void startGameMusic() {
-        playSound.setLooping(playSound.play(0.1f),true);
-        playSound.setPitch(0,0.7f);
+        MusicHandler.play("main_menu/sound/holiday.wav", true);
     }
 
+    private void updateArrowPosition() {
+        ImageButton current = buttons[selectedIndex];
+
+        float x = current.getX() - selectorArrow.getWidth() - 20;
+        float y = current.getY() + current.getHeight() / 2f - selectorArrow.getHeight() / 2f;
+        selectorArrow.setPosition(x, y);
+    }
 }

@@ -27,6 +27,7 @@ public class Map {
     private List<Polygon> collisionObjects = new ArrayList<>();
 
 
+
     public Map(TiledMap map) {
         this.map = map;
         this.width = map.getProperties().get("width", Integer.class) *
@@ -47,25 +48,31 @@ public class Map {
      * The layer named "collisionObjects" is used to get the positions of the collidable objects on the map (trees, rocks).
      */
     private void getMapLayer() {
-        MapLayer layer = map.getLayers().get("collision");
-        if (layer == null) return;
-
-        for (MapObject object : layer.getObjects()) {
-            if (object instanceof PolygonMapObject) {
-                Polygon polygon = ((PolygonMapObject) object).getPolygon();
-                mapBoundary.add(scalePolygon(polygon));
+        MapLayer boundaryLayer = map.getLayers().get("collision");
+        if (boundaryLayer != null) {
+            for (MapObject object : boundaryLayer.getObjects()) {
+                if (object instanceof PolygonMapObject) {
+                    PolygonMapObject polyObject = (PolygonMapObject) object;
+                    mapBoundary.add(scalePolygon(polyObject, boundaryLayer.getName()));
+                }
             }
         }
+
 
         MapLayer objectsLayer = map.getLayers().get("collisionObjects");
-        if (objectsLayer == null) return;
-        for (MapObject object : objectsLayer.getObjects()) {
-            if (object instanceof PolygonMapObject) {
-                Polygon polygon = ((PolygonMapObject) object).getPolygon();
-                collisionObjects.add(scalePolygon(polygon));
+        if (objectsLayer != null) {
+            for (MapObject object : objectsLayer.getObjects()) {
+                if (object instanceof PolygonMapObject) {
+                    PolygonMapObject polyObject = (PolygonMapObject) object;
+                    collisionObjects.add(scalePolygon(polyObject, objectsLayer.getName()));
+                }
             }
         }
+
+
     }
+
+
 
     /**
      * Retrieves the startposition for the TiledMap using the layer startPos.
@@ -86,21 +93,36 @@ public class Map {
     /**
      * This is used to scale the positions appropriately to the game's scale. Since we are working with different scales
      * in the game and the map this has to be done to create correctly sized collision objects.
-     * @param polygon This is the starting polygon.
      * @return is the converted polygon that has been adjusted to the games scale.
      */
-    private Polygon scalePolygon(Polygon polygon) {
-        float[] vertices = polygon.getVertices();
-        float[] scaledVertices = new float[vertices.length];
+    private Polygon scalePolygon(PolygonMapObject object, String layerName) {
+        Polygon polygon = object.getPolygon();
+        float[] originalVertices = polygon.getVertices();
+        float[] scaledVertices = new float[originalVertices.length];
 
-        for (int i = 0; i < vertices.length; i++) {
-            scaledVertices[i] = vertices[i] * gameScale;
+        for (int i = 0; i < originalVertices.length; i++) {
+            scaledVertices[i] = originalVertices[i] * gameScale;
         }
 
         Polygon scaledPolygon = new Polygon(scaledVertices);
-        scaledPolygon.setPosition(polygon.getX() * gameScale, polygon.getY() * gameScale);
+        float posX = polygon.getX() * gameScale;
+        float posY = polygon.getY() * gameScale;
+
+        if (layerName.equals("collision")) { // ful fix för just detta lagret vill inte hamna rätt.
+            posX += 345;
+            posY -= 215;
+        }
+
+        scaledPolygon.setPosition(posX, posY);
+
         return scaledPolygon;
     }
+
+
+
+
+
+
 
     /**
      * This method is used by the movementKeys of the Player class to check if the next move is a valid one.
@@ -158,6 +180,10 @@ public class Map {
             }
         }
         return false;
+    }
+
+    public List<Polygon> getCollisionObjects() {
+        return collisionObjects;
     }
 
 }

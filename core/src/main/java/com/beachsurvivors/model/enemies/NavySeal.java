@@ -3,18 +3,19 @@ package com.beachsurvivors.model.enemies;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.beachsurvivors.AssetLoader;
+import com.beachsurvivors.model.abilities.Projectile;
+import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.BaseAttack;
 
 public class NavySeal extends Enemy {
-    float bulletTimer = 0f;
+    private float attackTimer = 0f;
+    private float attackCooldown = 5f;
 
     public NavySeal() {
-        super( 100, 100, 20, 25);
+        super( 100, 100, 30, 25);
         createAnimation(AssetLoader.get().getTexture("entities/enemies/navy_seal_sheet.png"), 4, 1);
-        setHealthPoints(30);
         setHitSound(AssetLoader.get().getSound("sounds/shark_damage_2.wav"));
         setMovementSpeed(40f);
         setDamage(10);
@@ -25,7 +26,30 @@ public class NavySeal extends Enemy {
     }
 
     @Override
+    public void attack(Player player, Array<Ability> enemyAbilities, Array<Projectile> enemyProjectiles) {
+        attackTimer += Gdx.graphics.getDeltaTime();
+
+        if (attackTimer >= attackCooldown) {
+            attackTimer = 0f;
+
+            Vector2 direction = new Vector2(
+                player.getPosition().x - this.getPosition().x,
+                player.getPosition().y - this.getPosition().y)
+                .nor();
+
+            Projectile projectile = new Projectile("entities/abilities/fireball.png", getDamage(),
+                300f, 48, 48);
+            projectile.setDirection(direction);
+            projectile.setPosition(getPosition().cpy());
+
+            enemyProjectiles.add(projectile);
+
+        }
+    }
+
+    @Override
     public void dropItems() {
+
     }
 
     @Override
@@ -33,27 +57,8 @@ public class NavySeal extends Enemy {
 
     }
 
-    public void attack(Player player, Array<Ability> enemyAbilities) {
-        float bulletCooldown = 6f; // Gör om cooldown till float
 
-        bulletTimer += Gdx.graphics.getDeltaTime();
 
-        if (bulletTimer >= bulletCooldown) {
-            bulletTimer = 0f;
-
-            Vector2 direction = new Vector2(
-                player.getPlayerX() - this.getSprite().getX(),
-                player.getPlayerY() - this.getSprite().getY())
-                .nor();
-
-            BaseAttack bullet = new BaseAttack("entities/abilities/fireball.png", getDamage());
-            bullet.updatePosition(this.getSprite().getX(), this.getSprite().getY());
-            bullet.setDirection(direction);
-
-            enemyAbilities.add(bullet);
-
-        }
-    }
 
 
 }
