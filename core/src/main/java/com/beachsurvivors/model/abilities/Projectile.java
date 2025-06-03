@@ -25,7 +25,7 @@ public class Projectile {
     private float lifetime = 0f;
 
     public Projectile(String texturePath, double damage, float projectileSpeed,
-                      int width, int height, String trailEffectPath) {
+                      int width, int height) {
         this.damage = damage;
         this.width = width;
         this.height = height;
@@ -38,7 +38,7 @@ public class Projectile {
         this.position = new Vector2();
         this.direction = new Vector2();
         this.projectileSpeed = projectileSpeed;
-        trailEffect = ParticleEffectPoolManager.obtain(trailEffectPath);
+        trailEffect = ParticleEffectPoolManager.obtain("entities/particles/water_trail.p");
         trailEffect.setPosition(position.x, position.y);
 
     }
