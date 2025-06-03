@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.utilities.MusicHandler;
 
 public class PauseOverlay {
     private Stage stage;
@@ -50,7 +51,6 @@ public class PauseOverlay {
         table = buildUI(); // Lägg till tabellen
         table.setVisible(true); // Viktigt – gör table synlig så layout fungerar
         stage.act(0);           // Uppdaterar layouten direkt
-        updateArrowPosition();
     }
 
 
@@ -94,10 +94,9 @@ public class PauseOverlay {
         Texture arrowTexture = AssetLoader.get().getTexture("entities/icons/select_arrow.png");
         selectorArrow = new Image(arrowTexture);
         selectorArrow.setSize(32, 32);
-        stage.addActor(selectorArrow);
+        selectorArrow.setPosition(-50,-50);
 
 
-        // Stänga av/sätta på musik
         soundButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
@@ -150,9 +149,9 @@ public class PauseOverlay {
                 menuChoice.play(0.6f);
             }
         });
-
+        stage.addActor(selectorArrow);
         stage.act(0); // tvingar layout så att knapparna får position
-        updateArrowPosition(); // sätter coinen vid första knappen
+        //updateArrowPosition(); // sätter coinen vid första knappen
 
         this.table = pauseMenu;
         return pauseMenu;
@@ -228,7 +227,6 @@ public class PauseOverlay {
         Gdx.input.setInputProcessor(multiplexer);
 
         stage.act(0);        // Uppdatera layout så vi får rätt positioner
-        updateArrowPosition();    // Placera coinen direkt på första knappen
     }
 
 
