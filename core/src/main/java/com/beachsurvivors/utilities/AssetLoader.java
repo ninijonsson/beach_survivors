@@ -86,6 +86,12 @@ public class AssetLoader {
         manager.load("entities/death.png", Texture.class);
         manager.load("entities/how_to_play.png", Texture.class);
         manager.load("entities/abilities/bomb_shadow.png", Texture.class);
+        manager.load("entities/icons/water_wave_icon.png", Texture.class);
+        manager.load("entities/icons/chain_lightning.png", Texture.class);
+        manager.load("entities/icons/chain_lightning_icon.png", Texture.class);
+
+
+
 
         manager.load("entities/abilities/bomb_ring.png", Texture.class);
         manager.load("entities/abilities/bomb.png", Texture.class);
@@ -110,6 +116,8 @@ public class AssetLoader {
         manager.load("entities/abilities/fireball.png", Texture.class);
         manager.load("entities/abilities/shield_bubble.png", Texture.class);
         manager.load("entities/abilities/lightning.png", Texture.class);
+        manager.load("entities/abilities/bubble_rainbow.png", Texture.class);
+
 
         manager.load("entities/smoke.png", Texture.class);
 

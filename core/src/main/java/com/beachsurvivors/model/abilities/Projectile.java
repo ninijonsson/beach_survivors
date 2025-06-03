@@ -24,7 +24,8 @@ public class Projectile {
     private ParticleEffectPool.PooledEffect trailEffect;
     private float lifetime = 0f;
 
-    public Projectile(String texturePath, double damage, float projectileSpeed, int width, int height) {
+    public Projectile(String texturePath, double damage, float projectileSpeed,
+                      int width, int height) {
         this.damage = damage;
         this.width = width;
         this.height = height;

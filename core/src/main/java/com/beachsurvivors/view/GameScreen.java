@@ -83,6 +83,8 @@ public class GameScreen extends Game implements Screen {
     private float nextMiniBossTime = 60f;
     private float nextEnemyBuffTime = 60f;
     private float enemyHpMultiplier = 1f;
+    int minibossHP = 200;
+
 
     /// /array med intervaller på när miniboss ska spawna
 
@@ -161,10 +163,11 @@ public class GameScreen extends Game implements Screen {
 
         bullet = new BaseAttack(poolManager);
         abilities.add(bullet);
+
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
-        abilities.add(shield);
-        abilities.add(chainLightning);
+//        abilities.add(shield);
+//        abilities.add(chainLightning);
 
 
         font = new BitmapFont();
@@ -743,12 +746,14 @@ public class GameScreen extends Game implements Screen {
 
         if (gameTimeSeconds >= nextMiniBossTime) {
             Enemy miniBoss = new MiniBoss(poolManager, this);
+            miniBoss.setHealthPoints(minibossHP);
             gameUI.updateInfoTable("Spawned a miniboss! Watch out!");
             Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
             miniBoss.setPosition(randomPos);
             enemies.add(miniBoss);
 
             nextMiniBossTime += 60f;
+            minibossHP += 100;
         }
     }
 
@@ -1240,6 +1245,7 @@ public class GameScreen extends Game implements Screen {
             case Water_wave:
                 if (currentLevel == 0) {
                     enableWaterWave();
+                    gameUI.addAbilityIcon("entities/icons/water_wave_icon.png");
                     printLog("Unlocked Water Wave!");
                 } else {
                     // Öka piercing här om du har stöd för det i klassen
@@ -1257,15 +1263,22 @@ public class GameScreen extends Game implements Screen {
                 break;
 
             case Shield:
-                shield.increaseHealth(25); // Exempel: ge extra sköld
-                printLog("Shield reinforced! Current strength: "+ shield.getInitialShieldStrength());
+                if (currentLevel == 0) {
+                    abilities.add(shield);
+                    gameUI.addAbilityIcon("entities/abilities/shield_bubble.png");
+                } else {
+                    shield.increaseHealth(25); // Exempel: ge extra sköld
+                    printLog("Shield reinforced! Current strength: "+ shield.getInitialShieldStrength());
+                }
 
                 break;
 
             case Chain_Lightning:
                 if (currentLevel == 0) {
+                    abilities.add(chainLightning);
                     chainLightning.setEnabled(true);
                     printLog("Unlocked Chain Lightning!");
+                    gameUI.addAbilityIcon("entities/icons/chain_lightning_icon.png");
                 } else {
                     chainLightning.increaseMaxJumps(1);
                     printLog("Chain Lightning upgraded! +1 bounce.");
