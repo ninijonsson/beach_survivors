@@ -175,4 +175,12 @@ public abstract class Ability implements Disposable {
         sprite = null;
         hitBox = null;
     }
+
+    public void upgrade(){
+
+    }
+
+    public boolean isComplete() {
+        return false;
+    }
 }

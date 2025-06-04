@@ -22,7 +22,7 @@ import java.util.Random;
 public class Player extends Actor {
 
     //Player stats
-    private final int STARTING_HEALTH_POINTS = 100;
+    private final int STARTING_HEALTH_POINTS = 10000;
     private final int MAX_SPEED = 1200;
     private final int MIN_SPEED = 300;
 
