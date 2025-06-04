@@ -336,7 +336,7 @@ public class Boss {
     }
 
     private void spawnBullet(Vector2 velocity) {
-        bullets.add(new Bullet(new Vector2(position), velocity, poolManager));
+        bullets.add(new Bullet(new Vector2(position.x + 320, position.y - 100), velocity, poolManager));
     }
 
     private void dropBomb(Vector2 position) {
