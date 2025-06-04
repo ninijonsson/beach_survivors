@@ -19,7 +19,7 @@ public class MiniBoss extends Enemy {
         this.poolManager = poolManager;
         this.gameScreen = gameScreen;
         createAnimation(AssetLoader.get().getTexture("entities/enemies/crocodile2_walk_sheet.png"), 2, 1);
-        setMovementSpeed(100f);
+        setMovementSpeed(150f);
         setDamage(20);
 
         setShadowOffsetY(-30);
