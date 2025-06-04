@@ -667,6 +667,11 @@ public class GameScreen extends Game implements Screen {
         bossSpawned = true;
         spawnEnemiesTestMode = false;
         spawnMinibossesTestMode = false;
+        clearEnemies();
+    }
+
+    private void clearEnemies() {
+        enemies.clear();
     }
 
     private void spawnEnemies() {
