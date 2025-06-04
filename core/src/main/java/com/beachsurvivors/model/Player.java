@@ -22,7 +22,7 @@ import java.util.Random;
 public class Player extends Actor {
 
     //Player stats
-    private final int STARTING_HEALTH_POINTS = 100;
+    private final int STARTING_HEALTH_POINTS = 10000;
     private final int MAX_SPEED = 1200;
     private final int MIN_SPEED = 300;
 
@@ -100,7 +100,7 @@ public class Player extends Actor {
 
         position = new Vector2(map.getStartingX(), map.getStartingY());
 
-        beachGuyHitBox = new Rectangle(position.x - playerWidth / 2, position.y - playerHeight / 2, playerWidth, playerHeight);
+        beachGuyHitBox = new Rectangle(position.x - playerWidth / 2, position.y - playerHeight / 2, playerWidth/4, playerHeight/4);
         //vaccumHitbox = new Circle(position.x, position.y, vaccumRadius);
         vaccumHitbox = new Circle(position.x, position.y, areaRange);
 
@@ -236,7 +236,7 @@ public class Player extends Actor {
             !map.collidesWithObject(tempHitBox)) {
             position.x = newPlayerPosition.x;
             position.y = newPlayerPosition.y;
-            beachGuyHitBox.setPosition(position.x - playerWidth / 2, position.y - playerHeight / 2);
+            beachGuyHitBox.setPosition(position.x - playerWidth/5, position.y - playerHeight/5);
         }
     }
 

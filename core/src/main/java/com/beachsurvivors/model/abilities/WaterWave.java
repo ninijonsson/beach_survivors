@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -20,7 +21,7 @@ public class WaterWave extends Ability {
     private Vector2 position;
     private Vector2 direction;
     private Vector2 startPosition;
-    private float maxDistance = 3500f;
+    private float maxDistance = 600f;
     private float speed = 750f;
     private float scaleFactor = 1f;
     private float waveAmplitude = 10f;
@@ -29,10 +30,11 @@ public class WaterWave extends Ability {
     private TextureRegion crosshairRegion;
     private Vector2 crosshairPosition;
     private float crosshairDistance = 180f;
-    private final float damageInterval = 0.7f; // sekunder mellan träffar per fiende
     private final ObjectMap<Enemy, Float> damageCooldowns = new ObjectMap<>();
-    private double damage = 15;
     float angleDegrees = 0; // eller player.getLastDirection().angleDeg()
+    private Rectangle hitBox = new Rectangle();
+    private boolean isFinished = false;
+
 
 
 
@@ -43,12 +45,8 @@ public class WaterWave extends Ability {
         this.startPosition = new Vector2(startPosition);
         this.effect = poolManager.obtain("entities/particles/blueFlame.p", position.x, position.y);
         effect.scaleEffect(1.0f);
-
         crosshairTexture = AssetLoader.get().manager.get("entities/aim.png", Texture.class);
         crosshairRegion = new TextureRegion(crosshairTexture);
-        // placeholder tills update körs
-
-
     }
 
     public void setDirection(Vector2 dir) {
@@ -59,37 +57,13 @@ public class WaterWave extends Ability {
         crosshairPosition.set(position).add(direction.cpy().scl(crosshairDistance));
     }
 
-
-    public void update(float delta) {
-        for (Enemy e : damageCooldowns.keys()) {
-            float time = damageCooldowns.get(e) - delta;
-            damageCooldowns.put(e, time);
-        }
-
-        if (effect == null || direction == null) return;
-
-        float dx = direction.x * speed * delta;
-        float dy = direction.y * speed * delta;
-
-        totalDistanceTraveled += Math.sqrt(dx * dx + dy * dy);
-
-        float offset = (float)Math.sin(totalDistanceTraveled / waveFrequency) * waveAmplitude;
-        Vector2 normal = new Vector2(-direction.y, direction.x);
-
-        position.add(dx, dy);
-        position.add(normal.scl(offset * delta));
-
-        effect.setPosition(position.x, position.y);
-
-        effect.update(delta);
-
-        float distance = position.dst(startPosition);
-        scaleFactor = scaleFactor + (distance / maxDistance) * 0.5f;
-
-        if (distance >= maxDistance) {
-            effect.allowCompletion();
-        }
+    @Override
+    public Rectangle getHitBox() {
+        if (hitBox == null) hitBox = new Rectangle();
+        hitBox.set(position.x - getWidth()/2f, position.y - getHeight()/2f, getWidth(), getHeight());
+        return hitBox;
     }
+
 
     public void draw(SpriteBatch batch) {
         if (effect != null) {
@@ -99,9 +73,9 @@ public class WaterWave extends Ability {
             batch.draw(
                 crosshairRegion,
                 crosshairPosition.x - 46, crosshairPosition.y - 17,
-                46, 17, // originX/Y för rotation (mitten av bilden)
-                92, 34, // bredd och höjd
-                1, 1,   // scaleX, scaleY
+                46, 17,
+                92, 34,
+                1, 1,
                 angleDegrees
             );
 
@@ -109,7 +83,7 @@ public class WaterWave extends Ability {
     }
 
     public boolean isComplete() {
-        return effect == null || effect.isComplete();
+        return isFinished && (effect == null || effect.isComplete());
     }
 
     @Override
@@ -117,10 +91,11 @@ public class WaterWave extends Ability {
 
     }
 
+
+
     @Override
     public void update(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities) {
         if (effect == null || direction == null) return;
-
         float dx = direction.x * speed * delta;
         float dy = direction.y * speed * delta;
 
@@ -128,6 +103,11 @@ public class WaterWave extends Ability {
 
         float offset = (float)Math.sin(totalDistanceTraveled / waveFrequency) * waveAmplitude;
         Vector2 normal = new Vector2(-direction.y, direction.x);
+
+        for (Enemy e : damageCooldowns.keys()) {
+            float time = damageCooldowns.get(e);
+            damageCooldowns.put(e, time - delta);
+        }
 
         position.add(dx, dy);
         position.add(normal.scl(offset * delta));
@@ -139,6 +119,7 @@ public class WaterWave extends Ability {
 
         if (distance >= maxDistance) {
             effect.allowCompletion();
+            isFinished = true; // 🔥 markera den som färdig
         }
 
         // ✅ Uppdatera crosshairPosition baserat på spelarens senaste direction
@@ -156,37 +137,11 @@ public class WaterWave extends Ability {
 
     @Override
     public void use(float delta, Player player, Array<Enemy> enemies, Array<Ability> abilities, Array<DamageText> damageTexts, Array<Projectile> playerProjectiles) {
-        update(delta); // uppdatera position och animation
-
-        for (Enemy e : damageCooldowns.keys()) {
-            float newTime = damageCooldowns.get(e) - delta;
-            damageCooldowns.put(e, newTime);
-        }
-
-        for (Enemy enemy : enemies) {
-            if (!enemy.isAlive()) continue;
-
-            float distance = position.dst(enemy.getCenter());
-
-            if (distance < 300f) { // RADIUS PÅ SKADAN
-                float cooldownLeft = damageCooldowns.get(enemy, 0f);
-                if (cooldownLeft <= 0f) {
-                    double totalDamage = damage;
-                    boolean isCrit = player.isCriticalHit();
-                    if (isCrit) totalDamage *= player.getCriticalHitDamage();
-
-                    boolean damaged = enemy.hit(totalDamage);
-                    if (damaged) {
-                        damageTexts.add(new DamageText((int) totalDamage, enemy.getCenter(), isCrit));
-                        player.onDamageDealt(totalDamage);
-                        damageCooldowns.put(enemy, damageInterval);
-                    }
-                }
-            }
-        }
     }
 
-
+    public void upgrade(){
+        maxDistance = maxDistance+100;
+    }
 
     @Override
     public void dispose() {

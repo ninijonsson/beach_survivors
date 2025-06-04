@@ -94,7 +94,7 @@ public class GameScreen extends Game implements Screen {
     private Array<GroundItem> groundItemsToRemove;
     private Array<Projectile> playerProjectiles;
     private Array<Projectile> enemyProjectiles;
-    private float bossSpawnDelay = 60f; //seconds ;
+    private float bossSpawnDelay = 600f; //seconds ;
     private Boss boss;
     private float bossSpawnTimer = 0f;
     private boolean warningGiven = false;
@@ -175,7 +175,7 @@ public class GameScreen extends Game implements Screen {
         groundItems.add(new Chest(player.getPosition().x-900, player.getPosition().y, poolManager, this));
         groundItems.add(new Chest(player.getPosition().x-950, player.getPosition().y, poolManager, this));
         Vector2 startPos = new Vector2(player.getPosition());
-        WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
+        //WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
 
         poolManager = new ParticleEffectPoolManager();
         poolManager.register("entities/particles/blueFlame.p", 5, 20);
@@ -188,7 +188,7 @@ public class GameScreen extends Game implements Screen {
         Chest chest = new Chest(player.getPosition().x-250,player.getPosition().y-140, poolManager, this);
         groundItems.add(chest);
 
-        abilities.add(wave);
+        //abilities.add(wave);
     }
 
     private void initializeArrays() {
@@ -548,16 +548,14 @@ public class GameScreen extends Game implements Screen {
     private void castWaterWave() {
         float cooldown = CombatHelper.getActualCooldown(2f, player.getCooldownTime()); // 2s base
         waterWaveTimer += Gdx.graphics.getDeltaTime();
-
         if (waterWaveTimer >= cooldown) {
             waterWaveTimer = 0f;
             Vector2 direction = player.getLastDirection(); // vi behöver lägga till detta i Player
             if (direction.isZero()) return;
 
-            WaterWave wave = new WaterWave("Water Wave", 15, 2f, 32, 32, player.getPosition().cpy(), poolManager);
+            WaterWave wave = new WaterWave("Water Wave", 0.5f, 2f, 200, 200, player.getPosition().cpy(), poolManager);
             wave.setDirection(direction);
             abilities.add(wave);
-            System.out.println("cast waterwave in direction " + direction);
         }
     }
 
@@ -667,6 +665,11 @@ public class GameScreen extends Game implements Screen {
         bossSpawned = true;
         spawnEnemiesTestMode = false;
         spawnMinibossesTestMode = false;
+        clearEnemies();
+    }
+
+    private void clearEnemies() {
+        enemies.clear();
     }
 
     private void spawnEnemies() {
@@ -752,15 +755,26 @@ public class GameScreen extends Game implements Screen {
      * Updates position of all abilities that enemies use
      */
     private void updateAbilities() {
-        for (Ability ability : abilities) {
-            ability.updatePosition(Gdx.graphics.getDeltaTime(), player.getPosition().cpy());
-            ability.update(Gdx.graphics.getDeltaTime(), player, enemies, abilities);
+        float delta = Gdx.graphics.getDeltaTime();
+
+        for (int i = abilities.size - 1; i >= 0; i--) {
+            Ability ability = abilities.get(i);
+            ability.updatePosition(delta, player.getPosition().cpy());
+            ability.update(delta, player, enemies, abilities);
+
+            if (ability.isComplete()) {
+                ability.dispose();
+                abilities.removeIndex(i);
+                continue;
+            }
+
             if (ability.isOffCooldown()) {
-                ability.use(Gdx.graphics.getDeltaTime(), player, enemies, abilities, damageTexts, playerProjectiles);
+                ability.use(delta, player, enemies, abilities, damageTexts, playerProjectiles);
                 ability.setOffCooldown(false);
             }
         }
     }
+
 
     private void updateProjectiles() {
         float delta = Gdx.graphics.getDeltaTime();
@@ -1238,8 +1252,13 @@ public class GameScreen extends Game implements Screen {
                     gameUI.addAbilityIcon("entities/icons/water_wave_icon.png");
                     printLog("Unlocked Water Wave!");
                 } else {
-                    // Öka piercing här om du har stöd för det i klassen
-                    printLog("Water Wave upgraded! Increased piercing.");
+                    for (Ability a : abilities) {
+                        if (a instanceof WaterWave) {
+                            a.upgrade(); // 🚀 kör upgrade direkt på vågen
+                            printLog("Water Wave upgraded! Increased duration.");
+                            break;
+                        }
+                    }
                 }
                 break;
 
@@ -1309,6 +1328,7 @@ public class GameScreen extends Game implements Screen {
                     if (level < 4) available.add(desc);
                     break;
                 case Water_wave:
+
                 case Chain_Lightning:
                     available.add(desc); // hanteras i addOrUpgradeAbility
                     break;
