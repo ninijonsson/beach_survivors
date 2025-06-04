@@ -94,7 +94,7 @@ public class GameScreen extends Game implements Screen {
     private Array<GroundItem> groundItemsToRemove;
     private Array<Projectile> playerProjectiles;
     private Array<Projectile> enemyProjectiles;
-    private float bossSpawnDelay = 180f; //seconds ;
+    private float bossSpawnDelay = 180; //seconds ;
     private Boss boss;
     private float bossSpawnTimer = 0f;
     private boolean warningGiven = false;
@@ -654,7 +654,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void spawnBoss(Vector2 position) {
-        boss = new Boss(position, poolManager, gameViewport.getCamera(), this);
+        boss = new Boss(position, poolManager, gameViewport.getCamera(), this, main);
         bossSpawned = true;
         spawnEnemiesTestMode = false;
         spawnMinibossesTestMode = false;
@@ -1333,6 +1333,14 @@ public class GameScreen extends Game implements Screen {
 
         Collections.shuffle(available);
         return available.subList(0, Math.min(3, available.size()));
+    }
+
+    public int getTotalEnemiesKilled() {
+        return totalEnemiesKilled;
+    }
+
+    public double getTotalPlayerDamageDealt() {
+        return totalPlayerDamageDealt;
     }
 
 

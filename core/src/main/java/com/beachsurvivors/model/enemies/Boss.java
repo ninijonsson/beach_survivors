@@ -16,6 +16,8 @@ import com.beachsurvivors.model.PuzzleOrb;
 import com.beachsurvivors.model.abilities.BombAttack;
 import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.view.GameScreen;
+import com.beachsurvivors.view.Main;
+import com.beachsurvivors.view.VictoryScreen;
 
 public class Boss {
     private float phaseTimer;
@@ -62,8 +64,9 @@ public class Boss {
 
     private Sprite arrowSprite;
 
+    private Main main;
 
-    public Boss(Vector2 position, ParticleEffectPoolManager poolManager, Camera camera, GameScreen game) {
+    public Boss(Vector2 position, ParticleEffectPoolManager poolManager, Camera camera, GameScreen game, Main main) {
         this.position = position;
         width = 700;
         height = 700;
@@ -77,6 +80,7 @@ public class Boss {
 
         this.camera = camera;
         this.game = game;
+        this.main = main;
         isAlive = true;
     }
 
@@ -486,7 +490,8 @@ public class Boss {
     private void onDeath() {
         isAlive = false;
         System.out.println("boss dead");
-        clearScreen();
+        main.setScreen(new VictoryScreen(game, game.getTotalEnemiesKilled(), game.getTotalPlayerDamageDealt(), 0,0,0,0 ));
+//        clearScreen();
     }
 
     public boolean isAlive() {
