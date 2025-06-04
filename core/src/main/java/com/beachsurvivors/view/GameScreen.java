@@ -302,6 +302,8 @@ public class GameScreen extends Game implements Screen {
 
             player.playerInput(isChestOverlayActive());
         }
+
+
         keyBinds();
     }
 
@@ -447,6 +449,10 @@ public class GameScreen extends Game implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F10)) {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F9)) {
+            splatterMode = !splatterMode;
         }
 
 
