@@ -4,13 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Bullet;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.PuzzleOrb;
@@ -34,6 +33,9 @@ public class Boss {
     private boolean orbPickedUp = false;
 
     private Color tint = Color.WHITE;
+    private Texture walkSheet;
+    private Animation<TextureRegion> walkAnimation;
+    private float stateTime;
 
     private GameScreen game;
     private Camera camera;
@@ -66,7 +68,7 @@ public class Boss {
         width = 700;
         height = 700;
         healthPoints = 1000;
-        sprite = new Sprite(new Texture("placeholder.png"));
+        sprite = new Sprite(new Texture("entities/enemies/slutboss.png"));
         hitbox = new Rectangle(position.x, position.y, width, height);
         this.poolManager = poolManager;
 
@@ -435,6 +437,36 @@ public class Boss {
         return new Vector2(position.x + offsetX, position.y + offsetY);
     }
 
+
+    /*public void createAnimation(Texture texture, int sheetColumns, int sheetRows) {
+        walkSheet=texture;
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/sheetColumns, walkSheet.getHeight()/sheetRows);
+        TextureRegion[] walkFrames = new TextureRegion[sheetColumns * sheetRows];
+        int index = 0;
+
+        for (int i = 0; i < sheetRows; i++) {
+            for (int j = 0; j < sheetColumns; j++) {
+                walkFrames[index++] = tmp[i][j];
+            }
+        }
+
+        walkAnimation = new Animation<>(0.25f, walkFrames);
+        stateTime = 0f;
+    }*/
+
+    /*public void drawAnimation(SpriteBatch spriteBatch) {
+        stateTime += Gdx.graphics.getDeltaTime();
+        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+        if (isMovingLeft() && !currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        } else if (isMovingRight() && currentFrame.isFlipX()) {
+            currentFrame.flip(true, false);
+        }
+
+        spriteBatch.setColor(tint);
+        spriteBatch.draw(currentFrame, sprite.getX(), sprite.getY(), getWidth(), getHeight());
+        spriteBatch.setColor(Color.WHITE);
+    }*/
 
     private void clearScreen() {
         bullets.clear();

@@ -131,7 +131,7 @@ public class AssetLoader {
         manager.load("entities/enemies/crab_sheet.png", Texture.class);
         manager.load("entities/enemies/crocodile2_walk_sheet.png", Texture.class);
         manager.load("entities/enemies/ragnaros.png", Texture.class);
-
+        manager.load("entities/enemies/slutboss.png", Texture.class);
 
         manager.load("entities/beach_girl_sheet.png", Texture.class);
         manager.load("entities/beach_guy_sheet.png", Texture.class);

@@ -162,7 +162,6 @@ public abstract class Enemy implements Disposable {
         spriteBatch.setColor(tint);
         spriteBatch.draw(currentFrame, getPosition().x, getPosition().y, getWidth(), getHeight());
         spriteBatch.setColor(Color.WHITE);
-
     }
 
     public void drawShadow(SpriteBatch spriteBatch) {
