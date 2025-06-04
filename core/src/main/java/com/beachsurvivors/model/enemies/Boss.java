@@ -214,7 +214,7 @@ public class Boss {
             bulletCooldown = 0.05f;
         }
         if (bombCooldown <= 0) {
-            dropBomb(new Vector2(player.getPosition()));
+//            dropBomb(new Vector2(player.getPosition()));
             bombCooldown = 5f;
         }
         spawnPuzzleOrbIfNeeded(delta, player);
