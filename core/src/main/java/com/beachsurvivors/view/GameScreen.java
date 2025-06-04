@@ -453,6 +453,8 @@ public class GameScreen extends Game implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F9)) {
             splatterMode = !splatterMode;
+
+            gameUI.updateInfoTable("SHOW BLOOD: " + splatterMode);
         }
 
 
