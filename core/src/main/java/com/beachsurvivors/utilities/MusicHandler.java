@@ -1,6 +1,7 @@
 package com.beachsurvivors.utilities;
 
 import com.badlogic.gdx.audio.Music;
+import com.beachsurvivors.AssetLoader;
 
 public class MusicHandler {
 

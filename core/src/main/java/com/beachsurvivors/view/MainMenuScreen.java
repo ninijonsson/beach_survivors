@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.utilities.MusicHandler;
 
 public class MainMenuScreen implements Screen {

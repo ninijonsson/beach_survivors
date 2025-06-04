@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.abilities.Ability;
 import com.beachsurvivors.model.abilities.Shield;
-import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.groundItems.PowerUp;
 
@@ -34,8 +34,14 @@ public class GameUI {
     private Array<String> infoLog;
     private Array<Label> infoLabels;
     private BitmapFont levelFont;
+    private Label fps;
 
 
+    private ProgressBar bossHealthBar;
+    private Label bossHealthLabel;
+    private Table bossHealthTable;
+
+    private Table progressBarTable;
     private Table healthTable;
     private Table xpTable;
 
@@ -62,6 +68,7 @@ public class GameUI {
     private Table buffs;
     private Table buffIcons;
     private Stack buffStack;
+
 
 
     private Label timerLabel;
@@ -93,6 +100,8 @@ public class GameUI {
         createPlayerStats();
         createBuffBar();
         createFpsLabel();
+        createBossHealthBar();
+
         addActors();
     }
 
@@ -106,6 +115,32 @@ public class GameUI {
         stage.addActor(progressBar);
         stage.addActor(currentLevel);
         stage.addActor(nextLevel);
+    }
+
+    private void createBossHealthBar() {
+        Skin bossSkin = new Skin(Gdx.files.internal("skin_composer/healthbutton.json"));
+
+        bossHealthBar = new ProgressBar(0, 100, 1f, false, bossSkin);
+        bossHealthBar.setValue(100);
+        bossHealthBar.setAnimateDuration(0.25f);
+        bossHealthBar.setSize(600, 30);
+
+        BitmapFont bossFont = new BitmapFont();
+        bossFont.getData().setScale(2f);
+        Label.LabelStyle bossLabelStyle = new Label.LabelStyle(bossFont, Color.RED);
+        bossHealthLabel = new Label("BOSS HP", bossLabelStyle);
+        bossHealthLabel.setAlignment(Align.center);
+
+        bossHealthTable = new Table();
+        bossHealthTable.setFillParent(false);
+        bossHealthTable.setSize(650, 60);
+        bossHealthTable.top().center();
+        bossHealthTable.setPosition(viewport.getWorldWidth() / 2f - 325, viewport.getWorldHeight() - 150);
+
+        bossHealthTable.add(bossHealthLabel).padBottom(10).row();
+        bossHealthTable.add(bossHealthBar).width(600).height(30);
+
+        stage.addActor(bossHealthTable);
     }
 
     private void createAbilityTable() {
@@ -176,6 +211,15 @@ public class GameUI {
         }
     }
 
+
+    public void updateBossHealth(float current, float max) {
+        bossHealthBar.setRange(0, max);
+        bossHealthBar.setValue(current);
+    }
+
+    public void setBossBarVisible(boolean visible) {
+        bossHealthTable.setVisible(visible);
+    }
 
     private void updateAbilityBar() {
         int bottomPad = 5;
@@ -301,6 +345,34 @@ public class GameUI {
         }
     }
 
+    public void updateInfoTable_color(String logMessage, Color color) {
+        if (infoLog.size == 5) {
+            infoLog.removeIndex(0);
+        }
+
+        int minutes = (int)(gameTime / 60f);
+        int seconds = (int)(gameTime % 60f);
+        String timestamp = String.format("[%02d:%02d] ", minutes, seconds);
+
+        infoLog.add(timestamp + logMessage);
+
+        for (int i = 0; i < infoLabels.size; i++) {
+            if (i < infoLog.size) {
+                infoLabels.get(i).setText(infoLog.get(i));
+                if (i == infoLog.size - 1) {
+                    // Color only the latest message
+                    infoLabels.get(i).setColor(color);
+                } else {
+                    // Reset older messages to default color (e.g., white)
+                    infoLabels.get(i).setColor(Color.WHITE);
+                }
+            } else {
+                infoLabels.get(i).setText("");
+            }
+        }
+    }
+
+
 
     private void createTimerLabel() {
         BitmapFont font = new BitmapFont();
@@ -424,6 +496,10 @@ public class GameUI {
         statsTable = new Table();
         statsTable.setSize(600,400);
 
+        Label label = new Label("Press [TAB] to hide stats", skin, "stats");
+        statsTable.add(label).left().row();
+        label.setFontScale(fontScale);
+
         healthPoints = new Label("HealthPoints" , skin, "stats");
         statsTable.add(healthPoints).left().row();
         healthPoints.setFontScale(fontScale);
@@ -462,7 +538,7 @@ public class GameUI {
 
         statsTable.setPosition(-80, game.getScreenHeight()/2f);
         stage.addActor(statsTable);
-        statsTable.setVisible(false);
+        statsTable.setVisible(true);
 
     }
 
@@ -483,7 +559,6 @@ public class GameUI {
         statsTable.setVisible(!statsTable.isVisible());
     }
 
-    Label fps;
 
     private void createFpsLabel() {
         Skin skin = AssetLoader.get().manager.get("game_over_screen/deathscreen_skin.json");

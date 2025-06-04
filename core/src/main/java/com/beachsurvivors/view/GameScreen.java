@@ -6,13 +6,16 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -80,6 +83,8 @@ public class GameScreen extends Game implements Screen {
     private float nextMiniBossTime = 60f;
     private float nextEnemyBuffTime = 60f;
     private float enemyHpMultiplier = 1f;
+    int minibossHP = 200;
+
 
     /// /array med intervaller på när miniboss ska spawna
 
@@ -89,6 +94,14 @@ public class GameScreen extends Game implements Screen {
     private Array<GroundItem> groundItemsToRemove;
     private Array<Projectile> playerProjectiles;
     private Array<Projectile> enemyProjectiles;
+    private float bossSpawnDelay = 60f; //seconds ;
+    private Boss boss;
+    private float bossSpawnTimer = 0f;
+    private boolean warningGiven = false;
+    private boolean showWarningVisual = false;
+    private boolean bossSpawned = false;
+    private Vector2 bossSpawnPos;
+    private Sprite warningSprite;
 
     private boolean isPaused = false;
     private PauseOverlay pauseOverlay;
@@ -102,6 +115,8 @@ public class GameScreen extends Game implements Screen {
     private boolean spawnMinibossesTestMode = true; //Toggles if minibosses spawn
     private boolean testMode = false;
     private boolean splatterMode = false;
+
+
 
     public GameScreen(Main main) {
         this.main = main;
@@ -142,10 +157,11 @@ public class GameScreen extends Game implements Screen {
 
         bullet = new BaseAttack(poolManager);
         abilities.add(bullet);
+
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
-        abilities.add(shield);
-        abilities.add(chainLightning);
+//        abilities.add(shield);
+//        abilities.add(chainLightning);
 
 
         font = new BitmapFont();
@@ -160,6 +176,18 @@ public class GameScreen extends Game implements Screen {
         groundItems.add(new Chest(player.getPosition().x-950, player.getPosition().y, poolManager, this));
         Vector2 startPos = new Vector2(player.getPosition());
         WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
+
+        poolManager = new ParticleEffectPoolManager();
+        poolManager.register("entities/particles/blueFlame.p", 5, 20);
+        poolManager.register("entities/particles/lootBeam.p", 5, 20);
+        poolManager.register("entities/particles/lootPile.p", 5, 20);
+        poolManager.register("entities/particles/xp_orb.p", 5, 20);
+        poolManager.register("entities/particles/chestClosed.p", 5, 20);
+        poolManager.register("entities/particles/chestOpen.p", 5, 20);
+        poolManager.register("entities/particles/fire_trail.p", 5 , 20);
+        Chest chest = new Chest(player.getPosition().x-250,player.getPosition().y-140, poolManager, this);
+        groundItems.add(chest);
+
         abilities.add(wave);
     }
 
@@ -178,6 +206,9 @@ public class GameScreen extends Game implements Screen {
         currentPowerUps = new Array<>();
 
         damageTexts = new Array<>();
+        warningSprite = new Sprite(new Texture("warningSign.png"));
+        warningSprite.setSize(128*4,128*4);
+
     }
 
 
@@ -289,7 +320,7 @@ public class GameScreen extends Game implements Screen {
     /**
      * As the name suggests, Logic is where the game's logic is put.
      */
-    private void logic() {
+    private void logic(float delta) {
         pickUpPowerUp();
         pickUpGroundItem();
         updateShieldPos();
@@ -326,6 +357,29 @@ public class GameScreen extends Game implements Screen {
             checkEnemyAbilitiesDamagePlayer();
             checkEnemyProjectilesHitPlayer();
         }
+
+        bossSpawnTimer += delta;
+
+        if (!warningGiven && bossSpawnTimer >= bossSpawnDelay - 10f) {
+            bossSpawnPos = new Vector2(player.getPosition().x,player.getPosition().y+200);
+            warningSprite.setPosition(bossSpawnPos.x, bossSpawnPos.y);
+            showBossWarning();
+        }
+
+        if (!bossSpawned && bossSpawnTimer >= bossSpawnDelay) {
+            hideBossWarning();
+            spawnBoss(bossSpawnPos);
+        }
+
+        if (bossSpawned) {
+            gameUI.setBossBarVisible(true);
+            boss.update(delta, player);
+            checkPlayerAbilityHits_boss();
+            gameUI.updateBossHealth((float)boss.getHealthPoints(), 1000);
+        } else {
+            gameUI.setBossBarVisible(false);
+        }
+
         resolveEnemyCollisions(enemies); //MOVE ENEMIES FROM EACH OTHER TO AVOID CLUTTERING
 
         updatePowerUps();
@@ -402,10 +456,15 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(), player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            main.victory(totalEnemiesKilled, totalPlayerDamageDealt,gameUI.getGameTimeSeconds(),
+                player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.TAB) || Gdx.input.isKeyJustPressed(Input.Keys.V)) {
             gameUI.showStatsTable();
         }
-
     }
 
     private void vaccum() {
@@ -593,6 +652,23 @@ public class GameScreen extends Game implements Screen {
         return new Vector2(x, y);
     }
 
+    public void hideBossWarning() {
+        showWarningVisual = false;
+    }
+
+    private void showBossWarning() {
+        gameUI.updateInfoTable_color("BOSS INCOMING IN 10 SECONDS", Color.RED);
+        showWarningVisual = true;
+        warningGiven = true;
+    }
+
+    private void spawnBoss(Vector2 position) {
+        boss = new Boss(position, poolManager, gameViewport.getCamera(), this);
+        bossSpawned = true;
+        spawnEnemiesTestMode = false;
+        spawnMinibossesTestMode = false;
+    }
+
     private void spawnEnemies() {
 
         float gameTimeSeconds = gameUI.getGameTimeSeconds();
@@ -660,12 +736,14 @@ public class GameScreen extends Game implements Screen {
 
         if (gameTimeSeconds >= nextMiniBossTime) {
             Enemy miniBoss = new MiniBoss(poolManager, this);
+            miniBoss.setHealthPoints(minibossHP);
             gameUI.updateInfoTable("Spawned a miniboss! Watch out!");
             Vector2 randomPos = getRandomOffscreenPosition(miniBoss.getHeight());
             miniBoss.setPosition(randomPos);
             enemies.add(miniBoss);
 
             nextMiniBossTime += 60f;
+            minibossHP += 100;
         }
     }
 
@@ -786,14 +864,30 @@ public class GameScreen extends Game implements Screen {
                         totalPlayerDamageDealt += damage;
                         damageTexts.add(new DamageText(String.valueOf((int) damage), enemy.getSprite().getX() + random.nextInt(50), enemy.getSprite().getY() + enemy.getSprite().getHeight() + 10 + random.nextInt(50), 1.0f, isCritical));
                     }
+                }
+            }
+        }
+    }
 
+    private void checkPlayerAbilityHits_boss() {
+        for (int j = abilities.size - 1; j >= 0; j--) {
+            Ability ability = abilities.get(j);
 
-    //                if (!ability.isPersistent()) {
-    //                    ability.dispose();
-    //                    abilities.removeIndex(j);
-    //                }
+            if (ability.getHitBox().overlaps(boss.getHitbox())) {
+                boolean isCritical = player.isCriticalHit();
+                double damage = ability.getBaseDamage();
+                if (isCritical) {
+                    damage *= player.getCriticalHitDamage();
                 }
 
+                if (boss.hit(damage)) {
+                    totalPlayerDamageDealt += damage;
+                    damageTexts.add(new DamageText(String.valueOf((int) damage),
+                        boss.getSprite().getX() + random.nextInt(50),
+                        boss.getSprite().getY() + boss.getSprite().getHeight() + 10 + random.nextInt(50),
+                        1.0f,
+                        isCritical));
+                }
             }
         }
     }
@@ -846,7 +940,7 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private void damagePlayer(double damage) {
+    public void damagePlayer(double damage) {
         if (player.isImmune()) return;
 
         float shieldStrength = shield.getCurrentShieldStrength();
@@ -880,7 +974,7 @@ public class GameScreen extends Game implements Screen {
 
     private void logicIfNotPaused(float delta) {
         if (isPaused || isChestOverlayActive) return;
-        logic(); // endast körs om spelet inte är pausat eller overlay är aktiv
+        logic(delta); // endast körs om spelet inte är pausat eller overlay är aktiv
     }
 
 
@@ -889,6 +983,7 @@ public class GameScreen extends Game implements Screen {
      */
     private void drawStuff() {
 
+        drawBoss();
         drawGroundItems();
         drawPowerUps();
         drawEnemies();
@@ -938,6 +1033,16 @@ public class GameScreen extends Game implements Screen {
         Rectangle hitbox = player.getHitBox();
         shapeRenderer.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
         shapeRenderer.end();
+    }
+
+    private void drawBoss() {
+        if (bossSpawned && boss.isAlive()) boss.draw(spriteBatch);
+
+
+        if (showWarningVisual) {
+            font.draw(spriteBatch, "⚠️ BOSS INCOMING IN 10 SECONDS ⚠️", 300, 400); // adjust position as needed
+            warningSprite.draw(spriteBatch);
+        }
     }
 
     private void drawEnemyHitboxes() {
@@ -1130,6 +1235,7 @@ public class GameScreen extends Game implements Screen {
             case Water_wave:
                 if (currentLevel == 0) {
                     enableWaterWave();
+                    gameUI.addAbilityIcon("entities/icons/water_wave_icon.png");
                     printLog("Unlocked Water Wave!");
                 } else {
                     // Öka piercing här om du har stöd för det i klassen
@@ -1147,15 +1253,22 @@ public class GameScreen extends Game implements Screen {
                 break;
 
             case Shield:
-                shield.increaseHealth(25); // Exempel: ge extra sköld
-                printLog("Shield reinforced! Current strength: "+ shield.getInitialShieldStrength());
+                if (currentLevel == 0) {
+                    abilities.add(shield);
+                    gameUI.addAbilityIcon("entities/abilities/shield_bubble.png");
+                } else {
+                    shield.increaseHealth(25); // Exempel: ge extra sköld
+                    printLog("Shield reinforced! Current strength: "+ shield.getInitialShieldStrength());
+                }
 
                 break;
 
             case Chain_Lightning:
                 if (currentLevel == 0) {
+                    abilities.add(chainLightning);
                     chainLightning.setEnabled(true);
                     printLog("Unlocked Chain Lightning!");
+                    gameUI.addAbilityIcon("entities/icons/chain_lightning_icon.png");
                 } else {
                     chainLightning.increaseMaxJumps(1);
                     printLog("Chain Lightning upgraded! +1 bounce.");

@@ -19,8 +19,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.math.Rectangle;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.abilities.Projectile;
-import com.beachsurvivors.utilities.AssetLoader;
 import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.abilities.Ability;
@@ -363,5 +363,21 @@ public abstract class Enemy implements Disposable {
 
     public int getExp() {
         return expOnDeath;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
+
+    public void setHitbox(Rectangle hitbox) {
+        this.hitbox = hitbox;
     }
 }

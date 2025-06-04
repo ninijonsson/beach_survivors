@@ -4,7 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import com.beachsurvivors.model.enemies.Enemy;
-import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.Player;
 import com.beachsurvivors.view.DamageText;
 

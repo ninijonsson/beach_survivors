@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.AssetLoader;
 
 public class DeathScreen implements Screen {
 
@@ -181,7 +181,7 @@ public class DeathScreen implements Screen {
         leftTable.add(totalHealing).padBottom(bottomPadding).left();
         leftTable.row();
 
-        Label damageShielded = new Label("Damage absorbed: " + damagePrevented, skin);
+        Label damageShielded = new Label("Damage absorbed: " + String.format("%.1f", damagePrevented), skin);
         damageShielded.setFontScale(fontscale);
         leftTable.add(damageShielded).padBottom(bottomPadding).left();
 

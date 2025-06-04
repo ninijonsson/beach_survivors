@@ -7,13 +7,12 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.AssetLoader;
 //import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 //import com.badlogic.gdx.audio.Sound;
 
 public class BombAttack {
 
-    private final Camera camera;
     private final Sound fallSound;
     private float stateTime = 0f;
     private Vector2 targetPosition;
@@ -33,9 +32,8 @@ public class BombAttack {
     private float bombY;
     private float ringScale = 1.0f;
 
-    public BombAttack(Vector2 targetPosition, Camera camera) {
+    public BombAttack(Vector2 targetPosition) {
         this.targetPosition = targetPosition;
-        this.camera = camera;
         //this.ringTexture = AssetLoader.get().manager.get("entities/abilities/bomb_ring.png", Texture.class);
         this.bombTexture = AssetLoader.get().manager.get("entities/abilities/bomb.png", Texture.class);
         this.shadowTexture = AssetLoader.get().manager.get("entities/abilities/bomb_shadow.png", Texture.class);

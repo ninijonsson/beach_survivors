@@ -1,0 +1,53 @@
+{
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	silkscreen: {
+		file: Silkscreen-Regular(1).fnt
+		scaledSize: -1
+		markupEnabled: false
+		flip: false
+	}
+}
+com.badlogic.gdx.graphics.Color: {
+	black: {
+		r: 0
+		g: 0
+		b: 0
+		a: 1
+	}
+	yellow: {
+		r: 1
+		g: 0.9647059
+		b: 0
+		a: 1
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
+	restart: {
+		up: play_button_2
+		down: play_button_pressed_2
+		over: play_button_hover_2
+	}
+	exit: {
+		up: main-menu_button_scaled-300
+		down: main-menu_button_pressed_scaled-300
+		over: main-menu_button_hover_scaled-300
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: {
+		font: silkscreen
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+	default: {
+		label: default
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+	default: {
+		background: victory_screen
+		titleFont: silkscreen
+		titleFontColor: black
+	}
+}
+}

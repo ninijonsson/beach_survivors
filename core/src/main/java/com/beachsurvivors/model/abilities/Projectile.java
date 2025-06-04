@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 
 public class Projectile {
@@ -24,7 +24,8 @@ public class Projectile {
     private ParticleEffectPool.PooledEffect trailEffect;
     private float lifetime = 0f;
 
-    public Projectile(String texturePath, double damage, float projectileSpeed, int width, int height) {
+    public Projectile(String texturePath, double damage, float projectileSpeed,
+                      int width, int height) {
         this.damage = damage;
         this.width = width;
         this.height = height;

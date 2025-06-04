@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.beachsurvivors.model.abilities.Ability;
-import com.beachsurvivors.utilities.AssetLoader;
+import com.beachsurvivors.AssetLoader;
 import com.beachsurvivors.model.abilities.AbilityDescription;
 import com.beachsurvivors.utilities.MusicHandler;
 

@@ -1,4 +1,4 @@
-package com.beachsurvivors.utilities;
+package com.beachsurvivors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.beachsurvivors.utilities.ParticleEffectPoolManager;
 
 public class AssetLoader {
     private static final AssetLoader instance = new AssetLoader();
@@ -71,6 +72,7 @@ public class AssetLoader {
 
     private void addTextures() {
         manager.load("placeholder.png", Texture.class);
+        manager.load("entities/waypoint.png", Texture.class);
         manager.load("entities/particles/bullet.png", Texture.class);
         manager.load("entities/particles/particle.png", Texture.class);
         manager.load("entities/beer.png", Texture.class);
@@ -85,6 +87,12 @@ public class AssetLoader {
         manager.load("entities/death.png", Texture.class);
         manager.load("entities/how_to_play.png", Texture.class);
         manager.load("entities/abilities/bomb_shadow.png", Texture.class);
+        manager.load("entities/icons/water_wave_icon.png", Texture.class);
+        manager.load("entities/icons/chain_lightning.png", Texture.class);
+        manager.load("entities/icons/chain_lightning_icon.png", Texture.class);
+
+
+
 
         manager.load("entities/abilities/bomb_ring.png", Texture.class);
         manager.load("entities/abilities/bomb.png", Texture.class);
@@ -102,13 +110,15 @@ public class AssetLoader {
 
         manager.load("entities/abilities/exp_bar.png", Texture.class);
         manager.load("entities/abilities/xp_orb.png", Texture.class);
-
+        manager.load("entities/abilities/fire_ball.png", Texture.class);
         //manager.load("entities/abilities/ability_bar.png", Texture.class);
         manager.load("entities/abilities/bullet.png", Texture.class);
         manager.load("entities/abilities/boomerangmc.png", Texture.class);
         manager.load("entities/abilities/fireball.png", Texture.class);
         manager.load("entities/abilities/shield_bubble.png", Texture.class);
         manager.load("entities/abilities/lightning.png", Texture.class);
+        manager.load("entities/abilities/bubble_rainbow.png", Texture.class);
+
 
         manager.load("entities/smoke.png", Texture.class);
 
@@ -120,6 +130,8 @@ public class AssetLoader {
         manager.load("entities/enemies/crocodile2.png", Texture.class);
         manager.load("entities/enemies/crab_sheet.png", Texture.class);
         manager.load("entities/enemies/crocodile2_walk_sheet.png", Texture.class);
+        manager.load("entities/enemies/ragnaros.png", Texture.class);
+
 
         manager.load("entities/beach_girl_sheet.png", Texture.class);
         manager.load("entities/beach_guy_sheet.png", Texture.class);
@@ -179,6 +191,9 @@ public class AssetLoader {
 
         ParticleEffectLoader.ParticleEffectParameter arrowEffect = new ParticleEffectLoader.ParticleEffectParameter();
         manager.load("entities/particles/arrow_effect.p", ParticleEffect.class, arrowEffect);
+
+        ParticleEffectLoader.ParticleEffectParameter fireEffect = new ParticleEffectLoader.ParticleEffectParameter();
+        manager.load("entities/particles/fire_trail.p", ParticleEffect.class, fireEffect);
     }
 
     private void addSkins() {
@@ -187,6 +202,7 @@ public class AssetLoader {
         manager.load("level_up_screen/uiskin.json", Skin.class);
         manager.load("skin_composer/pause_menu/pause_menu.json", Skin.class);
         manager.load("game_over_screen/deathscreen_skin.json", Skin.class);
+        manager.load("skin_composer/victory_screen/victory_screen.json", Skin.class);
     }
 
 

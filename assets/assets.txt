@@ -19,6 +19,7 @@ entities/abilities/bomb_ring.aseprite
 entities/abilities/bomb_ring.png
 entities/abilities/bomb_shadow.png
 entities/abilities/boomerangmc.png
+entities/abilities/bubble_rainbow.png
 entities/abilities/bullet.png
 entities/abilities/death_splatter.wav
 entities/abilities/exp_bar.png
@@ -26,6 +27,7 @@ entities/abilities/exp_bar_bg.aseprite
 entities/abilities/exp_bar_bg.png
 entities/abilities/exp_bar_fill.aseprite
 entities/abilities/exp_bar_fill.png
+entities/abilities/fire_ball.png
 entities/abilities/fireball.png
 entities/abilities/impact_zone.png
 entities/abilities/lightning.png
@@ -54,6 +56,7 @@ entities/enemies/crocodile1_sheet.png
 entities/enemies/crocodile2.png
 entities/enemies/crocodile2_walk_sheet.png
 entities/enemies/navy_seal_sheet.png
+entities/enemies/ragnaros.png
 entities/enemies/shark.png
 entities/enemies/shark_sheet.png
 entities/enemies/slutboss_sheet-2.png
@@ -66,6 +69,7 @@ entities/icons/blank.png
 entities/icons/bone_piece.png
 entities/icons/boomerang.png
 entities/icons/chain_lightning.png
+entities/icons/chain_lightning_icon.png
 entities/icons/chest_open.png
 entities/icons/chest_open_asperite.aseprite
 entities/icons/coin.aseprite
@@ -75,6 +79,7 @@ entities/icons/rib_piece.png
 entities/icons/select_arrow.png
 entities/icons/skull_piece.png
 entities/icons/water_wave.png
+entities/icons/water_wave_icon.png
 entities/particles/arrow_effect.p
 entities/particles/blueFlame.p
 entities/particles/bomb_explosion.p
@@ -89,6 +94,7 @@ entities/particles/death_effect.p
 entities/particles/death_effect_safe.p
 entities/particles/electric_dart.png
 entities/particles/electric_trail.p
+entities/particles/fire_trail.p
 entities/particles/impact_zone.p
 entities/particles/impact_zone.png
 entities/particles/level_up_rain.p
@@ -123,6 +129,7 @@ entities/ui/ability_bar.png
 entities/ui/ability_bar_placeholder.png
 entities/ui/ability_slot_placeholder.png
 entities/ui/buff_bar.png
+entities/waypoint.png
 fonts/level.fnt
 fonts/level.png
 fonts/timer.fnt
@@ -145,7 +152,6 @@ game_over_screen/roboto_flex.fnt
 game_over_screen/you died screen.png
 game_over_screen/you_died.png
 game_screen/Cool_beach_guy.png
-gdx-particle-editor.jar
 level_up_screen/default.fnt
 level_up_screen/default.png
 level_up_screen/uiskin.atlas
@@ -167,6 +173,7 @@ main_menu/menu_background.jpeg
 main_menu/sound/Holiday.wav
 main_menu/sound/play_sound.wav
 placeholder.png
+redarrow.png
 shark_death.wav
 skin_composer/font-export.fnt
 skin_composer/font-title-export.fnt
@@ -181,6 +188,11 @@ skin_composer/pause_menu/pause_menu.png
 skin_composer/testbuttons.atlas
 skin_composer/testbuttons.json
 skin_composer/testbuttons.png
+skin_composer/victory_screen/Silkscreen-Regular(1).fnt
+skin_composer/victory_screen/Silkscreen-Regular.fnt
+skin_composer/victory_screen/victory_screen.atlas
+skin_composer/victory_screen/victory_screen.json
+skin_composer/victory_screen/victory_screen.png
 sounds/Seal_Damage.wav
 sounds/Shark_Damage.wav
 sounds/beach.mp3
@@ -190,3 +202,4 @@ sounds/footstep.mp3
 sounds/item_pickup.wav
 sounds/level_up.mp3
 sounds/shark_damage_2.wav
+warningSign.png
