@@ -125,9 +125,9 @@ public class LevelUpScreen implements Screen {
     }
 
     private void updateLabel() {
-        upgradeButton1.setText(upgrade1.getDescription());
-        upgradeButton2.setText(upgrade2.getDescription());
-        upgradeButton3.setText(upgrade3.getDescription());
+        upgradeButton1.setText(upgrade1.getDescription() + "\n [1]");
+        upgradeButton2.setText(upgrade2.getDescription()+ "\n [2]");
+        upgradeButton3.setText(upgrade3.getDescription()+ "\n [3]");
     }
 
     private void applyUpgrade(Upgrade upgrade) {

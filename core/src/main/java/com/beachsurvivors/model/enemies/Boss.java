@@ -67,7 +67,7 @@ public class Boss {
         this.position = position;
         width = 700;
         height = 700;
-        healthPoints = 1000;
+        healthPoints = 500;
         sprite = new Sprite(new Texture("entities/enemies/slutboss.png"));
         hitbox = new Rectangle(position.x, position.y, width, height);
         this.poolManager = poolManager;
@@ -175,8 +175,14 @@ public class Boss {
             }
         }
 
-        for (BombAttack bomb : bombs) {
+
+        for (int i = 0; i < bombs.size; i++) {
+            BombAttack bomb = bombs.get(i);
             bomb.update(delta);
+
+            if (bomb.isFinished()) {
+                bombs.removeIndex(i);
+            }
 
         }
 
@@ -219,7 +225,7 @@ public class Boss {
             bulletCooldown = 0.05f;
         }
         if (bombCooldown <= 0) {
-//            dropBomb(new Vector2(player.getPosition()));
+            dropBomb(new Vector2(player.getPosition()));
             bombCooldown = 5f;
         }
         spawnPuzzleOrbIfNeeded(delta, player);
