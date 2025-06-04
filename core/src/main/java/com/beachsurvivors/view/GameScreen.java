@@ -94,7 +94,7 @@ public class GameScreen extends Game implements Screen {
     private Array<GroundItem> groundItemsToRemove;
     private Array<Projectile> playerProjectiles;
     private Array<Projectile> enemyProjectiles;
-    private float bossSpawnDelay = 600f; //seconds ;
+    private float bossSpawnDelay = 180f; //seconds ;
     private Boss boss;
     private float bossSpawnTimer = 0f;
     private boolean warningGiven = false;
@@ -167,16 +167,6 @@ public class GameScreen extends Game implements Screen {
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
         font.getData().setScale(2);
-
-        groundItems.add(new Chest(player.getPosition().x-300, player.getPosition().y, poolManager, this));
-        groundItems.add(new Chest(player.getPosition().x-500, player.getPosition().y, poolManager, this));
-        groundItems.add(new Chest(player.getPosition().x-700, player.getPosition().y, poolManager, this));
-        groundItems.add(new Chest(player.getPosition().x-800, player.getPosition().y, poolManager, this));
-        groundItems.add(new Chest(player.getPosition().x-900, player.getPosition().y, poolManager, this));
-        groundItems.add(new Chest(player.getPosition().x-950, player.getPosition().y, poolManager, this));
-        Vector2 startPos = new Vector2(player.getPosition());
-        //WaterWave wave = new WaterWave("WaterWave", 15, 1.2f, 32, 32, startPos, poolManager);
-
         poolManager = new ParticleEffectPoolManager();
         poolManager.register("entities/particles/blueFlame.p", 5, 20);
         poolManager.register("entities/particles/lootBeam.p", 5, 20);
@@ -185,10 +175,8 @@ public class GameScreen extends Game implements Screen {
         poolManager.register("entities/particles/chestClosed.p", 5, 20);
         poolManager.register("entities/particles/chestOpen.p", 5, 20);
         poolManager.register("entities/particles/fire_trail.p", 5 , 20);
-        Chest chest = new Chest(player.getPosition().x-250,player.getPosition().y-140, poolManager, this);
-        groundItems.add(chest);
 
-        //abilities.add(wave);
+        addBoomerang();
     }
 
     private void initializeArrays() {
@@ -456,6 +444,11 @@ public class GameScreen extends Game implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
             main.gameOver(totalEnemiesKilled, totalPlayerDamageDealt, gameUI.getGameTimeSeconds(), player.getDamageTaken(), player.getHealingReceived(), shield.getTotalDamagePrevented());
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F10)) {
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        }
+
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
             main.victory(totalEnemiesKilled, totalPlayerDamageDealt,gameUI.getGameTimeSeconds(),

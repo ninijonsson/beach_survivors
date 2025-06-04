@@ -1,6 +1,7 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.utilities.MusicHandler;
@@ -24,6 +25,7 @@ public class Main extends Game {
         setScreen(loadingScreen);
         setScreen(menuScreen);
         previousScreen = menuScreen;
+
     }
 
     public void startGame() {

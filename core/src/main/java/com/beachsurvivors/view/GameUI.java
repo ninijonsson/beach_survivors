@@ -423,7 +423,7 @@ public class GameUI {
 
         // Placera tabellen på skärmen
         healthTable.setPosition(
-            viewport.getWorldWidth() / 2 - healthTable.getWidth() / 2,
+            (viewport.getWorldWidth() / 2 - healthTable.getWidth() / 2)+35,
             viewport.getWorldHeight() / 2 - healthTable.getHeight() / 2 + 100
         );
     }

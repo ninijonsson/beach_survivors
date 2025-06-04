@@ -163,12 +163,15 @@ public class Boss {
 
         handlePhases(delta, player);
 
-        for (Bullet bullet : bullets) {
+        for (int i = 0; i < bullets.size; i++) {
+            Bullet bullet = bullets.get(i);
             bullet.update(delta);
+            if(bullet.isExpired()){
+                bullets.removeIndex(i);
+            }
 
             if (bullet.overlaps(player)) {
                 game.damagePlayer(50);
-
             }
         }
 

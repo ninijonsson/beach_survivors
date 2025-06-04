@@ -13,6 +13,7 @@ public class Bullet {
     private Vector2 position;
     private Vector2 velocity;
     private Circle hitbox = new Circle();
+    private float lifeTimer;
 
     private float width = 64;
     private float height = 64;
@@ -28,24 +29,39 @@ public class Bullet {
         this.trailEffect = poolManager.obtain("entities/particles/fire_trail.p");
         trailEffect.setPosition(position.x, position.y);
         trailEffect.start();
-
+        this.lifeTimer = 10f;
     }
 
     public void update(float delta) {
         position.mulAdd(velocity, delta);
         hitbox.set(position.x, position.y, width / 2f);
 
-        trailEffect.setPosition(position.x, position.y);
-        trailEffect.update(delta);
+        if(trailEffect!=null) {
+            trailEffect.setPosition(position.x, position.y);
+            trailEffect.update(delta);
+        }
+
+        lifeTimer -= delta;
+        if (lifeTimer <= 0 && trailEffect != null) {
+            dispose();
+        }
 
     }
+
+    public boolean isExpired() {
+        return lifeTimer <= 0;
+    }
+
 
     public void draw(SpriteBatch spriteBatch) {
         sprite.rotate(10);
         sprite.setPosition(position.x - width / 2f, position.y - height / 2f);
 
         sprite.draw(spriteBatch);
-        trailEffect.draw(spriteBatch);
+        if(trailEffect!=null){
+            trailEffect.draw(spriteBatch);
+        }
+
     }
 
 
