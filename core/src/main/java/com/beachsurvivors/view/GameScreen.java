@@ -900,7 +900,7 @@ public class GameScreen extends Game implements Screen {
 
             if (ability.getHitBox().overlaps(boss.getHitbox())) {
                 boolean isCritical = player.isCriticalHit();
-                double damage = ability.getBaseDamage() * ability.getDamageMultiplier();
+                double damage = player.getDamage() * ability.getDamageMultiplier();
                 if (isCritical) {
                     damage *= player.getCriticalHitDamage();
                 }
