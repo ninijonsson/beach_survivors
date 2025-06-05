@@ -94,59 +94,47 @@ public class Boss {
         this.game = game;
         this.main = main;
         isAlive = true;
+        createAnimation();
     }
 
     public void draw(SpriteBatch spriteBatch) {
-        sprite.setColor(tint);
-        sprite.setOriginCenter();
-        sprite.setScale(scale);
-        sprite.setPosition(position.x - width / 2, position.y - height / 2);
-        sprite.setSize(width, height);
-        sprite.draw(spriteBatch);
+        stateTime += Gdx.graphics.getDeltaTime();
+        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+
+        spriteBatch.setColor(tint);
+        spriteBatch.draw(currentFrame, position.x - width / 2, position.y - height / 2, width / 2, height / 2, width, height, scale, scale, 0f);
+        spriteBatch.setColor(Color.WHITE);
 
         if (isVulnerable) {
             font.setColor(Color.RED);
-            font.getData().setScale(3f); // make it big
+            font.getData().setScale(3f);
             font.draw(spriteBatch, "BOSS VULNERABLE", position.x - 200, position.y + height / 2 + 50);
         }
 
-        for (Bullet bullet : bullets) {
-            bullet.draw(spriteBatch);
-        }
+        for (Bullet bullet : bullets) bullet.draw(spriteBatch);
+        for (BombAttack bomb : bombs) bomb.draw(spriteBatch);
+        if (puzzleOrb != null) puzzleOrb.draw(spriteBatch);
 
-        for (BombAttack bomb : bombs) {
-            bomb.draw(spriteBatch);
-        }
-
-        if (puzzleOrb != null) {
-            puzzleOrb.draw(spriteBatch);
-        }
-
-        if (camera != null) {
+        if (camera != null && puzzleOrb != null) {
             Rectangle viewBounds = new Rectangle(camera.position.x - camera.viewportWidth / 2,
                 camera.position.y - camera.viewportHeight / 2,
                 camera.viewportWidth,
                 camera.viewportHeight);
-            if (puzzleOrb != null) {
-                if (!puzzleOrb.overlaps(viewBounds)) {
-                    // Boss is off-screen, so draw an arrow pointing toward it
+            if (!puzzleOrb.overlaps(viewBounds)) {
+                Vector2 direction = new Vector2(puzzleOrb.getPosition()).sub(camera.position.x, camera.position.y).nor();
+                float arrowDistanceFromCenter = 400f;
+                Vector2 arrowPosition = new Vector2(camera.position.x, camera.position.y).add(direction.scl(arrowDistanceFromCenter));
+                float angle = direction.angleDeg();
 
-                    Vector2 direction = new Vector2(puzzleOrb.getPosition()).sub(camera.position.x, camera.position.y).nor();
-
-                    float arrowDistanceFromCenter = 400f;
-                    Vector2 arrowPosition = new Vector2(camera.position.x, camera.position.y).add(direction.scl(arrowDistanceFromCenter));
-
-                    float angle = direction.angleDeg();
-
-                    arrowSprite.setOriginCenter();
-                    arrowSprite.setRotation(angle);
-                    arrowSprite.setPosition(arrowPosition.x - arrowSprite.getWidth() / 2, arrowPosition.y - arrowSprite.getHeight() / 2);
-                    arrowSprite.setScale(0.1f); // scale it down so it's not gigantic
-                    arrowSprite.draw(spriteBatch);
-                }
+                arrowSprite.setOriginCenter();
+                arrowSprite.setRotation(angle);
+                arrowSprite.setPosition(arrowPosition.x - arrowSprite.getWidth() / 2, arrowPosition.y - arrowSprite.getHeight() / 2);
+                arrowSprite.setScale(0.1f);
+                arrowSprite.draw(spriteBatch);
             }
         }
     }
+
 
     public void update(float delta, Player player) {
         if (damageCooldown > 0f) {
@@ -470,21 +458,23 @@ public class Boss {
     }
 
 
-    /*public void createAnimation(Texture texture, int sheetColumns, int sheetRows) {
-        walkSheet=texture;
-        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth()/sheetColumns, walkSheet.getHeight()/sheetRows);
+    private void createAnimation() {
+        Texture texture = new Texture("entities/enemies/slutboss_sheet.png");
+        int sheetColumns = 5;
+        int sheetRows = 1;
+
+        walkSheet = texture;
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / sheetColumns, walkSheet.getHeight() / sheetRows);
         TextureRegion[] walkFrames = new TextureRegion[sheetColumns * sheetRows];
         int index = 0;
 
-        for (int i = 0; i < sheetRows; i++) {
-            for (int j = 0; j < sheetColumns; j++) {
-                walkFrames[index++] = tmp[i][j];
-            }
+        for (int j = 0; j < sheetColumns; j++) {
+            walkFrames[index++] = tmp[0][j];
         }
 
-        walkAnimation = new Animation<>(0.25f, walkFrames);
+        walkAnimation = new Animation<>(0.15f, walkFrames);
         stateTime = 0f;
-    }*/
+    }
 
     /*public void drawAnimation(SpriteBatch spriteBatch) {
         stateTime += Gdx.graphics.getDeltaTime();
