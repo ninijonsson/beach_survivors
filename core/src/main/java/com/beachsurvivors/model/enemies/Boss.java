@@ -1,6 +1,7 @@
 package com.beachsurvivors.model.enemies;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,11 +16,13 @@ import com.beachsurvivors.model.Player;
 import com.beachsurvivors.model.PuzzleOrb;
 import com.beachsurvivors.model.abilities.BombAttack;
 import com.beachsurvivors.utilities.ParticleEffectPoolManager;
+import com.beachsurvivors.view.DamageText;
 import com.beachsurvivors.view.GameScreen;
 import com.beachsurvivors.view.Main;
 import com.beachsurvivors.view.VictoryScreen;
 
 public class Boss {
+
     private float phaseTimer;
     private int phase = 0;
     private boolean isAlive = false;
@@ -38,6 +41,7 @@ public class Boss {
     private Texture walkSheet;
     private Animation<TextureRegion> walkAnimation;
     private float stateTime;
+    private final Array<DamageText> damageText;
 
     private GameScreen game;
     private Camera camera;
@@ -63,10 +67,15 @@ public class Boss {
     private BitmapFont font = new BitmapFont();
 
     private Sprite arrowSprite;
+    private Sound hitSound;
+    private Sound cannonFireSound;
+    private Sound kakaaw;
 
     private Main main;
+    private float damageCooldown = 0f;
 
-    public Boss(Vector2 position, ParticleEffectPoolManager poolManager, Camera camera, GameScreen game, Main main) {
+
+    public Boss(Vector2 position, ParticleEffectPoolManager poolManager, Camera camera, GameScreen game, Main main, Array<DamageText> damageText) {
         this.position = position;
         width = 700;
         height = 700;
@@ -74,10 +83,13 @@ public class Boss {
         sprite = new Sprite(new Texture("entities/enemies/slutboss.png"));
         hitbox = new Rectangle(position.x, position.y, width, height);
         this.poolManager = poolManager;
-
+        this.damageText = damageText;
         arrowSprite = new Sprite(new Texture("redarrow.png"));
-        arrowSprite.setSize(1000,1000);
+        arrowSprite.setSize(1000, 1000);
 
+        this.hitSound = AssetLoader.get().getSound("entities/abilities/boss_damage.wav");
+        this.cannonFireSound = AssetLoader.get().getSound("entities/abilities/boss_cannon_fire.wav");
+        this.kakaaw = AssetLoader.get().getSound("entities/abilities/boss_kakaaw.wav");
         this.camera = camera;
         this.game = game;
         this.main = main;
@@ -88,8 +100,8 @@ public class Boss {
         sprite.setColor(tint);
         sprite.setOriginCenter();
         sprite.setScale(scale);
-        sprite.setPosition(position.x - width/2, position.y - height/2);
-        sprite.setSize(width,height);
+        sprite.setPosition(position.x - width / 2, position.y - height / 2);
+        sprite.setSize(width, height);
         sprite.draw(spriteBatch);
 
         if (isVulnerable) {
@@ -137,6 +149,10 @@ public class Boss {
     }
 
     public void update(float delta, Player player) {
+        if (damageCooldown > 0f) {
+            damageCooldown -= delta;
+        }
+
         this.player = player;
         hitbox.setPosition(position.x - width / 2, position.y - height / 2);
         sprite.setPosition(position.x - width / 2, position.y - height / 2);
@@ -154,6 +170,7 @@ public class Boss {
             scale = 1f;
         }
 
+
         phaseTimer += delta;
         bulletCooldown -= delta;
         bombCooldown -= delta;
@@ -170,7 +187,7 @@ public class Boss {
         for (int i = 0; i < bullets.size; i++) {
             Bullet bullet = bullets.get(i);
             bullet.update(delta);
-            if(bullet.isExpired()){
+            if (bullet.isExpired()) {
                 bullets.removeIndex(i);
             }
 
@@ -197,6 +214,8 @@ public class Boss {
         phase++;
         phaseTimer = 0;
         orbPickedUp = false;
+        kakaaw.play(0.8f, MathUtils.random(0.95f, 1.05f), 0f);
+        damageText.add(new DamageText("KAKAAAW! KAKAAAW!", position.x, position.y + 150, 6, true));
     }
 
     private float getHealthPercent() {
@@ -336,6 +355,7 @@ public class Boss {
     }
 
     private void spawnBullet(Vector2 velocity) {
+        cannonFireSound.play(0.8f, MathUtils.random(0.95f, 1.05f), 0f);
         bullets.add(new Bullet(new Vector2(position.x + 320, position.y - 100), velocity, poolManager));
     }
 
@@ -399,31 +419,30 @@ public class Boss {
     }
 
     public boolean hit(double damage) {
-        if (isVulnerable) {
-            healthPoints -= damage;
-            System.out.println(damage);
-//            playSound();
+        if (!isVulnerable || damageCooldown > 0f) return false;
 
-            if (healthPoints <= 0) {
-                isAlive = false;
-                onDeath();
-                return true;
-            } else {
-                tint = Color.RED;
+        healthPoints -= damage;
+        damageCooldown = 0.1f;
 
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        Gdx.app.postRunnable(() -> {
-                            tint = Color.WHITE;
+        float pitch = MathUtils.random(0.9f, 1.1f);
+        hitSound.play(0.9f, pitch, 0f);
 
-                        });
-                    }
-                }, 0.1f);
-                return true;}
+        if (healthPoints <= 0) {
+            isAlive = false;
+            onDeath();
+            return true;
+        } else {
+            tint = Color.RED;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    Gdx.app.postRunnable(() -> tint = Color.WHITE);
+                }
+            }, 0.1f);
+            return true;
         }
-        return false;
     }
+
 
     private Vector2 getSafeRandomOrbSpawnPosition(Player player) {
         Vector2 spawnPos;
@@ -490,7 +509,7 @@ public class Boss {
     private void onDeath() {
         isAlive = false;
         System.out.println("boss dead");
-        main.setScreen(new VictoryScreen(game, game.getTotalEnemiesKilled(), game.getTotalPlayerDamageDealt(), 0,0,0,0 ));
+        main.setScreen(new VictoryScreen(game, game.getTotalEnemiesKilled(), game.getTotalPlayerDamageDealt(), 0, 0, 0, 0));
 //        clearScreen();
     }
 

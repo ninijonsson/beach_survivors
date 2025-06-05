@@ -179,7 +179,7 @@ public class LevelUpScreen implements Screen {
         upgrades.add(new Upgrade(UpgradeType.CooldownTime, 0.9f));
         upgrades.add(new Upgrade(UpgradeType.AreaRange, 50));
         upgrades.add(new Upgrade(UpgradeType.HpRegen, 0.1f));
-        upgrades.add(new Upgrade(UpgradeType.LifeSteal, 0.1f));
+        //upgrades.add(new Upgrade(UpgradeType.LifeSteal, 0.1f));
 
         return upgrades.get(random.nextInt(upgrades.size));
     }

@@ -68,6 +68,9 @@ public class AssetLoader {
         manager.load("entities/abilities/death_splatter.wav", Sound.class);
         manager.load("entities/abilities/menu_select.wav", Sound.class);
         manager.load("entities/abilities/menu_switch.wav", Sound.class);
+        manager.load("entities/abilities/boss_damage.wav", Sound.class);
+        manager.load("entities/abilities/boss_cannon_fire.wav", Sound.class);
+        manager.load("entities/abilities/boss_kakaaw.wav", Sound.class);
     }
 
     private void addTextures() {

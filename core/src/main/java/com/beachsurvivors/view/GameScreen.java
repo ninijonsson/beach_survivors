@@ -94,7 +94,7 @@ public class GameScreen extends Game implements Screen {
     private Array<GroundItem> groundItemsToRemove;
     private Array<Projectile> playerProjectiles;
     private Array<Projectile> enemyProjectiles;
-    private float bossSpawnDelay = 180; //seconds ;
+    private float bossSpawnDelay = 60; //seconds ;
     private Boss boss;
     private float bossSpawnTimer = 0f;
     private boolean warningGiven = false;
@@ -160,9 +160,6 @@ public class GameScreen extends Game implements Screen {
 
         shield = new Shield();
         chainLightning = new ChainLightning(enemies, poolManager);
-//        abilities.add(shield);
-//        abilities.add(chainLightning);
-
 
         font = new BitmapFont();
         font.setColor(Color.YELLOW);
@@ -222,8 +219,6 @@ public class GameScreen extends Game implements Screen {
      */
     @Override
     public void render(float delta) {
-
-
         input(); // hanterar ESC / TAB osv.
 
         // Rita alltid spelet
@@ -662,7 +657,7 @@ public class GameScreen extends Game implements Screen {
     }
 
     private void spawnBoss(Vector2 position) {
-        boss = new Boss(position, poolManager, gameViewport.getCamera(), this, main);
+        boss = new Boss(position, poolManager, gameViewport.getCamera(), this, main, damageTexts);
         bossSpawned = true;
         spawnEnemiesTestMode = false;
         spawnMinibossesTestMode = false;
