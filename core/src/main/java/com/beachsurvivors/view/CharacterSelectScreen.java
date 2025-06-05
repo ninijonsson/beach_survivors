@@ -156,7 +156,8 @@ public class CharacterSelectScreen implements Screen {
                         MusicHandler.stop();
                         MusicHandler.play("main_menu/sound/holiday.wav", true);
                         menuChoice.play(0.6f);
-                        buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
+                        main.setSelectedCharacterType(selectedIndex + 1);
+                        main.playGame();
                         return true;
                     case Input.Keys.ESCAPE:
                         main.goToMainMenu();

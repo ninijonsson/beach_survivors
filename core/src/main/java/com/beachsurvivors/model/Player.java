@@ -83,8 +83,7 @@ public class Player extends Actor {
     private float footstepInterval = 0.4f;
 
 
-
-    public Player(Map map, SpriteBatch spriteBatch, GameScreen gameScreen) {
+    public Player(Map map, SpriteBatch spriteBatch, GameScreen gameScreen, int characterSelected) {
         this.map = map;
         this.spriteBatch = spriteBatch;
         this.gameScreen = gameScreen;
@@ -100,7 +99,7 @@ public class Player extends Actor {
 
         position = new Vector2(map.getStartingX(), map.getStartingY());
 
-        beachGuyHitBox = new Rectangle(position.x - playerWidth / 2, position.y - playerHeight / 2, playerWidth/4, playerHeight/4);
+        beachGuyHitBox = new Rectangle(position.x - playerWidth / 2, position.y - playerHeight / 2, playerWidth / 4, playerHeight / 4);
         //vaccumHitbox = new Circle(position.x, position.y, vaccumRadius);
         vaccumHitbox = new Circle(position.x, position.y, areaRange);
 
@@ -108,9 +107,8 @@ public class Player extends Actor {
         currentHealthPoints = STARTING_HEALTH_POINTS;
         maxHealthPoints = STARTING_HEALTH_POINTS;
 
-        createAnimation(gameScreen.getSelectedCharacterType());
+        createAnimation(1);
         footstepSound = AssetLoader.get().manager.get("sounds/footstep.mp3", Sound.class);
-
     }
 
     public void drawShadow(SpriteBatch spriteBatch) {
@@ -119,7 +117,7 @@ public class Player extends Actor {
         spriteBatch.draw(shadowTexture, shadowX, shadowY, playerWidth, playerHeight / 4f);
     }
 
-    private void createAnimation(int characterType) {
+    public void createAnimation(int characterType) {
         this.shadowTexture = AssetLoader.get().manager.get("entities/abilities/bomb_shadow.png", Texture.class);
 
         switch (characterType) {
@@ -179,7 +177,7 @@ public class Player extends Actor {
     }
 
     private void movementKeys() {
-        float delta = Math.min(Gdx.graphics.getDeltaTime(), 1/30f);
+        float delta = Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f);
         Vector2 direction = new Vector2(0, 0);
 
         if ((Gdx.input.isKeyPressed(Input.Keys.LEFT)) || (Gdx.input.isKeyPressed(Input.Keys.A))) {
@@ -207,7 +205,7 @@ public class Player extends Actor {
             if (isMoving) {
                 footstepTimer += delta;
                 if (footstepTimer >= footstepInterval) {
-                    int randomPitch= random.nextInt(5);
+                    int randomPitch = random.nextInt(5);
                     footstepSound.setPitch(footstepSound.play(0.01f), randomPitch);
 
                     footstepTimer = 0;
@@ -237,7 +235,7 @@ public class Player extends Actor {
             !map.collidesWithObject(tempHitBox)) {
             position.x = newPlayerPosition.x;
             position.y = newPlayerPosition.y;
-            beachGuyHitBox.setPosition(position.x - playerWidth/5, position.y - playerHeight/5);
+            beachGuyHitBox.setPosition(position.x - playerWidth / 5, position.y - playerHeight / 5);
         }
     }
 
@@ -276,6 +274,7 @@ public class Player extends Actor {
     public boolean isMovingLeft() {
         return movingLeft;
     }
+
     public boolean isMovingRight() {
         return movingRight;
     }
@@ -389,7 +388,6 @@ public class Player extends Actor {
     }
 
 
-
     public void increaseAreaRadius(float increase) {
         this.areaRange += increase;
         vaccumHitbox.setRadius(areaRange);
@@ -499,7 +497,7 @@ public class Player extends Actor {
         return map;
     }
 
-    public boolean isImmune(){
+    public boolean isImmune() {
         return isImmune;
     }
 
@@ -524,5 +522,8 @@ public class Player extends Actor {
         }, 0.1f);
     }
 
+    public void updateWalkAnimation(int selectedCharacterType) {
+        createAnimation(selectedCharacterType);
+    }
 }
 

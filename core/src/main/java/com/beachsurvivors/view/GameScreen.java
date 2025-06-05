@@ -154,7 +154,7 @@ public class GameScreen extends Game implements Screen {
 
         addPoolManager();
 
-        player = new Player(map, spriteBatch, this);
+        player = new Player(map, spriteBatch, this, main.getSelectedCharacterType());
 
 
         bullet = new BaseAttack(poolManager);
@@ -1268,6 +1268,7 @@ public class GameScreen extends Game implements Screen {
     public int getSelectedCharacterType() {
         return main.getSelectedCharacterType();
     }
+
 
 
     public void addOrUpgradeAbility(AbilityDescription ability) {
