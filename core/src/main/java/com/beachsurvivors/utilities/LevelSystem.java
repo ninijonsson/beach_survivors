@@ -20,7 +20,7 @@ public class LevelSystem {
     }
 
     public void gainExp(int exp) {
-        currentExp += exp;
+        currentExp += exp*100;
 
         // Kontrollera ifall vi ska levela
         while (currentExp >= expToNextLevel) {

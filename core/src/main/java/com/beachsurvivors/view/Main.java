@@ -1,7 +1,6 @@
 package com.beachsurvivors.view;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Timer;
 import com.beachsurvivors.utilities.MusicHandler;
@@ -77,7 +76,9 @@ public class Main extends Game {
     }
 
     public void levelUp() {
-        setScreen(new LevelUpScreen(gameScreen, gameScreen.getPlayer()));
+        if (gameScreen != null) {
+            gameScreen.showLevelUpOverlay();
+        }
     }
 
     public void goToHelpScreen() {

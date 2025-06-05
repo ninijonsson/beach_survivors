@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -17,7 +18,7 @@ import com.beachsurvivors.model.abilities.UpgradeType;
 
 import java.util.Random;
 
-public class LevelUpScreen implements Screen {
+public class LevelUpOverlay{
 
     private Stage stage;
     private GameScreen game;
@@ -36,7 +37,11 @@ public class LevelUpScreen implements Screen {
 
     private Sound levelUpSound;
 
-    public LevelUpScreen(GameScreen game, Player player) {
+    private SpriteBatch spriteBatch;
+    private boolean isClosed = false;
+
+
+    public LevelUpOverlay(GameScreen game, Player player) {
         this.game = game;
         this.player = player;
         random = new Random();
@@ -47,9 +52,43 @@ public class LevelUpScreen implements Screen {
         skin = AssetLoader.get().getSkin("game_over_screen/deathscreen_skin.json");
         this.levelUpSound = AssetLoader.get().getSound("sounds/level_up.mp3");
         levelUpSound.setVolume(levelUpSound.play(),0.1f);
+        spriteBatch = new SpriteBatch();
 
         buildUI();
     }
+
+    public void update(float delta) {
+        if (isClosed) return;
+        stage.act(delta);
+        keyBinds();
+    }
+
+
+    public void draw() {
+        if (isClosed) return;
+
+        spriteBatch.setProjectionMatrix(stage.getCamera().combined);
+        spriteBatch.begin();
+        spriteBatch.setColor(0, 0, 0, 0.4f);
+        spriteBatch.draw(
+            AssetLoader.get().getTexture("entities/icons/blank.png"),
+            0, 0,
+            stage.getViewport().getWorldWidth(),
+            stage.getViewport().getWorldHeight()
+        );
+        spriteBatch.setColor(1, 1, 1, 1);
+        spriteBatch.end();
+
+        stage.draw();
+    }
+
+    public boolean isClosed() {
+        return isClosed;
+    }
+
+
+
+
 
     private void buildUI() {
         Table table = new Table();
@@ -121,7 +160,8 @@ public class LevelUpScreen implements Screen {
     }
 
     private void resumeGame() {
-        game.resume();
+        isClosed = true;
+        Gdx.input.setInputProcessor(game.getGameUI().getStage());
     }
 
     private void updateLabel() {
@@ -197,40 +237,16 @@ public class LevelUpScreen implements Screen {
 
     }
 
-    @Override
-    public void show() {}
-
-    @Override
-    public void render(float delta) {
-        stage.act(delta);
-        stage.draw();
-        keyBinds();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        dispose();
-    }
-
-    @Override
     public void dispose() {
+        spriteBatch.dispose();
         stage.dispose();
     }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+
 
     public void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {

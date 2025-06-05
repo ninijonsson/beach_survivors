@@ -85,6 +85,9 @@ public class GameScreen extends Game implements Screen {
     private float enemyHpMultiplier = 1f;
     int minibossHP = 200;
 
+    private LevelUpOverlay levelUpOverlay;
+    private boolean isLevelUpOverlayActive = false;
+
 
     /// /array med intervaller på när miniboss ska spawna
 
@@ -221,20 +224,19 @@ public class GameScreen extends Game implements Screen {
     public void render(float delta) {
         input(); // hanterar ESC / TAB osv.
 
-        // Rita alltid spelet
         if (!isPaused) {
 
             logicIfNotPaused(delta);
             draw();
 
-            // Rita UI och ev. överlägg
+
             gameUI.getStage().act(delta);
             gameUI.update(delta);
             gameUI.draw();
         }
 
         if (isChestOverlayActive && chestOverlay != null) {
-            chestOverlay.update(delta);  // inga world updates men ev. effekt
+            chestOverlay.update(delta);
             chestOverlay.draw();
             if (chestOverlay.isClosed()) {
                 chestOverlay.dispose();
@@ -243,11 +245,25 @@ public class GameScreen extends Game implements Screen {
                 resume();
             }
         }
+
+        if (isLevelUpOverlayActive && levelUpOverlay != null) {
+            levelUpOverlay.update(delta);
+            levelUpOverlay.draw();
+            if (levelUpOverlay.isClosed()) {
+                levelUpOverlay.dispose();
+                levelUpOverlay = null;
+                isLevelUpOverlayActive = false;
+                resume();
+            }
+            return;
+        }
+
+
         if (isPaused && pauseOverlay != null) {
-            pauseOverlay.getStage().act(delta);
-            pauseOverlay.getStage().draw();
             pauseOverlay.render(delta);
         }
+
+
     }
 
 
@@ -295,7 +311,7 @@ public class GameScreen extends Game implements Screen {
     private void input() {
         if (!isPaused) {
 
-            player.playerInput(isChestOverlayActive());
+            player.playerInput(isChestOverlayActive() || isLevelUpOverlayActive);
         }
 
 
@@ -432,7 +448,6 @@ public class GameScreen extends Game implements Screen {
     private void keyBinds() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (!isPaused) {
-                main.pause();
                 pause();
             } else {
                 resume();
@@ -602,6 +617,7 @@ public class GameScreen extends Game implements Screen {
 //        player.dispose();  //dessa borde inte disposas
 //        boomerang.dispose();
         font.dispose();
+        pauseOverlay.dispose();
     }
 
     /**
@@ -902,6 +918,16 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
+
+    public void showLevelUpOverlay() {
+        if (levelUpOverlay == null) {
+            levelUpOverlay = new LevelUpOverlay(this, player);
+            isLevelUpOverlayActive = true;
+        }
+    }
+
+
+
     private void checkProjectileHits(Enemy enemy) {
         for (Projectile projectile : playerProjectiles) {
             if(projectile.getHitBox().overlaps(enemy.getHitbox())) {
@@ -983,8 +1009,8 @@ public class GameScreen extends Game implements Screen {
 
 
     private void logicIfNotPaused(float delta) {
-        if (isPaused || isChestOverlayActive) return;
-        logic(delta); // endast körs om spelet inte är pausat eller overlay är aktiv
+        if (isPaused || isChestOverlayActive || isLevelUpOverlayActive) return;
+        logic(delta);
     }
 
 
@@ -1175,6 +1201,8 @@ public class GameScreen extends Game implements Screen {
             isChestOverlayActive = true;
         }
     }
+
+
 
     public void enableWaterWave() {
         hasWaterWaveAbility = true;

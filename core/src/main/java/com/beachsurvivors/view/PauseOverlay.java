@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -30,6 +31,8 @@ public class PauseOverlay {
     private Image selectorArrow;
     private ImageButton[] buttons;
     private boolean arrowInitialized = false;
+    private SpriteBatch spriteBatch;
+
 
     private Sound menuSwitch;
     private Sound menuChoice;
@@ -51,6 +54,8 @@ public class PauseOverlay {
         table = buildUI(); // Lägg till tabellen
         table.setVisible(true); // Viktigt – gör table synlig så layout fungerar
         stage.act(0);           // Uppdaterar layouten direkt
+        this.spriteBatch = new SpriteBatch();
+
     }
 
 
@@ -172,7 +177,7 @@ public class PauseOverlay {
 
     public void show() {
         table.setVisible(true);
-
+        Gdx.input.setInputProcessor(stage);
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(new InputAdapter() {
             @Override
@@ -284,10 +289,10 @@ public class PauseOverlay {
 //
 //
 //
-//    @Override
-//    public void dispose() {
-//        //stage.dispose();
-//    }
+public void dispose() {
+    spriteBatch.dispose();
+    stage.dispose();
+}
 
 
 }
