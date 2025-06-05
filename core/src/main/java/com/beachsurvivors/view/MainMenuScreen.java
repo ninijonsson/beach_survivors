@@ -22,7 +22,6 @@ public class MainMenuScreen implements Screen {
     private Main main;
     private Stage stage;
     Sound playSound;
-    Music mainTheme;
     Sound menuSwitch;
     Sound menuChoice;
 
@@ -45,14 +44,10 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(Main main) {
         this.main = main;
-
-        mainTheme = AssetLoader.get().manager.get("sounds/beach.mp3");
         menuSwitch = AssetLoader.get().manager.get("entities/abilities/menu_switch.wav");
         menuChoice = AssetLoader.get().manager.get("entities/abilities/menu_select.wav");
 
-        mainTheme.play();
-        mainTheme.setVolume(0.5f);
-        mainTheme.setLooping(true);
+        MusicHandler.play("sounds/beach.mp3", true);
 
         backgroundTexture = AssetLoader.get().manager.get("main_menu/menu_background.jpeg");
         Image background = new Image(new TextureRegionDrawable(new TextureRegion(backgroundTexture)));
@@ -153,6 +148,8 @@ public class MainMenuScreen implements Screen {
                         menuChoice.play(0.6f);
                         buttons[selectedIndex].fire(new ChangeListener.ChangeEvent());
                         return true;
+                    case Input.Keys.F10:
+                        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
                 }
                 return false;
             }
@@ -174,17 +171,16 @@ public class MainMenuScreen implements Screen {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                mainTheme.stop();
                 menuChoice.play(0.6f);
                 startGameMusic();
-                main.playGame();
+                main.setScreen(new CharacterSelectScreen(main));
             }
         });
 
         helpButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                mainTheme.stop();
+
                 menuChoice.play(0.6f);
                 main.goToHelpScreen();
             }
@@ -199,7 +195,7 @@ public class MainMenuScreen implements Screen {
     }
 
     public void startGameMusic() {
-        MusicHandler.play("main_menu/sound/holiday.wav", true);
+
     }
 
     private void updateArrowPosition() {

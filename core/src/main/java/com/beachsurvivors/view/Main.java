@@ -15,6 +15,7 @@ public class Main extends Game {
     private LoadingScreen loadingScreen;
     private Screen previousScreen;
     private boolean isSoundOn = true;
+    private int selectedCharacterType = 1;
 
     @Override
     public void create() {
@@ -43,15 +44,16 @@ public class Main extends Game {
     }
 
     public void goToMainMenu() {
-        menuScreen.mainTheme.play();
         MusicHandler.stop();
+        MusicHandler.play("sounds/beach.mp3", true);
         if (gameScreen != null) gameScreen.dispose();
         gameScreen = null;
         setScreen(menuScreen);
     }
 
     public void restart() {
-        MusicHandler.stop();    //Vi kanske skulle flytta playSound till gamescreen?
+        MusicHandler.stop();
+        MusicHandler.play("main_menu/sound/holiday.wav", true);
         Timer.instance().clear();
 
         if (gameScreen != null) gameScreen.dispose();
@@ -98,11 +100,11 @@ public class Main extends Game {
 
     public void turnOffInGameMusic() {
         // TODO: Stäng av ljudeffekterna också
-        menuScreen.playSound.stop();
+        MusicHandler.stop();
     }
 
     public void turnOnInGameMusic() {
-        menuScreen.playSound.play();
+        //
     }
 
 
@@ -115,5 +117,13 @@ public class Main extends Game {
     }
     public GameScreen getGameScreen() {
         return gameScreen;
+    }
+
+    public int getSelectedCharacterType() {
+        return selectedCharacterType;
+    }
+
+    public void setSelectedCharacterType(int characterType) {
+        this.selectedCharacterType = characterType;
     }
 }

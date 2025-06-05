@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -97,7 +96,7 @@ public class GameScreen extends Game implements Screen {
     private Array<GroundItem> groundItemsToRemove;
     private Array<Projectile> playerProjectiles;
     private Array<Projectile> enemyProjectiles;
-    private float bossSpawnDelay = 60; //seconds ;
+    private float bossSpawnDelay = 180; //seconds ;
     private Boss boss;
     private float bossSpawnTimer = 0f;
     private boolean warningGiven = false;
@@ -375,7 +374,7 @@ public class GameScreen extends Game implements Screen {
         if (bossSpawned) {
             gameUI.setBossBarVisible(true);
             boss.update(delta, player);
-            checkPlayerAbilityHits_boss();
+            checkPlayerAbilityHitsBoss();
             gameUI.updateBossHealth((float)boss.getHealthPoints(), 1000);
         } else {
             gameUI.setBossBarVisible(false);
@@ -895,13 +894,13 @@ public class GameScreen extends Game implements Screen {
         }
     }
 
-    private void checkPlayerAbilityHits_boss() {
+    private void checkPlayerAbilityHitsBoss() {
         for (int j = abilities.size - 1; j >= 0; j--) {
             Ability ability = abilities.get(j);
 
             if (ability.getHitBox().overlaps(boss.getHitbox())) {
                 boolean isCritical = player.isCriticalHit();
-                double damage = ability.getBaseDamage();
+                double damage = ability.getBaseDamage() * ability.getDamageMultiplier();
                 if (isCritical) {
                     damage *= player.getCriticalHitDamage();
                 }
@@ -1265,6 +1264,11 @@ public class GameScreen extends Game implements Screen {
     public GameUI getGameUI() {
         return gameUI;
     }
+
+    public int getSelectedCharacterType() {
+        return main.getSelectedCharacterType();
+    }
+
 
     public void addOrUpgradeAbility(AbilityDescription ability) {
         int currentLevel = abilityLevels.getOrDefault(ability, 0);

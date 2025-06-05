@@ -108,7 +108,7 @@ public class Player extends Actor {
         currentHealthPoints = STARTING_HEALTH_POINTS;
         maxHealthPoints = STARTING_HEALTH_POINTS;
 
-        createAnimation();
+        createAnimation(gameScreen.getSelectedCharacterType());
         footstepSound = AssetLoader.get().manager.get("sounds/footstep.mp3", Sound.class);
 
     }
@@ -119,11 +119,10 @@ public class Player extends Actor {
         spriteBatch.draw(shadowTexture, shadowX, shadowY, playerWidth, playerHeight / 4f);
     }
 
-    private void createAnimation() {
-        int choice = random.nextInt(1,3);
+    private void createAnimation(int characterType) {
         this.shadowTexture = AssetLoader.get().manager.get("entities/abilities/bomb_shadow.png", Texture.class);
 
-        switch (choice) {
+        switch (characterType) {
             case 1:
                 walkSheet = AssetLoader.get().manager.get("entities/beach_girl_sheet.png");
                 break;
@@ -141,9 +140,11 @@ public class Player extends Actor {
                 walkFrames[index++] = tmp[i][j];
             }
         }
-        walkAnimation = new Animation<TextureRegion>(0.25f, walkFrames);
+
+        walkAnimation = new Animation<>(0.25f, walkFrames);
         stateTime = 0f;
     }
+
 
     public void drawAnimation() {
         stateTime += Gdx.graphics.getDeltaTime();
