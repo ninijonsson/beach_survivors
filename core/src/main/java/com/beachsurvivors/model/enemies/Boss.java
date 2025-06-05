@@ -67,12 +67,13 @@ public class Boss {
     private BitmapFont font = new BitmapFont();
 
     private Sprite arrowSprite;
-    private Sound hitSound;
+    private Sound bossHit;
     private Sound cannonFireSound;
     private Sound kakaaw;
-
+    private Sound hitSound;
     private Main main;
     private float damageCooldown = 0f;
+
 
 
     public Boss(Vector2 position, ParticleEffectPoolManager poolManager, Camera camera, GameScreen game, Main main, Array<DamageText> damageText) {
@@ -87,9 +88,10 @@ public class Boss {
         arrowSprite = new Sprite(new Texture("redarrow.png"));
         arrowSprite.setSize(1000, 1000);
 
-        this.hitSound = AssetLoader.get().getSound("entities/abilities/boss_damage.wav");
+        this.bossHit = AssetLoader.get().getSound("entities/abilities/boss_damage.wav");
         this.cannonFireSound = AssetLoader.get().getSound("entities/abilities/boss_cannon_fire.wav");
         this.kakaaw = AssetLoader.get().getSound("entities/abilities/boss_kakaaw.wav");
+        this.hitSound = AssetLoader.get().getSound("sounds/shark_damage_2.wav");
         this.camera = camera;
         this.game = game;
         this.main = main;
@@ -202,6 +204,7 @@ public class Boss {
         phase++;
         phaseTimer = 0;
         orbPickedUp = false;
+
         kakaaw.play(0.8f, MathUtils.random(0.95f, 1.05f), 0f);
         damageText.add(new DamageText("KAKAAAW! KAKAAAW!", position.x, position.y + 150, 6, true));
     }
@@ -413,8 +416,8 @@ public class Boss {
         damageCooldown = 0.1f;
 
         float pitch = MathUtils.random(0.9f, 1.1f);
-        hitSound.play(0.9f, pitch, 0f);
-
+        bossHit.play(0.9f, pitch, 0f);
+        hitSound.play(0.8f, MathUtils.random(0.95f, 1.05f), 0f);
         if (healthPoints <= 0) {
             isAlive = false;
             onDeath();
